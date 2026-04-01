@@ -17,7 +17,7 @@
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script src="/_vercel/insights/script.js"></script>
 
   <style>
     /* =========================================================
@@ -174,7 +174,7 @@
 
     .window-content { flex: 1; width: 100%; border: none; background: #fff; min-height: 0; }
 
-    /* Offline Terminal */
+    /* Offline/External Terminal */
     .offline-terminal {
       flex: 1; background: #05070a; color: var(--cyan);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -348,31 +348,11 @@
 
     /* =========================================================
        3. THE DAXINI MICRO-FRONTEND REGISTRY
-       =========================================================
-       HOW IT WORKS:
-       ─────────────
-       Each key (0–8, excluding 4 = center) maps to a spatial
-       position on the 3×3 gesture grid.
-
-       url patterns:
-         GitHub Pages  → https://via-decide.github.io/{repo}/
-         Vercel        → https://{project}.vercel.app  OR custom domain
-         offline       → triggers the offline terminal UI
-
-       To add a new app:
-         1. Pick a free position (currently 5 is free)
-         2. Add the entry: { name, icon, url, status, desc }
-         3. Set status: "live" | "pending"
-         4. Deploy the repo to GitHub Pages or Vercel
-
-       The iframe sandbox flags allow:
-         scripts, same-origin (localStorage), forms, popups, downloads
        ========================================================= */
     const DAXINI_GALAXY = {
       name:  "Daxini Space",
       lore:  "The master application registry.",
       apps: {
-
         // ── POSITION 0 (top-left) ─────────────────────────────
         0: {
           name:   "LogicHub",
@@ -381,7 +361,6 @@
           status: "live",
           desc:   "Visual node-to-APK builder"
         },
-
         // ── POSITION 1 (top-center) ───────────────────────────
         1: {
           name:   "Daxini HQ",
@@ -390,7 +369,6 @@
           status: "live",
           desc:   "Holding company & empire index"
         },
-
         // ── POSITION 2 (top-right) ────────────────────────────
         2: {
           name:   "Alchemy",
@@ -399,7 +377,6 @@
           status: "live",
           desc:   "Prompt generation pipeline"
         },
-
         // ── POSITION 3 (mid-left) ─────────────────────────────
         3: {
           name:   "SOP Builder",
@@ -408,12 +385,9 @@
           status: "pending",
           desc:   "Standard ops builder — in queue"
         },
-
-        // ── POSITION 4 = CENTER (reserved for gesture engine) ─
-        // Do NOT add an app here. Position 4 is the gesture origin.
+        // ── POSITION 4 = CENTER (reserved) ────────────────────
 
         // ── POSITION 5 (mid-right) ────────────────────────────
-        // SkillHex REMOVED. Replaced with Daxini Lens.
         5: {
           name:   "Daxini Lens",
           icon:   "🎬",
@@ -421,7 +395,6 @@
           status: "live",
           desc:   "Screen recording → PDF guide"
         },
-
         // ── POSITION 6 (bottom-left) ──────────────────────────
         6: {
           name:   "ViaLogic",
@@ -430,17 +403,14 @@
           status: "pending",
           desc:   "RPG math cartography — in queue"
         },
-
         // ── POSITION 7 (bottom-center) ────────────────────────
-        // StudyOS from decide.engine-tools repo
         7: {
           name:   "StudyOS",
           icon:   "📚",
-          url:    "https://via-decide.github.io/decide.engine-tools/StudyOS/",
+          url:    "https://github.com/via-decide/decide.engine-tools/tree/159f80de375e17c26219b5a265c4c4d4ca8bb22c/StudyOS",
           status: "live",
           desc:   "Modular study engine for exams"
         },
-
         // ── POSITION 8 (bottom-right) ─────────────────────────
         8: {
           name:   "Mars Sim",
@@ -454,6 +424,15 @@
 
     // Secret master sigil — draws a Z-pattern on the grid
     const MASTER_KEY_SIGIL = "1,4,7,6,3,4,5,2,5,8";
+
+    // Engine Tools Sigil - Draws the "d" shape from the image
+    const ENGINE_TOOLS_SIGILS = [
+      "1,4,3,6,7,8",
+      "1,4,3,6,7,4",
+      "1,4,7,6,3,4",
+      "1,4,3,6,7,4,7,8",
+      "1,4,7,6,3,4,7,8"
+    ];
 
     /* =========================================================
        4. HYBRID RENDER ENGINE (Visual Nodes)
@@ -479,7 +458,11 @@
             <div class="app-name">${appData.name}</div>
           `;
           nodeEl.title   = appData.desc || appData.name;
-          nodeEl.onclick = () => launchApp(pos);
+          nodeEl.onclick = () => {
+             // Directly handle clicks to prevent popup blocking for external links
+             if(appData.url.includes('github.com')) window.open(appData.url, '_blank');
+             launchApp(pos);
+          };
         } else {
           nodeEl.style.display = 'none';
         }
@@ -510,12 +493,6 @@
 
     /* =========================================================
        5. SMART IFRAME ROUTER
-       =========================================================
-       Decision tree:
-         status === "live" AND url !== "offline"
-           → render <iframe src="url" sandbox="...">
-         else
-           → render offline terminal with app name
        ========================================================= */
     const wm = document.getElementById('window-manager');
 
@@ -533,19 +510,35 @@
       let statusIndicator = '';
 
       if (appData.status === 'live' && appData.url !== 'offline') {
-        // ── LIVE PATH: load URL in sandboxed iframe ──────────
-        statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
-        windowContent = `
-          <iframe
-            class="window-content"
-            src="${appData.url}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
-            loading="lazy"
-          ></iframe>
-        `;
+        if (appData.url.includes('github.com')) {
+          // GitHub UI bypass (renders sleek terminal instead of crashing iframe)
+          statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
+          windowContent = `
+            <div class="offline-terminal">
+              <div class="term-icon">🔗</div>
+              <div class="term-title">EXTERNAL THREAD SPAWNED</div>
+              <p class="term-desc">
+                <strong style="color:#fff;">${appData.name}</strong> is a GitHub source repository.<br><br>
+                Security protocols prevent UI embedding. The application has been opened securely in a new browser tab.<br><br>
+                <span style="color:var(--cyan);">STATUS: ACTIVE IN NEW TAB <span class="term-blink">_</span></span>
+              </p>
+            </div>
+          `;
+        } else {
+          // Standard live web app iframe
+          statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
+          windowContent = `
+            <iframe
+              class="window-content"
+              src="${appData.url}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+              loading="lazy"
+            ></iframe>
+          `;
+        }
       } else {
-        // ── OFFLINE PATH: terminal UI, no 404 ever hits user ─
+        // Offline / Pending app layout
         statusIndicator = `<div class="status-dot status-pending" style="position:relative;top:0;right:0;"></div>`;
         windowContent = `
           <div class="offline-terminal">
@@ -567,7 +560,7 @@
         <div class="window-header">
           <span class="window-title">${statusIndicator} ${appData.name}</span>
           <div class="window-controls">
-            ${appData.status === 'live' ? `<span class="window-btn" onclick="reloadFrame(this)" title="Reload">↺</span>` : ''}
+            ${appData.status === 'live' && !appData.url.includes('github.com') ? `<span class="window-btn" onclick="reloadFrame(this)" title="Reload">↺</span>` : ''}
             <span class="window-close" title="Close" onclick="this.closest('.glass-window').remove(); logDiag('TERMINATE','Closed ${appData.name}');">✕</span>
           </div>
         </div>
@@ -577,7 +570,6 @@
       wm.appendChild(win);
     }
 
-    // Reload iframe without closing window
     window.reloadFrame = function(btn) {
       const iframe = btn.closest('.glass-window').querySelector('iframe');
       if (iframe) iframe.src = iframe.src;
@@ -630,7 +622,6 @@
       drawSVG(x, y);
     }
 
-    // ── Touch ──
     minimap.addEventListener('touchstart', e => {
       e.preventDefault();
       isTracing = true; path = [];
@@ -647,7 +638,6 @@
       processPattern();
     });
 
-    // ── Mouse (desktop) ──
     let isMouseDown = false;
     minimap.addEventListener('mousedown', e => {
       isMouseDown = true; isTracing = true; path = [];
@@ -666,18 +656,11 @@
 
     /* =========================================================
        7. OS EVENT LOOP — PATTERN → ACTION MAPPING
-       =========================================================
-       Pattern               Action
-       ────────────────────────────────────────────────
-       [4]                   Clear all viewports
-       [4, X]                Launch app at position X
-       MASTER_KEY_SIGIL      Secret: launch Daxini HQ
        ========================================================= */
     function processPattern() {
       const seed = path.join(',');
       if (!seed) return;
 
-      // Auto-clear visual trace after 500ms
       setTimeout(() => {
         if (!isTracing) {
           svgLine.setAttribute('points', '');
@@ -694,10 +677,21 @@
         return;
       }
 
+      // ── Engine Tools Sigil ("d" shape) ───────────────────
+      if (ENGINE_TOOLS_SIGILS.includes(seed)) {
+        document.body.classList.add('sigil-flash');
+        logDiag('ENGINE_TOOLS', 'Repository sigil verified. Spawning external link.');
+        // Bypass popup blockers by opening natively in this gesture loop
+        window.open("https://github.com/via-decide/decide.engine-tools.git", "_blank");
+        return;
+      }
+
       // ── Swipe: center → any node ─────────────────────────
       if (path.length === 2 && path[0] === 4) {
         const target = path[1];
         if (DAXINI_GALAXY.apps[target]) {
+          const url = DAXINI_GALAXY.apps[target].url;
+          if (url.includes('github.com')) window.open(url, '_blank');
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
@@ -716,6 +710,8 @@
       if (path.length === 1 && path[0] !== 4) {
         const target = path[0];
         if (DAXINI_GALAXY.apps[target]) {
+          const url = DAXINI_GALAXY.apps[target].url;
+          if (url.includes('github.com')) window.open(url, '_blank');
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
@@ -729,10 +725,10 @@
     renderRoom();
     logDiag('SYSTEM', 'Daxini Space OS v2.1.0 online. Micro-Frontend router armed.');
     logDiag('REGISTRY', `${Object.keys(DAXINI_GALAXY.apps).length} apps registered. ${Object.values(DAXINI_GALAXY.apps).filter(a=>a.status==='live').length} live.`);
-    logDiag('NEW', 'Daxini Lens (video→PDF) deployed at node-5.');
-    logDiag('NEW', 'StudyOS (decide.engine-tools) deployed at node-7.');
-    logDiag('REMOVED', 'SkillHex removed from node-5.');
+    logDiag('NEW', 'StudyOS re-routed to raw GitHub tree commit.');
 
   </script>
 </body>
 </html>
+
+
