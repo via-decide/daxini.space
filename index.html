@@ -275,8 +275,8 @@
 
     <div id="room-center">
       <div id="room-title">DAXINI OS</div>
-      <div id="room-lore">Swipe from matrix center to launch apps. Tap center to clear screen.</div>
-      <div class="os-badge">v2.1.0 · GANDHIDHAM</div>
+      <div id="room-lore">Open an app to refresh the 8-room grid with related core and free-tier apps.</div>
+      <div class="os-badge">v2.2.0 · GANDHIDHAM</div>
     </div>
   </div>
 
@@ -349,83 +349,125 @@
     /* =========================================================
        3. THE DAXINI MICRO-FRONTEND REGISTRY
        ========================================================= */
-    const DAXINI_GALAXY = {
-      name:  "Daxini Space",
-      lore:  "The master application registry.",
-      apps: {
-        // ── POSITION 0 (top-left) ─────────────────────────────
-        0: {
-          name:   "LogicHub",
-          icon:   "⚡",
-          url:    "https://logichub.app",
-          status: "live",
-          desc:   "Visual node-to-APK builder"
-        },
-        // ── POSITION 1 (top-center) ───────────────────────────
-        1: {
-          name:   "Daxini HQ",
-          icon:   "🏢",
-          url:    "https://daxini.xyz",
-          status: "live",
-          desc:   "Holding company & empire index"
-        },
-        // ── POSITION 2 (top-right) ────────────────────────────
-        2: {
-          name:   "Alchemy",
-          icon:   "⚗️",
-          url:    "https://via-decide.github.io/PromptAlchemy/",
-          status: "live",
-          desc:   "Prompt generation pipeline"
-        },
-        // ── POSITION 3 (mid-left) ─────────────────────────────
-        3: {
-          name:   "SOP Builder",
-          icon:   "📄",
-          url:    "offline",
-          status: "pending",
-          desc:   "Standard ops builder — in queue"
-        },
-        // ── POSITION 4 = CENTER (reserved) ────────────────────
+    const ROOM_POSITIONS = [0, 1, 2, 3, 5, 6, 7, 8];
+    const DEFAULT_ROOM_SLUGS = [
+      'logichub',
+      'daxini-hq',
+      'prompt-alchemy',
+      'sop-builder',
+      'daxini-lens',
+      'via-logic',
+      'studyos',
+      'mars-sim'
+    ];
 
-        // ── POSITION 5 (mid-right) ────────────────────────────
-        5: {
-          name:   "Daxini Lens",
-          icon:   "🎬",
-          url:    "https://via-decide.github.io/video-to-pdf/",
-          status: "live",
-          desc:   "Screen recording → PDF guide"
-        },
-        // ── POSITION 6 (bottom-left) ──────────────────────────
-        6: {
-          name:   "ViaLogic",
-          icon:   "🕹️",
-          url:    "offline",
-          status: "pending",
-          desc:   "RPG math cartography — in queue"
-        },
-        // ── POSITION 7 (bottom-center) ────────────────────────
-        7: {
-          name:   "StudyOS",
-          icon:   "📚",
-          url:    "https://github.com/via-decide/decide.engine-tools/tree/159f80de375e17c26219b5a265c4c4d4ca8bb22c/StudyOS",
-          status: "live",
-          desc:   "Modular study engine for exams"
-        },
-        // ── POSITION 8 (bottom-right) ─────────────────────────
-        8: {
-          name:   "Mars Sim",
-          icon:   "🚀",
-          url:    "offline",
-          status: "pending",
-          desc:   "Simulation engine — in queue"
-        }
+    const CORE_APPS = [
+      {
+        slug: 'logichub',
+        name: 'LogicHub',
+        icon: '⚡',
+        url: 'https://logichub.app',
+        status: 'live',
+        desc: 'Visual app builder for non-technical users',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['builder', 'app', 'workflow', 'logic', 'apk']
+      },
+      {
+        slug: 'daxini-hq',
+        name: 'Daxini HQ',
+        icon: '🏢',
+        url: 'https://daxini.xyz',
+        status: 'live',
+        desc: 'Holding company and ecosystem index',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['company', 'hub', 'ecosystem']
+      },
+      {
+        slug: 'prompt-alchemy',
+        name: 'Prompt Alchemy',
+        icon: '⚗️',
+        url: 'https://via-decide.github.io/PromptAlchemy/',
+        status: 'live',
+        desc: 'Prompt generation and prompt improvement studio',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['prompt', 'writing', 'llm', 'text', 'creator']
+      },
+      {
+        slug: 'sop-builder',
+        name: 'SOP Builder',
+        icon: '📄',
+        url: 'offline',
+        status: 'pending',
+        desc: 'Standard operating procedure builder',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['document', 'ops', 'workflow', 'business']
+      },
+      {
+        slug: 'daxini-lens',
+        name: 'Daxini Lens',
+        icon: '🎬',
+        url: 'https://via-decide.github.io/video-to-pdf/',
+        status: 'live',
+        desc: 'Turn screen recordings into PDF guides',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['video', 'documentation', 'guide', 'export']
+      },
+      {
+        slug: 'via-logic',
+        name: 'ViaLogic',
+        icon: '🕹️',
+        url: 'offline',
+        status: 'pending',
+        desc: 'Logic and gameplay experiments',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['game', 'logic', 'simulation']
+      },
+      {
+        slug: 'studyos',
+        name: 'StudyOS',
+        icon: '📚',
+        url: 'https://github.com/via-decide/decide.engine-tools/tree/159f80de375e17c26219b5a265c4c4d4ca8bb22c/StudyOS',
+        status: 'live',
+        desc: 'Modular study engine for exams',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['study', 'learning', 'exam', 'education']
+      },
+      {
+        slug: 'mars-sim',
+        name: 'Mars Sim',
+        icon: '🚀',
+        url: 'offline',
+        status: 'pending',
+        desc: 'Simulation engine in queue',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['simulation', 'space', 'game']
       }
+    ];
+
+    const DAXINI_GALAXY = {
+      name: 'Daxini Space',
+      lore: 'The master application registry.',
+      apps: {},
+      centerApp: null
     };
 
-    // Secret master sigil — draws a Z-pattern on the grid
-    const MASTER_KEY_SIGIL = "1,4,7,6,3,4,5,2,5,8";
+    const STORE_STATE = {
+      focusSlug: null,
+      roomApps: {},
+      communityLoaded: false
+    };
 
-    // Engine Tools Sigil - Draws the "d" shape from the image
+    let APP_LIBRARY = [...CORE_APPS];
+
+    const MASTER_KEY_SIGIL = "1,4,7,6,3,4,5,2,5,8";
     const ENGINE_TOOLS_SIGILS = [
       "1,4,3,6,7,8",
       "1,4,3,6,7,4",
@@ -434,34 +476,195 @@
       "1,4,7,6,3,4,7,8"
     ];
 
-    /* =========================================================
-       4. HYBRID RENDER ENGINE (Visual Nodes)
-       ========================================================= */
+    function normalizeTag(value) {
+      return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function dedupeTags(tags) {
+      return [...new Set((tags || []).map(normalizeTag).filter(Boolean))];
+    }
+
+    function createSlug(value) {
+      return normalizeTag(value) || `app-${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function createAppRecord(app = {}) {
+      const slug = createSlug(app.slug || app.name || 'community-app');
+      return {
+        slug,
+        name: app.name || slug.replace(/-/g, ' '),
+        icon: app.icon || '✨',
+        url: app.url || `/apps/${slug}/index.html`,
+        status: app.status || 'live',
+        desc: app.desc || 'Community-made app published from LogicHub',
+        ownerType: app.ownerType || 'community',
+        tier: app.tier || 'free',
+        tags: dedupeTags(app.tags || ['general']),
+        source: app.source || (app.ownerType === 'mine' ? 'via-decide' : 'logichub'),
+        createdAt: app.createdAt || new Date().toISOString()
+      };
+    }
+
+    function upsertApp(app) {
+      const record = createAppRecord(app);
+      const existingIndex = APP_LIBRARY.findIndex(item => item.slug === record.slug);
+      if (existingIndex >= 0) APP_LIBRARY[existingIndex] = { ...APP_LIBRARY[existingIndex], ...record };
+      else APP_LIBRARY.push(record);
+      return record;
+    }
+
+    function getAppBySlug(slug) {
+      return APP_LIBRARY.find(app => app.slug === slug) || null;
+    }
+
+    function getRouteSlug() {
+      const url = new URL(window.location.href);
+      return normalizeTag(url.searchParams.get('app') || '');
+    }
+
+    function syncRoute(slug, replace = false) {
+      const url = new URL(window.location.href);
+      if (slug) url.searchParams.set('app', slug);
+      else url.searchParams.delete('app');
+      const method = replace ? 'replaceState' : 'pushState';
+      window.history[method]({ app: slug || null }, '', url.toString());
+    }
+
+    function computeTagOverlap(a = [], b = []) {
+      const bSet = new Set(b);
+      return a.filter(tag => bSet.has(tag)).length;
+    }
+
+    function relatedScore(candidate, focusApp) {
+      if (!candidate || !focusApp || candidate.slug === focusApp.slug) return -1;
+      let score = 0;
+      const overlap = computeTagOverlap(candidate.tags, focusApp.tags);
+      score += overlap * 12;
+      if (candidate.status === 'live') score += 4;
+      if (candidate.ownerType !== focusApp.ownerType) score += 3;
+      else score += 1;
+      if (candidate.tier === 'free') score += 2;
+      if (focusApp.tags.includes('prompt') && candidate.tags.includes('prompt')) score += 8;
+      if (focusApp.tags.includes('workflow') && candidate.tags.includes('workflow')) score += 6;
+      if (focusApp.tags.includes('study') && candidate.tags.includes('study')) score += 6;
+      return score;
+    }
+
+    function pickRoomApps(focusApp) {
+      const scored = APP_LIBRARY
+        .filter(app => app.slug !== focusApp.slug)
+        .map(app => ({ app, score: relatedScore(app, focusApp) }))
+        .sort((a, b) => b.score - a.score || a.app.name.localeCompare(b.app.name));
+
+      const mine = scored.filter(item => item.app.ownerType === 'mine');
+      const community = scored.filter(item => item.app.ownerType === 'community');
+      const chosen = [];
+      const chosenSlugs = new Set();
+
+      function takeFrom(pool, count) {
+        for (const item of pool) {
+          if (chosen.length >= 8 || count <= 0) break;
+          if (chosenSlugs.has(item.app.slug)) continue;
+          chosen.push(item.app);
+          chosenSlugs.add(item.app.slug);
+          count -= 1;
+        }
+      }
+
+      takeFrom(mine, 4);
+      takeFrom(community, 4);
+      takeFrom(scored, 8 - chosen.length);
+
+      const roomApps = {};
+      ROOM_POSITIONS.forEach((pos, index) => {
+        roomApps[pos] = chosen[index] || null;
+      });
+      return roomApps;
+    }
+
+    function applyHomeRoom() {
+      const roomApps = {};
+      DEFAULT_ROOM_SLUGS.forEach((slug, index) => {
+        roomApps[ROOM_POSITIONS[index]] = getAppBySlug(slug);
+      });
+      STORE_STATE.focusSlug = null;
+      STORE_STATE.roomApps = roomApps;
+      DAXINI_GALAXY.name = 'Daxini Space';
+      DAXINI_GALAXY.lore = 'Open any app to turn the 8-room grid into a related-app route across ViaDecide tools and free-tier LogicHub apps.';
+      DAXINI_GALAXY.apps = roomApps;
+      DAXINI_GALAXY.centerApp = null;
+    }
+
+    function focusApp(slug, options = {}) {
+      const target = getAppBySlug(slug);
+      if (!target) {
+        applyHomeRoom();
+        renderRoom();
+        if (options.syncRoute !== false) syncRoute('', options.replaceRoute === true);
+        return null;
+      }
+      STORE_STATE.focusSlug = target.slug;
+      STORE_STATE.roomApps = pickRoomApps(target);
+      DAXINI_GALAXY.name = `${target.name} Hub`;
+      DAXINI_GALAXY.lore = `${target.desc} Around it: related apps from ViaDecide and the free-tier LogicHub community.`;
+      DAXINI_GALAXY.apps = STORE_STATE.roomApps;
+      DAXINI_GALAXY.centerApp = target;
+      if (options.syncRoute !== false) syncRoute(target.slug, options.replaceRoute === true);
+      renderRoom();
+      return target;
+    }
+
+    async function loadCommunityApps() {
+      if (STORE_STATE.communityLoaded) return;
+      STORE_STATE.communityLoaded = true;
+      try {
+        const response = await fetch('./apps/registry.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Registry ${response.status}`);
+        const payload = await response.json();
+        const registryApps = Array.isArray(payload) ? payload : (payload.apps || []);
+        registryApps.forEach(app => upsertApp({
+          ...app,
+          ownerType: app.ownerType || 'community',
+          tier: app.tier || 'free',
+          source: app.source || 'logichub',
+          url: app.url || `/apps/${createSlug(app.slug || app.name)}/index.html`
+        }));
+        logDiag('REGISTRY', `Loaded ${registryApps.length} free-tier app entries.`);
+      } catch (error) {
+        logDiag('REGISTRY', 'No community registry found yet. Core catalog only.');
+      }
+    }
+
     function renderRoom() {
-      document.getElementById('room-title').innerText = DAXINI_GALAXY.name;
-      document.getElementById('room-lore').innerText  = DAXINI_GALAXY.lore;
+      const centerApp = DAXINI_GALAXY.centerApp;
+      document.getElementById('room-title').textContent = centerApp ? `${centerApp.icon} ${centerApp.name}` : DAXINI_GALAXY.name;
+      document.getElementById('room-lore').textContent = centerApp
+        ? `${centerApp.desc}. Related grid refreshes around this app so users can keep exploring.`
+        : DAXINI_GALAXY.lore;
 
-      const liveCount = Object.values(DAXINI_GALAXY.apps).filter(a => a.status === 'live').length;
-      document.getElementById('app-count-badge').textContent =
-        `${liveCount} LIVE · ${Object.keys(DAXINI_GALAXY.apps).length} TOTAL`;
+      const liveCount = APP_LIBRARY.filter(a => a.status === 'live').length;
+      const communityCount = APP_LIBRARY.filter(a => a.ownerType === 'community').length;
+      document.getElementById('app-count-badge').textContent = `${liveCount} LIVE · ${APP_LIBRARY.length} TOTAL · ${communityCount} COMMUNITY`;
 
-      [0, 1, 2, 3, 5, 6, 7, 8].forEach(pos => {
-        const nodeEl  = document.getElementById(`node-${pos}`);
+      ROOM_POSITIONS.forEach(pos => {
+        const nodeEl = document.getElementById(`node-${pos}`);
         const appData = DAXINI_GALAXY.apps[pos];
+        if (!nodeEl) return;
 
         if (appData) {
           nodeEl.style.display = 'flex';
           const statusClass = appData.status === 'live' ? 'status-live' : 'status-pending';
+          const tierLabel = appData.ownerType === 'community' ? 'FREE' : 'CORE';
           nodeEl.innerHTML = `
             <div class="status-dot ${statusClass}"></div>
             <div class="app-icon">${appData.icon}</div>
-            <div class="app-name">${appData.name}</div>
+            <div class="app-name">${appData.name}<br><span style="font-size:8px; opacity:0.65;">${tierLabel}</span></div>
           `;
-          nodeEl.title   = appData.desc || appData.name;
+          nodeEl.title = `${appData.name} — ${appData.desc}`;
           nodeEl.onclick = () => {
-             // Directly handle clicks to prevent popup blocking for external links
-             if(appData.url.includes('github.com')) window.open(appData.url, '_blank');
-             launchApp(pos);
+            if (appData.url.includes('github.com')) window.open(appData.url, '_blank');
+            animateFractalTransition(pos, false);
+            setTimeout(() => launchAppBySlug(appData.slug), 300);
           };
         } else {
           nodeEl.style.display = 'none';
@@ -472,22 +675,22 @@
     function animateFractalTransition(targetPos, isRecall) {
       const room = document.getElementById('room-environment');
       const origins = {
-        0: "top left",    1: "top center",    2: "top right",
-        3: "center left",                     5: "center right",
-        6: "bottom left", 7: "bottom center", 8: "bottom right"
+        0: 'top left', 1: 'top center', 2: 'top right',
+        3: 'center left', 5: 'center right',
+        6: 'bottom left', 7: 'bottom center', 8: 'bottom right'
       };
-      room.style.transformOrigin = isRecall ? "center center" : (origins[targetPos] || "center");
-      room.style.transform = isRecall ? "scale(0.5)" : "scale(2.5)";
-      room.style.opacity = "0";
+      room.style.transformOrigin = isRecall ? 'center center' : (origins[targetPos] || 'center');
+      room.style.transform = isRecall ? 'scale(0.5)' : 'scale(2.5)';
+      room.style.opacity = '0';
 
       setTimeout(() => {
         renderRoom();
-        room.style.transition = "none";
-        room.style.transform = isRecall ? "scale(2.5)" : "scale(0.5)";
-        void room.offsetWidth; // force reflow
-        room.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s";
-        room.style.transform = "scale(1)";
-        room.style.opacity   = "1";
+        room.style.transition = 'none';
+        room.style.transform = isRecall ? 'scale(2.5)' : 'scale(0.5)';
+        void room.offsetWidth;
+        room.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s';
+        room.style.transform = 'scale(1)';
+        room.style.opacity = '1';
       }, 300);
     }
 
@@ -499,19 +702,25 @@
     function launchApp(posIndex) {
       const appData = DAXINI_GALAXY.apps[posIndex];
       if (!appData) return;
+      return launchAppBySlug(appData.slug);
+    }
+
+    function launchAppBySlug(slug, options = {}) {
+      const appData = focusApp(slug, { syncRoute: options.syncRoute !== false, replaceRoute: options.replaceRoute === true });
+      if (!appData) return;
 
       logDiag('ROUTER', `Booting "${appData.name}" [${appData.status.toUpperCase()}] → ${appData.url}`);
-      wm.innerHTML = ''; // clear active viewports
+      wm.innerHTML = '';
 
       const win = document.createElement('div');
       win.className = 'glass-window';
 
       let windowContent = '';
       let statusIndicator = '';
+      const metaLine = `<div style="font-size:10px; color:#6fe7f6; margin-top:6px;">${appData.ownerType === 'community' ? 'FREE-TIER COMMUNITY APP' : 'VIADECIDE CORE APP'}</div>`;
 
       if (appData.status === 'live' && appData.url !== 'offline') {
         if (appData.url.includes('github.com')) {
-          // GitHub UI bypass (renders sleek terminal instead of crashing iframe)
           statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
           windowContent = `
             <div class="offline-terminal">
@@ -520,12 +729,12 @@
               <p class="term-desc">
                 <strong style="color:#fff;">${appData.name}</strong> is a GitHub source repository.<br><br>
                 Security protocols prevent UI embedding. The application has been opened securely in a new browser tab.<br><br>
-                <span style="color:var(--cyan);">STATUS: ACTIVE IN NEW TAB <span class="term-blink">_</span></span>
+                ${metaLine}
+                <span style="color:var(--cyan); display:block; margin-top:10px;">STATUS: ACTIVE IN NEW TAB <span class="term-blink">_</span></span>
               </p>
             </div>
           `;
         } else {
-          // Standard live web app iframe
           statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
           windowContent = `
             <iframe
@@ -538,7 +747,6 @@
           `;
         }
       } else {
-        // Offline / Pending app layout
         statusIndicator = `<div class="status-dot status-pending" style="position:relative;top:0;right:0;"></div>`;
         windowContent = `
           <div class="offline-terminal">
@@ -548,8 +756,9 @@
               HTTP 404 intercepted. System proxy active.<br><br>
               <strong style="color:#fff;">${appData.name}</strong>
               ${appData.desc ? `<br><span style="color:#666; font-size:10px;">${appData.desc}</span>` : ''}
+              ${metaLine}
               <br><br>
-              is in the build queue and awaiting deployment<br>to the Vercel Edge Network.<br><br>
+              This route stays alive so the room can keep suggesting the next best apps around it.<br><br>
               <span style="color:var(--saffron);">STATUS: PENDING MIGRATION <span class="term-blink">_</span></span>
             </p>
           </div>
@@ -561,19 +770,55 @@
           <span class="window-title">${statusIndicator} ${appData.name}</span>
           <div class="window-controls">
             ${appData.status === 'live' && !appData.url.includes('github.com') ? `<span class="window-btn" onclick="reloadFrame(this)" title="Reload">↺</span>` : ''}
-            <span class="window-close" title="Close" onclick="this.closest('.glass-window').remove(); logDiag('TERMINATE','Closed ${appData.name}');">✕</span>
+            <span class="window-close" title="Close" onclick="closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')">✕</span>
           </div>
         </div>
         ${windowContent}
       `;
 
       wm.appendChild(win);
+      return appData;
     }
 
+    function closeActiveApp(slug, name) {
+      const activeWindow = document.querySelector('.glass-window');
+      if (activeWindow) activeWindow.remove();
+      applyHomeRoom();
+      renderRoom();
+      syncRoute('', false);
+      logDiag('TERMINATE', `Closed ${name || slug}`);
+    }
+
+    window.closeActiveApp = closeActiveApp;
     window.reloadFrame = function(btn) {
       const iframe = btn.closest('.glass-window').querySelector('iframe');
       if (iframe) iframe.src = iframe.src;
     };
+
+    async function initializeStore() {
+      CORE_APPS.forEach(app => upsertApp(app));
+      await loadCommunityApps();
+      const routeSlug = getRouteSlug();
+      if (routeSlug && getAppBySlug(routeSlug)) {
+        focusApp(routeSlug, { syncRoute: false, replaceRoute: true });
+        launchAppBySlug(routeSlug, { syncRoute: false, replaceRoute: true });
+      } else {
+        applyHomeRoom();
+        renderRoom();
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      const routeSlug = getRouteSlug();
+      if (routeSlug && getAppBySlug(routeSlug)) {
+        focusApp(routeSlug, { syncRoute: false });
+        launchAppBySlug(routeSlug, { syncRoute: false });
+      } else {
+        wm.innerHTML = '';
+        applyHomeRoom();
+        renderRoom();
+      }
+    });
 
     /* =========================================================
        6. MATRIX GESTURE ENGINE
@@ -722,10 +967,10 @@
     /* =========================================================
        8. BOOT SEQUENCE
        ========================================================= */
-    renderRoom();
-    logDiag('SYSTEM', 'Daxini Space OS v2.1.0 online. Micro-Frontend router armed.');
-    logDiag('REGISTRY', `${Object.keys(DAXINI_GALAXY.apps).length} apps registered. ${Object.values(DAXINI_GALAXY.apps).filter(a=>a.status==='live').length} live.`);
-    logDiag('NEW', 'StudyOS re-routed to raw GitHub tree commit.');
+    initializeStore();
+    logDiag('SYSTEM', 'Daxini Space OS v2.2.0 online. Contextual app routing armed.');
+    logDiag('ROUTE', 'Open any app to refresh the 8-room grid with related core and free-tier apps.');
+    logDiag('NEW', 'Store routes now carry the focused app in the URL for direct linking.');
 
   </script>
 </body>
