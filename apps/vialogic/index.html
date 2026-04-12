@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViaLogic | Global Map Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/main.css">
+  <script src="./ui/navigation.js"></script>
+  <script src="./ui/entity-renderer.js"></script>
+  <script src="./ui/modal-system.js"></script>
+  <script src="./ui/map-engine.js"></script>
+</head>
+<body>
+  <header class="hud">
+    <div class="hud__title">ViaLogic · Cosmic Knowledge Atlas</div>
+    <div class="hud__sparks">Sparks: <strong id="sparks-value">0</strong></div>
+  </header>
+
+  <main id="map-viewport" aria-label="Interactive thinker map">
+    <div id="scenery-layer" aria-hidden="true"></div>
+    <div id="map-layer">
+      <svg id="paths-layer" viewBox="0 0 5000 3600" preserveAspectRatio="none"></svg>
+      <section id="entities-layer" aria-live="polite"></section>
+    </div>
+  </main>
+
+  <section id="entity-modal" class="modal" aria-hidden="true">
+    <article class="modal__content" data-modal-content></article>
+  </section>
+
+  <output id="map-error"></output>
+</body>
+</html>

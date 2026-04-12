@@ -1,0 +1,609 @@
+{
+  "track": "Gujarat Ganitam",
+  "language": "gujarati",
+  "genius_card": "Brahmagupta",
+  "engine": "SkillHex",
+  "progression": "ViaLogic",
+  "missions": [
+    {
+      "id": "mission_01",
+      "title": "The Root Cipher",
+      "lore": "Ancient AI encrypts colony gate codes using root-based locks. You must decode them to enter the forbidden archive. Each lock is a mathematical riddle left by the Brahmagupta Order — solve them before the gate seals forever.",
+      "concepts": ["square roots", "cube roots", "powers", "surds"],
+      "source_questions": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 24, 45],
+      "sparks_reward": 120,
+      "genius_xp": 60,
+      "questions": [
+        {
+          "id": "M1_Q1",
+          "source_q": 1,
+          "text_gu": "96 ને ક્યા નાનામાં નાના ગુણક વડે ગુણવાથી પૂર્ણ ઘન સંખ્યા મળે?",
+          "text_en": "By which smallest number must 96 be multiplied to get a perfect cube?",
+          "options": [
+            { "label": "A", "value": 14 },
+            { "label": "B", "value": 16 },
+            { "label": "C", "value": 18 },
+            { "label": "D", "value": 20 }
+          ],
+          "answer": "C",
+          "answer_value": 18,
+          "lore_feedback_correct": "Gate lock 1 disengages. The cipher hums with approval.",
+          "lore_feedback_wrong": "Alarm flares. Recalibrate your prime factorization.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q2",
+          "source_q": 2,
+          "text_gu": "√28900 = ?",
+          "text_en": "√28900 = ?",
+          "options": [
+            { "label": "A", "value": 270 },
+            { "label": "B", "value": 17 },
+            { "label": "C", "value": 170 },
+            { "label": "D", "value": 107 }
+          ],
+          "answer": "C",
+          "answer_value": 170,
+          "lore_feedback_correct": "Root matrix decoded. Next cipher layer opens.",
+          "lore_feedback_wrong": "Wrong key. The gate sparks dangerously.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q3",
+          "source_q": 3,
+          "text_gu": "81 ના વર્ગમૂળનું વર્ગમૂળ",
+          "text_en": "Square root of square root of 81",
+          "options": [
+            { "label": "A", "value": 3 },
+            { "label": "B", "value": 6 },
+            { "label": "C", "value": 9 },
+            { "label": "D", "value": 27 }
+          ],
+          "answer": "A",
+          "answer_value": 3,
+          "lore_feedback_correct": "Double root resolved. Archive node unlocked.",
+          "lore_feedback_wrong": "Nested root misread. The chamber stays dark.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q4",
+          "source_q": 4,
+          "text_gu": "5√(243/1024) = ___",
+          "text_en": "5√(243/1024) = ___",
+          "options": [
+            { "label": "A", "value": "2/5" },
+            { "label": "B", "value": "3/7" },
+            { "label": "C", "value": "4/5" },
+            { "label": "D", "value": "3/4" }
+          ],
+          "answer": "D",
+          "answer_value": "3/4",
+          "lore_feedback_correct": "Fractional cipher cracked. Brahmagupta smiles.",
+          "lore_feedback_wrong": "Fraction root failed. Recalculate 243 = 3^5.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q5",
+          "source_q": 5,
+          "text_gu": "3⁴ ÷ 3⁴",
+          "text_en": "3⁴ ÷ 3⁴",
+          "options": [
+            { "label": "A", "value": 3 },
+            { "label": "B", "value": 6 },
+            { "label": "C", "value": 9 },
+            { "label": "D", "value": 27 }
+          ],
+          "answer": "A",
+          "answer_value": 3,
+          "lore_feedback_correct": "Power law applied. Shield layer drops.",
+          "lore_feedback_wrong": "Exponent law violation. Security tightens.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q6",
+          "source_q": 6,
+          "text_gu": "(3⁵ ÷ 3²) × 3",
+          "text_en": "(3⁵ ÷ 3²) × 3",
+          "options": [
+            { "label": "A", "value": 9 },
+            { "label": "B", "value": 27 },
+            { "label": "C", "value": 36 },
+            { "label": "D", "value": 81 }
+          ],
+          "answer": "D",
+          "answer_value": 81,
+          "lore_feedback_correct": "Power chain solved. The vault corridor brightens.",
+          "lore_feedback_wrong": "Mis-applied exponent rule. Try again.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q7",
+          "source_q": 7,
+          "text_gu": "(-3)⁶ × (-3)² ÷ (-3)⁶",
+          "text_en": "(-3)⁶ × (-3)² ÷ (-3)⁶",
+          "options": [
+            { "label": "A", "value": 12 },
+            { "label": "B", "value": 9 },
+            { "label": "C", "value": 27 },
+            { "label": "D", "value": 81 }
+          ],
+          "answer": "B",
+          "answer_value": 9,
+          "lore_feedback_correct": "Negative power neutralized. Core access granted.",
+          "lore_feedback_wrong": "Sign error in power law. Recalculate.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q8",
+          "source_q": 8,
+          "text_gu": "(27/8)² ÷ (81/4)³ × 6⁴",
+          "text_en": "(27/8)² ÷ (81/4)³ × 6⁴",
+          "options": [
+            { "label": "A", "value": "3/8" },
+            { "label": "B", "value": "16/9" },
+            { "label": "C", "value": "4/3" },
+            { "label": "D", "value": "8/9" }
+          ],
+          "answer": "A",
+          "answer_value": "3/8",
+          "lore_feedback_correct": "Complex cipher resolved. Deep archive opens.",
+          "lore_feedback_wrong": "Fractional power chain broke. Retry with base expansion.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q9",
+          "source_q": 9,
+          "text_gu": "√0.01 × ∛0.001",
+          "text_en": "√0.01 × ∛0.001",
+          "options": [
+            { "label": "A", "value": 0.1 },
+            { "label": "B", "value": 0.01 },
+            { "label": "C", "value": 0.001 },
+            { "label": "D", "value": 1.0 }
+          ],
+          "answer": "B",
+          "answer_value": 0.01,
+          "lore_feedback_correct": "Decimal roots mastered. The cipher dims to zero.",
+          "lore_feedback_wrong": "Decimal precision off. Re-evaluate each root.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q10",
+          "source_q": 10,
+          "text_gu": "∛5² × 5⁴ = ?",
+          "text_en": "∛(5² × 5⁴) = ?",
+          "options": [
+            { "label": "A", "value": 5 },
+            { "label": "B", "value": 25 },
+            { "label": "C", "value": 125 },
+            { "label": "D", "value": 625 }
+          ],
+          "answer": "B",
+          "answer_value": 25,
+          "lore_feedback_correct": "Root-power combo cracked. Gate fully unlocked!",
+          "lore_feedback_wrong": "Power sum inside cube root went wrong.",
+          "sparks": 10
+        },
+        {
+          "id": "M1_Q11",
+          "source_q": 24,
+          "text_gu": "√21 + √20 − √11 + 5 = ?",
+          "text_en": "√21 + √20 − √11 + 5 = ?",
+          "options": [
+            { "label": "A", "value": 10 },
+            { "label": "B", "value": 15 },
+            { "label": "C", "value": 5 },
+            { "label": "D", "value": 20 }
+          ],
+          "answer": "A",
+          "answer_value": 10,
+          "lore_feedback_correct": "Surd combination solved. Mission 1 complete!",
+          "lore_feedback_wrong": "Approximate each surd carefully before combining.",
+          "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_02",
+      "title": "The Galactic Market Protocol",
+      "lore": "You are a licensed trader on the Interstellar Exchange. A megacorporation announces dividends — you have 60 seconds of market time to calculate your returns before the closing bell. One miscalculation and your credits are frozen.",
+      "concepts": ["stocks", "shares", "dividends", "investment returns"],
+      "source_questions": [11, 12, 13, 14, 15, 16, 44],
+      "sparks_reward": 100,
+      "genius_xp": 50,
+      "questions": [
+        {
+          "id": "M2_Q1", "source_q": 11,
+          "text_gu": "રૂ. 66.50 ના ભાવના 12% ના શેરોમાં રૂા. 1020 રોકવાથી કેટલા શેર મળે? દલાલી શેરદીઠ રૂ. 1.50 છે.",
+          "text_en": "At Rs. 66.50 face value, investing Rs. 1020 in 12% shares — how many shares at brokerage Rs. 1.50/share?",
+          "options": [{"label":"A","value":15},{"label":"B","value":20},{"label":"C","value":30},{"label":"D","value":60}],
+          "answer": "A", "answer_value": 15,
+          "lore_feedback_correct": "Trade executed. 15 shares acquired before bell.",
+          "lore_feedback_wrong": "Brokerage miscalculated. Market position lost.", "sparks": 10
+        },
+        {
+          "id": "M2_Q2", "source_q": 12,
+          "text_gu": "18% ના શેરના ભાવ રૂ. 27 છે. વાર્ષિક આવક રૂ. 576 મેળવવા કેટલી રકમ રોકવી?",
+          "text_en": "18% shares at Rs. 27. To earn Rs. 576 annual income, how much to invest?",
+          "options": [{"label":"A","value":8640},{"label":"B","value":1800},{"label":"C","value":2300},{"label":"D","value":2700}],
+          "answer": "A", "answer_value": 8640,
+          "lore_feedback_correct": "Investment matrix calculated. Portfolio locked in.",
+          "lore_feedback_wrong": "Annual income formula mis-applied. Recalculate.", "sparks": 10
+        },
+        {
+          "id": "M2_Q3", "source_q": 13,
+          "text_gu": "રૂ. 23 ભાવના શેર ખરીદવા રૂ. 1,380 રોક્યા. જો 17% ડિવિડન્ડ જાહેર કરે તો વાર્ષિક આવક?",
+          "text_en": "Bought shares at Rs. 23 for Rs. 1,380. If 17% dividend declared, annual income?",
+          "options": [{"label":"A","value":202},{"label":"B","value":102},{"label":"C","value":302},{"label":"D","value":52}],
+          "answer": "A", "answer_value": 202,
+          "lore_feedback_correct": "Dividend returns confirmed. Account credited.",
+          "lore_feedback_wrong": "Dividend percentage misread. Check face value vs market value.", "sparks": 10
+        },
+        {
+          "id": "M2_Q4", "source_q": 14,
+          "text_gu": "Unit Trust of India ના Units ની બજારભાવ 11.25. 12% ડિવિડન્ડ જાહેર. 600 ની આવક માટે કેટલી રૂ. રોકવી?",
+          "text_en": "UTI units market price Rs. 11.25. 12% dividend. To earn Rs. 600 income, how much to invest?",
+          "options": [{"label":"A","value":2525},{"label":"B","value":5125},{"label":"C","value":5625},{"label":"D","value":5575}],
+          "answer": "C", "answer_value": 5625,
+          "lore_feedback_correct": "Unit Trust position secured. Passive income stream active.",
+          "lore_feedback_wrong": "Face value vs market value confusion. Retry.", "sparks": 10
+        },
+        {
+          "id": "M2_Q5", "source_q": 15,
+          "text_gu": "Units ભાવ 12.20. 50 Units ખરીદ. 9% ડિવિડન્ડ. આવક?",
+          "text_en": "Unit price Rs. 12.20. Bought 50 units. 9% dividend. What income?",
+          "options": [{"label":"A","value":45},{"label":"B","value":22.50},{"label":"C","value":30.50},{"label":"D","value":40.50}],
+          "answer": "A", "answer_value": 45,
+          "lore_feedback_correct": "Dividend income flows in. Market position profitable.",
+          "lore_feedback_wrong": "Income formula needs revision. Face value × rate × units.", "sparks": 10
+        },
+        {
+          "id": "M2_Q6", "source_q": 16,
+          "text_gu": "પ્રાર્થ રેમન્ડ્ઝ 15% ના Rs. 8,000 ના ડિબેન્ચર. વાર્ષિક આવક?",
+          "text_en": "Parth buys Raymond's 15% debentures worth Rs. 8,000. Annual income?",
+          "options": [{"label":"A","value":120},{"label":"B","value":1200},{"label":"C","value":900},{"label":"D","value":1440}],
+          "answer": "B", "answer_value": 1200,
+          "lore_feedback_correct": "Debenture yield computed. Steady income secured.",
+          "lore_feedback_wrong": "Check 15% of 8000. Basic percentage miscalculation.", "sparks": 10
+        },
+        {
+          "id": "M2_Q7", "source_q": 44,
+          "text_gu": "રાજેશે ગોવિંદ રબ્બરના 80 શેર વેચી Rs. 1,680 ઉપજ્યા. 1 શેર દલાલ = 1 Rs. બજારભાવ?",
+          "text_en": "Rajesh sold 80 shares of Govind Rubber for Rs. 1,680. Brokerage Rs. 1/share. Market price per share?",
+          "options": [{"label":"A","value":21},{"label":"B","value":22},{"label":"C","value":32},{"label":"D","value":40}],
+          "answer": "A", "answer_value": 21,
+          "lore_feedback_correct": "Share price reverse-engineered. Market intel acquired!",
+          "lore_feedback_wrong": "Net proceeds ÷ shares = market price minus brokerage.", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_03",
+      "title": "The Colony Resource Engine",
+      "lore": "A Mars colony's oxygen generator is critically low. Engineers must calculate fill rates, repair schedules, and travel windows before life support fails. Every minute you waste costs oxygen. Every wrong answer costs lives.",
+      "concepts": ["time and work", "speed distance time", "pipes and cisterns"],
+      "source_questions": [17, 18, 21, 33],
+      "sparks_reward": 80,
+      "genius_xp": 40,
+      "questions": [
+        {
+          "id": "M3_Q1", "source_q": 17,
+          "text_gu": "હોજ ભરવા 50 L/day. 50 દિવસ ભરે. અડધો ભરાય ત્યારે કેટલો ઉમેરો?",
+          "text_en": "A tank holds water at 50L/day. Takes 50 days to fill. How many extra days to fill half?",
+          "options": [{"label":"A","value":29},{"label":"B","value":39},{"label":"C","value":49},{"label":"D","value":51}],
+          "answer": "C", "answer_value": 49,
+          "lore_feedback_correct": "Tank fill rate calculated. Oxygen supply stable.",
+          "lore_feedback_wrong": "Daily loss rate ignored. Recalculate with net fill.", "sparks": 10
+        },
+        {
+          "id": "M3_Q2", "source_q": 18,
+          "text_gu": "50 ફૂટ વાંસ 10 ટૂકડા. 1 ટૂકડો 10 min. કુલ સમય?",
+          "text_en": "50-foot bamboo cut into 10 pieces. Each cut takes 10 min. Total time?",
+          "options": [{"label":"A","value":100},{"label":"B","value":90},{"label":"C","value":120},{"label":"D","value":110}],
+          "answer": "B", "answer_value": 90,
+          "lore_feedback_correct": "Cutting schedule optimized. Materials ready for repair.",
+          "lore_feedback_wrong": "10 pieces = 9 cuts. Re-count the cuts needed.", "sparks": 10
+        },
+        {
+          "id": "M3_Q3", "source_q": 21,
+          "text_gu": "મોટરગાડી 202.5 km, 4.5 hr. ઝડપ?",
+          "text_en": "A vehicle covers 202.5 km in 4.5 hours. What is the speed?",
+          "options": [{"label":"A","value":35},{"label":"B","value":45},{"label":"C","value":25},{"label":"D","value":55}],
+          "answer": "B", "answer_value": 45,
+          "lore_feedback_correct": "Rover speed locked. ETA to oxygen plant confirmed.",
+          "lore_feedback_wrong": "Speed = Distance ÷ Time. Simple division.", "sparks": 10
+        },
+        {
+          "id": "M3_Q4", "source_q": 33,
+          "text_gu": "10 માળા. 12 દિવસ. 15 માળા. 9 દિવસ. ઓછા-વધું?",
+          "text_en": "10 workers finish in 12 days. For 15 workers — how many days?",
+          "options": [{"label":"A","value":20},{"label":"B","value":25},{"label":"C","value":6},{"label":"D","value":9}],
+          "answer": "D", "answer_value": 9,
+          "lore_feedback_correct": "Workforce calculation done. Generator repaired in time!",
+          "lore_feedback_wrong": "Inverse proportion — more workers, fewer days.", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_04",
+      "title": "The Trade Wars",
+      "lore": "You run a black-market trading post in a dystopian city-state. Every deal involves tax, brokerage, profit margins, and discounts. Get the math wrong and you lose your ship, your cargo, and your freedom.",
+      "concepts": ["profit and loss", "percentage", "discount", "tax", "VAT"],
+      "source_questions": [20, 22, 39, 40, 41],
+      "sparks_reward": 80,
+      "genius_xp": 40,
+      "questions": [
+        {
+          "id": "M4_Q1", "source_q": 20,
+          "text_gu": "1 kg 14.75 Rs. 2.5 kg ની કિંમત?",
+          "text_en": "1 kg costs Rs. 14.75. Price for 2.5 kg?",
+          "options": [{"label":"A","value":32.6},{"label":"B","value":36.88},{"label":"C","value":38.24},{"label":"D","value":42.25}],
+          "answer": "B", "answer_value": 36.875,
+          "lore_feedback_correct": "Bulk pricing confirmed. Trade deal approved.",
+          "lore_feedback_wrong": "Simple multiplication. 14.75 × 2.5.", "sparks": 10
+        },
+        {
+          "id": "M4_Q2", "source_q": 22,
+          "text_gu": "Vegetable ઘી પર 2 પૈસા/Rs. VAT. 60 ડબ્બા Rs. 130 ભાવ. VAT?",
+          "text_en": "Vegetable ghee has VAT of 2 paise per Rs. 60 tins at Rs. 130 each. Total VAT?",
+          "options": [{"label":"A","value":"136 Rs"},{"label":"B","value":"146 Rs"},{"label":"C","value":"156 Rs"},{"label":"D","value":"166 Rs"}],
+          "answer": "C", "answer_value": "156 Rs",
+          "lore_feedback_correct": "VAT computed. Customs cleared. Cargo released.",
+          "lore_feedback_wrong": "Total value × VAT rate. Recheck.", "sparks": 10
+        },
+        {
+          "id": "M4_Q3", "source_q": 39,
+          "text_gu": "ટેબલ Rs. 69. 8 ટકા ઘટ. 10 ટકા નફો. ટેબલ ભાવ?",
+          "text_en": "Table at Rs. 69 with 8% loss. To gain 10% profit, selling price?",
+          "options": [{"label":"A","value":65.50},{"label":"B","value":80.50},{"label":"C","value":82.50},{"label":"D","value":84.50}],
+          "answer": "C", "answer_value": 82.50,
+          "lore_feedback_correct": "Profit margin secured. Trade post remains solvent.",
+          "lore_feedback_wrong": "Find cost price first, then apply 10% profit.", "sparks": 10
+        },
+        {
+          "id": "M4_Q4", "source_q": 40,
+          "text_gu": "કબાટ 1.5% Commission. Rs. 135 મળ્યા. ભાવ?",
+          "text_en": "Cabinet sold at 1.5% commission. Agent received Rs. 135. Original price?",
+          "options": [{"label":"A","value":7000},{"label":"B","value":9000},{"label":"C","value":8000},{"label":"D","value":6000}],
+          "answer": "B", "answer_value": 9000,
+          "lore_feedback_correct": "Commission reversed. Original price recovered.",
+          "lore_feedback_wrong": "Commission = Price × rate. Solve for Price.", "sparks": 10
+        },
+        {
+          "id": "M4_Q5", "source_q": 41,
+          "text_gu": "ગ્રૉસ Rs. 360. 9 ડઝ. 20 ટકા નફો. ભાવ?",
+          "text_en": "Gross of pencils costs Rs. 360. Buy 9 dozen. Sell at 20% profit per dozen. Selling price per dozen?",
+          "options": [{"label":"A","value":2},{"label":"B","value":3},{"label":"C","value":4},{"label":"D","value":5}],
+          "answer": "C", "answer_value": 4,
+          "lore_feedback_correct": "Per-unit profit locked in. Trading post survives another day.",
+          "lore_feedback_wrong": "Cost per dozen first, then add 20% profit.", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_05",
+      "title": "The Temporal Vault",
+      "lore": "A time-banking system charges compound interest on borrowed 'chronos-credits.' Every second you delay, your debt grows exponentially. Calculate how much time you owe before the Vault seals forever and your timeline is erased.",
+      "concepts": ["simple interest", "compound interest"],
+      "source_questions": [23, 37, 38],
+      "sparks_reward": 60,
+      "genius_xp": 30,
+      "questions": [
+        {
+          "id": "M5_Q1", "source_q": 23,
+          "text_gu": "Rs. 400 ના 10% 2 વર્ષ ચક્રવૃદ્ધિ વ્યાજ?",
+          "text_en": "Compound interest on Rs. 400 at 10% for 2 years?",
+          "options": [{"label":"A","value":40},{"label":"B","value":44},{"label":"C","value":84},{"label":"D","value":80}],
+          "answer": "C", "answer_value": 84,
+          "lore_feedback_correct": "Compound calculation complete. Temporal debt quantified.",
+          "lore_feedback_wrong": "Year 1 interest adds to principal for Year 2.", "sparks": 10
+        },
+        {
+          "id": "M5_Q2", "source_q": 37,
+          "text_gu": "Rs. 1,280 ના 6.25% 2 વર્ષ ચક્રવૃદ્ધિ?",
+          "text_en": "Compound interest on Rs. 1,280 at 6.25% for 2 years?",
+          "options": [{"label":"A","value":85},{"label":"B","value":135},{"label":"C","value":145},{"label":"D","value":165}],
+          "answer": "D", "answer_value": 165,
+          "lore_feedback_correct": "Vault debt recalculated. Interest confirmed.",
+          "lore_feedback_wrong": "Apply CI formula: P(1+r)^n - P.", "sparks": 10
+        },
+        {
+          "id": "M5_Q3", "source_q": 38,
+          "text_gu": "4% 3 વર્ષ, Rs. 48 વ્યાજ. મૂળ રકમ?",
+          "text_en": "At 4%, Rs. 48 interest in 3 years. Find the principal.",
+          "options": [{"label":"A","value":300},{"label":"B","value":400},{"label":"C","value":600},{"label":"D","value":800}],
+          "answer": "B", "answer_value": 400,
+          "lore_feedback_correct": "Principal recovered. Temporal Vault unsealed!",
+          "lore_feedback_wrong": "Use SI = P×R×T/100. Solve for P.", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_06",
+      "title": "The Sacred Geometry Vault",
+      "lore": "An alien structure's force field has geometric locks. To disable each energy layer, you must match the exact perimeter or area formula to the correct shape. One wrong calculation and the field intensifies.",
+      "concepts": ["circles", "rectangles", "perimeter", "area"],
+      "source_questions": [25, 26, 42],
+      "sparks_reward": 60,
+      "genius_xp": 30,
+      "questions": [
+        {
+          "id": "M6_Q1", "source_q": 25,
+          "text_gu": "એક વૃત્તના પ્રાન 22 સે.મી. વ્યાસ = ?",
+          "text_en": "Circle circumference is 22 cm. Diameter = ?",
+          "options": [{"label":"A","value":3.5},{"label":"B","value":7},{"label":"C","value":14},{"label":"D","value":22}],
+          "answer": "B", "answer_value": 7,
+          "lore_feedback_correct": "Diameter identified. Shield layer 1 drops.",
+          "lore_feedback_wrong": "Circumference = πd. Solve for d.", "sparks": 10
+        },
+        {
+          "id": "M6_Q2", "source_q": 26,
+          "text_gu": "પેટાના આઠ ઓડ-ઇવ. ચ.સ.મી. 70 ઓ.મ. ટ.ઓ = ?",
+          "text_en": "A rectangle has area 70 sq cm, one side 5 cm. Find the other side.",
+          "options": [{"label":"A","value":240},{"label":"B","value":220},{"label":"C","value":420},{"label":"D","value":422}],
+          "answer": "B", "answer_value": 220,
+          "lore_feedback_correct": "Rectangle dimensions confirmed. Layer 2 disabled.",
+          "lore_feedback_wrong": "Area = length × breadth. Solve for missing side.", "sparks": 10
+        },
+        {
+          "id": "M6_Q3", "source_q": 42,
+          "text_gu": "લંબચોરસ 4m × 3m. પરિમિતિ?",
+          "text_en": "Rectangle 4m length, 3m width. Perimeter?",
+          "options": [{"label":"A","value":16},{"label":"B","value":25},{"label":"C","value":12},{"label":"D","value":14}],
+          "answer": "D", "answer_value": 14,
+          "lore_feedback_correct": "Perimeter solved. Geometry vault unlocked!",
+          "lore_feedback_wrong": "Perimeter = 2(l+b) = 2(4+3).", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_07",
+      "title": "The Chronological Lock",
+      "lore": "A cryosleep pod has been sealed for decades. Its release timer is age-locked — only someone who can solve the age equations embedded in its system can free the prisoner inside. Life support fails in 3 minutes.",
+      "concepts": ["age problems"],
+      "source_questions": [34, 35, 36],
+      "sparks_reward": 60,
+      "genius_xp": 30,
+      "questions": [
+        {
+          "id": "M7_Q1", "source_q": 34,
+          "text_gu": "x અને y ઉંમર. 16 વર્ષ પહેલાં x 10 × y. આજ x = y + 2. x ઉંમર?",
+          "text_en": "16 years ago, x was 10 times y. Now x = y + 2. Find x's current age.",
+          "options": [{"label":"A","value":14},{"label":"B","value":16},{"label":"C","value":12},{"label":"D","value":10}],
+          "answer": "A", "answer_value": 14,
+          "lore_feedback_correct": "Age equation solved. Lock Layer 1 releases.",
+          "lore_feedback_wrong": "Set up two equations and solve simultaneously.", "sparks": 10
+        },
+        {
+          "id": "M7_Q2", "source_q": 35,
+          "text_gu": "7 વર્ષ પહેલાં 7 વર્ષ. 7 વર્ષ પછી 7 × 3 = ઉંમર?",
+          "text_en": "7 years ago person was 7. In 7 years they will be 3× that age. Current age?",
+          "options": [{"label":"A","value":49},{"label":"B","value":98},{"label":"C","value":105},{"label":"D","value":112}],
+          "answer": "A", "answer_value": 49,
+          "lore_feedback_correct": "Age vector computed. Pod timer responding.",
+          "lore_feedback_wrong": "Let current age = x. Build and solve the equation.", "sparks": 10
+        },
+        {
+          "id": "M7_Q3", "source_q": 36,
+          "text_gu": "40 + 1 = 60 ઉંમર. પુત્ર ઉંમર?",
+          "text_en": "A father's age is 60. He has a son. When father was son's current age, son was not born. Find son's age.",
+          "options": [{"label":"A","value":15},{"label":"B","value":20},{"label":"C","value":30},{"label":"D","value":60}],
+          "answer": "A", "answer_value": 15,
+          "lore_feedback_correct": "Final age lock cracked. Cryopod opens. Prisoner freed!",
+          "lore_feedback_wrong": "Use the age difference to trace back the timeline.", "sparks": 10
+        }
+      ]
+    },
+    {
+      "id": "mission_08",
+      "title": "The Archive Decoder",
+      "lore": "You have entered Brahmagupta's encrypted number archive — a repository of ancient mathematical wisdom sealed for 1,400 years. Each puzzle unlocks one scroll. Decode all eight and the Grand Archive is yours.",
+      "concepts": ["number puzzles", "LCM/HCF", "multiples", "units of measurement", "angles", "number theory"],
+      "source_questions": [27, 28, 29, 30, 31, 32, 43, 47, 48],
+      "sparks_reward": 140,
+      "genius_xp": 70,
+      "questions": [
+        {
+          "id": "M8_Q1", "source_q": 27,
+          "text_gu": "218 ના ગુણિકો જૂ શ્ય?",
+          "text_en": "218 is divisible by which number?",
+          "options": [{"label":"A","value":100},{"label":"B","value":110},{"label":"C","value":140},{"label":"D","value":220}],
+          "answer": "D", "answer_value": 220,
+          "lore_feedback_correct": "First scroll unsealed. Divisibility confirmed.",
+          "lore_feedback_wrong": "Check which option is a multiple of 218.", "sparks": 10
+        },
+        {
+          "id": "M8_Q2", "source_q": 28,
+          "text_gu": "ઘડિયાળ: ઉભો — (a) ચહેરો (b) ગ્લો (c) ઉલ્ટો (d) ચૌ.",
+          "text_en": "A clock face is reflected in a mirror. The reflection shows what?",
+          "options": [{"label":"A","value":"ચહેરો"},{"label":"B","value":"પ્રતિબિંબ"},{"label":"C","value":"વિપ્રિત"},{"label":"D","value":"ચૌ"}],
+          "answer": "C", "answer_value": "વિપ્રિત",
+          "lore_feedback_correct": "Mirror logic solved. Scroll 2 retrieved.",
+          "lore_feedback_wrong": "A mirror reverses left and right — the image is inverted.", "sparks": 10
+        },
+        {
+          "id": "M8_Q3", "source_q": 29,
+          "text_gu": "A વ B ના નંબર 42 સ સ. ક. 42. B નો નંબર?",
+          "text_en": "Two numbers. Their LCM is 42. One number is given. Find the other.",
+          "options": [{"label":"A","value":240},{"label":"B","value":220},{"label":"C","value":420},{"label":"D","value":422}],
+          "answer": "C", "answer_value": 420,
+          "lore_feedback_correct": "LCM lock broken. Third scroll in hand.",
+          "lore_feedback_wrong": "Use LCM × HCF = Product of numbers.", "sparks": 10
+        },
+        {
+          "id": "M8_Q4", "source_q": 30,
+          "text_gu": "ચાર ગણ. 35°ના 105°. અંશ?",
+          "text_en": "Four times an angle = 105°. Find the angle.",
+          "options": [{"label":"A","value":"35°"},{"label":"B","value":"70°"},{"label":"C","value":"105°"},{"label":"D","value":"140°"}],
+          "answer": "A", "answer_value": "35°",
+          "lore_feedback_correct": "Angular cipher decoded. Scroll 4 claimed.",
+          "lore_feedback_wrong": "Divide the total angle by 4.", "sparks": 10
+        },
+        {
+          "id": "M8_Q5", "source_q": 31,
+          "text_gu": "એક ઝ0 1500 Rs. 2000 Rs. ટકા?",
+          "text_en": "A value goes from Rs. 1500 to Rs. 2000. Percentage increase?",
+          "options": [{"label":"A","value":1000},{"label":"B","value":1200},{"label":"C","value":1500},{"label":"D","value":2000}],
+          "answer": "C", "answer_value": 1500,
+          "lore_feedback_correct": "Percentage change quantified. Fifth scroll found.",
+          "lore_feedback_wrong": "% increase = (new-old)/old × 100.", "sparks": 10
+        },
+        {
+          "id": "M8_Q6", "source_q": 32,
+          "text_gu": "Rs. 25 × 20 = 500 Rs. 20 ટ. ઉઘ. ઉ?",
+          "text_en": "If 25 workers earn Rs. 20 each for 25 days. Total earnings = ?",
+          "options": [{"label":"A","value":"20 ટકા"},{"label":"B","value":"25 ટકા"},{"label":"C","value":"30 ટકા"},{"label":"D","value":"9 દિવસ"}],
+          "answer": "D", "answer_value": "9 દિવસ",
+          "lore_feedback_correct": "Work-earnings puzzle solved. Scroll 6 retrieved.",
+          "lore_feedback_wrong": "Total work is fixed. Scale workers and time proportionally.", "sparks": 10
+        },
+        {
+          "id": "M8_Q7", "source_q": 43,
+          "text_gu": "સંખ્યા 5-ગૂ. 180 ઉ. સ.",
+          "text_en": "A number multiplied by 5 becomes 180 when increased. What is the number?",
+          "options": [{"label":"A","value":26},{"label":"B","value":28},{"label":"C","value":30},{"label":"D","value":32}],
+          "answer": "D", "answer_value": 32,
+          "lore_feedback_correct": "Number theory cipher cracked. Scroll 7 unveiled.",
+          "lore_feedback_wrong": "Set up the equation and solve for the unknown.", "sparks": 10
+        },
+        {
+          "id": "M8_Q8", "source_q": 47,
+          "text_gu": "2 − 2 + 2 ÷ 2 × 2 + 2 − 2 = ?",
+          "text_en": "2 − 2 + 2 ÷ 2 × 2 + 2 − 2 = ?",
+          "options": [{"label":"A","value":0},{"label":"B","value":2},{"label":"C","value":4},{"label":"D","value":1}],
+          "answer": "B", "answer_value": 2,
+          "lore_feedback_correct": "BODMAS mastered. Scroll 8 in hand.",
+          "lore_feedback_wrong": "Apply BODMAS: Division first, then multiplication, then left to right.", "sparks": 10
+        },
+        {
+          "id": "M8_Q9", "source_q": 48,
+          "text_gu": "મિટર, ડેકામિટર, કિ.મી., ડેસીમિટર, મિ.મિ. — સૌથી નાનું?",
+          "text_en": "Meter, Decameter, Kilometer, Decimeter, Millimeter — smallest unit?",
+          "options": [{"label":"A","value":"Millimeter"},{"label":"B","value":"Decimeter"},{"label":"C","value":"Decameter"},{"label":"D","value":"Meter"}],
+          "answer": "A", "answer_value": "Millimeter",
+          "lore_feedback_correct": "Unit hierarchy mastered. Grand Archive fully unlocked! Brahmagupta's legacy lives on.",
+          "lore_feedback_wrong": "Millimeter < Decimeter < Meter < Decameter < Kilometer.", "sparks": 10
+        }
+      ]
+    }
+  ],
+  "progression": {
+    "total_sparks_available": 700,
+    "total_genius_xp_available": 350,
+    "genius_card_levels": [
+      { "level": 1, "name": "Apprentice",     "xp_required": 0   },
+      { "level": 2, "name": "Arithmetician",  "xp_required": 50  },
+      { "level": 3, "name": "Algebraist",     "xp_required": 120 },
+      { "level": 4, "name": "Scholar",        "xp_required": 200 },
+      { "level": 5, "name": "Brahmagupta",    "xp_required": 350 }
+    ],
+    "unlock_order": [
+      "mission_01","mission_02","mission_03","mission_04",
+      "mission_05","mission_06","mission_07","mission_08"
+    ]
+  },
+  "answer_key_reference": {
+    "source": "Image 5 — ગણિત ક્વિઝ ના જવાબ (answer page)",
+    "notes": "Answers cross-referenced against the printed answer key on page ૪૧૬"
+  }
+}

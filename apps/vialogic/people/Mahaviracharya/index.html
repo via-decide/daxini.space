@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Sage of Numbers (Mahaviracharya)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #0A0A0F; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #FF9933; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #FF9933;
+            padding-left: 20px; z-index: 10;
+            background: rgba(10,10,15,0.88); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #FF9933; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(255,153,51,0.08);
+            border-top: 1px solid rgba(255,153,51,0.35);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #FF9933; font-weight: bold; }
+
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #666; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #FF9933; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px; }
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 11px; letter-spacing: 2px; }
+            #label { top: 45px; left: 10px; padding-left: 12px; max-width: 92%; }
+            h1 { font-size: 18px; }
+            #subtitle { font-size: 13px; }
+            #description { font-size: 12px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 5px; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+
+    <div id="nav-hint">
+        <div class="viamath-logo">VIAMATH</div>
+        Tap anywhere to advance ➔
+    </div>
+
+    <div id="act-indicator">ACT I: THE SAGE</div>
+
+    <div id="label">
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span>
+        <span id="insight-text">Loading...</span>
+    </div>
+    <div id="nav-hint">
+        <a href="../../" style="text-decoration:none"><div class="viamath-logo">← VIAMATH</div></a>
+        Tap anywhere to advance ➔
+    </div>
+
+    <div id="act-indicator">ACT I: THE JAIN COURT</div>
+
+    <div id="label">
+        <h1 id="title">The Rashtrakuta Kingdom</h1>
+        <p id="subtitle">Karnataka, c. 850 CE</p>
+        <p id="description">In the lush Deccan Plateau of southern India, the mighty Rashtrakuta Empire was at the peak of its cultural glory. Its capital hummed with scholars, poets, and astronomers. King Amoghavarsha — himself a poet and philosopher — was the greatest patron of learning of his age.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Under Amoghavarsha's court, the sciences flourished like nowhere else in the medieval world.</span>
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 11;
+
+let stars = [];
+let trail = [];
+
+/* ── Content ─────────────────────────────────────────────────── */
+const content = [
+    // ACT I
+    {
+        title: "The Sage of Karnataka",
+        sub: "Mahaviracharya  (c. 800 – 870 AD)",
+        desc: "In the Deccan plateau under the reign of the Rashtrakuta dynasty, a Jain mathematician named Mahavira produced something unprecedented: the first textbook ever written entirely devoted to mathematics — not astronomy, not philosophy — pure, dedicated mathematics.",
+        insight: "He is the only ancient Indian mathematician known to have written a standalone math textbook."
+    },
+    {
+        title: "Ganita Sara Sangraha",
+        sub: "Compendium of the Essence of Mathematics",
+        desc: "Written in elegant Sanskrit verse, the Ganita Sara Sangraha (GSS) is a 9-chapter masterwork covering arithmetic, fractions, geometry, series, and combinatorics. Its poetry and precision exist in the same breath — each theorem a stanza.",
+        insight: "The GSS was translated into Telugu and Tamil, spreading Indian mathematics across South Asia."
+    },
+    {
+        title: "The Void Has No Square Root",
+        sub: "The Rule of Zero",
+        desc: "Centuries before modern algebra, Mahavira stated clearly: 'A negative number has no square root, because a square is always positive.' He was the first mathematician anywhere to explicitly state this as a formal rule.",
+        insight: "√(–n) is undefined in real numbers — Mahavira said it first, in verse, in 850 AD."
+    },
+    {
+        title: "The Fraction Machine",
+        sub: "Operations on Fractions",
+        desc: "Mahavira systematically developed every operation on fractions — addition, subtraction, multiplication, division, squaring, and cube roots — more completely than any prior work. He worked with unit fractions, complex fractions, and continued fractions centuries before Europe.",
+        insight: "He could simplify and compute with fractions of fractions of fractions — a recursive arithmetic."
+    },
+    // ACT II
+    {
+        title: "The Art of Choosing",
+        sub: "Permutations & Combinations",
+        desc: "In Chapter 6 of GSS, Mahavira derived the formula for combinations from n things taken r at a time: n! / (r! × (n–r)!) — over 700 years before Pascal's Triangle became famous in Europe.",
+        insight: "He applied combinatorics to poetry meters, music, and perfume combinations — math as art."
+    },
+    {
+        title: "The Staircase of Sums",
+        sub: "Arithmetic & Geometric Series",
+        desc: "Mahavira gave formulas for summing arithmetic progressions (like 1+2+3+...+n) AND geometric progressions (like 1+2+4+8+...+2ⁿ). He also derived the sum of squares and sum of cubes of natural numbers.",
+        insight: "Sum of first n cubes = (n(n+1)/2)² — the square of the triangular number. Mahavira proved it."
+    },
+    {
+        title: "LCM: The Meeting Point",
+        sub: "Least Common Multiple",
+        desc: "Mahavira developed a systematic algorithm for finding the LCM of multiple numbers — far beyond two. He framed it as a practical tool for fraction addition and astronomical cycles. His method is equivalent to the prime factorization approach used today.",
+        insight: "He found LCM of up to 8 numbers simultaneously — considered computationally advanced for his era."
+    },
+    {
+        title: "The Oval of the Earth",
+        sub: "Area of an Ellipse",
+        desc: "Mahavira approximated the area of an ellipse as (length × breadth × 3/4) × √(length² + breadth²) / (length + breadth). Though not exact, it was the most sophisticated attempt at this problem before calculus — in 850 AD.",
+        insight: "The exact formula (π × a × b) wasn't proven rigorously until Kepler in the 1600s."
+    },
+    {
+        title: "The Classification of Numbers",
+        sub: "A Taxonomy of Quantity",
+        desc: "Mahavira classified all numbers into an elaborate hierarchy: odd, even, odd-even, further divisible, prime — and extended this to fractions, irrational magnitudes, and transfinite quantities in Jain philosophy. He gave mathematics a complete vocabulary.",
+        insight: "Jain mathematics distinguished between countable, uncountable, and infinite sets — 2,000 years before Cantor."
+    },
+    {
+        title: "The Unbroken Thread",
+        sub: "Mathematics as Moksha",
+        desc: "For Mahavira, mathematics was not merely practical — it was a path to clarity, to seeing the universe without illusion. He opened the GSS with: 'Save the examination of the nature of all things, mathematics is of no use to men.' Welcome to ViaMath.",
+        insight: "The Ganita Sara Sangraha influenced mathematics in South India for over 600 years."
+    },
+];
+
+/* ── Setup ───────────────────────────────────────────────────── */
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    textFont('monospace');
+    for (let i = 0; i < 120; i++) {
+        stars.push({
+            x: random(width), y: random(height),
+            s: random(0.8, 2.5),
+            a: random(TWO_PI),
+            speed: random(0.0004, 0.0015),
+            dist: random(60, min(width, height) * 0.5)
+        });
+    }
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); trail = []; }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % content.length;
+    ['label','insight-bar','nav-hint','act-indicator'].forEach(id => {
+        document.getElementById(id).style.opacity = 0;
+    });
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % TOTAL_SCREENS;
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    const c = content[state];
+    document.getElementById('title').innerText       = c.title;
+    document.getElementById('subtitle').innerText    = c.sub;
+    document.getElementById('description').innerText = c.desc;
+    document.getElementById('insight-text').innerText= c.insight;
+
+    const actEl  = document.getElementById('act-indicator');
+    const labEl  = document.getElementById('label');
+    const hlEl   = document.querySelector('.highlight');
+
+    if (state < 4) {
+        actEl.innerText = 'ACT I · THE SAGE OF KARNATAKA';
+        actEl.style.color = '#FF9933';
+        labEl.style.borderLeftColor = '#FF9933';
+        hlEl.innerText = 'HISTORICAL INSIGHT:'; hlEl.style.color = '#FF9933';
+    } else {
+        actEl.innerText = 'ACT II · THE MATHEMATICS OF THE GANITA';
+        actEl.style.color = '#C084FC';
+        labEl.style.borderLeftColor = '#C084FC';
+        if (state === 9) {
+            hlEl.innerText = 'REFLECTION:'; hlEl.style.color = '#C084FC';
+        } else {
+            hlEl.innerText = 'MATHEMATICAL LAW:'; hlEl.style.color = '#C084FC';
+        }
+    }
+}
+
+function getScale() { return min(1, width / 800); }
+
+/* ── Draw loop ───────────────────────────────────────────────── */
+function draw() {
+    background(10, 10, 15);
+
+    // Subtle grid
+    stroke(255, 5); strokeWeight(1);
+    for (let i = 0; i < width;  i += 70) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 70) line(0, j, width, j);
+
+    time += 0.018;
+
+    // Slow-rotating starfield around center
+    let cx = width / 2, cy = height / 2;
+    for (let p of stars) {
+        p.a += p.speed;
+        p.x = cx + cos(p.a) * p.dist + random(-0.3, 0.3);
+        p.y = cy + sin(p.a) * p.dist + random(-0.3, 0.3);
+        let flicker = 40 + sin(time * 4 + p.dist) * 80;
+        fill(255, 210, 140, flicker); noStroke();
+        ellipse(p.x, p.y, p.s);
+    }
+
+    // State router
+    const draws = [
+        drawSage, drawGSS, drawZeroRoot, drawFractions,
+        drawCombinations, drawSeries, drawLCM,
+        drawEllipse, drawClassify, drawLegacy
+    ];
+    if (draws[state]) draws[state]();
+
+    // Fade overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0; trail = [];
+            updateUI();
+            ['label','insight-bar','act-indicator'].forEach(id =>
+                document.getElementById(id).style.opacity = 1);
+            if (state < content.length - 1)
+                document.getElementById('nav-hint').style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false;
+        }
+        push(); fill(10, 10, 15, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ACT I DRAWINGS
+══════════════════════════════════════════════════════════════ */
+
+function drawSage() {
+    push();
+    translate(width / 2, height / 2 + 60);
+    scale(getScale());
+
+    // Lotus mandala — rotating petals
+    let petals = 12;
+    for (let ring = 0; ring < 3; ring++) {
+        let r = 70 + ring * 55;
+        let rot = time * (ring % 2 === 0 ? 0.3 : -0.25) + ring * 0.3;
+        stroke(255, 153, 51, 60 - ring * 12);
+        strokeWeight(1.5);
+        noFill();
+        for (let i = 0; i < petals; i++) {
+            let a = TWO_PI * i / petals + rot;
+            let bx = cos(a) * r, by = sin(a) * r;
+            let cx2 = cos(a + TWO_PI / petals) * r;
+            let cy2 = sin(a + TWO_PI / petals) * r;
+            // petal arc
+            let mx = cos(a + TWO_PI / (petals * 2)) * (r + 28);
+            let my = sin(a + TWO_PI / (petals * 2)) * (r + 28);
+            beginShape();
+            vertex(bx, by);
+            quadraticVertex(mx, my, cx2, cy2);
+            endShape();
+        }
+    }
+
+    // Center yantra square rotated 45°
+    push();
+    rotate(PI / 4 + time * 0.15);
+    stroke(255, 209, 102, 120); strokeWeight(2); noFill();
+    rect(-40, -40, 80, 80);
+    rect(-24, -24, 48, 48);
+    pop();
+
+    // Glowing center dot
+    drawingContext.shadowBlur = 30;
+    drawingContext.shadowColor = '#FF9933';
+    fill(255, 153, 51); noStroke(); ellipse(0, 0, 18);
+    drawingContext.shadowBlur = 0;
+
+    // OM / Sanskrit glyph suggestion
+    fill(255, 220, 150, 200); noStroke();
+    textAlign(CENTER, CENTER); textSize(28);
+    text("ॐ", 0, 0);
+
+    // "Mahaviracharya" floating label
+    fill(255, 153, 51); noStroke(); textSize(18); letterSpacing = 3;
+    text("MAHAVIRACHARYA", 0, 220);
+    fill(255, 170); textSize(13);
+    text("Rashtrakuta Dynasty · Karnataka · c. 850 AD", 0, 248);
+    pop();
+}
+
+function drawGSS() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScale());
+
+    // Animated palm-leaf manuscript effect
+    let bookW = 280, bookH = 160;
+
+    // Outer scroll
+    fill(30, 22, 8); stroke(180, 130, 60); strokeWeight(2);
+    rect(-bookW / 2, -bookH / 2, bookW, bookH, 8);
+
+    // Chapter lines animated in
+    let linesShown = min(9, floor(time * 1.8));
+    let chapterNames = [
+        "I · Terminology",
+        "II · Arithmetic Operations",
+        "III · Fractions",
+        "IV · Miscellaneous Operations",
+        "V · Rule of Three",
+        "VI · Mixed Operations",
+        "VII · Measurement",
+        "VIII · Shadows",
+        "IX · Series & Combinations"
+    ];
+
+    for (let i = 0; i < linesShown; i++) {
+        let y = -bookH / 2 + 22 + i * 16;
+        let alpha = map(i, linesShown - 1, linesShown, 80, 255);
+        fill(i === linesShown - 1 ? color(255, 153, 51, alpha) : color(220, 200, 160, 180));
+        noStroke(); textAlign(LEFT); textSize(12);
+        text(chapterNames[i], -bookW / 2 + 14, y);
+
+        if (i < linesShown - 1) {
+            stroke(180, 130, 60, 40); strokeWeight(1);
+            line(-bookW / 2 + 8, y + 4, bookW / 2 - 8, y + 4);
+        }
+    }
+
+    // Title above book
+    fill(255, 209, 102); noStroke(); textAlign(CENTER); textSize(22);
+    text("गणित सार संग्रह", 0, -bookH / 2 - 30);
+    fill(200, 180, 120); textSize(13);
+    text("Ganita Sara Sangraha  · 9 Chapters · Sanskrit Verse", 0, -bookH / 2 - 10);
+
+    // Decorative scroll ends
+    fill(80, 55, 20); stroke(180, 130, 60); strokeWeight(2);
+    ellipse(-bookW / 2 - 10, 0, 22, bookH + 10);
+    ellipse(bookW / 2 + 10, 0, 22, bookH + 10);
+
+    pop();
+}
+
+function drawZeroRoot() {
+    push();
+    translate(width / 2, height / 2 + 60);
+    scale(getScale());
+
+    // Pulsing negative number square
+    let pulse = sin(time * 2) * 8;
+
+    // The equation display
+    let eqs = [
+        { label: "√4 = 2", col: color(105, 255, 71), y: -80, valid: true },
+        { label: "√9 = 3", col: color(105, 255, 71), y: -40, valid: true },
+        { label: "√0 = 0", col: color(255, 209, 102), y: 0,   valid: true },
+        { label: "√(−4) = ?", col: color(255, 80, 80), y: 40,   valid: false },
+        { label: "√(−9) = ?", col: color(255, 80, 80), y: 80,   valid: false },
+    ];
+
+    for (let eq of eqs) {
+        if (!eq.valid) {
+            // Red X cross
+            drawingContext.shadowBlur = 15;
+            drawingContext.shadowColor = '#FF5050';
+            stroke(eq.col); strokeWeight(3);
+            let ex = 120, ey = eq.y;
+            line(ex - 10, ey - 10, ex + 10, ey + 10);
+            line(ex + 10, ey - 10, ex - 10, ey + 10);
+            drawingContext.shadowBlur = 0;
+        } else {
+            drawingContext.shadowBlur = 10;
+            drawingContext.shadowColor = '#69FF47';
+            stroke(eq.col); strokeWeight(2);
+            let cx2 = 120, cy2 = eq.y;
+            // tick
+            line(cx2 - 6, cy2 + 2, cx2, cy2 + 8);
+            line(cx2, cy2 + 8, cx2 + 10, cy2 - 8);
+            drawingContext.shadowBlur = 0;
+        }
+        fill(eq.col); noStroke(); textAlign(LEFT); textSize(26);
+        text(eq.label, -90, eq.y + 9);
+    }
+
+    // Quote from GSS
+    fill(255, 153, 51, 180 + sin(time * 1.5) * 60);
+    noStroke(); textAlign(CENTER); textSize(15);
+    text('"A negative number has no square root"', 0, 160);
+    fill(200, 180, 120); textSize(12);
+    text("— Mahavira, Ganita Sara Sangraha, c. 850 AD", 0, 182);
+
+    // Orbit circle with excluded zone
+    noFill(); stroke(255, 80, 80, 60); strokeWeight(1.5);
+    arc(0, 40, 300, 130, PI, TWO_PI); // negative number half — red forbidden
+    stroke(105, 255, 71, 60);
+    arc(0, -40, 300, 130, 0, PI); // positive half — green valid
+
+    pop();
+}
+
+function drawFractions() {
+    push();
+    translate(width / 2, height / 2 + 60);
+    scale(getScale());
+
+    // Fraction wheel — fractions orbiting a center
+    let fracs = [
+        { n: 1, d: 2 }, { n: 2, d: 3 }, { n: 3, d: 4 }, { n: 1, d: 6 },
+        { n: 5, d: 8 }, { n: 7, d: 12 }, { n: 1, d: 3 }, { n: 4, d: 5 }
+    ];
+
+    let orbitR = 160;
+    for (let i = 0; i < fracs.length; i++) {
+        let angle = TWO_PI * i / fracs.length + time * 0.4;
+        let fx = cos(angle) * orbitR;
+        let fy = sin(angle) * orbitR;
+
+        // Fraction pill
+        let alpha = map(sin(angle + time), -1, 1, 100, 255);
+        fill(20, 16, 10, 200); stroke(255, 153, 51, alpha); strokeWeight(1.5);
+        rect(fx - 22, fy - 28, 44, 52, 8);
+
+        fill(255, 230, 180, alpha); noStroke();
+        textAlign(CENTER, CENTER); textSize(16);
+        text(fracs[i].n, fx, fy - 12);
+        stroke(255, 153, 51, alpha); strokeWeight(1.5);
+        line(fx - 12, fy + 1, fx + 12, fy + 1);
+        fill(255, 200, 140, alpha); noStroke(); textSize(16);
+        text(fracs[i].d, fx, fy + 16);
+    }
+
+    // Center operation animation
+    let ops = ['+', '−', '×', '÷', '√'];
+    let currentOp = ops[floor(time * 0.6) % ops.length];
+    drawingContext.shadowBlur = 30;
+    drawingContext.shadowColor = '#FF9933';
+    fill(255, 153, 51); noStroke(); textAlign(CENTER, CENTER); textSize(50);
+    text(currentOp, 0, 4);
+    drawingContext.shadowBlur = 0;
+
+    // Orbit ring
+    noFill(); stroke(255, 153, 51, 30); strokeWeight(1);
+    ellipse(0, 0, orbitR * 2);
+
+    fill(255, 200); noStroke(); textSize(16); textAlign(CENTER);
+    text("Every operation on fractions — systematized", 0, 230);
+    pop();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ACT II DRAWINGS
+══════════════════════════════════════════════════════════════ */
+
+function drawCombinations() {
+    push();
+    translate(width / 2, height / 2 + 60);
+    scale(getScale());
+
+    // Pascal's triangle — build up
+    let rows = min(8, floor(time * 1.1) + 1);
+    let rowH = 38, colW = 36;
+    let pascalVals = [[1]];
+    for (let r = 1; r < 8; r++) {
+        let row = [1];
+        for (let c = 1; c < r; c++)
+            row.push(pascalVals[r-1][c-1] + pascalVals[r-1][c]);
+        row.push(1);
+        pascalVals.push(row);
+    }
+
+    let topY = -rows * rowH / 2 + 10;
+
+    for (let r = 0; r < rows; r++) {
+        let row = pascalVals[r];
+        for (let c = 0; c <= r; c++) {
+            let x = (c - r / 2) * colW;
+            let y = topY + r * rowH;
+            let isNew = r === rows - 1;
+            let accentIt = row[c] > 3 && row[c] < 100;
+
+            let col = isNew
+                ? color(255, 153, 51, 220)
+                : accentIt
+                    ? color(192, 132, 252, 180)
+                    : color(200, 200, 255, 130);
+
+            drawingContext.shadowBlur = isNew ? 14 : 0;
+            drawingContext.shadowColor = '#FF9933';
+            fill(col); noStroke(); textAlign(CENTER, CENTER); textSize(13);
+            text(row[c], x, y);
+            drawingContext.shadowBlur = 0;
+
+            // Connection lines to row above
+            if (r > 0) {
+                let pr = pascalVals[r - 1];
+                if (c < pr.length) {
+                    let px1 = (c - (r-1)/2) * colW, py1 = topY + (r-1)*rowH;
+                    stroke(255, 153, 51, isNew ? 60 : 20); strokeWeight(1);
+                    line(x, y, px1, py1);
+                }
+                if (c > 0 && c - 1 < pr.length) {
+                    let px2 = (c - 1 - (r-1)/2) * colW, py2 = topY + (r-1)*rowH;
+                    stroke(255, 153, 51, isNew ? 60 : 20); strokeWeight(1);
+                    line(x, y, px2, py2);
+                }
+            }
+        }
+    }
+
+    // Formula
+    let elapsed = time - 4;
+    if (elapsed > 0) {
+        let a = min(1, elapsed * 0.5) * 255;
+        fill(255, 153, 51, a); noStroke(); textAlign(CENTER); textSize(22);
+        text("C(n, r)  =  n! / (r! × (n−r)!)", 0, 180);
+        fill(192, 132, 252, a); textSize(13);
+        text("Mahavira derived this in 850 AD — Pascal's Triangle came in 1655 AD", 0, 208);
+    }
+    pop();
+}
+
+function drawSeries() {
+    push();
+    translate(width / 2, height / 2 + 40);
+    scale(getScale());
+
+    // Two ladders: arithmetic (left) vs geometric (right)
+    let n = 7;
+    let boxW = 38, boxH = 30, gapY = 8;
+    let totalH = n * (boxH + gapY);
+
+    for (let i = 1; i <= n; i++) {
+        let y = totalH / 2 - i * (boxH + gapY);
+
+        // Arithmetic
+        let av = i;
+        let acol = lerpColor(color(255,153,51,100), color(255,153,51,240), i/n);
+        fill(acol); stroke(255,153,51,60); strokeWeight(1);
+        rect(-160, y, boxW * (i * 0.4 + 0.5), boxH, 5);
+        fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(13);
+        text(av, -160 + 18, y + boxH/2);
+
+        // Geometric
+        let gv = pow(2, i - 1);
+        let gcol = lerpColor(color(192,132,252,100), color(192,132,252,240), i/n);
+        fill(gcol); stroke(192,132,252,60); strokeWeight(1);
+        rect(50, y, min(boxW * (gv * 0.05 + 0.5), 140), boxH, 5);
+        fill(255); noStroke(); textSize(13);
+        text(gv, 50 + 18, y + boxH/2);
+    }
+
+    // Labels
+    fill(255,153,51); noStroke(); textAlign(CENTER); textSize(15);
+    text("Arithmetic", -138, -totalH/2 - 16);
+    fill(192,132,252); textSize(15);
+    text("Geometric", 90, -totalH/2 - 16);
+    text("1 · 2 · 4 · 8 · ... · 2ⁿ⁻¹", 90, totalH/2 + 20);
+    fill(255,153,51);
+    text("1 + 2 + 3 + ... + n", -138, totalH/2 + 20);
+
+    // Sum formula
+    fill(255, 200, 100); noStroke(); textAlign(CENTER); textSize(17);
+    text("Σn = n(n+1)/2  ·  Σn² = n(n+1)(2n+1)/6  ·  Σn³ = [n(n+1)/2]²", 0, totalH/2 + 55);
+
+    pop();
+}
+
+function drawLCM() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScale());
+
+    // LCM visualized as circle orbits meeting
+    let nums  = [4, 6, 10];
+    let cols  = [color(255,153,51), color(192,132,252), color(105,255,71)];
+    let radii = [90, 140, 190];
+    let lcm   = 60; // LCM(4,6,10)
+
+    for (let i = 0; i < nums.length; i++) {
+        let n   = nums[i];
+        let r   = radii[i];
+        let ang = (time * TWO_PI / n) % TWO_PI;
+
+        // Orbit ring
+        noFill(); stroke(cols[i]); strokeWeight(1); drawingContext.globalAlpha = 0.2;
+        ellipse(0, 0, r * 2);
+        drawingContext.globalAlpha = 1.0;
+
+        // Tick marks for each step
+        for (let k = 0; k < n; k++) {
+            let ta = TWO_PI * k / n;
+            stroke(cols[i]); strokeWeight((k === 0) ? 3 : 1); drawingContext.globalAlpha = 0.5;
+            line(cos(ta)*(r-7), sin(ta)*(r-7), cos(ta)*(r+7), sin(ta)*(r+7));
+            drawingContext.globalAlpha = 1;
+        }
+
+        // Moving dot
+        drawingContext.shadowBlur = 16; drawingContext.shadowColor = cols[i].toString();
+        fill(cols[i]); noStroke();
+        ellipse(cos(ang)*r, sin(ang)*r, 14);
+        drawingContext.shadowBlur = 0;
+
+        // Label
+        fill(cols[i]); noStroke(); textAlign(CENTER, CENTER); textSize(14);
+        text("÷" + n, cos(ang)*r + 20, sin(ang)*r - 14);
+    }
+
+    // Center: show when they "meet" (every LCM units of time)
+    let meetPulse = sin(time * TWO_PI / (lcm * 0.05)) > 0.95;
+    if (meetPulse) {
+        drawingContext.shadowBlur = 40; drawingContext.shadowColor = '#FFD166';
+        fill(255, 215, 0); noStroke(); ellipse(0, 0, 28);
+        drawingContext.shadowBlur = 0;
+    } else {
+        fill(60, 50, 30); stroke(255, 215, 0, 80); strokeWeight(1.5); ellipse(0, 0, 18);
+    }
+
+    fill(255, 209, 102); noStroke(); textAlign(CENTER); textSize(20);
+    text("LCM(4, 6, 10) = 60", 0, 220);
+    fill(200, 180); textSize(13);
+    text("The first moment all orbits align simultaneously", 0, 244);
+    pop();
+}
+
+function drawEllipse() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScale());
+
+    let a = 180, b = 100; // semi-axes
+
+    // Animated fill of ellipse
+    let progress = min(1, time * 0.15);
+
+    // Filled region using horizontal slices
+    noStroke();
+    for (let y = -b; y <= b * progress - b; y += 3) {
+        let xSpan = a * sqrt(1 - (y * y) / (b * b));
+        let t2 = map(y, -b, b, 0, 1);
+        let c = lerpColor(color(255, 153, 51, 60), color(192, 132, 252, 80), t2);
+        fill(c); rect(-xSpan, y, xSpan * 2, 3);
+    }
+
+    // Ellipse outline
+    drawingContext.shadowBlur = 20; drawingContext.shadowColor = '#FF9933';
+    stroke(255, 153, 51); strokeWeight(2.5); noFill();
+    ellipse(0, 0, a * 2, b * 2);
+    drawingContext.shadowBlur = 0;
+
+    // Axes
+    stroke(255, 80); strokeWeight(1.5);
+    line(-a, 0, a, 0); line(0, -b, 0, b);
+    // Labels
+    fill(255, 153, 51); noStroke(); textAlign(CENTER, CENTER); textSize(14);
+    text("a = " + a, a / 2, 18);
+    fill(192, 132, 252); textSize(14);
+    text("b = " + b, 18, -b / 2);
+
+    // Area formula comparison
+    let mahaviraArea = floor(a * b * 0.75 * sqrt(a*a + b*b) / (a + b));
+    let exactArea    = floor(PI * a * b);
+
+    if (progress > 0.7) {
+        fill(255, 153, 51, 220); noStroke(); textAlign(CENTER); textSize(16);
+        text("Mahavira's formula:  ≈ " + mahaviraArea + " sq units", 0, b + 45);
+        fill(200, 230, 200, 180); textSize(15);
+        text("Exact (π·a·b):  " + exactArea + " sq units", 0, b + 70);
+        fill(200, 180, 140); textSize(13);
+        text("Error < 3% — remarkable without calculus", 0, b + 92);
+    }
+    pop();
+}
+
+function drawClassify() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScale());
+
+    // Concentric ring taxonomy
+    let rings = [
+        { label: "ALL NUMBERS",      r: 220, col: color(255,255,255,30) },
+        { label: "RATIONAL",         r: 175, col: color(105,255,71,50)  },
+        { label: "INTEGERS",         r: 130, col: color(255,153,51,60)  },
+        { label: "NATURAL NUMBERS",  r: 85,  col: color(192,132,252,70) },
+        { label: "PRIMES",           r: 40,  col: color(255,215,0,120)  },
+    ];
+
+    for (let i = rings.length - 1; i >= 0; i--) {
+        let rg = rings[i];
+        fill(rg.col); stroke(red(rg.col), green(rg.col), blue(rg.col), 120);
+        strokeWeight(1.5);
+        ellipse(0, 0, rg.r * 2);
+
+        // Label at top of each ring
+        fill(red(rg.col)*1.5, green(rg.col)*1.5, blue(rg.col)*1.5, 200);
+        noStroke(); textAlign(CENTER, CENTER); textSize(10.5);
+        text(rg.label, 0, -(rg.r - 14));
+    }
+
+    // Floating number examples orbiting
+    let examples = ["2","3","5","7","11","13"];
+    for (let i = 0; i < examples.length; i++) {
+        let a2 = TWO_PI * i / examples.length + time * 0.5;
+        let fx = cos(a2) * 60, fy = sin(a2) * 60;
+        drawingContext.shadowBlur = 10; drawingContext.shadowColor = '#FFD700';
+        fill(255, 215, 0); noStroke(); textSize(15); textAlign(CENTER, CENTER);
+        text(examples[i], fx, fy);
+        drawingContext.shadowBlur = 0;
+    }
+
+    fill(255, 153, 51); noStroke(); textAlign(CENTER); textSize(16);
+    text("Jain Mathematics had set theory 2,000 years before Cantor", 0, 250);
+    pop();
+}
+
+function drawLegacy() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScale());
+
+    // Expanding mandala — knowledge radiating outward
+    let maxRings = 7;
+    for (let r = 1; r <= maxRings; r++) {
+        let radius = r * 32 + sin(time * 0.7 + r) * 8;
+        let alpha  = map(r, 1, maxRings, 180, 20);
+        let t2      = map(r, 1, maxRings, 0, 1);
+        let c = lerpColor(color(255,153,51), color(192,132,252), t2);
+        stroke(red(c), green(c), blue(c), alpha); strokeWeight(2.5 - r*0.2); noFill();
+        ellipse(0, 0, radius * 2);
+
+        // Rotational ticks
+        let ticks = r * 4;
+        for (let i = 0; i < ticks; i++) {
+            let a2 = TWO_PI * i / ticks + time * (r % 2 === 0 ? 0.25 : -0.2);
+            stroke(red(c), green(c), blue(c), alpha * 0.5); strokeWeight(1);
+            let outer = radius + 6, inner = radius - 6;
+            line(cos(a2)*inner, sin(a2)*inner, cos(a2)*outer, sin(a2)*outer);
+        }
+    }
+
+    // Central text
+    drawingContext.shadowBlur = 30; drawingContext.shadowColor = '#FF9933';
+    fill(255, 153, 51); noStroke(); textAlign(CENTER, CENTER); textSize(38);
+    text("ॐ", 0, -8);
+    drawingContext.shadowBlur = 0;
+
+    // Quote
+    let q = "Save the examination of all things,\nmathematics is of no use to men.";
+    fill(255, 220, 170, 200); noStroke(); textAlign(CENTER); textSize(15);
+    text(q, 0, 180);
+    fill(255,153,51,180); textSize(12);
+    text("— Mahavira, Ganita Sara Sangraha", 0, 218);
+    fill(200, 180, 140, 160); textSize(12);
+    text("Welcome to ViaMath.", 0, 238);
+    pop();
+}
+</script>
+</body>
+</html>

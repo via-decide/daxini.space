@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Cosmic Poet (Aryabhata)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #050814; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        /* Act Indicator */
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #FF9933; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        /* Main Info Box */
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #FF9933; 
+            padding-left: 20px; z-index: 10;
+            background: rgba(5, 8, 20, 0.85); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #FF9933; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        /* Insight Bar */
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(79, 195, 247, 0.1);
+            border-top: 1px solid rgba(79, 195, 247, 0.4);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #FF9933; font-weight: bold; }
+
+        /* Tap hint & Logo */
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #777; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #4FC3F7; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px;}
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; max-width: 90%; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <a href="../../" style="text-decoration:none"><div class="viamath-logo">← VIAMATH</div></a>
+        Tap anywhere to advance ➔
+    </div>
+    
+    <div id="act-indicator">ACT I: THE GOLDEN AGE</div>
+
+    <div id="label">
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+const TOTAL_SCREENS = 12;
+
+let particles = [];
+let kuttakaParticles = [];
+
+const content = [
+    // ACT I: THE GOLDEN AGE & ASTRONOMY
+    {
+        title: "The Golden Age of India", sub: "Kusumapura, c. 476 CE",
+        desc: "During the Gupta Empire, humanity witnessed a massive explosion of art, science, and intellect. At the heart of this was Kusumapura (modern-day Patna), near the legendary Nalanda University.",
+        insight: "India was becoming the mathematical epicenter of the ancient world."
+    },
+    {
+        title: "The 23-Year-Old Master", sub: "Aryabhata (आर्यभट)",
+        desc: "In 499 CE, at the age of just 23, a brilliant young scholar named Aryabhata wrote his magnum opus: The 'Aryabhatiya'. It was not a sprawling encyclopedia, but a highly condensed, fiercely logical masterpiece.",
+        insight: "It consists of just 121 verses, yet it rewrote the history of global mathematics."
+    },
+    {
+        title: "The Poetry of Numbers", sub: "Math as Sanskrit Verse",
+        desc: "Aryabhata didn't write equations with numbers; he wrote them as Sanskrit poetry (Sutras). He invented a system where consonants represented numbers and vowels indicated place value. A single sung word could represent millions.",
+        insight: "Math was memorized and sung like music. Mnemonic genius."
+    },
+    {
+        title: "The Spinning Earth", sub: "The Boat Analogy",
+        desc: "A thousand years before Copernicus, Aryabhata made a shocking claim: The stars are not spinning around us. The Earth is spinning on its own axis. He wrote: 'Just as a man in a boat moving forward sees the stationary bank moving backward...'",
+        insight: "He realized the rotation of the heavens was an optical illusion caused by Earth's rotation."
+    },
+    {
+        title: "Shadows, Not Demons", sub: "The True Cause of Eclipses",
+        desc: "Ancient myths taught that eclipses were caused by the demon Rahu swallowing the sun. Aryabhata used pure geometry to prove that eclipses were simply the physical shadows of the Earth and the Moon intersecting.",
+        insight: "He completely separated astronomy from mythology and superstition."
+    },
+    // ACT II: THE SUTRAS OF INFINITY (MATHEMATICS)
+    {
+        title: "The Birth of Sine", sub: "From Chords to 'Jya'",
+        desc: "Ptolemy calculated full 'Chords' of a circle. Aryabhata made a crucial leap: he cut the chord in half to make a right triangle. He called this half-chord 'Jya' (bowstring). Arabic translators turned Jya into 'Jaib', which later became 'Sine' in Latin.",
+        insight: "Aryabhata invented the foundation of modern Trigonometry."
+    },
+    {
+        title: "The Perfection of Pi (π)", sub: "3.1416",
+        desc: "He wrote: 'Add 4 to 100, multiply by 8, and add 62,000. By this rule the circumference of a circle with a diameter of 20,000 can be approached.' The result? 62832 / 20000 = 3.1416.",
+        insight: "He famously used the word 'Asanna' (approaching), hinting that Pi is an irrational number."
+    },
+    {
+        title: "The Invisible Placeholder", sub: "Place-Value & Zero",
+        desc: "While he didn't invent the physical symbol '0', he perfected the decimal place-value system. He stated: 'Sthanam sthanam dasha gunam' (from place to place, each is ten times the preceding). He used the word 'Kha' (emptiness) as a placeholder.",
+        insight: "Without the concept of place-value emptiness, modern computing is impossible."
+    },
+    {
+        title: "The Pulverizer", sub: "Kuttaka Method",
+        desc: "He invented a master algorithm to solve complex Diophantine equations (ax + c = by). He called it 'Kuttaka', meaning 'to pulverize'. It breaks massive, complex problems down into smaller, solvable pieces.",
+        insight: "This is the direct ancestor of the Extended Euclidean Algorithm used in modern cryptography."
+    },
+    {
+        title: "Summing the Universe", sub: "Series & Sequences",
+        desc: "Aryabhata provided the first known formulas for the sum of squares (1² + 2² + 3²...) and the sum of cubes (1³ + 2³ + 3³...). He proved that the sum of cubes is exactly equal to the square of the sum of the numbers.",
+        insight: "1³ + 2³ + 3³ = (1 + 2 + 3)²  = 36. Flawless algebraic elegance."
+    },
+    {
+        title: "Master of Cosmic Time", sub: "The Sidereal Day",
+        desc: "Using his massive calculations and geometry, Aryabhata calculated the length of the Earth's rotation relative to the stars (the Sidereal day) as 23 hours, 56 minutes, and 4.1 seconds.",
+        insight: "Modern atomic clocks measure it at 23h 56m 4.091s. He was off by a fraction of a millisecond."
+    },
+    {
+        title: "The Architect of Tomorrow", sub: "His Eternal Legacy",
+        desc: "His work traveled through the Middle East to Europe, shaping the minds of Al-Khwarizmi, Fibonacci, and Galileo. In 1975, when India launched its very first satellite into space, they named it ARYABHATA.",
+        insight: "The boy from Kusumapura gave the world the math to reach the stars. Welcome to ViaMath."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    for(let i=0; i<80; i++) particles.push({x: random(width), y: random(height), s: random(2, 4), a: random(TWO_PI)});
+    
+    // Setup pulverizer particles
+    for(let i=0; i<100; i++) kuttakaParticles.push({
+        x: random(-50, 50), y: random(-50, 50), 
+        vx: random(-3, 3), vy: random(-3, 3), life: random(100, 255)
+    });
+
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % TOTAL_SCREENS;
+    
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+
+    let actInd = document.getElementById("act-indicator");
+    let labelBorder = document.getElementById("label");
+    
+    if (state < 5) {
+        actInd.innerText = "ACT I: THE GOLDEN AGE";
+        actInd.style.color = "#FF9933"; // Vedic Saffron
+        labelBorder.style.borderLeftColor = "#FF9933";
+    } else {
+        actInd.innerText = "ACT II: THE SUTRAS OF INFINITY";
+        actInd.style.color = "#4FC3F7"; // Cosmic Blue/Cyan
+        labelBorder.style.borderLeftColor = "#4FC3F7";
+    }
+
+    let span = document.querySelector('.highlight');
+    if (state < 5) {
+        span.innerText = "HISTORICAL INSIGHT:"; span.style.color = "#FF9933";
+    } else if (state === 11) {
+        span.innerText = "LEGACY:"; span.style.color = "#4FC3F7";
+    } else {
+        span.innerText = "MATHEMATICAL GENIUS:"; span.style.color = "#4FC3F7";
+    }
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function getScaleFactor() { return min(1, width / 800); }
+
+function draw() {
+    background(5, 8, 20); // Deep Cosmic Indigo
+
+    // Abstract grid
+    stroke(255, 6); strokeWeight(1);
+    for (let i = 0; i < width; i += 80) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 80) line(0, j, width, j);
+
+    time += 0.02;
+
+    // Ambient floating stardust
+    for(let p of particles) {
+        p.y -= 0.3; p.x += sin(p.a + time) * 0.5;
+        if(p.y < 0) { p.y = height; p.x = random(width); }
+        let cColor = (state < 5) ? color(255, 153, 51, 60) : color(79, 195, 247, 60);
+        fill(cColor); noStroke();
+        ellipse(p.x, p.y, p.s);
+    }
+
+    // State Router
+    if      (state === 0) drawGoldenAge();
+    else if (state === 1) drawAryabhatiya();
+    else if (state === 2) drawSanskritMath();
+    else if (state === 3) drawEarthSpin();
+    else if (state === 4) drawEclipses();
+    else if (state === 5) drawSineJya();
+    else if (state === 6) drawAryabhataPi();
+    else if (state === 7) drawPlaceValue();
+    else if (state === 8) drawKuttaka();
+    else if (state === 9) drawSumOfSeries();
+    else if (state === 10) drawCosmicTime();
+    else if (state === 11) drawLegacy();
+
+    // Cinematic fade overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0;
+            updateUI();
+            document.getElementById("label").style.opacity = 1;
+            document.getElementById("insight-bar").style.opacity = 1;
+            document.getElementById("act-indicator").style.opacity = 1;
+            if (state !== 11) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(5, 8, 20, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE GOLDEN AGE
+// ============================================================
+
+function drawGoldenAge() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Blooming ancient Lotus / University
+    let numPetals = 12;
+    let bloom = map(sin(time*0.5), -1, 1, 0.5, 1);
+
+    for(let i=0; i<numPetals; i++) {
+        let a = TWO_PI * i / numPetals + time*0.1;
+        
+        push();
+        rotate(a);
+        stroke(255, 153, 51, 150); fill(255, 153, 51, 30); strokeWeight(2);
+        
+        // Petal shape
+        beginShape();
+        vertex(0, 0);
+        bezierVertex(50*bloom, 50*bloom, 150*bloom, 50*bloom, 200*bloom, 0);
+        bezierVertex(150*bloom, -50*bloom, 50*bloom, -50*bloom, 0, 0);
+        endShape();
+        pop();
+    }
+
+    // Glowing core of knowledge
+    drawingContext.shadowBlur = 60; drawingContext.shadowColor = '#FF9933';
+    fill(255, 200, 100); noStroke();
+    ellipse(0, 0, 60 + sin(time*4)*10);
+    drawingContext.shadowBlur = 0;
+
+    fill(255); textSize(24); textAlign(CENTER); letterSpacing = 4;
+    text("THE GUPTA EMPIRE", 0, 250);
+    pop();
+}
+
+function drawAryabhatiya() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Abstract Palm Leaf Manuscript (Grantha/Sanskrit format)
+    let yStart = -150;
+    
+    // Glow behind the manuscript
+    drawingContext.shadowBlur = 50; drawingContext.shadowColor = '#FF9933';
+    fill(40, 30, 20, 200); stroke(255, 153, 51); strokeWeight(2);
+    rect(-250, yStart, 500, 300, 10);
+    drawingContext.shadowBlur = 0;
+
+    // Engraved lines
+    stroke(255, 153, 51, 80); strokeWeight(2);
+    for(let i=1; i<8; i++) {
+        line(-220, yStart + i*35, 220, yStart + i*35);
+    }
+
+    // Manuscript binding string/hole
+    fill(10, 10, 15); stroke(255, 153, 51);
+    ellipse(-200, yStart + 150, 15);
+    ellipse(200, yStart + 150, 15);
+
+    // Flowing math poetry
+    fill(255, 200, 100); noStroke(); textSize(18); textAlign(CENTER);
+    let poetry = [
+        "गणितपाद (Mathematics)", 
+        "कालक्रियापाद (Reckoning of Time)", 
+        "गोलपाद (The Celestial Sphere)"
+    ];
+
+    for(let i=0; i<3; i++) {
+        let alpha = 150 + sin(time*2 + i)*100;
+        fill(255, 200, 100, alpha);
+        text(poetry[i], 0, yStart + 80 + i*60);
+    }
+
+    fill(255); textSize(24);
+    text("121 Verses That Changed the World", 0, 220);
+    pop();
+}
+
+function drawSanskritMath() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Morphing Devnagari characters to numbers
+    let chars = ["क", "ख", "ग", "घ", "ङ"];
+    let nums = ["1", "2", "3", "4", "5"];
+    
+    let t = (sin(time*1.5) + 1)/2; // 0 to 1
+
+    for(let i=0; i<5; i++) {
+        let x = map(i, 0, 4, -200, 200);
+        
+        fill(255, 153, 51, 200 * (1-t)); textSize(60); textAlign(CENTER, CENTER);
+        text(chars[i], x, -50 - sin(time+i)*10);
+        
+        fill(79, 195, 247, 200 * t); textSize(60);
+        text(nums[i], x, 50 + sin(time+i)*10);
+
+        // Connecting logic lines
+        stroke(255, 50); strokeWeight(2);
+        line(x, -20, x, 20);
+    }
+
+    fill(255); noStroke(); textSize(20); textAlign(CENTER);
+    text("Consonants = Numbers", -150, 150);
+    text("Vowels = Place Value", 150, 150);
+    pop();
+}
+
+function drawEarthSpin() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 150;
+
+    // Earth
+    fill(10, 30, 60); stroke(79, 195, 247); strokeWeight(2);
+    ellipse(0, 0, r*2);
+
+    // Equator and spin axis
+    stroke(79, 195, 247, 100); noFill();
+    ellipse(0, 0, r*2, r*0.4);
+    stroke(255, 153, 51); strokeWeight(3); drawingContext.setLineDash([5,5]);
+    line(0, -r-30, 0, r+30);
+    drawingContext.setLineDash([]);
+
+    // The Observer (Boat/Person)
+    let a = time * 0.5;
+    let ox = cos(a) * r;
+    let oy = sin(a) * r * 0.2; // Match equator tilt
+    
+    fill(255, 153, 51); noStroke();
+    ellipse(ox, oy, 15);
+    
+    // The Stars (Stationary)
+    for(let i=0; i<10; i++) {
+        let sa = TWO_PI * i/10;
+        let sx = cos(sa) * (r+80);
+        let sy = sin(sa) * (r+80);
+        fill(255, 150 + sin(time*5+i)*100); noStroke();
+        ellipse(sx, sy, 5);
+        
+        // Relative motion lines showing the illusion
+        stroke(255, 30); strokeWeight(1);
+        line(ox, oy, sx, sy);
+    }
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(20); letterSpacing = 2;
+    text("The Earth Rotates. The Stars are Still.", 0, r + 90);
+    pop();
+}
+
+function drawEclipses() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let sunX = -300;
+    let earthX = 0;
+    
+    // Sun
+    drawingContext.shadowBlur = 50; drawingContext.shadowColor = '#FF9933';
+    fill(255, 200, 100); noStroke(); ellipse(sunX, 0, 100);
+    drawingContext.shadowBlur = 0;
+
+    // Earth
+    fill(10, 30, 60); stroke(79, 195, 247); strokeWeight(2);
+    ellipse(earthX, 0, 60);
+
+    // Umbra (Dark Shadow) Cone
+    fill(255, 255, 255, 10); noStroke();
+    triangle(earthX, 30, earthX, -30, 200, 0);
+
+    // Moon orbiting into the shadow
+    let moonA = time;
+    let moonR = 120;
+    let moonX = earthX + cos(moonA) * moonR;
+    let moonY = sin(moonA) * moonR;
+
+    // Determine if moon is in shadow
+    let inShadow = (moonX > 0 && abs(moonY) < map(moonX, 0, 200, 30, 0));
+
+    if (inShadow) {
+        fill(100, 50, 50); // Blood moon (Eclipse)
+    } else {
+        fill(200); // Normal moon
+    }
+    stroke(255, 50); strokeWeight(1);
+    ellipse(moonX, moonY, 20);
+
+    // Orbit path
+    stroke(255, 30); noFill();
+    ellipse(earthX, 0, moonR*2);
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(24);
+    text("NO DEMONS. ONLY SHADOWS.", 0, 200);
+    pop();
+}
+
+// ============================================================
+// ACT II: THE SUTRAS OF INFINITY
+// ============================================================
+
+function drawSineJya() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 180;
+
+    // Circle
+    stroke(255, 50); strokeWeight(2); noFill();
+    ellipse(0, 0, r*2);
+    line(-r, 0, r, 0); // X axis
+    line(0, -r, 0, r); // Y axis
+
+    // Rotating Angle
+    let a = map(sin(time*0.8), -1, 1, 0, PI/2);
+    let px = cos(a) * r;
+    let py = -sin(a) * r;
+
+    // Radius line
+    stroke(255); strokeWeight(3);
+    line(0, 0, px, py);
+
+    // The Full Chord (Ptolemy style) - Faded
+    stroke(255, 50); strokeWeight(2); drawingContext.setLineDash([5,5]);
+    line(px, py, px, -py);
+    drawingContext.setLineDash([]);
+
+    // The HALF Chord (Aryabhata's 'Jya' / Sine)
+    stroke(79, 195, 247); strokeWeight(5);
+    line(px, py, px, 0);
+
+    // Base (Kojya / Cosine)
+    stroke(255, 153, 51); strokeWeight(5);
+    line(0, 0, px, 0);
+
+    // Angle Arc
+    noFill(); stroke(255); strokeWeight(2);
+    arc(0, 0, 60, 60, -a, 0);
+
+    fill(255); noStroke(); ellipse(0,0,8); ellipse(px, py, 8); ellipse(px, 0, 8);
+
+    fill(79, 195, 247); textSize(24); textAlign(RIGHT);
+    text("Jya (Sine)", px - 15, py/2);
+    fill(255, 153, 51); textAlign(CENTER);
+    text("Kojya (Cosine)", px/2, 25);
+
+    fill(255); textSize(20);
+    text("He transformed the Chord into the Right Triangle.", 0, r + 50);
+    pop();
+}
+
+function drawAryabhataPi() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 120;
+
+    // Diameter visualization
+    stroke(255, 50); strokeWeight(3); noFill();
+    ellipse(-200, 0, r*2);
+    stroke(255); line(-200 - r, 0, -200 + r, 0);
+    fill(255); noStroke(); textAlign(CENTER); textSize(18);
+    text("d = 20,000", -200, -20);
+
+    // Animated Unrolling of Circumference
+    let t = (sin(time) + 1)/2; // 0 to 1
+    let unrollLen = map(t, 0, 1, 0, r * PI * 2);
+
+    stroke(79, 195, 247); strokeWeight(4);
+    // Unrolled line
+    line(-200, r + 40, -200 + unrollLen, r + 40);
+    // Highlighted circumference segment
+    noFill();
+    arc(-200, 0, r*2, r*2, HALF_PI - (TWO_PI*(1-t)), HALF_PI);
+
+    // Aryabhata's calculation formula
+    fill(255, 153, 51); noStroke(); textSize(24);
+    text("((4 + 100) × 8) + 62000", 150, -40);
+    fill(255); text("------------------------", 150, -15);
+    text("20000", 150, 15);
+    
+    fill(79, 195, 247); textSize(36);
+    text("= 3.1416", 150, 70);
+
+    fill(255, 150); textSize(16);
+    text("He called this an 'Approximation' (Asanna).", 0, r + 110);
+    text("He knew Pi was irrational.", 0, r + 135);
+    pop();
+}
+
+function drawPlaceValue() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let values = [1000, 100, 10, 1];
+    let slots = ["Sahasra", "Shata", "Dasha", "Eka"];
+
+    let activeSlot = Math.floor(time * 2) % 4;
+
+    for(let i=0; i<4; i++) {
+        let x = map(i, 0, 3, -250, 250);
+        
+        // Base glowing boxes
+        fill(10, 20, 40); stroke(79, 195, 247, 100); strokeWeight(2);
+        rect(x - 50, -50, 100, 100, 10);
+
+        // Highlight active slot
+        if (i === activeSlot) {
+            fill(79, 195, 247, 50); noStroke();
+            rect(x - 50, -50, 100, 100, 10);
+        }
+
+        fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(36);
+        text(values[i], x, 0);
+
+        fill(255, 153, 51); textSize(18);
+        text(slots[i], x, 80);
+    }
+
+    fill(255); noStroke(); textSize(22); textAlign(CENTER);
+    text("Sthanam sthanam dasha gunam", 0, 160);
+    fill(79, 195, 247); textSize(16);
+    text("(From place to place, each is ten times the preceding)", 0, 190);
+    pop();
+}
+
+function drawKuttaka() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // The Diophantine Equation
+    fill(255); noStroke(); textAlign(CENTER); textSize(48);
+    text("ax + c = by", 0, -150);
+
+    // Kuttaka "Pulverizing" effect
+    // A large block representing the complex problem
+    let t = (sin(time) + 1)/2;
+
+    if (t < 0.2) {
+        // Solid block
+        fill(255, 153, 51, 200); stroke(255); strokeWeight(2);
+        rect(-80, -80, 160, 160, 10);
+        fill(255); noStroke(); textSize(24); textAlign(CENTER, CENTER);
+        text("Massive\nProblem", 0, 0);
+        
+        // Reset particles
+        for(let p of kuttakaParticles) {
+            p.x = random(-80, 80); p.y = random(-80, 80);
+        }
+    } else {
+        // Exploding into tiny solveable pieces
+        for(let p of kuttakaParticles) {
+            p.x += p.vx * (t * 5);
+            p.y += p.vy * (t * 5);
+            fill(79, 195, 247, p.life * (1-t)); noStroke();
+            rect(p.x, p.y, 10, 10);
+        }
+        
+        fill(79, 195, 247, map(t, 0.2, 1, 0, 255)); noStroke();
+        textSize(24); textAlign(CENTER);
+        text("Pulverized into simple steps.", 0, 0);
+    }
+
+    fill(255, 150); textSize(18); textAlign(CENTER);
+    text("The Kuttaka Method:", 0, 150);
+    text("The ancestor of modern cryptography algorithms.", 0, 180);
+    pop();
+}
+
+function drawSumOfSeries() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Visualizing 1^3 + 2^3 + 3^3 = (1+2+3)^2 = 36
+    
+    let boxSize = 25;
+    let offset = -150;
+
+    // 1 cubed (1 block)
+    fill(255, 153, 51, 200); stroke(255, 50); strokeWeight(1);
+    rect(offset, 0, boxSize, boxSize);
+
+    // 2 cubed (8 blocks)
+    fill(79, 195, 247, 200);
+    for(let i=0; i<2; i++) for(let j=0; j<2; j++) for(let k=0; k<2; k++) {
+        // Pseudo 3D projection shift
+        let px = offset + 80 + i*boxSize + k*10;
+        let py = 0 - j*boxSize - k*10;
+        rect(px, py, boxSize, boxSize);
+    }
+
+    // 3 cubed (27 blocks) - Simplify visually
+    fill(255, 100, 150, 200);
+    for(let i=0; i<3; i++) for(let j=0; j<3; j++) {
+        let px = offset + 220 + i*boxSize;
+        let py = 0 - j*boxSize;
+        rect(px, py, boxSize, boxSize);
+    }
+
+    // Equates to a 6x6 square
+    let masterSq = boxSize * 6;
+    fill(10, 20, 40); stroke(255, 153, 51); strokeWeight(3);
+    rect(100, -masterSq + boxSize, masterSq, masterSq);
+    
+    // Grid inside master square
+    stroke(255, 30); strokeWeight(1);
+    for(let i=1; i<6; i++) {
+        line(100 + i*boxSize, -masterSq + boxSize, 100 + i*boxSize, boxSize);
+        line(100, boxSize - i*boxSize, 100 + masterSq, boxSize - i*boxSize);
+    }
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(36);
+    text("1³  +  2³  +  3³   =   (1+2+3)²", 0, -200);
+    
+    fill(79, 195, 247); textSize(24);
+    text("36", 100 + masterSq/2, -masterSq/2 + boxSize + 10);
+    text("1 + 8 + 27", offset + 150, -50);
+
+    pop();
+}
+
+function drawCosmicTime() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 180;
+    
+    // Cosmic Clock Dial
+    stroke(255, 50); strokeWeight(4); noFill();
+    ellipse(0, 0, r*2);
+
+    // Tick marks
+    for(let i=0; i<60; i++) {
+        let a = TWO_PI * i / 60;
+        let len = (i%5==0) ? 20 : 10;
+        stroke(255, (i%5==0) ? 150 : 50); strokeWeight((i%5==0) ? 3 : 1);
+        line(cos(a)*(r-len), sin(a)*(r-len), cos(a)*r, sin(a)*r);
+    }
+
+    // Sweeping radar/time hand
+    let a = time * 2 - HALF_PI;
+    stroke(255, 153, 51); strokeWeight(3);
+    line(0, 0, cos(a)*(r-10), sin(a)*(r-10));
+
+    // Radar trail
+    fill(255, 153, 51, 30); noStroke();
+    arc(0, 0, r*2, r*2, a - PI/4, a);
+
+    // Center pivot
+    fill(255); ellipse(0,0,15);
+
+    // The measurement
+    fill(255); noStroke(); textAlign(CENTER); textSize(48); letterSpacing = 2;
+    text("23h  56m  4.1s", 0, -r - 40);
+
+    fill(79, 195, 247); textSize(18);
+    text("The exact length of a Sidereal Day.", 0, r + 50);
+    fill(255, 150); textSize(16);
+    text("(Modern atomic clocks measure it at 23h 56m 4.091s)", 0, r + 80);
+    pop();
+}
+
+function drawLegacy() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Abstract satellite (Aryabhata) launching into space
+    let launchY = map(time % 5, 0, 5, 200, -300);
+    
+    // Exhaust thrust
+    noStroke();
+    for(let i=0; i<30; i++) {
+        fill(255, random(100, 200), 0, 150 - i*5);
+        ellipse(random(-10, 10), launchY + 40 + i*5, 20 - i*0.5);
+    }
+
+    // Satellite body (Diamond shape referencing Indian design)
+    fill(200); stroke(255); strokeWeight(2);
+    quad(0, launchY - 30, 20, launchY, 0, launchY + 30, -20, launchY);
+    // Solar panels
+    fill(10, 30, 60); stroke(79, 195, 247);
+    rect(-60, launchY - 10, 40, 20);
+    rect(20, launchY - 10, 40, 20);
+
+    // Orbital rings spreading outward
+    stroke(79, 195, 247, 100); noFill(); strokeWeight(2);
+    ellipse(0, 0, 300 + sin(time)*50, 100 + sin(time)*20);
+    ellipse(0, 0, 400 + cos(time)*50, 150 + cos(time)*20);
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(32); letterSpacing = 4;
+    text("REACHING THE STARS", 0, 200);
+    fill(255, 153, 51); textSize(18); letterSpacing = 1;
+    text("1975: India's first satellite is named 'Aryabhata'.", 0, 240);
+    pop();
+}
+</script>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>

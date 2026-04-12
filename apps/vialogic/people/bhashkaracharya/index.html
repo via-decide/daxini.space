@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign UI | Bhāskarāchārya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --matrix-cyan: #00e5ff;
+            --glass-bg: rgba(10, 10, 10, 0.8);
+            --border-glow: rgba(0, 229, 255, 0.3);
+            --text-main: #eceef6;
+            --text-muted: #858aaa;
+            --bg-dark: #090a0d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 153, 51, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sovereign-container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--matrix-cyan);
+            border-radius: 24px;
+            padding: 60px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--border-glow);
+            position: relative;
+            overflow: hidden;
+            animation: cardEntrance 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--matrix-cyan), transparent 30%);
+            animation: rotate 10s linear infinite;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header {
+            margin-bottom: 40px;
+            border-left: 4px solid var(--matrix-cyan);
+            padding-left: 30px;
+        }
+
+        .id-badge {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--matrix-cyan);
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 84px;
+            font-weight: 800;
+            line-height: 1;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            background: linear-gradient(to bottom, #fff, var(--matrix-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px var(--border-glow));
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            border-color: var(--matrix-cyan);
+            transform: translateY(-5px);
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .bio-section {
+            margin-top: 50px;
+            line-height: 1.8;
+            font-size: 18px;
+            color: var(--text-main);
+            max-width: 800px;
+        }
+
+        .bio-section p { margin-bottom: 20px; }
+
+        .cta-bar {
+            margin-top: 60px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            background: var(--matrix-cyan);
+            color: #000;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--matrix-cyan);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--matrix-cyan);
+            color: var(--matrix-cyan);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 48px; }
+            .glass-card { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sovereign-container">
+        <div class="glass-card">
+            <span class="id-badge">Sovereign Identity // #14</span>
+            <div class="header">
+                <h1>Bhāskarāchārya</h1>
+                <p class="subtitle">The Crown Jewel of Indian Mathematics</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <p class="stat-label">Timeline</p>
+                    <p class="stat-value">1114–1185 CE</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-label">Origin</p>
+                    <p class="stat-value">Bijapur, India</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-label">Core Logic</p>
+                    <p class="stat-value">Calculus & Algebra</p>
+                </div>
+            </div>
+
+            <div class="bio-section">
+                <p>Bhāskara II, also known as Bhāskarāchārya, was a titan of Indian mathematics and astronomy. His work 'Siddhanta Siromani' is divided into four parts: Lilavati (Arithmetic), Bijaganita (Algebra), Grahaganita, and Goladhyaya (Astronomy).</p>
+                <p>Centuries before Newton and Leibniz, he conceived the basic principles of differential calculus and its application to astronomical problems. He was the first to state that any number divided by zero is infinity.</p>
+            </div>
+
+            <div class="cta-bar">
+                <a href="../../" class="btn btn-outline">← Back to Registry</a>
+                <a href="#" class="btn">Protocol Active</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>

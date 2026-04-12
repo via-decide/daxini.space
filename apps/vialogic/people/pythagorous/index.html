@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Math Cult (Pythagoras)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #0f0518; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        /* Act Indicator */
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #E100FF; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        /* Main Info Box */
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #FFD700; /* Gold accent */
+            padding-left: 20px; z-index: 10;
+            background: rgba(15, 5, 24, 0.85); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #FFD700; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        /* Insight Bar */
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(225, 0, 255, 0.08);
+            border-top: 1px solid rgba(225, 0, 255, 0.3);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #FFD700; font-weight: bold; }
+
+        /* Tap hint & Logo */
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #666; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #E100FF; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px;}
+
+        @media (max-width: 600px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 300px; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <div class="viamath-logo">VIAMATH</div>
+        <a href="../../" style="text-decoration:none"><div class="viamath-logo">← VIAMATH</div></a>
+        Tap anywhere to advance ➔
+    </div>
+    
+    <div id="act-indicator" id="act">ACT I: THE CULT</div>
+
+    <div id="label">
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+
+let particles = [];
+let waveHistory = [];
+
+const content = [
+    // ACT I: THE HISTORY
+    {
+        title: "The Wanderer of Samos", sub: "c. 570 – c. 495 BC",
+        desc: "Born on the Greek island of Samos, a young Pythagoras spent decades wandering. He traveled to Egypt to learn geometry from priests, and to Babylon to study the stars. He collected the ancient world's greatest secrets.",
+        insight: "He didn't invent all his math; he synthesized the knowledge of ancient empires."
+    },
+    {
+        title: "The Brotherhood of Croton", sub: "All is Number",
+        desc: "Fleeing a tyrant, Pythagoras settled in Croton (modern-day Italy) and founded a secretive, religious society. They were called the 'Mathematikoi'. To them, math was not a tool; it was the divine religion of the universe.",
+        insight: "Their ultimate core belief: 'The universe is built entirely of whole numbers.'"
+    },
+    {
+        title: "The Rules of the Cult", sub: "Mysticism and Madness",
+        desc: "The Pythagoreans lived under bizarre, strict laws. They swore oaths of absolute secrecy, practiced vegetarianism, shared all property, and famously, it was a sin punishable by death to eat or even touch a fava bean.",
+        insight: "Their secret symbol to identify each other in public was the Pentagram."
+    },
+    {
+        title: "The Tetractys", sub: "The Holy Triangle",
+        desc: "Their most sacred symbol was the Tetractys: a triangle made of 10 dots (1 + 2 + 3 + 4). They would pray to it, believing it contained the four elements (fire, air, water, earth) and the secret to all creation.",
+        insight: "The number 10 was considered perfect, representing the entire cosmos."
+    },
+    {
+        title: "The Music of the Spheres", sub: "Math You Can Hear",
+        desc: "Legend says Pythagoras walked past a blacksmith and heard hammers ringing in harmony. He realized that strings cut to exact whole-number ratios (like 2:1 or 3:2) create beautiful musical chords. Math creates music.",
+        insight: "This was the first time in history humanity linked physics, math, and art."
+    },
+    // ACT II: THE WORK
+    {
+        title: "The Rope Stretchers", sub: "Egypt's Ancient Secret",
+        desc: "Before Pythagoras, Egyptians built pyramids using a clever trick: a rope tied with 12 equally spaced knots. If stretched into a triangle with sides of 3, 4, and 5 knots, it magically creates a perfect 90-degree angle.",
+        insight: "The Egyptians knew HOW it worked. Pythagoras wanted to prove WHY."
+    },
+    {
+        title: "The Pythagorean Theorem", sub: "a² + b² = c²",
+        desc: "He formulated the ultimate geometric law: In any right-angled triangle, if you draw a square out from the two shorter sides, their total area will exactly equal the area of a square drawn from the longest side (the hypotenuse).",
+        insight: "This theorem is the foundation of all architecture, navigation, and modern physics."
+    },
+    {
+        title: "The Visual Proof", sub: "The Magic of Area",
+        desc: "Watch the geometric truth unfold. No matter how you stretch or squash the right triangle, the water filling the two smaller squares (a² and b²) will always perfectly fill the largest square (c²).",
+        insight: "A truth so undeniable, it required no numbers to prove—only geometry."
+    },
+    {
+        title: "The Fatal Flaw", sub: "The Crisis of the Unit Square",
+        desc: "But the Cult's perfect religion had a flaw. If a triangle has two sides exactly 1 unit long, the hypotenuse is the square root of 2 (√2). When they tried to calculate √2 as a fraction of whole numbers, they failed. It goes on forever: 1.41421356...",
+        insight: "This was the terrifying discovery of Irrational Numbers. The universe was NOT just whole numbers."
+    },
+    {
+        title: "The Murder of Hippasus", sub: "Math Paid in Blood",
+        desc: "A member named Hippasus proved that √2 was irrational, shattering the cult's entire worldview. Legend states that to keep this dark secret from escaping, the Pythagoreans took Hippasus out on a boat... and drowned him at sea.",
+        insight: "Truth cannot be drowned. The irrational numbers paved the way for modern mathematics."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    for(let i=0; i<80; i++) {
+        particles.push({
+            x: random(width), y: random(height), 
+            vx: random(-1, 1), vy: random(-1, 1), 
+            c: random([color(225, 0, 255, 100), color(255, 215, 0, 100)])
+        });
+    }
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % 10;
+    
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+    
+    let actInd = document.getElementById("act-indicator");
+    if (state < 5) {
+        actInd.innerText = "ACT I: THE HISTORY & THE CULT";
+        actInd.style.color = "#E100FF";
+    } else {
+        actInd.innerText = "ACT II: THE MATHEMATICS & THE CRISIS";
+        actInd.style.color = "#FFD700";
+    }
+
+    let span = document.querySelector('.highlight');
+    if (state === 9) {
+        span.innerText = "THE LEGEND:"; span.style.color = "#FF3333";
+    } else if (state < 5) {
+        span.innerText = "HISTORICAL INSIGHT:"; span.style.color = "#E100FF";
+    } else {
+        span.innerText = "MATHEMATICAL TRUTH:"; span.style.color = "#FFD700";
+    }
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function draw() {
+    // Dark mystic background
+    background(15, 5, 24); 
+
+    // Occult/Geometric subtle grid
+    stroke(255, 6); strokeWeight(1);
+    for (let i = 0; i < width; i += 80) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 80) line(0, j, width, j);
+
+    time += 0.02;
+
+    // State Router
+    if      (state === 0) drawWanderer();
+    else if (state === 1) drawBrotherhood();
+    else if (state === 2) drawPentagram();
+    else if (state === 3) drawTetractys();
+    else if (state === 4) drawMusic();
+    else if (state === 5) drawRopeStretchers();
+    else if (state === 6) drawPythagoreanIntro();
+    else if (state === 7) drawVisualProof();
+    else if (state === 8) drawIrrationalCrisis();
+    else if (state === 9) drawDrowning();
+
+    // Cinematic Fade Transition Overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0; waveHistory = [];
+            updateUI();
+            document.getElementById("label").style.opacity = 1;
+            document.getElementById("insight-bar").style.opacity = 1;
+            document.getElementById("act-indicator").style.opacity = 1;
+            if (state !== 9) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(15, 5, 24, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE HISTORY
+// ============================================================
+
+function drawWanderer() {
+    push();
+    translate(width / 2, height / 2);
+    
+    // Abstract map nodes (Egypt, Babylon, Samos)
+    let nodes = [
+        {x: -150, y: 50, n: "Egypt"},
+        {x: 150, y: -80, n: "Babylon"},
+        {x: 0, y: 120, n: "Samos"}
+    ];
+
+    // Journey lines
+    stroke(255, 30); strokeWeight(2); drawingContext.setLineDash([5, 5]);
+    line(nodes[2].x, nodes[2].y, nodes[0].x, nodes[0].y);
+    line(nodes[0].x, nodes[0].y, nodes[1].x, nodes[1].y);
+    drawingContext.setLineDash([]);
+
+    // Draw Nodes
+    for(let n of nodes) {
+        fill(225, 0, 255, 50); noStroke();
+        ellipse(n.x, n.y, 40 + sin(time*2)*10);
+        fill(255); textSize(14); textAlign(CENTER);
+        text(n.n, n.x, n.y + 35);
+    }
+
+    // Pythagoras particle traveling
+    let t = (sin(time * 0.8) + 1) / 2; // 0 to 1
+    let px, py;
+    if (cos(time*0.4) > 0) {
+        px = lerp(nodes[2].x, nodes[0].x, t);
+        py = lerp(nodes[2].y, nodes[0].y, t);
+    } else {
+        px = lerp(nodes[0].x, nodes[1].x, t);
+        py = lerp(nodes[0].y, nodes[1].y, t);
+    }
+
+    fill(255, 215, 0); noStroke();
+    ellipse(px, py, 12);
+    for(let i=1; i<4; i++) {
+        fill(255, 215, 0, 50/i); ellipse(px, py, 12 + i*10);
+    }
+    pop();
+}
+
+function drawBrotherhood() {
+    push();
+    translate(width / 2, height / 2 + 20);
+
+    // Cult circle forming
+    let members = 12;
+    let radius = min(width, height) * 0.28;
+
+    rotate(time * 0.1);
+
+    for (let i = 0; i < members; i++) {
+        let angle = TWO_PI * i / members;
+        let x = cos(angle) * radius;
+        let y = sin(angle) * radius;
+
+        // Glowing connection lines
+        stroke(225, 0, 255, 40); strokeWeight(1);
+        for(let j=0; j<members; j++) {
+            let ox = cos(TWO_PI * j / members) * radius;
+            let oy = sin(TWO_PI * j / members) * radius;
+            line(x, y, ox, oy);
+        }
+
+        // Member nodes
+        fill(15, 5, 24); stroke(255, 215, 0, 150); strokeWeight(2);
+        ellipse(x, y, 20);
+        
+        // Mathematical symbols inside
+        fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(12);
+        let symbols = ["α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ"];
+        text(symbols[i], x, y);
+    }
+
+    // Core
+    fill(255, 215, 0, 20 + sin(time*3)*20); noStroke();
+    ellipse(0, 0, radius*1.2);
+    fill(255, 215, 0); textSize(24); textAlign(CENTER, CENTER);
+    text("ALL IS NUMBER", 0, 0);
+    pop();
+}
+
+function drawPentagram() {
+    push();
+    translate(width / 2, height / 2 + 20);
+    
+    let r = min(width, height) * 0.3;
+    let pts = [];
+    for (let i = 0; i < 5; i++) {
+        let a = TWO_PI * i / 5 - HALF_PI;
+        pts.push({x: cos(a)*r, y: sin(a)*r});
+    }
+
+    // Outer circle
+    stroke(255, 50); strokeWeight(2); noFill();
+    ellipse(0, 0, r*2);
+
+    // Draw Pentagram dynamically based on time
+    let drawLimit = min(time * 1.5, 5); 
+    
+    stroke(225, 0, 255); strokeWeight(4);
+    for(let i=0; i < Math.floor(drawLimit); i++) {
+        let p1 = pts[(i * 2) % 5];
+        let p2 = pts[((i+1) * 2) % 5];
+        line(p1.x, p1.y, p2.x, p2.y);
+    }
+
+    // Active drawing line
+    if (drawLimit < 5) {
+        let currentI = Math.floor(drawLimit);
+        let fraction = drawLimit % 1;
+        let p1 = pts[(currentI * 2) % 5];
+        let p2 = pts[((currentI+1) * 2) % 5];
+        let cx = lerp(p1.x, p2.x, fraction);
+        let cy = lerp(p1.y, p2.y, fraction);
+        line(p1.x, p1.y, cx, cy);
+        
+        fill(255, 215, 0); noStroke();
+        ellipse(cx, cy, 10);
+    } else {
+        // Complete glow
+        fill(225, 0, 255, 30 + sin(time*4)*20); noStroke();
+        beginShape();
+        for (let i = 0; i < 5; i++) vertex(pts[(i * 2) % 5].x, pts[(i * 2) % 5].y);
+        endShape(CLOSE);
+    }
+
+    pop();
+}
+
+function drawTetractys() {
+    push();
+    translate(width / 2, height / 2 - 80);
+
+    let rows = 4;
+    let spacing = 60;
+    
+    for (let r = 1; r <= rows; r++) {
+        let startX = -(r - 1) * (spacing / 2);
+        let y = r * spacing;
+        
+        for (let c = 0; c < r; c++) {
+            let x = startX + c * spacing;
+            
+            // Glowing dots
+            let pulse = sin(time * 2 + r + c) * 10;
+            fill(255, 215, 0, 50); noStroke();
+            ellipse(x, y, 30 + pulse);
+            fill(255);
+            ellipse(x, y, 12);
+
+            // Connect lines to show triangle structure
+            if (r < rows) {
+                stroke(255, 30); strokeWeight(2);
+                line(x, y, x - spacing/2, y + spacing);
+                line(x, y, x + spacing/2, y + spacing);
+            }
+        }
+    }
+
+    // Labels
+    fill(225, 0, 255); noStroke(); textSize(20); textAlign(CENTER);
+    text("1 + 2 + 3 + 4 = 10", 0, rows * spacing + 60);
+    fill(255, 150); textSize(14);
+    text("The Perfect Number. The Universe.", 0, rows * spacing + 85);
+    pop();
+}
+
+function drawMusic() {
+    push();
+    translate(width / 2 - 200, height / 2);
+
+    let stringLen = 400;
+    let freqs = [1, 1.5, 2]; // Fundamental, Perfect Fifth (3:2), Octave (2:1)
+    let labels = ["1:1 (Fundamental)", "3:2 (Perfect Fifth)", "2:1 (Octave)"];
+
+    for(let i=0; i<3; i++) {
+        let y = (i - 1) * 100;
+        let f = freqs[i];
+        
+        // Pluck animation
+        let amp = exp(-time%2) * 40; 
+        
+        // Draw string
+        stroke(255, 215, 0); strokeWeight(3); noFill();
+        beginShape();
+        for(let x=0; x<=stringLen; x+=5) {
+            let waveY = sin(x * 0.05 * f + time * 10) * amp * sin(PI * x/stringLen);
+            vertex(x, y + waveY);
+        }
+        endShape();
+
+        // Nodes
+        fill(255); noStroke();
+        ellipse(0, y, 10); ellipse(stringLen, y, 10);
+
+        // Labels
+        fill(225, 0, 255); textAlign(LEFT); textSize(16);
+        text(labels[i], stringLen + 30, y + 5);
+    }
+    pop();
+}
+
+// ============================================================
+// ACT II: THE MATHEMATICS
+// ============================================================
+
+function drawRopeStretchers() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    
+    let scale = 40;
+    let ax = 0, ay = 0;
+    let bx = 4 * scale, by = 0;
+    let cx = 0, cy = -3 * scale;
+
+    // Center the whole thing
+    translate(-bx/2, -cy/2);
+
+    // The animated pulling of the rope
+    let t = min(time * 0.5, 1.0);
+    
+    // Animate point C coming up to form the 3-4-5
+    let animCx = lerp(bx/2, cx, t);
+    let animCy = lerp(0, cy, t);
+
+    // Draw Rope segments
+    stroke(222, 184, 135); strokeWeight(6); // Rope color
+    line(ax, ay, bx, by); // 4 segment
+    line(bx, by, animCx, animCy); // 5 segment
+    line(animCx, animCy, ax, ay); // 3 segment
+
+    // Draw Knots
+    fill(205, 133, 63); stroke(139, 69, 19); strokeWeight(2);
+    // Base knots (5 knots, 4 spaces)
+    for(let i=0; i<=4; i++) ellipse(ax + i*scale, ay, 12);
+    
+    if (t > 0.9) {
+        // Vertical knots (4 knots, 3 spaces)
+        for(let i=1; i<=3; i++) ellipse(ax, ay - i*scale, 12);
+        // Hypotenuse knots (6 knots, 5 spaces)
+        for(let i=1; i<5; i++) ellipse(bx + i*((cx-bx)/5), by + i*((cy-by)/5), 12);
+        
+        // Right angle indicator
+        stroke(255, 215, 0); strokeWeight(3); noFill();
+        rect(ax, ay, 20, -20);
+        
+        fill(255, 215, 0); noStroke(); textSize(24);
+        text("90°", ax - 40, ay + 20);
+    }
+
+    fill(255); noStroke(); textSize(18); textAlign(CENTER);
+    text("4 Knots", ax + 2*scale, ay + 30);
+    if(t > 0.9) {
+        text("3 Knots", ax - 40, ay - 1.5*scale);
+        text("5 Knots", bx/2 + 30, cy/2 - 20);
+    }
+    pop();
+}
+
+function drawPythagoreanIntro() {
+    push();
+    translate(width / 2, height / 2 + 80);
+
+    let a = 120;
+    let b = 160;
+    let c = Math.sqrt(a*a + b*b);
+
+    // Rotate slowly for epic feel
+    rotate(-time * 0.1);
+
+    let ptA = {x: 0, y: 0};
+    let ptB = {x: b, y: 0};
+    let ptC = {x: 0, y: -a};
+
+    // Center the whole object
+    translate(-b/2, a/2);
+
+    // Center Triangle
+    fill(15, 5, 24); stroke(255); strokeWeight(4);
+    triangle(ptA.x, ptA.y, ptB.x, ptB.y, ptC.x, ptC.y);
+
+    // Square A
+    fill(225, 0, 255, 80); stroke(225, 0, 255); strokeWeight(2);
+    rect(ptC.x - a, ptC.y, a, a);
+    fill(255); noStroke(); textSize(20); textAlign(CENTER, CENTER);
+    text("a²", ptC.x - a/2, ptC.y + a/2);
+
+    // Square B
+    fill(0, 229, 255, 80); stroke(0, 229, 255); strokeWeight(2);
+    rect(ptA.x, ptA.y, b, b);
+    fill(255); text("b²", ptA.x + b/2, ptA.y + b/2);
+
+    // Square C (Hypotenuse)
+    fill(255, 215, 0, 80); stroke(255, 215, 0); strokeWeight(2);
+    push();
+    translate(ptB.x, ptB.y);
+    let angleC = atan2(ptC.y - ptB.y, ptC.x - ptB.x);
+    rotate(angleC);
+    rect(0, 0, c, -c);
+    fill(255); translate(c/2, -c/2); rotate(-angleC + time*0.1); // Keep text upright relative to screen
+    text("c²", 0, 0);
+    pop();
+
+    pop();
+}
+
+function drawVisualProof() {
+    push();
+    translate(width / 2, height / 2 + 80);
+
+    let a = 120; let b = 160; let c = Math.sqrt(a*a + b*b);
+    let ptA = {x: 0, y: 0}; let ptB = {x: b, y: 0}; let ptC = {x: 0, y: -a};
+    
+    translate(-b/2, a/2);
+
+    // The Triangle
+    stroke(255); strokeWeight(4); noFill();
+    triangle(ptA.x, ptA.y, ptB.x, ptB.y, ptC.x, ptC.y);
+
+    // Animation variables (0 to 1 loop)
+    let loopT = (sin(time) + 1) / 2;
+
+    // Square C Boundary
+    push();
+    translate(ptB.x, ptB.y);
+    let angleC = atan2(ptC.y - ptB.y, ptC.x - ptB.x);
+    rotate(angleC);
+    stroke(255, 215, 0); strokeWeight(3); noFill();
+    rect(0, 0, c, -c);
+    
+    // The "Water" transferring
+    fill(255, 215, 0, 150); noStroke();
+    rect(0, 0, c, -c * loopT); 
+    pop();
+
+    // Square A Water draining
+    fill(225, 0, 255, 150); stroke(225, 0, 255); strokeWeight(2);
+    rect(ptC.x - a, ptC.y + a*loopT, a, a*(1-loopT));
+
+    // Square B Water draining
+    fill(0, 229, 255, 150); stroke(0, 229, 255); strokeWeight(2);
+    rect(ptA.x, ptA.y + b*loopT, b, b*(1-loopT));
+
+    // Dynamic Equation
+    fill(255); noStroke(); textSize(24); textAlign(CENTER);
+    text("Area of A + Area of B  =  Area of C", b/2, b + 60);
+    pop();
+}
+
+function drawIrrationalCrisis() {
+    push();
+    translate(width / 2, height / 2 + 50);
+
+    let side = 200;
+    
+    // The Unit Square
+    stroke(255, 50); strokeWeight(3); noFill();
+    rect(-side/2, -side, side, side);
+
+    // The Sides (1 and 1)
+    fill(255); noStroke(); textSize(20); textAlign(CENTER, CENTER);
+    text("1", 0, 20); // Bottom
+    text("1", -side/2 - 20, -side/2); // Left
+
+    // The Diagonal (Crisis)
+    stroke(255, 50, 50, 150 + sin(time*5)*100); strokeWeight(6);
+    line(-side/2, 0, side/2, -side);
+
+    // Pulsing √2
+    fill(255, 50, 50); noStroke(); textSize(36);
+    text("√2", 0, -side/2 - 20);
+
+    // The Infinite Decimal Scroll
+    let dec = "1.4142135623730950488016887242096...";
+    let offset = Math.floor(time * 5) % 15;
+    let visibleStr = dec.substring(offset, offset + 15);
+    
+    fill(255, 150); textSize(24); letterSpacing = 5;
+    text(visibleStr + "...", 0, -side/2 + 30);
+
+    fill(255, 215, 0); textSize(16);
+    text("It never ends. It never repeats. It cannot be a fraction.", 0, 80);
+    text("The 'perfect' math was broken.", 0, 110);
+    
+    pop();
+}
+
+function drawDrowning() {
+    push();
+    translate(width / 2, height / 2);
+
+    // Dark deep ocean
+    for (let i = 0; i < 10; i++) {
+        fill(5, 5, 15, 50); noStroke();
+        rect(-width/2, i*30, width, 30);
+    }
+
+    // Waves at the surface
+    stroke(255, 30); strokeWeight(2); noFill();
+    beginShape();
+    for(let x = -width/2; x <= width/2; x += 10) {
+        let y = -100 + sin(x*0.02 + time*2) * 20;
+        vertex(x, y);
+    }
+    endShape();
+
+    // Sinking Hippasus (The Golden Truth)
+    let sinkY = -50 + (time * 20) % (height);
+    
+    // Bubble particles rising from him
+    fill(255, 100); noStroke();
+    for(let i=0; i<3; i++) {
+        ellipse(sin(time*3 + i)*20, sinkY - 20 - i*30 - (time*30)%50, 5);
+    }
+
+    // The glowing truth sinking
+    fill(255, 215, 0, 200); noStroke();
+    ellipse(0, sinkY, 20);
+    textSize(20); textAlign(CENTER, CENTER);
+    text("√2", 0, sinkY - 30);
+
+    // Final haunting text
+    fill(255, 150); textSize(18);
+    text("Hippasus drowned, but the irrational numbers survived.", 0, 120);
+    fill(225, 0, 255); textSize(24);
+    text("Geometry had evolved.", 0, 160);
+
+    pop();
+}
+</script>
+<a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+</body>
+</html>

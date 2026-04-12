@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Astronomer (Ptolemy)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #0A0A14; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        /* Act Indicator */
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #EBCB8B; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        /* Main Info Box */
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #EBCB8B; 
+            padding-left: 20px; z-index: 10;
+            background: rgba(10, 10, 20, 0.85); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #EBCB8B; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        /* Insight Bar */
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(180, 142, 173, 0.1);
+            border-top: 1px solid rgba(180, 142, 173, 0.4);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #EBCB8B; font-weight: bold; }
+
+        /* Tap hint & Logo */
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #777; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #B48EAD; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px;}
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; max-width: 90%; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <div class="viamath-logo">VIAMATH</div>
+        Tap anywhere to advance ➔
+    </div>
+    
+    <div id="act-indicator">ACT I: THE HEAVENS</div>
+
+    <div id="label">
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+
+let particles = [];
+let epicycleTrail = []; // Used for state 3
+
+const content = [
+    // ACT I: THE HEAVENS
+    {
+        title: "The Watcher of Alexandria", sub: "Claudius Ptolemy (c. 100 – 170 AD)",
+        desc: "Living in Roman Egypt, Ptolemy looked up at the night sky and asked a monumental question: How does the machinery of the universe actually work? He compiled all Greek and Babylonian astronomy into one master model.",
+        insight: "He believed Earth was the unmoving center of the entire universe (Geocentrism)."
+    },
+    {
+        title: "The Almagest", sub: "The Greatest Book",
+        desc: "He wrote a 13-part treatise originally called the 'Mathematike Syntaxis'. It was so profoundly accurate at predicting planetary movements that later Arabic scholars simply named it 'Al-Majisti'—The Greatest.",
+        insight: "It was the undisputed bible of astronomy for 1,400 years."
+    },
+    {
+        title: "The Retrograde Riddle", sub: "When Planets Go Backwards",
+        desc: "There was a major problem with Earth being the center: Mars and Jupiter occasionally appeared to stop, move backwards (retrograde loop), and then move forwards again in the night sky. How could perfect circular orbits do this?",
+        insight: "Ptolemy needed a mathematical trick to 'save the appearances' of the sky."
+    },
+    {
+        title: "Wheels Within Wheels", sub: "The Epicycle",
+        desc: "His brilliant, complex solution: Planets don't orbit Earth in simple circles. They orbit in small circles (epicycles) which are themselves orbiting Earth on larger circles (deferents).",
+        insight: "It was physically incorrect, but mathematically, it matched the sky perfectly!"
+    },
+    // ACT II: THE MATHEMATICS OF THE CIRCLE
+    {
+        title: "The 360-Degree Standard", sub: "Babylon Meets Greece",
+        desc: "To track these complex orbits, Ptolemy needed a universal ruler. He borrowed the Babylonian Base-60 (sexagesimal) system and permanently standardized dividing every circle into exactly 360 equal parts (degrees).",
+        insight: "He further divided each degree into 60 'minutes' and 60 'seconds' of arc."
+    },
+    {
+        title: "The Table of Chords", sub: "The Birth of Trigonometry",
+        desc: "Before Sine and Cosine existed, Ptolemy used 'Chords'. He drew a straight line connecting two points on a circle's edge and mathematically linked the length of the line to the angle of the slice.",
+        insight: "He generated a massive table of these chord lengths from 0.5° to 180° to track the stars."
+    },
+    {
+        title: "Ptolemy's Theorem", sub: "The Geometry of the Stars",
+        desc: "To calculate his Chord Table, he discovered a beautiful theorem: If you draw any 4-sided polygon perfectly inside a circle, the product of its diagonals equals the sum of the products of its opposite sides.",
+        insight: "(AC × BD) = (AB × CD) + (BC × AD)"
+    },
+    {
+        title: "The Precision of Pi (π)", sub: "π ≈ 3.14166",
+        desc: "Using his 360-degree chords and Base-60 math, Ptolemy calculated the exact ratio of a circle's circumference to its diameter. He wrote it as: 3 + 8/60 + 30/3600.",
+        insight: "This equals 377/120, or exactly 3.14166. Staggering precision for the ancient world!"
+    },
+    {
+        title: "The Grid of the Earth", sub: "Latitude & Longitude",
+        desc: "Ptolemy didn't just map the stars; he mapped the Earth. He applied his 360-degree math to our planet, inventing the coordinate system of Latitude and Longitude that GPS still uses today.",
+        insight: "Columbus used Ptolemy's maps to sail across the Atlantic (though Ptolemy underestimated Earth's size)."
+    },
+    {
+        title: "The Mathematical Illusion", sub: "Model vs Reality",
+        desc: "Ptolemy's model was a physical illusion, but a mathematical triumph. It proved that equations can accurately predict reality, even if we don't understand the physical truth underneath them.",
+        insight: "It took Copernicus and Galileo 1,400 years to finally break Ptolemy's spell. Welcome to ViaMath."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    // Celestial starfield
+    for(let i=0; i<100; i++) particles.push({x: random(width), y: random(height), s: random(1, 3), a: random(TWO_PI)});
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % 10;
+    
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+
+    let actInd = document.getElementById("act-indicator");
+    let labelBorder = document.getElementById("label");
+    
+    if (state < 4) {
+        actInd.innerText = "ACT I: THE HEAVENS & THE ALMAGEST";
+        actInd.style.color = "#EBCB8B"; // Gold
+        labelBorder.style.borderLeftColor = "#EBCB8B";
+    } else {
+        actInd.innerText = "ACT II: THE MATHEMATICS OF THE CIRCLE";
+        actInd.style.color = "#B48EAD"; // Purple/Pink
+        labelBorder.style.borderLeftColor = "#B48EAD";
+    }
+
+    let span = document.querySelector('.highlight');
+    if (state < 4) {
+        span.innerText = "HISTORICAL INSIGHT:"; span.style.color = "#EBCB8B";
+    } else if (state === 9) {
+        span.innerText = "REFLECTION:"; span.style.color = "#B48EAD";
+    } else {
+        span.innerText = "GEOMETRIC LAW:"; span.style.color = "#B48EAD";
+    }
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function getScaleFactor() { return min(1, width / 800); }
+
+function draw() {
+    background(10, 10, 20); // Deep Space Night
+
+    // Abstract grid
+    stroke(255, 6); strokeWeight(1);
+    for (let i = 0; i < width; i += 80) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 80) line(0, j, width, j);
+
+    time += 0.02;
+
+    // Ambient twinkling stars
+    for(let p of particles) {
+        // Slow rotation of the heavens around the center (Geocentric)
+        let cx = width/2, cy = height/2;
+        let a = atan2(p.y - cy, p.x - cx);
+        let d = dist(cx, cy, p.x, p.y);
+        a += 0.001; // Slow rotation
+        p.x = cx + cos(a) * d;
+        p.y = cy + sin(a) * d;
+
+        fill(235, 203, 139, 50 + sin(time*3 + p.x)*150); noStroke(); // Twinkling gold
+        ellipse(p.x, p.y, p.s);
+    }
+
+    // State Router
+    if      (state === 0) drawGeocentric();
+    else if (state === 1) drawAlmagest();
+    else if (state === 2) drawRetrograde();
+    else if (state === 3) drawEpicycle();
+    else if (state === 4) draw360Degree();
+    else if (state === 5) drawChords();
+    else if (state === 6) drawPtolemyTheorem();
+    else if (state === 7) drawPiCalc();
+    else if (state === 8) drawLatLong();
+    else if (state === 9) drawLegacy();
+
+    // Cinematic fade overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0; epicycleTrail = [];
+            updateUI();
+            document.getElementById("label").style.opacity = 1;
+            document.getElementById("insight-bar").style.opacity = 1;
+            document.getElementById("act-indicator").style.opacity = 1;
+            if (state !== 9) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(10, 10, 20, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE HEAVENS
+// ============================================================
+
+function drawGeocentric() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Earth at the center
+    drawingContext.shadowBlur = 20; drawingContext.shadowColor = '#5E81AC';
+    fill(94, 129, 172); noStroke();
+    ellipse(0, 0, 40);
+    fill(255); textSize(12); textAlign(CENTER); text("EARTH", 0, -30);
+    drawingContext.shadowBlur = 0;
+
+    // Orbital rings
+    let orbits = [80, 140, 220, 300];
+    let speeds = [1.2, 0.8, 0.4, 0.2];
+    let colors = ['#D08770', '#EBCB8B', '#BF616A', '#B48EAD'];
+    let names = ['Moon', 'Sun', 'Mars', 'Jupiter'];
+
+    for(let i=0; i<orbits.length; i++) {
+        stroke(255, 30); strokeWeight(1); noFill();
+        ellipse(0, 0, orbits[i]*2);
+        
+        // Planets
+        let px = cos(time * speeds[i]) * orbits[i];
+        let py = sin(time * speeds[i]) * orbits[i];
+        
+        fill(colors[i]); noStroke();
+        ellipse(px, py, 15);
+        
+        fill(255, 150); textSize(12);
+        text(names[i], px, py - 15);
+    }
+    pop();
+}
+
+function drawAlmagest() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Floating Ancient Astrolabe / Geometry
+    rotate(time * 0.2);
+    
+    stroke(235, 203, 139, 150); strokeWeight(2); noFill();
+    ellipse(0, 0, 200);
+    ellipse(0, 0, 220);
+
+    for(let i=0; i<12; i++) {
+        let a = TWO_PI * i / 12;
+        line(cos(a)*100, sin(a)*100, cos(a)*110, sin(a)*110);
+        // Constellation lines
+        stroke(180, 142, 173, 50);
+        line(cos(a)*100, sin(a)*100, cos(TWO_PI*(i+3)/12)*100, sin(TWO_PI*(i+3)/12)*100);
+    }
+
+    fill(235, 203, 139, 50); noStroke();
+    ellipse(0, 0, 60);
+    fill(255); textAlign(CENTER, CENTER); textSize(24); letterSpacing = 4;
+    text("Η Μεγίστη", 0, 0); // "The Greatest" in Greek
+
+    pop();
+}
+
+function drawRetrograde() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Earth
+    fill(94, 129, 172); noStroke(); ellipse(0, 150, 30);
+    fill(255); textSize(14); textAlign(CENTER); text("Observer", 0, 180);
+
+    // Sky Background Arch
+    noFill(); stroke(255, 30); strokeWeight(2);
+    arc(0, 150, 500, 500, PI+PI/4, TWO_PI-PI/4);
+
+    // Planet moving with retrograde loop
+    // x = t, y = sin(t) to create a loop
+    let tProg = (time % 6); // 0 to 6 loop
+    let px = map(tProg, 0, 6, -200, 200);
+    
+    // The "Loop" effect
+    let loopEffect = sin(tProg * PI) * 60; // pushes it backwards
+    let finalPx = px + loopEffect;
+    let finalPy = -100 - cos(tProg * PI) * 30;
+
+    // Draw trail
+    stroke(191, 97, 106, 100); strokeWeight(2); noFill();
+    beginShape();
+    for(let t=0; t<6; t+=0.1) {
+        let tx = map(t, 0, 6, -200, 200) + sin(t * PI) * 60;
+        let ty = -100 - cos(t * PI) * 30;
+        vertex(tx, ty);
+    }
+    endShape();
+
+    // Draw Planet
+    fill(191, 97, 106); stroke(255); strokeWeight(2);
+    ellipse(finalPx, finalPy, 20);
+
+    // Line of sight
+    stroke(255, 50); drawingContext.setLineDash([5, 5]);
+    line(0, 150, finalPx, finalPy);
+    drawingContext.setLineDash([]);
+
+    fill(255, 200); noStroke(); textSize(20);
+    text("The 'Loop' defies simple circles.", 0, -180);
+    pop();
+}
+
+function drawEpicycle() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let R = 150; // Deferent (Main circle) radius
+    let r = 60;  // Epicycle radius
+    
+    // Main orbit rotation
+    let a1 = -time * 0.8; 
+    // Epicycle rotation
+    let a2 = -time * 3.5;
+
+    let deferentX = cos(a1) * R;
+    let deferentY = sin(a1) * R;
+    
+    let planetX = deferentX + cos(a2) * r;
+    let planetY = deferentY + sin(a2) * r;
+
+    // Add to trail
+    if (epicycleTrail.length > 200) epicycleTrail.shift();
+    epicycleTrail.push({x: planetX, y: planetY});
+
+    // Earth
+    fill(94, 129, 172); noStroke(); ellipse(0, 0, 20);
+
+    // Deferent Circle
+    stroke(255, 50); strokeWeight(2); noFill();
+    ellipse(0, 0, R*2);
+
+    // Epicycle Trail (The resulting spirograph)
+    stroke(180, 142, 173, 200); strokeWeight(3); noFill();
+    beginShape();
+    for(let pt of epicycleTrail) vertex(pt.x, pt.y);
+    endShape();
+
+    // The Epicycle
+    stroke(235, 203, 139, 150); strokeWeight(2);
+    ellipse(deferentX, deferentY, r*2);
+    
+    // Center of epicycle
+    fill(235, 203, 139); noStroke(); ellipse(deferentX, deferentY, 8);
+    // Line from epicycle center to planet
+    stroke(255); strokeWeight(1);
+    line(deferentX, deferentY, planetX, planetY);
+
+    // Planet
+    fill(191, 97, 106); stroke(255); strokeWeight(2);
+    ellipse(planetX, planetY, 15);
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(20);
+    text("Wheels orbiting upon wheels.", 0, 240);
+    pop();
+}
+
+// ============================================================
+// ACT II: THE MATHEMATICS OF THE CIRCLE
+// ============================================================
+
+function draw360Degree() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 180;
+    
+    // Circle
+    stroke(255, 100); strokeWeight(2); noFill();
+    ellipse(0, 0, r*2);
+
+    // Animate splitting into 360
+    let fillProgress = min(time * 60, 360); // Draws 360 ticks over time
+
+    for(let i=0; i<fillProgress; i++) {
+        let a = TWO_PI * (i / 360);
+        let tickLen = (i % 90 === 0) ? 20 : (i % 10 === 0) ? 10 : 5;
+        let cColor = (i % 90 === 0) ? color(235, 203, 139) : color(255, 50);
+        
+        stroke(cColor); strokeWeight((i % 10 === 0) ? 2 : 1);
+        line(cos(a)*(r-tickLen), sin(a)*(r-tickLen), cos(a)*r, sin(a)*r);
+    }
+
+    // A zooming lens effect to show the Base-60 minutes/seconds
+    if (fillProgress >= 360) {
+        // Draw Magnifying Glass over 0 degrees
+        let magX = r; let magY = 0;
+        
+        stroke(255); strokeWeight(3); noFill();
+        ellipse(magX + 60, magY, 120);
+        stroke(180, 142, 173); strokeWeight(2);
+        line(magX + 60, magY, magX + 20, magY); // Target line
+        
+        // Inner magnified view
+        fill(10, 10, 20, 200); noStroke(); ellipse(magX + 60, magY, 118);
+        
+        fill(255); textAlign(CENTER, CENTER); textSize(14);
+        text("1°", magX + 60, magY - 30);
+        
+        // Division lines inside lens
+        stroke(180, 142, 173, 150); strokeWeight(1);
+        for(let j=0; j<10; j++) {
+            let lx = magX + 15 + j*10;
+            line(lx, magY - 10, lx, magY + 10);
+        }
+        
+        fill(235, 203, 139); noStroke(); textSize(12);
+        text("60 Minutes (')", magX + 60, magY + 30);
+    }
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(36); letterSpacing = 4;
+    text("360°", 0, -30);
+    fill(180, 142, 173); textSize(18); letterSpacing = 2;
+    text("Base-60 Sexagesimal", 0, 10);
+    pop();
+}
+
+function drawChords() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 180;
+    
+    // Circle
+    stroke(255, 50); strokeWeight(2); noFill();
+    ellipse(0, 0, r*2);
+    // Diameter line
+    stroke(255, 30); line(-r, 0, r, 0); line(0, -r, 0, r);
+
+    // Angle oscillates between 10 and 150 degrees
+    let angleDeg = map(sin(time*1.2), -1, 1, 10, 150);
+    let a = radians(angleDeg);
+
+    let p1x = r, p1y = 0;
+    let p2x = cos(-a)*r, p2y = sin(-a)*r;
+
+    // Radius lines
+    stroke(255, 100); strokeWeight(2);
+    line(0, 0, p1x, p1y);
+    line(0, 0, p2x, p2y);
+
+    // Angle Arc
+    noFill(); stroke(235, 203, 139); strokeWeight(3);
+    arc(0, 0, 60, 60, -a, 0);
+    
+    // The Chord Line
+    stroke(180, 142, 173); strokeWeight(4);
+    line(p1x, p1y, p2x, p2y);
+
+    // Chord Length calculation (Chord(a) = 2r * sin(a/2))
+    let chordLen = 2 * r * sin(a/2);
+
+    // Points
+    fill(255); noStroke(); ellipse(0,0,8);
+    ellipse(p1x, p1y, 8); ellipse(p2x, p2y, 8);
+
+    // Math Labels
+    fill(235, 203, 139); textSize(20); textAlign(CENTER);
+    text(Math.floor(angleDeg) + "°", 40, -15);
+    
+    fill(180, 142, 173); textSize(22);
+    text("Chord Length: " + (chordLen/r).toFixed(3) + "r", 0, r + 50);
+
+    fill(255, 150); textSize(16);
+    text("The ancestor of the Sine function.", 0, r + 80);
+    pop();
+}
+
+function drawPtolemyTheorem() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 160;
+    
+    // Circle
+    stroke(255, 50); strokeWeight(2); noFill();
+    ellipse(0, 0, r*2);
+
+    // 4 Points of the Cyclic Quadrilateral rotating smoothly
+    let pts = [
+        {a: time*0.3},
+        {a: PI/2 + time*0.5},
+        {a: PI + time*0.4},
+        {a: 3*PI/2 + time*0.2}
+    ];
+
+    let coords = [];
+    for(let p of pts) coords.push({x: cos(p.a)*r, y: sin(p.a)*r});
+
+    // Draw Quadrilateral
+    stroke(235, 203, 139); strokeWeight(3); fill(235, 203, 139, 20);
+    beginShape();
+    for(let c of coords) vertex(c.x, c.y);
+    endShape(CLOSE);
+
+    // Draw Diagonals
+    stroke(180, 142, 173); strokeWeight(4);
+    line(coords[0].x, coords[0].y, coords[2].x, coords[2].y); // AC
+    line(coords[1].x, coords[1].y, coords[3].x, coords[3].y); // BD
+
+    // Labels for points
+    let names = ["A", "B", "C", "D"];
+    fill(255); noStroke(); textSize(20); textAlign(CENTER, CENTER);
+    for(let i=0; i<4; i++) {
+        let offsetX = cos(pts[i].a)*25;
+        let offsetY = sin(pts[i].a)*25;
+        text(names[i], coords[i].x + offsetX, coords[i].y + offsetY);
+        ellipse(coords[i].x, coords[i].y, 10);
+    }
+
+    // The Equation
+    fill(180, 142, 173); textSize(24);
+    text("(AC × BD)", 0, r + 50);
+    fill(255); text("=", 0, r + 80);
+    fill(235, 203, 139);
+    text("(AB × CD)  +  (BC × AD)", 0, r + 110);
+    pop();
+}
+
+function drawPiCalc() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 120;
+    
+    // Glowing Circle
+    drawingContext.shadowBlur = 40; drawingContext.shadowColor = '#B48EAD';
+    stroke(180, 142, 173); strokeWeight(6); noFill();
+    ellipse(0, -50, r*2);
+    drawingContext.shadowBlur = 0;
+
+    // Pi Symbol in middle
+    fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(60);
+    text("π", 0, -55);
+
+    // Mathematical Breakdown
+    let breakdownY = 120;
+    
+    fill(235, 203, 139); textSize(28);
+    text("Base-60 Sexagesimal Calculation:", 0, breakdownY);
+    
+    fill(255); textSize(36);
+    text("3  +  8 / 60  +  30 / 3600", 0, breakdownY + 50);
+    
+    stroke(255, 50); strokeWeight(2);
+    line(-200, breakdownY + 80, 200, breakdownY + 80);
+    
+    fill(180, 142, 173); noStroke(); textSize(48);
+    text("≈ 3.14166...", 0, breakdownY + 120);
+    
+    pop();
+}
+
+function drawLatLong() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 160;
+    rotate(time * 0.2); // Spin the globe
+
+    // Globe Silhouette
+    fill(10, 10, 20); stroke(255, 50); strokeWeight(2);
+    ellipse(0, 0, r*2);
+
+    // Latitude (Horizontal Rings projected)
+    stroke(180, 142, 173, 150); strokeWeight(2); noFill();
+    for(let i=-r*0.8; i<=r*0.8; i+=r*0.4) {
+        let curR = sqrt(r*r - i*i); // Radius of the horizontal slice
+        ellipse(0, i, curR*2, curR*0.3); // Elliptical projection
+    }
+    // Equator
+    stroke(235, 203, 139); strokeWeight(3);
+    ellipse(0, 0, r*2, r*0.3);
+
+    // Longitude (Vertical Arcs)
+    stroke(69, 162, 158, 150); strokeWeight(2);
+    for(let a=0; a<TWO_PI; a+=PI/4) {
+        // Simple rotating arc projection
+        let xProj = cos(a + time) * r;
+        arc(0, 0, abs(xProj)*2, r*2, -HALF_PI, HALF_PI);
+    }
+
+    pop();
+    
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+    fill(255); noStroke(); textAlign(CENTER); textSize(24); letterSpacing = 2;
+    text("Coordinates of the Earth", 0, r + 60);
+    fill(235, 203, 139); textSize(16);
+    text("Applying 360° to the physical world.", 0, r + 90);
+    pop();
+}
+
+function drawLegacy() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Central sun slowly overtaking the earth (The shift to Copernicus)
+    let t = (sin(time * 0.5) + 1)/2; // 0 to 1
+    
+    let earthR = lerp(40, 10, t);
+    let sunR = lerp(10, 60, t);
+    let earthX = lerp(0, 150, t);
+
+    // Sun growing in center
+    drawingContext.shadowBlur = 50; drawingContext.shadowColor = '#EBCB8B';
+    fill(235, 203, 139); noStroke();
+    ellipse(0, 0, sunR*2);
+    drawingContext.shadowBlur = 0;
+
+    // Earth moving to orbit
+    fill(94, 129, 172);
+    ellipse(earthX, 0, earthR*2);
+
+    // Orbit trail
+    if (t > 0.1) {
+        stroke(255, 50); strokeWeight(2); noFill();
+        ellipse(0, 0, earthX*2);
+    }
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(24); letterSpacing = 2;
+    text("The Illusion Fades", 0, 180);
+    fill(180, 142, 173); textSize(16);
+    text("His physical model was wrong. His math was eternal.", 0, 210);
+    pop();
+}
+</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coming Soon</title>
+</head>
+<body>
+  <main>
+    <h1>Character page coming soon</h1>
+    <p>This folder is reserved for future character content.</p>
+  </main>
+<a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+</body>
+</html>

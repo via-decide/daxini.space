@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Architect (Euclid)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #080C16; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        /* Act Indicator */
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #F4D03F; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        /* Main Info Box */
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #F4D03F; 
+            padding-left: 20px; z-index: 10;
+            background: rgba(8, 12, 22, 0.85); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #F4D03F; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        /* Insight Bar */
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(46, 204, 113, 0.1);
+            border-top: 1px solid rgba(46, 204, 113, 0.4);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #F4D03F; font-weight: bold; }
+
+        /* Tap hint & Logo */
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #777; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #2ECC71; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px;}
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; max-width: 90%; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <a href="../../" style="text-decoration:none"><div class="viamath-logo">← VIAMATH</div></a>
+        Tap anywhere to advance ➔
+    </div>
+    
+    <div id="act-indicator">ACT I: THE HISTORY</div>
+
+    <div id="label">
+        <h1 id="title">The Ghost of Alexandria</h1>
+        <p id="subtitle">c. 300 BC</p>
+        <p id="description">We know almost nothing about his life. No birthplace, no death date, no physical description. Yet, there is a famous historical quote: 'Euclid means Mathematics, and Mathematics means Euclid.'</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">His personal identity vanished, entirely absorbed by the absolute perfection of his work.</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+
+let particles = [];
+
+const content = [
+    // ACT I: THE HISTORY & THE BOOK
+    {
+        title: "The Ghost of Alexandria", sub: "c. 300 BC",
+        desc: "We know almost nothing about his life. No birthplace, no death date, no physical description. Yet, there is a famous historical quote: 'Euclid means Mathematics, and Mathematics means Euclid.'",
+        insight: "His personal identity vanished, entirely absorbed by the absolute perfection of his work."
+    },
+    {
+        title: "The Great Organizer", sub: "The Library of Alexandria",
+        desc: "Working in the legendary Library of Alexandria, Euclid gathered centuries of disorganized, chaotic math from Thales, Pythagoras, and Plato. He realized that a scattered pile of proofs was useless without a foundation.",
+        insight: "He didn't just invent new math; he invented how math should be STRUCTURED."
+    },
+    {
+        title: "The Elements", sub: "The Greatest Textbook Ever Written",
+        desc: "He wrote a 13-book masterpiece called 'Stoicheia' (The Elements). It is considered the most successful and influential textbook in human history. After the printing press was invented, it was printed second only to the Bible.",
+        insight: "Abraham Lincoln kept a copy in his saddlebag to learn what 'true logic' meant."
+    },
+    {
+        title: "The 1899 Duration", sub: "2,200 Years Unchallenged",
+        desc: "Euclid's textbook was so flawless that it was taught exactly as he wrote it, unedited, for over two millennia. It wasn't until the year 1899 that David Hilbert finally modernized Euclid's axioms.",
+        insight: "A 2,200-year reign. No other scientific or mathematical work has ever lasted so long."
+    },
+    // ACT II: THE MATHEMATICS (THE AXIOMATIC METHOD)
+    {
+        title: "The Axiomatic Method", sub: "The Root of All Logic",
+        desc: "Euclid's ultimate genius was the 'Axiom'. Before you can prove a complex theorem, you must start with simple, self-evident truths that require no proof. He started the entire universe of geometry with just 5 simple rules.",
+        insight: "From just 5 seeds of truth, he grew an infinite tree of mathematics."
+    },
+    {
+        title: "Postulates I & II", sub: "The Straightedge",
+        desc: "Rule 1: A straight line segment can be drawn joining any two points. Rule 2: Any straight line segment can be extended continuously in a straight line to infinity.",
+        insight: "These two rules give us the infinite freedom of the straightedge."
+    },
+    {
+        title: "Postulate III", sub: "The Compass",
+        desc: "Rule 3: Given any straight line segment, a circle can be drawn using the segment as the radius and one endpoint as the center.",
+        insight: "This rule gives us the power to measure and transfer distances flawlessly."
+    },
+    {
+        title: "Postulate IV", sub: "The Universal Corner",
+        desc: "Rule 4: All right angles are perfectly equal to one another. No matter where they are drawn in the universe, a 90-degree corner is always the same.",
+        insight: "This established a universal standard of perfection for shapes."
+    },
+    {
+        title: "The Infamous 5th", sub: "The Parallel Postulate",
+        desc: "Rule 5: If two lines are drawn which intersect a third, and the interior angles on one side add up to less than 180°, the two lines will eventually cross on that side.",
+        insight: "This overly complex rule drove mathematicians crazy for 2,000 years. It birthed Parallel Lines."
+    },
+    {
+        title: "The Tree of Truth", sub: "Q.E.D.",
+        desc: "By combining those 5 simple axioms, Euclid proved exactly 465 complex theorems. He created a chain reaction of truth, where every new discovery was undeniably rooted in the one before it.",
+        insight: "Quod Erat Demonstrandum (What was to be demonstrated). Welcome to ViaMath."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    for(let i=0; i<60; i++) particles.push({x: random(width), y: random(height), s: random(2, 5), v: random(0.5, 1.5)});
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % 10;
+    
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+
+    let actInd = document.getElementById("act-indicator");
+    let labelBorder = document.getElementById("label");
+    
+    if (state < 4) {
+        actInd.innerText = "ACT I: THE HISTORY & THE BOOK";
+        actInd.style.color = "#F4D03F"; // Parchment Gold
+        labelBorder.style.borderLeftColor = "#F4D03F";
+    } else {
+        actInd.innerText = "ACT II: THE AXIOMATIC METHOD";
+        actInd.style.color = "#2ECC71"; // Axiom Green
+        labelBorder.style.borderLeftColor = "#2ECC71";
+    }
+
+    let span = document.querySelector('.highlight');
+    if (state < 4) {
+        span.innerText = "HISTORICAL INSIGHT:"; span.style.color = "#F4D03F";
+    } else if (state === 9) {
+        span.innerText = "REFLECTION:"; span.style.color = "#2ECC71";
+    } else {
+        span.innerText = "EUCLID'S AXIOM:"; span.style.color = "#2ECC71";
+    }
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function getScaleFactor() { return min(1, width / 800); }
+
+function draw() {
+    background(8, 12, 22); // Deep Navy background
+
+    // Classical grid (Papyrus texture feel)
+    stroke(255, 6); strokeWeight(1);
+    for (let i = 0; i < width; i += 60) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 60) line(0, j, width, j);
+
+    time += 0.02;
+
+    // Ambient floating dust
+    for(let p of particles) {
+        p.y -= p.v; 
+        if(p.y < 0) { p.y = height; p.x = random(width); }
+        fill(244, 208, 63, 40 + sin(time*2+p.x)*40); noStroke();
+        ellipse(p.x, p.y, p.s);
+    }
+
+    // State Router
+    if      (state === 0) drawGhostOfMath();
+    else if (state === 1) drawLibrary();
+    else if (state === 2) drawElementsBook();
+    else if (state === 3) drawDuration1899();
+    else if (state === 4) drawAxiomIntro();
+    else if (state === 5) drawPostulate12();
+    else if (state === 6) drawPostulate3();
+    else if (state === 7) drawPostulate4();
+    else if (state === 8) drawPostulate5();
+    else if (state === 9) drawAxiomaticTree();
+
+    // Cinematic fade overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0;
+            updateUI();
+            document.getElementById("label").style.opacity = 1;
+            document.getElementById("insight-bar").style.opacity = 1;
+            document.getElementById("act-indicator").style.opacity = 1;
+            if (state !== 9) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(8, 12, 22, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE HISTORY
+// ============================================================
+
+function drawGhostOfMath() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Morphing text: EUCLID <-> MATHEMATICS
+    let morphT = (sin(time * 1.5) + 1) / 2; // 0 to 1
+
+    textAlign(CENTER, CENTER);
+    textSize(60); letterSpacing = 10; fontStyle = "bold";
+
+    // Ghostly glow
+    drawingContext.shadowBlur = 40;
+    drawingContext.shadowColor = '#F4D03F';
+    
+    fill(244, 208, 63, 200 * (1 - morphT));
+    text("EUCLID", 0, -40);
+
+    drawingContext.shadowColor = '#2ECC71';
+    fill(46, 204, 113, 200 * morphT);
+    text("MATHEMATICS", 0, 40);
+
+    drawingContext.shadowBlur = 0;
+
+    // A shifting abstract geometry shape in the middle
+    noFill(); stroke(255, 100); strokeWeight(2);
+    rotate(time * 0.5);
+    let r = 120;
+    let morphSides = map(morphT, 0, 1, 3, 10);
+    beginShape();
+    for(let i=0; i<TWO_PI; i+=TWO_PI/Math.floor(morphSides)) {
+        vertex(cos(i)*r, sin(i)*r);
+    }
+    endShape(CLOSE);
+    
+    pop();
+}
+
+function drawLibrary() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Floating chaotic scrolls organizing into a neat stack
+    let numScrolls = 15;
+    let t = min(time * 0.5, 1.0); // Organization progress
+
+    for (let i = 0; i < numScrolls; i++) {
+        // Chaos coords
+        let cx = noise(i * 10, time) * 600 - 300;
+        let cy = noise(i * 20, time) * 400 - 200;
+        let cRot = noise(i * 30, time) * TWO_PI;
+
+        // Organized coords (stacked neatly)
+        let ox = 0;
+        let oy = 100 - (i * 15);
+        let oRot = 0;
+
+        let curX = lerp(cx, ox, t);
+        let curY = lerp(cy, oy, t);
+        let curRot = lerp(cRot, oRot, t);
+
+        push();
+        translate(curX, curY);
+        rotate(curRot);
+        
+        fill(244, 208, 63, map(t, 0, 1, 150, 220)); stroke(180, 150, 40); strokeWeight(2);
+        rect(-60, -5, 120, 10, 3);
+        
+        // Scroll ends
+        fill(255); ellipse(-60, 0, 15, 15); ellipse(60, 0, 15, 15);
+        pop();
+    }
+
+    if (t > 0.9) {
+        fill(46, 204, 113, (t-0.9)*2550); noStroke(); textAlign(CENTER); textSize(24); letterSpacing = 3;
+        text("ORDER OUT OF CHAOS", 0, 150);
+    }
+    pop();
+}
+
+function drawElementsBook() {
+    push();
+    translate(width/2, height/2 + 80);
+    scale(getScaleFactor());
+
+    // A monumental opening book
+    let openAmt = map(sin(time), -1, 1, 0.4, 1.0);
+    let bookW = 300;
+    let bookH = 400;
+
+    // Book Cover Glow
+    drawingContext.shadowBlur = 80; drawingContext.shadowColor = '#F4D03F';
+    fill(244, 208, 63, 150); noStroke();
+    ellipse(0, -bookH/2, bookW*2, bookW);
+    drawingContext.shadowBlur = 0;
+
+    // Left Page
+    stroke(200, 180, 100); strokeWeight(3); fill(15, 20, 30);
+    beginShape();
+    vertex(0, 0); vertex(-bookW*openAmt, -20); vertex(-bookW*openAmt, -bookH); vertex(0, -bookH + 20);
+    endShape(CLOSE);
+
+    // Right Page
+    beginShape();
+    vertex(0, 0); vertex(bookW*openAmt, -20); vertex(bookW*openAmt, -bookH); vertex(0, -bookH + 20);
+    endShape(CLOSE);
+
+    // Page text lines
+    stroke(244, 208, 63, 100); strokeWeight(2);
+    for(let i=0; i<10; i++) {
+        let y = -bookH + 60 + i*30;
+        line(-bookW*openAmt + 40, y - 10, -40, y + 5);
+        line(40, y + 5, bookW*openAmt - 40, y - 10);
+    }
+
+    // Roman Numerals XIII
+    fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(48);
+    text("ΣΤΟΙΧΕῖΑ", -bookW*openAmt/2, -bookH/2 - 50); // Stoicheia in Greek
+    fill(46, 204, 113); textSize(24);
+    text("The XIII Books", bookW*openAmt/2, -bookH/2 - 50);
+    
+    // Abstract geometry on right page
+    stroke(46, 204, 113, 200); noFill(); strokeWeight(2);
+    let cx = bookW*openAmt/2, cy = -bookH/2 + 50;
+    ellipse(cx, cy, 100); triangle(cx, cy-50, cx-43, cy+25, cx+43, cy+25);
+
+    pop();
+}
+
+function drawDuration1899() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Timeline Line
+    stroke(255, 50); strokeWeight(4);
+    line(-350, 0, 350, 0);
+
+    // Progress along the timeline
+    let t = min(time * 0.3, 1.0);
+    let currentX = map(t, 0, 1, -300, 300);
+
+    // Golden epoch (Euclid's reign)
+    stroke(244, 208, 63); strokeWeight(6);
+    line(-300, 0, currentX, 0);
+
+    // Timeline Markers
+    fill(255); noStroke(); textSize(18); textAlign(CENTER);
+    ellipse(-300, 0, 15); text("300 BC\n(Euclid)", -300, 35);
+    
+    if (t >= 1.0) {
+        fill(46, 204, 113); ellipse(300, 0, 25);
+        text("1899 AD\n(David Hilbert)", 300, 35);
+        
+        // Expanding rings at 1899
+        noFill(); stroke(46, 204, 113, map(sin(time*5), -1, 1, 0, 255));
+        ellipse(300, 0, 40); ellipse(300, 0, 60);
+
+        fill(255); noStroke(); textSize(24);
+        text("2,200 Years of Absolute Perfection.", 0, -80);
+    }
+
+    // The traveling timeline dot
+    fill(255); ellipse(currentX, 0, 10);
+    fill(244, 208, 63, 150); textSize(16);
+    text(Math.floor(map(t, 0, 1, -300, 1899)) + (t < 0.15 ? " BC" : " AD"), currentX, -25);
+
+    pop();
+}
+
+// ============================================================
+// ACT II: THE MATHEMATICS (THE 5 POSTULATES)
+// ============================================================
+
+function drawAxiomIntro() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 200;
+    rotate(time * 0.2);
+
+    // 5 Seeds of Truth
+    for(let i=0; i<5; i++) {
+        let a = TWO_PI * i / 5;
+        let x = cos(a) * r;
+        let y = sin(a) * r;
+
+        stroke(255, 30); strokeWeight(2);
+        line(0, 0, x, y);
+
+        // Connect pentagon
+        let nx = cos(TWO_PI * (i+1)/5) * r;
+        let ny = sin(TWO_PI * (i+1)/5) * r;
+        stroke(46, 204, 113, 100);
+        line(x, y, nx, ny);
+
+        // Nodes
+        fill(244, 208, 63); noStroke();
+        ellipse(x, y, 25 + sin(time*4 + i)*10);
+        
+        // Roman Numerals inside
+        fill(0); textSize(14); textAlign(CENTER, CENTER);
+        let numerals = ["I", "II", "III", "IV", "V"];
+        text(numerals[i], x, y);
+    }
+
+    // Central Core
+    fill(46, 204, 113, 50); noStroke(); ellipse(0, 0, 100);
+    fill(46, 204, 113); textSize(20); textAlign(CENTER, CENTER);
+    text("AXIOM", 0, 0);
+
+    pop();
+}
+
+function drawPostulate12() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let ptA = {x: -200, y: 50};
+    let ptB = {x: 150, y: -50};
+
+    // Rule 1: Connect Points
+    let t1 = min(time * 0.8, 1.0);
+    let currentBx = lerp(ptA.x, ptB.x, t1);
+    let currentBy = lerp(ptA.y, ptB.y, t1);
+
+    stroke(255); strokeWeight(4);
+    line(ptA.x, ptA.y, currentBx, currentBy);
+
+    fill(244, 208, 63); noStroke();
+    ellipse(ptA.x, ptA.y, 15); 
+    if(t1 >= 1.0) ellipse(ptB.x, ptB.y, 15);
+
+    fill(255); textSize(18); textAlign(CENTER);
+    text("Point A", ptA.x, ptA.y - 20);
+    if(t1 >= 1.0) text("Point B", ptB.x, ptB.y - 20);
+
+    // Rule 2: Extend infinitely
+    if (t1 >= 1.0) {
+        let t2 = min((time - 1.25) * 1.5, 1.0); // Start after t1
+        if (t2 > 0) {
+            let dx = ptB.x - ptA.x; let dy = ptB.y - ptA.y;
+            
+            stroke(46, 204, 113, 150); strokeWeight(4); drawingContext.setLineDash([10, 10]);
+            line(ptA.x, ptA.y, ptA.x - dx*t2*2, ptA.y - dy*t2*2); // Extend backwards
+            line(ptB.x, ptB.y, ptB.x + dx*t2*2, ptB.y + dy*t2*2); // Extend forwards
+            drawingContext.setLineDash([]);
+
+            fill(46, 204, 113); noStroke();
+            text("Infinity", ptB.x + dx*t2*1.8, ptB.y + dy*t2*1.8 - 20);
+            text("Infinity", ptA.x - dx*t2*1.8, ptA.y - dy*t2*1.8 - 20);
+        }
+    }
+    pop();
+}
+
+function drawPostulate3() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let cx = 0, cy = 0;
+    let r = 200;
+
+    // Center point and radius line
+    fill(244, 208, 63); noStroke(); ellipse(cx, cy, 15);
+    
+    let drawAngle = min(time * 1.5, TWO_PI);
+    let dx = cos(drawAngle) * r;
+    let dy = sin(drawAngle) * r;
+
+    // Radius line
+    stroke(255); strokeWeight(3);
+    line(cx, cy, dx, dy);
+    
+    // The drawing pencil/compass point
+    fill(46, 204, 113); noStroke(); ellipse(dx, dy, 12);
+
+    // The swept circle
+    noFill(); stroke(46, 204, 113); strokeWeight(4);
+    beginShape();
+    for(let a=0; a<=drawAngle; a+=0.05) {
+        vertex(cos(a)*r, sin(a)*r);
+    }
+    endShape();
+
+    fill(255); noStroke(); textSize(20); textAlign(CENTER);
+    text("Center", cx, cy + 30);
+    text("Radius", cx + r/2, cy - 20);
+    pop();
+}
+
+function drawPostulate4() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let angles = [
+        {x: -250, y: 0, r: time*0.2},
+        {x: 0, y: -100, r: -time*0.5},
+        {x: 250, y: 50, r: time*0.8}
+    ];
+
+    let t = (sin(time) + 1)/2; // Oscillate 0 to 1
+
+    for(let i=0; i<angles.length; i++) {
+        let a = angles[i];
+        
+        // Morph position towards center to prove they are identical
+        let curX = lerp(a.x, 0, t);
+        let curY = lerp(a.y, 0, t);
+        let curR = lerp(a.r, 0, t); // Align rotations to 0
+
+        push();
+        translate(curX, curY);
+        rotate(curR);
+
+        // Draw Right Angle
+        stroke(255); strokeWeight(4); noFill();
+        line(0, 0, 100, 0); line(0, 0, 0, -100);
+
+        // 90 degree box
+        stroke(244, 208, 63); strokeWeight(3);
+        rect(0, -25, 25, 25);
+        
+        // Origin point
+        fill(46, 204, 113); noStroke(); ellipse(0,0,10);
+        pop();
+    }
+
+    if (t > 0.9) {
+        fill(46, 204, 113); noStroke(); textSize(24); textAlign(CENTER);
+        text("PERFECTLY IDENTICAL", 0, 100);
+    }
+    pop();
+}
+
+function drawPostulate5() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Transversal line
+    stroke(255, 100); strokeWeight(2);
+    line(-300, -200, -300, 200);
+
+    // Animate the bottom line rotating to prove the postulate
+    let angleShift = map(sin(time), -1, 1, 0, -0.4); // Less than 90 degrees
+
+    let yTop = -100;
+    let yBot = 100;
+    let len = 700;
+
+    // Top Line (Fixed at 90 deg to transversal)
+    stroke(255); strokeWeight(4);
+    line(-300, yTop, -300 + len, yTop);
+
+    // Bottom Line (Tilted)
+    stroke(255);
+    let botEndX = -300 + cos(angleShift) * len;
+    let botEndY = yBot + sin(angleShift) * len;
+    line(-300, yBot, botEndX, botEndY);
+
+    // Interior Angles
+    noFill(); stroke(244, 208, 63); strokeWeight(4);
+    arc(-300, yTop, 60, 60, 0, PI/2); // Top angle (90)
+    arc(-300, yBot, 60, 60, angleShift, -PI/2); // Bottom angle
+
+    fill(244, 208, 63); noStroke(); textSize(18); textAlign(LEFT);
+    text("α = 90°", -260, yTop + 30);
+    text("β < 90°", -260, yBot - 10);
+
+    fill(46, 204, 113); textSize(20); textAlign(CENTER);
+    text("α + β < 180°", -150, 0);
+
+    // Intersection logic
+    if (angleShift < -0.05) {
+        // Calculate intersection point mathematically
+        let intersectX = -300 + (yBot - yTop) / Math.tan(-angleShift);
+        
+        // Draw dashed extending lines to intersection
+        stroke(46, 204, 113, 150); strokeWeight(3); drawingContext.setLineDash([10, 10]);
+        line(-300 + len, yTop, intersectX, yTop); // extend top
+        line(botEndX, botEndY, intersectX, yTop); // extend bot
+        drawingContext.setLineDash([]);
+
+        // Intersection collision point
+        fill(46, 204, 113); noStroke(); ellipse(intersectX, yTop, 15);
+        fill(255); text("Intersection guaranteed", intersectX, yTop - 25);
+    }
+    pop();
+}
+
+function drawAxiomaticTree() {
+    push();
+    translate(width/2, height/2 + 250);
+    scale(getScaleFactor());
+
+    // Root Axioms
+    let roots = 5;
+    for(let i=0; i<roots; i++) {
+        let x = map(i, 0, roots-1, -200, 200);
+        fill(244, 208, 63); noStroke();
+        ellipse(x, 0, 15);
+        fill(255, 100); textSize(12); textAlign(CENTER);
+        text("Axiom " + (i+1), x, 25);
+    }
+
+    // Fractal Tree growing from the roots
+    stroke(46, 204, 113, 100);
+    for(let i=0; i<roots; i++) {
+        let x = map(i, 0, roots-1, -200, 200);
+        drawBranch(x, 0, -HALF_PI, 80, 5, i);
+    }
+
+    fill(255); noStroke(); textSize(28); textAlign(CENTER); letterSpacing = 4;
+    text("465 THEOREMS", 0, -350);
+    fill(244, 208, 63); textSize(16);
+    text("All built from 5 undeniable truths.", 0, -320);
+
+    pop();
+}
+
+function drawBranch(x, y, angle, len, depth, seedOffset) {
+    if (depth === 0) return;
+
+    let ex = x + cos(angle) * len;
+    let ey = y + sin(angle) * len;
+
+    let tGrow = min(time * 0.8 - (5-depth)*0.5, 1.0); // Sequential growth
+    if (tGrow > 0) {
+        let curEx = lerp(x, ex, tGrow);
+        let curEy = lerp(y, ey, tGrow);
+
+        strokeWeight(depth);
+        line(x, y, curEx, curEy);
+
+        if (tGrow >= 1.0) {
+            // Swaying motion
+            let sway = sin(time * 2 + depth + seedOffset) * 0.1;
+            drawBranch(ex, ey, angle - 0.4 + sway, len * 0.75, depth - 1, seedOffset);
+            drawBranch(ex, ey, angle + 0.4 + sway, len * 0.75, depth - 1, seedOffset);
+            
+            // Theorem nodes
+            fill(255, 200); noStroke();
+            ellipse(ex, ey, 4);
+            stroke(46, 204, 113, 150); // restore line color for next branch
+        }
+    }
+}
+</script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coming Soon</title>
+</head>
+<body>
+  <main>
+    <h1>Character page coming soon</h1>
+    <p>This folder is reserved for future character content.</p>
+  </main>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>

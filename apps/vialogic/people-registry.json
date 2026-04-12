@@ -1,0 +1,888 @@
+{
+  "generatedAt": "2026-04-01T06:00:14.177Z",
+  "total": 98,
+  "people": [
+    {
+      "id": "Mahaviracharya",
+      "name": "Mahaviracharya",
+      "era": "Golden Age",
+      "category": "Math & Science",
+      "path": "./people/Mahaviracharya/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Mahaviracharya. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "ada-lovelace",
+      "name": "Ada Lovelace",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/ada-lovelace/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Ada Lovelace. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "adi-shankara",
+      "name": "Adi Shankara",
+      "era": "Golden Age",
+      "category": "Philosophy",
+      "path": "./people/adi-shankara/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Adi Shankara. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "al-khwarizmi",
+      "name": "Al Khwarizmi",
+      "era": "Golden Age",
+      "category": "Math & Science",
+      "path": "./people/al-khwarizmi/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Al Khwarizmi. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "alan-turing",
+      "name": "Alan Turing",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/alan-turing/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Alan Turing. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "albert-camus",
+      "name": "Albert Camus",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/albert-camus/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Albert Camus. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "albert-einstein",
+      "name": "Albert Einstein",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/albert-einstein/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Albert Einstein. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "andrew-wiles",
+      "name": "Andrew Wiles",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/andrew-wiles/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Andrew Wiles. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "andrey-kolmogorov",
+      "name": "Andrey Kolmogorov",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/andrey-kolmogorov/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Andrey Kolmogorov. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "archimedes",
+      "name": "Archimedes",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/archimedes/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Archimedes. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "aristotle",
+      "name": "Aristotle",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/aristotle/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Aristotle. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "arthur-schopenhauer",
+      "name": "Arthur Schopenhauer",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/arthur-schopenhauer/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Arthur Schopenhauer. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "aryabhata",
+      "name": "Aryabhata",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/aryabhata/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Aryabhata. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "augustine-of-hippo",
+      "name": "Augustine Of Hippo",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/augustine-of-hippo/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Augustine Of Hippo. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "baruch-spinoza",
+      "name": "Baruch Spinoza",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/baruch-spinoza/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Baruch Spinoza. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "benoit-mandelbrot",
+      "name": "Benoit Mandelbrot",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/benoit-mandelbrot/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Benoit Mandelbrot. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "bernhard-riemann",
+      "name": "Bernhard Riemann",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/bernhard-riemann/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Bernhard Riemann. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "bertrand-russell",
+      "name": "Bertrand Russell",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/bertrand-russell/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Bertrand Russell. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "bhashkaracharya",
+      "name": "Bhashkaracharya",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/bhashkaracharya/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Bhashkaracharya. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "blaise-pascal",
+      "name": "Blaise Pascal",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/blaise-pascal/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Blaise Pascal. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "brahmagupta",
+      "name": "Brahmagupta",
+      "era": "Golden Age",
+      "category": "Math & Science",
+      "path": "./people/brahmagupta/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Brahmagupta. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "brian-greene",
+      "name": "Brian Greene",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/brian-greene/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Brian Greene. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "carl-friedrich-gauss",
+      "name": "Carl Friedrich Gauss",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/carl-friedrich-gauss/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Carl Friedrich Gauss. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "chanakya",
+      "name": "Chanakya",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/chanakya/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Chanakya. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "charles-babbage",
+      "name": "Charles Babbage",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/charles-babbage/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Charles Babbage. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "claude-shannon",
+      "name": "Claude Shannon",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/claude-shannon/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Claude Shannon. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "confucius",
+      "name": "Confucius",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/confucius/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Confucius. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "david-hilbert",
+      "name": "David Hilbert",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/david-hilbert/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for David Hilbert. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "david-hume",
+      "name": "David Hume",
+      "era": "Enlightenment",
+      "category": "Philosophy",
+      "path": "./people/david-hume/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for David Hume. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "diogenes-of-sinope",
+      "name": "Diogenes Of Sinope",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/diogenes-of-sinope/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Diogenes Of Sinope. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "edward-witten",
+      "name": "Edward Witten",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/edward-witten/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Edward Witten. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "emmy-noether",
+      "name": "Emmy Noether",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/emmy-noether/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Emmy Noether. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "epicurus",
+      "name": "Epicurus",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/epicurus/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Epicurus. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "erwin-schrodinger",
+      "name": "Erwin Schrodinger",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/erwin-schrodinger/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Erwin Schrodinger. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "euclid",
+      "name": "Euclid",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/euclid/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Euclid. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "friedrich-nietzsche",
+      "name": "Friedrich Nietzsche",
+      "era": "Enlightenment",
+      "category": "Philosophy",
+      "path": "./people/friedrich-nietzsche/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Friedrich Nietzsche. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "galileo-galilei",
+      "name": "Galileo Galilei",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/galileo-galilei/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Galileo Galilei. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "georg-hegel",
+      "name": "Georg Hegel",
+      "era": "Enlightenment",
+      "category": "Philosophy",
+      "path": "./people/georg-hegel/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Georg Hegel. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "gottfried-leibniz",
+      "name": "Gottfried Leibniz",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/gottfried-leibniz/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Gottfried Leibniz. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "grigori-perelman",
+      "name": "Grigori Perelman",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/grigori-perelman/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Grigori Perelman. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "henri-poincare",
+      "name": "Henri Poincare",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/henri-poincare/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Henri Poincare. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "heraclitus",
+      "name": "Heraclitus",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/heraclitus/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Heraclitus. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "hypatia",
+      "name": "Hypatia",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/hypatia/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Hypatia. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "immanuel-kant",
+      "name": "Immanuel Kant",
+      "era": "Enlightenment",
+      "category": "Philosophy",
+      "path": "./people/immanuel-kant/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Immanuel Kant. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "isaac-newton",
+      "name": "Isaac Newton",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/isaac-newton/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Isaac Newton. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "james-clerk-maxwell",
+      "name": "James Clerk Maxwell",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/james-clerk-maxwell/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for James Clerk Maxwell. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "jean-paul-sartre",
+      "name": "Jean Paul Sartre",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/jean-paul-sartre/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Jean Paul Sartre. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "johannes-kepler",
+      "name": "Johannes Kepler",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/johannes-kepler/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Johannes Kepler. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "john-conway",
+      "name": "John Conway",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/john-conway/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for John Conway. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "john-locke",
+      "name": "John Locke",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/john-locke/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for John Locke. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "john-nash",
+      "name": "John Nash",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/john-nash/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for John Nash. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "john-von-neumann",
+      "name": "John Von Neumann",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/john-von-neumann/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for John Von Neumann. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "joseph-louis-lagrange",
+      "name": "Joseph Louis Lagrange",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/joseph-louis-lagrange/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Joseph Louis Lagrange. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "karl-marx",
+      "name": "Karl Marx",
+      "era": "Enlightenment",
+      "category": "Philosophy",
+      "path": "./people/karl-marx/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Karl Marx. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "katherine-johnson",
+      "name": "Katherine Johnson",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/katherine-johnson/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Katherine Johnson. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "kip-thorne",
+      "name": "Kip Thorne",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/kip-thorne/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Kip Thorne. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "kurt-godel",
+      "name": "Kurt Godel",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/kurt-godel/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Kurt Godel. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "laozi",
+      "name": "Laozi",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/laozi/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Laozi. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "leonard-susskind",
+      "name": "Leonard Susskind",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/leonard-susskind/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Leonard Susskind. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "leonardo-da-vinci",
+      "name": "Leonardo Da Vinci",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/leonardo-da-vinci/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Leonardo Da Vinci. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "leonhard-euler",
+      "name": "Leonhard Euler",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/leonhard-euler/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Leonhard Euler. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "ludwig-wittgenstein",
+      "name": "Ludwig Wittgenstein",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/ludwig-wittgenstein/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Ludwig Wittgenstein. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "marcus-aurelius",
+      "name": "Marcus Aurelius",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/marcus-aurelius/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Marcus Aurelius. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "martin-heidegger",
+      "name": "Martin Heidegger",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/martin-heidegger/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Martin Heidegger. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "maryam-mirzakhani",
+      "name": "Maryam Mirzakhani",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/maryam-mirzakhani/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Maryam Mirzakhani. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "nagarjuna",
+      "name": "Nagarjuna",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/nagarjuna/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Nagarjuna. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "niccolo-machiavelli",
+      "name": "Niccolo Machiavelli",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/niccolo-machiavelli/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Niccolo Machiavelli. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "nicolaus-copernicus",
+      "name": "Nicolaus Copernicus",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/nicolaus-copernicus/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Nicolaus Copernicus. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "niels-bohr",
+      "name": "Niels Bohr",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/niels-bohr/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Niels Bohr. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "noam-chomsky",
+      "name": "Noam Chomsky",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/noam-chomsky/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Noam Chomsky. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "omar-khayyam",
+      "name": "Omar Khayyam",
+      "era": "Golden Age",
+      "category": "Math & Science",
+      "path": "./people/omar-khayyam/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Omar Khayyam. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "parmenides",
+      "name": "Parmenides",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/parmenides/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Parmenides. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "paul-erdos",
+      "name": "Paul Erdos",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/paul-erdos/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Paul Erdos. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pierre-de-fermat",
+      "name": "Pierre De Fermat",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/pierre-de-fermat/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Pierre De Fermat. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pierre-simon-laplace",
+      "name": "Pierre Simon Laplace",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/pierre-simon-laplace/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Pierre Simon Laplace. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "plato",
+      "name": "Plato",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/plato/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Plato. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "ptolemy",
+      "name": "Ptolemy",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/ptolemy/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Ptolemy. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pythagoras",
+      "name": "Pythagoras",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/pythagoras/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Pythagoras. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pythagorous",
+      "name": "Pythagorous",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/pythagorous/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Pythagorous. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "rene-descartes",
+      "name": "Rene Descartes",
+      "era": "Enlightenment",
+      "category": "Math & Science",
+      "path": "./people/rene-descartes/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Rene Descartes. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "richard-feynman",
+      "name": "Richard Feynman",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/richard-feynman/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Richard Feynman. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "rumi",
+      "name": "Rumi",
+      "era": "Golden Age",
+      "category": "Math & Science",
+      "path": "./people/rumi/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Rumi. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "seneca",
+      "name": "Seneca",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/seneca/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Seneca. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "simone-de-beauvoir",
+      "name": "Simone De Beauvoir",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/simone-de-beauvoir/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Simone De Beauvoir. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "socrates",
+      "name": "Socrates",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/socrates/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Socrates. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "sofia-kovalevskaya",
+      "name": "Sofia Kovalevskaya",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/sofia-kovalevskaya/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Sofia Kovalevskaya. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "soren-kierkegaard",
+      "name": "Soren Kierkegaard",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/soren-kierkegaard/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Soren Kierkegaard. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "srinivasa-ramanujan",
+      "name": "Srinivasa Ramanujan",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/srinivasa-ramanujan/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Srinivasa Ramanujan. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "stephen-hawking",
+      "name": "Stephen Hawking",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/stephen-hawking/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Stephen Hawking. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "sun-tzu",
+      "name": "Sun Tzu",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/sun-tzu/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Sun Tzu. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "terence-tao",
+      "name": "Terence Tao",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/terence-tao/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Terence Tao. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "thales-of-miletus",
+      "name": "Thales Of Miletus",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/thales-of-miletus/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Thales Of Miletus. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "thales",
+      "name": "Thales",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/thales/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Thales. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "thomas-aquinas",
+      "name": "Thomas Aquinas",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/thomas-aquinas/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Thomas Aquinas. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "voltaire",
+      "name": "Voltaire",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/voltaire/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Voltaire. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "werner-heisenberg",
+      "name": "Werner Heisenberg",
+      "era": "Classical",
+      "category": "Math & Science",
+      "path": "./people/werner-heisenberg/",
+      "icon": "📐",
+      "summary": "Sovereign UI profile for Werner Heisenberg. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "zeno-of-citium",
+      "name": "Zeno Of Citium",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/zeno-of-citium/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Zeno Of Citium. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "zhuangzi",
+      "name": "Zhuangzi",
+      "era": "Classical",
+      "category": "Philosophy",
+      "path": "./people/zhuangzi/",
+      "icon": "🏛️",
+      "summary": "Sovereign UI profile for Zhuangzi. Part of ViaLogic's historical population."
+    }
+  ]
+}

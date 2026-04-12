@@ -1,0 +1,2158 @@
+[
+  {
+    "id": "Mahaviracharya",
+    "name": "Mahaviracharya",
+    "title": "Mahaviracharya \u00b7 Golden Age",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2800.0,
+    "y": 1800.0,
+    "path": "people/Mahaviracharya/",
+    "power": 2500,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "ada-lovelace",
+    "name": "Ada Lovelace",
+    "title": "Ada Lovelace \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2804.35,
+    "y": 1947.02,
+    "path": "people/ada-lovelace/",
+    "power": 2875,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "adi-shankara",
+    "name": "Adi Shankara",
+    "title": "Adi Shankara \u00b7 Golden Age",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2733.73,
+    "y": 2094.53,
+    "path": "people/adi-shankara/",
+    "power": 3250,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "al-khwarizmi",
+    "name": "Al Khwarizmi",
+    "title": "Al Khwarizmi \u00b7 Golden Age",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2590.67,
+    "y": 2203.95,
+    "path": "people/al-khwarizmi/",
+    "power": 3625,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "alan-turing",
+    "name": "Alan Turing",
+    "title": "Alan Turing \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2397.3,
+    "y": 2240.18,
+    "path": "people/alan-turing/",
+    "power": 4000,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "albert-camus",
+    "name": "Albert Camus",
+    "title": "Albert Camus \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2192.19,
+    "y": 2181.26,
+    "path": "people/albert-camus/",
+    "power": 4375,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "albert-einstein",
+    "name": "Albert Einstein",
+    "title": "Albert Einstein \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2022.65,
+    "y": 2025.66,
+    "path": "people/albert-einstein/",
+    "power": 4750,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "andrew-wiles",
+    "name": "Andrew Wiles",
+    "title": "Andrew Wiles \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1934.02,
+    "y": 1795.24,
+    "path": "people/andrew-wiles/",
+    "power": 5125,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "andrey-kolmogorov",
+    "name": "Andrey Kolmogorov",
+    "title": "Andrey Kolmogorov \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1958.36,
+    "y": 1532.72,
+    "path": "people/andrey-kolmogorov/",
+    "power": 5500,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "archimedes",
+    "name": "Archimedes",
+    "title": "Archimedes \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2105.17,
+    "y": 1293.77,
+    "path": "people/archimedes/",
+    "power": 5875,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "aristotle",
+    "name": "Aristotle",
+    "title": "Aristotle \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2356.66,
+    "y": 1135.28,
+    "path": "people/aristotle/",
+    "power": 6250,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "arthur-schopenhauer",
+    "name": "Arthur Schopenhauer",
+    "title": "Arthur Schopenhauer \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2669.0,
+    "y": 1102.17,
+    "path": "people/arthur-schopenhauer/",
+    "power": 2500,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "aryabhata",
+    "name": "Aryabhata",
+    "title": "Aryabhata \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2979.83,
+    "y": 1215.79,
+    "path": "people/aryabhata/",
+    "power": 2875,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "augustine-of-hippo",
+    "name": "Augustine Of Hippo",
+    "title": "Augustine Of Hippo \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 3220.66,
+    "y": 1466.71,
+    "path": "people/augustine-of-hippo/",
+    "power": 3250,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "baruch-spinoza",
+    "name": "Baruch Spinoza",
+    "title": "Baruch Spinoza \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3331.88,
+    "y": 1813.99,
+    "path": "people/baruch-spinoza/",
+    "power": 3625,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "benoit-mandelbrot",
+    "name": "Benoit Mandelbrot",
+    "title": "Benoit Mandelbrot \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3276.92,
+    "y": 2191.54,
+    "path": "people/benoit-mandelbrot/",
+    "power": 4000,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "bernhard-riemann",
+    "name": "Bernhard Riemann",
+    "title": "Bernhard Riemann \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3052.38,
+    "y": 2520.65,
+    "path": "people/bernhard-riemann/",
+    "power": 4375,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "bertrand-russell",
+    "name": "Bertrand Russell",
+    "title": "Bertrand Russell \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2691.63,
+    "y": 2726.39,
+    "path": "people/bertrand-russell/",
+    "power": 4750,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "bhashkaracharya",
+    "name": "Bhashkaracharya",
+    "title": "Bhashkaracharya \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2260.35,
+    "y": 2754.37,
+    "path": "people/bhashkaracharya/",
+    "power": 5125,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "blaise-pascal",
+    "name": "Blaise Pascal",
+    "title": "Blaise Pascal \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1844.73,
+    "y": 2584.28,
+    "path": "people/blaise-pascal/",
+    "power": 5500,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "brahmagupta",
+    "name": "Brahmagupta",
+    "title": "Brahmagupta \u00b7 Golden Age",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1534.2,
+    "y": 2236.85,
+    "path": "people/brahmagupta/",
+    "power": 5875,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "brian-greene",
+    "name": "Brian Greene",
+    "title": "Brian Greene \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1402.35,
+    "y": 1772.31,
+    "path": "people/brian-greene/",
+    "power": 6250,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "carl-friedrich-gauss",
+    "name": "Carl Friedrich Gauss",
+    "title": "Carl Friedrich Gauss \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1489.88,
+    "y": 1280.24,
+    "path": "people/carl-friedrich-gauss/",
+    "power": 2500,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "chanakya",
+    "name": "Chanakya",
+    "title": "Chanakya \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1793.65,
+    "y": 862.26,
+    "path": "people/chanakya/",
+    "power": 2875,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "charles-babbage",
+    "name": "Charles Babbage",
+    "title": "Charles Babbage \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2264.47,
+    "y": 611.11,
+    "path": "people/charles-babbage/",
+    "power": 3250,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "claude-shannon",
+    "name": "Claude Shannon",
+    "title": "Claude Shannon \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2814.61,
+    "y": 590.24,
+    "path": "people/claude-shannon/",
+    "power": 3625,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "confucius",
+    "name": "Confucius",
+    "title": "Confucius \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 3334.1,
+    "y": 818.57,
+    "path": "people/confucius/",
+    "power": 4000,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "david-hilbert",
+    "name": "David Hilbert",
+    "title": "David Hilbert \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3712.71,
+    "y": 1263.71,
+    "path": "people/david-hilbert/",
+    "power": 4375,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "david-hume",
+    "name": "David Hume",
+    "title": "David Hume \u00b7 Enlightenment",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 3863.23,
+    "y": 1845.86,
+    "path": "people/david-hume/",
+    "power": 4750,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "diogenes-of-sinope",
+    "name": "Diogenes Of Sinope",
+    "title": "Diogenes Of Sinope \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 3741.21,
+    "y": 2451.92,
+    "path": "people/diogenes-of-sinope/",
+    "power": 5125,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "edward-witten",
+    "name": "Edward Witten",
+    "title": "Edward Witten \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3356.69,
+    "y": 2957.45,
+    "path": "people/edward-witten/",
+    "power": 5500,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "emmy-noether",
+    "name": "Emmy Noether",
+    "title": "Emmy Noether \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2775.02,
+    "y": 3252.19,
+    "path": "people/emmy-noether/",
+    "power": 5875,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "epicurus",
+    "name": "Epicurus",
+    "title": "Epicurus \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2106.12,
+    "y": 3263.94,
+    "path": "people/epicurus/",
+    "power": 6250,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "erwin-schrodinger",
+    "name": "Erwin Schrodinger",
+    "title": "Erwin Schrodinger \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1483.72,
+    "y": 2975.62,
+    "path": "people/erwin-schrodinger/",
+    "power": 2500,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "euclid",
+    "name": "Euclid",
+    "title": "Euclid \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1038.65,
+    "y": 2431.61,
+    "path": "people/euclid/",
+    "power": 2875,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "friedrich-nietzsche",
+    "name": "Friedrich Nietzsche",
+    "title": "Friedrich Nietzsche \u00b7 Enlightenment",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 871.44,
+    "y": 1731.5,
+    "path": "people/friedrich-nietzsche/",
+    "power": 3250,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "galileo-galilei",
+    "name": "Galileo Galilei",
+    "title": "Galileo Galilei \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1029.87,
+    "y": 1012.0,
+    "path": "people/galileo-galilei/",
+    "power": 3625,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "georg-hegel",
+    "name": "Georg Hegel",
+    "title": "Georg Hegel \u00b7 Enlightenment",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 1496.63,
+    "y": 420.26,
+    "path": "people/georg-hegel/",
+    "power": 4000,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "gottfried-leibniz",
+    "name": "Gottfried Leibniz",
+    "title": "Gottfried Leibniz \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2189.9,
+    "y": 83.79,
+    "path": "people/gottfried-leibniz/",
+    "power": 4375,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "grigori-perelman",
+    "name": "Grigori Perelman",
+    "title": "Grigori Perelman \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2977.45,
+    "y": 83.15,
+    "path": "people/grigori-perelman/",
+    "power": 4750,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "henri-poincare",
+    "name": "Henri Poincare",
+    "title": "Henri Poincare \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3701.78,
+    "y": 433.2,
+    "path": "people/henri-poincare/",
+    "power": 5125,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "heraclitus",
+    "name": "Heraclitus",
+    "title": "Heraclitus \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 4211.65,
+    "y": 1077.22,
+    "path": "people/heraclitus/",
+    "power": 5500,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "hypatia",
+    "name": "Hypatia",
+    "title": "Hypatia \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4393.59,
+    "y": 1895.6,
+    "path": "people/hypatia/",
+    "power": 5875,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "immanuel-kant",
+    "name": "Immanuel Kant",
+    "title": "Immanuel Kant \u00b7 Enlightenment",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 4196.83,
+    "y": 2727.96,
+    "path": "people/immanuel-kant/",
+    "power": 6250,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "isaac-newton",
+    "name": "Isaac Newton",
+    "title": "Isaac Newton \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3646.37,
+    "y": 3404.56,
+    "path": "people/isaac-newton/",
+    "power": 2500,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "james-clerk-maxwell",
+    "name": "James Clerk Maxwell",
+    "title": "James Clerk Maxwell \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2840.75,
+    "y": 3780.91,
+    "path": "people/james-clerk-maxwell/",
+    "power": 2875,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "jean-paul-sartre",
+    "name": "Jean Paul Sartre",
+    "title": "Jean Paul Sartre \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 1934.72,
+    "y": 3768.44,
+    "path": "people/jean-paul-sartre/",
+    "power": 3250,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "johannes-kepler",
+    "name": "Johannes Kepler",
+    "title": "Johannes Kepler \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1109.46,
+    "y": 3354.92,
+    "path": "people/johannes-kepler/",
+    "power": 3625,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "john-conway",
+    "name": "John Conway",
+    "title": "John Conway \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 536.42,
+    "y": 2609.78,
+    "path": "people/john-conway/",
+    "power": 4000,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "john-locke",
+    "name": "John Locke",
+    "title": "John Locke \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 341.74,
+    "y": 1672.84,
+    "path": "people/john-locke/",
+    "power": 4375,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "john-nash",
+    "name": "John Nash",
+    "title": "John Nash \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 578.73,
+    "y": 728.22,
+    "path": "people/john-nash/",
+    "power": 4750,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "john-von-neumann",
+    "name": "John Von Neumann",
+    "title": "John Von Neumann \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1214.36,
+    "y": -31.88,
+    "path": "people/john-von-neumann/",
+    "power": 5125,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "joseph-louis-lagrange",
+    "name": "Joseph Louis Lagrange",
+    "title": "Joseph Louis Lagrange \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2133.02,
+    "y": -446.22,
+    "path": "people/joseph-louis-lagrange/",
+    "power": 5500,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "karl-marx",
+    "name": "Karl Marx",
+    "title": "Karl Marx \u00b7 Enlightenment",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 3157.38,
+    "y": -418.66,
+    "path": "people/karl-marx/",
+    "power": 5875,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "katherine-johnson",
+    "name": "Katherine Johnson",
+    "title": "Katherine Johnson \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4082.54,
+    "y": 60.04,
+    "path": "people/katherine-johnson/",
+    "power": 6250,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "kip-thorne",
+    "name": "Kip Thorne",
+    "title": "Kip Thorne \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4717.07,
+    "y": 907.42,
+    "path": "people/kip-thorne/",
+    "power": 2500,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "kurt-godel",
+    "name": "Kurt Godel",
+    "title": "Kurt Godel \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4922.51,
+    "y": 1963.18,
+    "path": "people/kurt-godel/",
+    "power": 2875,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "laozi",
+    "name": "Laozi",
+    "title": "Laozi \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 4643.39,
+    "y": 3019.44,
+    "path": "people/laozi/",
+    "power": 3250,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "leonard-susskind",
+    "name": "Leonard Susskind",
+    "title": "Leonard Susskind \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3921.17,
+    "y": 3861.63,
+    "path": "people/leonard-susskind/",
+    "power": 3625,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "leonardo-da-vinci",
+    "name": "Leonardo Da Vinci",
+    "title": "Leonardo Da Vinci \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2888.76,
+    "y": 4312.1,
+    "path": "people/leonardo-da-vinci/",
+    "power": 4000,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "leonhard-euler",
+    "name": "Leonhard Euler",
+    "title": "Leonhard Euler \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1746.28,
+    "y": 4267.45,
+    "path": "people/leonhard-euler/",
+    "power": 4375,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "ludwig-wittgenstein",
+    "name": "Ludwig Wittgenstein",
+    "title": "Ludwig Wittgenstein \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 722.26,
+    "y": 3721.86,
+    "path": "people/ludwig-wittgenstein/",
+    "power": 4750,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "marcus-aurelius",
+    "name": "Marcus Aurelius",
+    "title": "Marcus Aurelius \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 27.92,
+    "y": 2771.17,
+    "path": "people/marcus-aurelius/",
+    "power": 5125,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "martin-heidegger",
+    "name": "Martin Heidegger",
+    "title": "Martin Heidegger \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": -186.29,
+    "y": 1596.35,
+    "path": "people/martin-heidegger/",
+    "power": 5500,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "maryam-mirzakhani",
+    "name": "Maryam Mirzakhani",
+    "title": "Maryam Mirzakhani \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 136.85,
+    "y": 429.11,
+    "path": "people/maryam-mirzakhani/",
+    "power": 5875,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "nagarjuna",
+    "name": "Nagarjuna",
+    "title": "Nagarjuna \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 947.09,
+    "y": -493.77,
+    "path": "people/nagarjuna/",
+    "power": 6250,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "niccolo-machiavelli",
+    "name": "Niccolo Machiavelli",
+    "title": "Niccolo Machiavelli \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2093.9,
+    "y": -978.48,
+    "path": "people/niccolo-machiavelli/",
+    "power": 2500,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "nicolaus-copernicus",
+    "name": "Nicolaus Copernicus",
+    "title": "Nicolaus Copernicus \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3354.28,
+    "y": -914.76,
+    "path": "people/nicolaus-copernicus/",
+    "power": 2875,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "niels-bohr",
+    "name": "Niels Bohr",
+    "title": "Niels Bohr \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4476.1,
+    "y": -300.59,
+    "path": "people/niels-bohr/",
+    "power": 3250,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "noam-chomsky",
+    "name": "Noam Chomsky",
+    "title": "Noam Chomsky \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 5228.54,
+    "y": 754.47,
+    "path": "people/noam-chomsky/",
+    "power": 3625,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "omar-khayyam",
+    "name": "Omar Khayyam",
+    "title": "Omar Khayyam \u00b7 Golden Age",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 5449.55,
+    "y": 2048.56,
+    "path": "people/omar-khayyam/",
+    "power": 4000,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "parmenides",
+    "name": "Parmenides",
+    "title": "Parmenides \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 5080.5,
+    "y": 3326.11,
+    "path": "people/parmenides/",
+    "power": 4375,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "paul-erdos",
+    "name": "Paul Erdos",
+    "title": "Paul Erdos \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4180.84,
+    "y": 4328.26,
+    "path": "people/paul-erdos/",
+    "power": 4750,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "pierre-de-fermat",
+    "name": "Pierre De Fermat",
+    "title": "Pierre De Fermat \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2918.98,
+    "y": 4845.31,
+    "path": "people/pierre-de-fermat/",
+    "power": 5125,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "pierre-simon-laplace",
+    "name": "Pierre Simon Laplace",
+    "title": "Pierre Simon Laplace \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1540.95,
+    "y": 4760.54,
+    "path": "people/pierre-simon-laplace/",
+    "power": 5500,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "plato",
+    "name": "Plato",
+    "title": "Plato \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 322.43,
+    "y": 4076.11,
+    "path": "people/plato/",
+    "power": 5875,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "ptolemy",
+    "name": "Ptolemy",
+    "title": "Ptolemy \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -486.42,
+    "y": 2915.64,
+    "path": "people/ptolemy/",
+    "power": 6250,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "pythagoras",
+    "name": "Pythagoras",
+    "title": "Pythagoras \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -712.21,
+    "y": 1502.08,
+    "path": "people/pythagoras/",
+    "power": 2500,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "pythagorous",
+    "name": "Pythagorous",
+    "title": "Pythagorous \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -295.39,
+    "y": 114.92,
+    "path": "people/pythagorous/",
+    "power": 2875,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "rene-descartes",
+    "name": "Rene Descartes",
+    "title": "Rene Descartes \u00b7 Enlightenment",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 695.08,
+    "y": -965.04,
+    "path": "people/rene-descartes/",
+    "power": 3250,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "richard-feynman",
+    "name": "Richard Feynman",
+    "title": "Richard Feynman \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2072.6,
+    "y": -1512.54,
+    "path": "people/richard-feynman/",
+    "power": 3625,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "rumi",
+    "name": "Rumi",
+    "title": "Rumi \u00b7 Golden Age",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3568.01,
+    "y": -1404.72,
+    "path": "people/rumi/",
+    "power": 4000,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "seneca",
+    "name": "Seneca",
+    "title": "Seneca \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4882.13,
+    "y": -648.37,
+    "path": "people/seneca/",
+    "power": 4375,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "simone-de-beauvoir",
+    "name": "Simone De Beauvoir",
+    "title": "Simone De Beauvoir \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 5745.64,
+    "y": 618.51,
+    "path": "people/simone-de-beauvoir/",
+    "power": 4750,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "socrates",
+    "name": "Socrates",
+    "title": "Socrates \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 5974.24,
+    "y": 2151.7,
+    "path": "people/socrates/",
+    "power": 5125,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "sofia-kovalevskaya",
+    "name": "Sofia Kovalevskaya",
+    "title": "Sofia Kovalevskaya \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 5507.77,
+    "y": 3647.76,
+    "path": "people/sofia-kovalevskaya/",
+    "power": 5500,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "soren-kierkegaard",
+    "name": "Soren Kierkegaard",
+    "title": "Soren Kierkegaard \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 4425.13,
+    "y": 4804.08,
+    "path": "people/soren-kierkegaard/",
+    "power": 5875,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "srinivasa-ramanujan",
+    "name": "Srinivasa Ramanujan",
+    "title": "Srinivasa Ramanujan \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 2931.35,
+    "y": 5380.11,
+    "path": "people/srinivasa-ramanujan/",
+    "power": 6250,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "stephen-hawking",
+    "name": "Stephen Hawking",
+    "title": "Stephen Hawking \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 1318.87,
+    "y": 5247.27,
+    "path": "people/stephen-hawking/",
+    "power": 2500,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "sun-tzu",
+    "name": "Sun Tzu",
+    "title": "Sun Tzu \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -89.72,
+    "y": 4417.35,
+    "path": "people/sun-tzu/",
+    "power": 2875,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "terence-tao",
+    "name": "Terence Tao",
+    "title": "Terence Tao \u00b7 Modern",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -1006.17,
+    "y": 3043.04,
+    "path": "people/terence-tao/",
+    "power": 3250,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "thales-of-miletus",
+    "name": "Thales Of Miletus",
+    "title": "Thales Of Miletus \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -1235.58,
+    "y": 1390.08,
+    "path": "people/thales-of-miletus/",
+    "power": 3625,
+    "cost": 800,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "thales",
+    "name": "Thales",
+    "title": "Thales \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": -717.6,
+    "y": -214.12,
+    "path": "people/thales/",
+    "power": 4000,
+    "cost": 920,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "thomas-aquinas",
+    "name": "Thomas Aquinas",
+    "title": "Thomas Aquinas \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 458.56,
+    "y": -1445.32,
+    "path": "people/thomas-aquinas/",
+    "power": 4375,
+    "cost": 1040,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 15.5
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "voltaire",
+    "name": "Voltaire",
+    "title": "Voltaire \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 2069.16,
+    "y": -2047.96,
+    "path": "people/voltaire/",
+    "power": 4750,
+    "cost": 1160,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 18.0
+      },
+      {
+        "name": "Clarity",
+        "value": 7.5
+      }
+    ]
+  },
+  {
+    "id": "werner-heisenberg",
+    "name": "Werner Heisenberg",
+    "title": "Werner Heisenberg \u00b7 Classical",
+    "icon": "\ud83d\udcd0",
+    "branch": "science",
+    "x": 3798.4,
+    "y": -1888.12,
+    "path": "people/werner-heisenberg/",
+    "power": 5125,
+    "cost": 1280,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 8.0
+      },
+      {
+        "name": "Clarity",
+        "value": 9.25
+      }
+    ]
+  },
+  {
+    "id": "zeno-of-citium",
+    "name": "Zeno Of Citium",
+    "title": "Zeno Of Citium \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 5300.3,
+    "y": -982.99,
+    "path": "people/zeno-of-citium/",
+    "power": 5500,
+    "cost": 1400,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 10.5
+      },
+      {
+        "name": "Clarity",
+        "value": 4.0
+      }
+    ]
+  },
+  {
+    "id": "zhuangzi",
+    "name": "Zhuangzi",
+    "title": "Zhuangzi \u00b7 Classical",
+    "icon": "\ud83c\udfdb\ufe0f",
+    "branch": "philosophy",
+    "x": 6267.95,
+    "y": 499.71,
+    "path": "people/zhuangzi/",
+    "power": 5875,
+    "cost": 1520,
+    "buffs": [
+      {
+        "name": "Insight",
+        "value": 13.0
+      },
+      {
+        "name": "Clarity",
+        "value": 5.75
+      }
+    ]
+  }
+]

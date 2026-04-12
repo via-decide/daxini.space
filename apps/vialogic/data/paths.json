@@ -1,0 +1,398 @@
+[
+  {
+    "from": "thales-of-miletus",
+    "to": "terence-tao"
+  },
+  {
+    "from": "terence-tao",
+    "to": "thales"
+  },
+  {
+    "from": "thales",
+    "to": "pythagoras"
+  },
+  {
+    "from": "pythagoras",
+    "to": "ptolemy"
+  },
+  {
+    "from": "ptolemy",
+    "to": "pythagorous"
+  },
+  {
+    "from": "pythagorous",
+    "to": "sun-tzu"
+  },
+  {
+    "from": "sun-tzu",
+    "to": "maryam-mirzakhani"
+  },
+  {
+    "from": "maryam-mirzakhani",
+    "to": "john-locke"
+  },
+  {
+    "from": "john-locke",
+    "to": "john-conway"
+  },
+  {
+    "from": "john-conway",
+    "to": "john-nash"
+  },
+  {
+    "from": "john-nash",
+    "to": "rene-descartes"
+  },
+  {
+    "from": "rene-descartes",
+    "to": "galileo-galilei"
+  },
+  {
+    "from": "galileo-galilei",
+    "to": "euclid"
+  },
+  {
+    "from": "euclid",
+    "to": "johannes-kepler"
+  },
+  {
+    "from": "johannes-kepler",
+    "to": "john-von-neumann"
+  },
+  {
+    "from": "john-von-neumann",
+    "to": "stephen-hawking"
+  },
+  {
+    "from": "stephen-hawking",
+    "to": "brian-greene"
+  },
+  {
+    "from": "brian-greene",
+    "to": "erwin-schrodinger"
+  },
+  {
+    "from": "erwin-schrodinger",
+    "to": "carl-friedrich-gauss"
+  },
+  {
+    "from": "carl-friedrich-gauss",
+    "to": "brahmagupta"
+  },
+  {
+    "from": "brahmagupta",
+    "to": "pierre-simon-laplace"
+  },
+  {
+    "from": "pierre-simon-laplace",
+    "to": "leonhard-euler"
+  },
+  {
+    "from": "leonhard-euler",
+    "to": "chanakya"
+  },
+  {
+    "from": "chanakya",
+    "to": "blaise-pascal"
+  },
+  {
+    "from": "blaise-pascal",
+    "to": "andrew-wiles"
+  },
+  {
+    "from": "andrew-wiles",
+    "to": "andrey-kolmogorov"
+  },
+  {
+    "from": "andrey-kolmogorov",
+    "to": "albert-einstein"
+  },
+  {
+    "from": "albert-einstein",
+    "to": "richard-feynman"
+  },
+  {
+    "from": "richard-feynman",
+    "to": "archimedes"
+  },
+  {
+    "from": "archimedes",
+    "to": "joseph-louis-lagrange"
+  },
+  {
+    "from": "joseph-louis-lagrange",
+    "to": "gottfried-leibniz"
+  },
+  {
+    "from": "gottfried-leibniz",
+    "to": "bhashkaracharya"
+  },
+  {
+    "from": "bhashkaracharya",
+    "to": "charles-babbage"
+  },
+  {
+    "from": "charles-babbage",
+    "to": "alan-turing"
+  },
+  {
+    "from": "alan-turing",
+    "to": "al-khwarizmi"
+  },
+  {
+    "from": "al-khwarizmi",
+    "to": "bertrand-russell"
+  },
+  {
+    "from": "bertrand-russell",
+    "to": "emmy-noether"
+  },
+  {
+    "from": "emmy-noether",
+    "to": "Mahaviracharya"
+  },
+  {
+    "from": "Mahaviracharya",
+    "to": "ada-lovelace"
+  },
+  {
+    "from": "ada-lovelace",
+    "to": "claude-shannon"
+  },
+  {
+    "from": "claude-shannon",
+    "to": "james-clerk-maxwell"
+  },
+  {
+    "from": "james-clerk-maxwell",
+    "to": "leonardo-da-vinci"
+  },
+  {
+    "from": "leonardo-da-vinci",
+    "to": "pierre-de-fermat"
+  },
+  {
+    "from": "pierre-de-fermat",
+    "to": "srinivasa-ramanujan"
+  },
+  {
+    "from": "srinivasa-ramanujan",
+    "to": "grigori-perelman"
+  },
+  {
+    "from": "grigori-perelman",
+    "to": "aryabhata"
+  },
+  {
+    "from": "aryabhata",
+    "to": "bernhard-riemann"
+  },
+  {
+    "from": "bernhard-riemann",
+    "to": "benoit-mandelbrot"
+  },
+  {
+    "from": "benoit-mandelbrot",
+    "to": "baruch-spinoza"
+  },
+  {
+    "from": "baruch-spinoza",
+    "to": "nicolaus-copernicus"
+  },
+  {
+    "from": "nicolaus-copernicus",
+    "to": "edward-witten"
+  },
+  {
+    "from": "edward-witten",
+    "to": "rumi"
+  },
+  {
+    "from": "rumi",
+    "to": "isaac-newton"
+  },
+  {
+    "from": "isaac-newton",
+    "to": "henri-poincare"
+  },
+  {
+    "from": "henri-poincare",
+    "to": "david-hilbert"
+  },
+  {
+    "from": "david-hilbert",
+    "to": "werner-heisenberg"
+  },
+  {
+    "from": "werner-heisenberg",
+    "to": "leonard-susskind"
+  },
+  {
+    "from": "leonard-susskind",
+    "to": "katherine-johnson"
+  },
+  {
+    "from": "katherine-johnson",
+    "to": "paul-erdos"
+  },
+  {
+    "from": "paul-erdos",
+    "to": "hypatia"
+  },
+  {
+    "from": "hypatia",
+    "to": "soren-kierkegaard"
+  },
+  {
+    "from": "soren-kierkegaard",
+    "to": "niels-bohr"
+  },
+  {
+    "from": "niels-bohr",
+    "to": "kip-thorne"
+  },
+  {
+    "from": "kip-thorne",
+    "to": "seneca"
+  },
+  {
+    "from": "seneca",
+    "to": "kurt-godel"
+  },
+  {
+    "from": "kurt-godel",
+    "to": "omar-khayyam"
+  },
+  {
+    "from": "omar-khayyam",
+    "to": "sofia-kovalevskaya"
+  },
+  {
+    "from": "martin-heidegger",
+    "to": "marcus-aurelius"
+  },
+  {
+    "from": "marcus-aurelius",
+    "to": "plato"
+  },
+  {
+    "from": "plato",
+    "to": "thomas-aquinas"
+  },
+  {
+    "from": "thomas-aquinas",
+    "to": "ludwig-wittgenstein"
+  },
+  {
+    "from": "ludwig-wittgenstein",
+    "to": "friedrich-nietzsche"
+  },
+  {
+    "from": "friedrich-nietzsche",
+    "to": "nagarjuna"
+  },
+  {
+    "from": "nagarjuna",
+    "to": "georg-hegel"
+  },
+  {
+    "from": "georg-hegel",
+    "to": "jean-paul-sartre"
+  },
+  {
+    "from": "jean-paul-sartre",
+    "to": "voltaire"
+  },
+  {
+    "from": "voltaire",
+    "to": "niccolo-machiavelli"
+  },
+  {
+    "from": "niccolo-machiavelli",
+    "to": "epicurus"
+  },
+  {
+    "from": "epicurus",
+    "to": "albert-camus"
+  },
+  {
+    "from": "albert-camus",
+    "to": "aristotle"
+  },
+  {
+    "from": "aristotle",
+    "to": "arthur-schopenhauer"
+  },
+  {
+    "from": "arthur-schopenhauer",
+    "to": "adi-shankara"
+  },
+  {
+    "from": "adi-shankara",
+    "to": "karl-marx"
+  },
+  {
+    "from": "karl-marx",
+    "to": "augustine-of-hippo"
+  },
+  {
+    "from": "augustine-of-hippo",
+    "to": "confucius"
+  },
+  {
+    "from": "confucius",
+    "to": "diogenes-of-sinope"
+  },
+  {
+    "from": "diogenes-of-sinope",
+    "to": "david-hume"
+  },
+  {
+    "from": "david-hume",
+    "to": "immanuel-kant"
+  },
+  {
+    "from": "immanuel-kant",
+    "to": "heraclitus"
+  },
+  {
+    "from": "heraclitus",
+    "to": "laozi"
+  },
+  {
+    "from": "laozi",
+    "to": "parmenides"
+  },
+  {
+    "from": "parmenides",
+    "to": "noam-chomsky"
+  },
+  {
+    "from": "noam-chomsky",
+    "to": "zeno-of-citium"
+  },
+  {
+    "from": "zeno-of-citium",
+    "to": "simone-de-beauvoir"
+  },
+  {
+    "from": "simone-de-beauvoir",
+    "to": "socrates"
+  },
+  {
+    "from": "socrates",
+    "to": "zhuangzi"
+  },
+  {
+    "from": "pythagoras",
+    "to": "plato"
+  },
+  {
+    "from": "plato",
+    "to": "euclid"
+  },
+  {
+    "from": "euclid",
+    "to": "archimedes"
+  }
+]

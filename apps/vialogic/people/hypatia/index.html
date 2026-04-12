@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Last Guardian (Hypatia)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #0B0C10; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        /* Act Indicator */
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #F2A900; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+
+        /* Main Info Box */
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #F2A900; 
+            padding-left: 20px; z-index: 10;
+            background: rgba(11, 12, 16, 0.85); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #F2A900; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        /* Insight Bar */
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(69, 162, 158, 0.1);
+            border-top: 1px solid rgba(69, 162, 158, 0.4);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #F2A900; font-weight: bold; }
+
+        /* Tap hint & Logo */
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #777; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #45A29E; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px;}
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; max-width: 90%; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <div class="viamath-logo">VIAMATH</div>
+        Tap anywhere to advance ➔
+    </div>
+    
+    <div id="act-indicator">ACT I: THE HISTORY</div>
+
+    <div id="label">
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+
+let particles = [];
+
+const content = [
+    // ACT I: THE HISTORY & THE FALL
+    {
+        title: "The Daughter of the Library", sub: "Hypatia (c. 355 – 415 AD)",
+        desc: "In the fading days of the Roman Empire, Alexandria was the intellectual capital of the world. Hypatia was the daughter of Theon, a great mathematician. Under his tutelage, her brilliance quickly eclipsed his own.",
+        insight: "She became the head of the Platonist school at Alexandria, teaching math and philosophy."
+    },
+    {
+        title: "The Teacher of Many", sub: "Science Without Borders",
+        desc: "Hypatia was a 'Neoplatonist'—believing that math was a spiritual path to understanding the divine universe. She was universally beloved. Christians, Jews, and Pagans all traveled from across the empire to hear her lecture.",
+        insight: "She walked through the city streets in a scholar's cloak, openly debating male philosophers."
+    },
+    {
+        title: "The Gathering Storm", sub: "A City Divided",
+        desc: "But Alexandria was descending into chaos. A bitter political feud erupted between Orestes (the Roman governor) and Cyril (the zealous new Bishop). Hypatia was Orestes's trusted advisor and close friend.",
+        insight: "Her immense political influence and focus on 'pagan' science made her a target."
+    },
+    {
+        title: "The Fall of Antiquity", sub: "March, 415 AD",
+        desc: "A mob of religious zealots ambushed Hypatia's chariot on her way home. They dragged her into a church, stripped her, and murdered her using broken roofing tiles. They burned her body outside the city walls.",
+        insight: "Historians view her death as the tragic end of Classical Antiquity and ancient Greek science."
+    },
+    // ACT II: THE MATHEMATICS & PRESERVATION
+    {
+        title: "The Great Preserver", sub: "Saving the Giants",
+        desc: "Much of what we know about Ptolemy and Euclid survived ONLY because of Hypatia. She edited, corrected, and published their massive mathematical works, saving them from the fires of the collapsing empire.",
+        insight: "Without her meticulous commentaries, the 'Almagest' might have been lost to history."
+    },
+    {
+        title: "Master of Algebra", sub: "Diophantine Equations",
+        desc: "She didn't just copy old work; she expanded it. She wrote a brilliant 13-volume commentary on the 'Arithmetica' of Diophantus, creating new solutions for complex algebraic equations.",
+        insight: "She advanced the branch of math that solves equations using only whole numbers."
+    },
+    {
+        title: "Slicing the Cone", sub: "The Conics of Apollonius",
+        desc: "Hypatia mastered and taught 'Conic Sections'—the geometry of slicing a 3D cone to reveal circles, ellipses, parabolas, and hyperbolas. This geometry is required to understand the orbits of planets.",
+        insight: "Her work on Apollonius paved the way for Johannes Kepler 1,200 years later."
+    },
+    {
+        title: "Engineering the Heavens", sub: "The Astrolabe",
+        desc: "She wasn't just a theorist; she was a master engineer. Letters from her students reveal she designed intricate brass Astrolabes—ancient analog computers used to calculate the positions of the stars and planets.",
+        insight: "Astrolabes were the smartphones of the ancient world for navigation and timekeeping."
+    },
+    {
+        title: "Applied Physics", sub: "The Hydrometer",
+        desc: "She also invented the Hydrometer (or hydroscope), a sealed cylindrical tube with weights at the bottom. By placing it in liquid and measuring how deep it sank, she could calculate the exact density of the fluid.",
+        insight: "A beautiful fusion of Archimedes' buoyancy and precise geometric measurement."
+    },
+    {
+        title: "The Eternal Flame", sub: "Logic Cannot Burn",
+        desc: "Her physical books were burned, and her life was stolen. But the mathematical truths she discovered, protected, and taught survived the dark ages. The mob destroyed the scholar, but they could not destroy the math.",
+        insight: "Ideas are immortal. The light of Alexandria lives on in ViaMath."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    for(let i=0; i<80; i++) particles.push({x: random(width), y: random(height), s: random(2, 4), a: random(TWO_PI)});
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % 10;
+    
+    document.getElementById("label").style.opacity = 0;
+    document.getElementById("insight-bar").style.opacity = 0;
+    document.getElementById("nav-hint").style.opacity = 0;
+    document.getElementById("act-indicator").style.opacity = 0;
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+
+    let actInd = document.getElementById("act-indicator");
+    let labelBorder = document.getElementById("label");
+    
+    if (state < 4) {
+        actInd.innerText = "ACT I: THE HISTORY & THE TRAGEDY";
+        actInd.style.color = "#F2A900"; // Alexandrian Gold
+        labelBorder.style.borderLeftColor = "#F2A900";
+    } else {
+        actInd.innerText = "ACT II: THE SCIENCE & ENGINEERING";
+        actInd.style.color = "#45A29E"; // Azure/Teal
+        labelBorder.style.borderLeftColor = "#45A29E";
+    }
+
+    let span = document.querySelector('.highlight');
+    if (state === 3) {
+        span.innerText = "THE TRAGEDY:"; span.style.color = "#E94B3C"; // Crimson
+    } else if (state < 4) {
+        span.innerText = "HISTORICAL INSIGHT:"; span.style.color = "#F2A900";
+    } else if (state === 9) {
+        span.innerText = "REFLECTION:"; span.style.color = "#45A29E";
+    } else {
+        span.innerText = "SCIENTIFIC CONTRIBUTION:"; span.style.color = "#45A29E";
+    }
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function getScaleFactor() { return min(1, width / 800); }
+
+function draw() {
+    background(11, 12, 16); // Deep Obsidian background
+
+    // Classical grid
+    stroke(255, 6); strokeWeight(1);
+    for (let i = 0; i < width; i += 80) line(i, 0, i, height);
+    for (let j = 0; j < height; j += 80) line(0, j, width, j);
+
+    time += 0.02;
+
+    // Ambient floating particles
+    for(let p of particles) {
+        p.y -= 0.5; p.x += sin(p.a + time) * 0.5;
+        if(p.y < 0) { p.y = height; p.x = random(width); }
+        
+        let pColor;
+        if (state === 3) pColor = color(233, 75, 60, 100); // Red embers
+        else if (state < 4) pColor = color(242, 169, 0, 50); // Gold
+        else pColor = color(69, 162, 158, 50); // Teal
+        
+        fill(pColor); noStroke();
+        ellipse(p.x, p.y, p.s);
+    }
+
+    // State Router
+    if      (state === 0) drawLighthouse();
+    else if (state === 1) drawNeoplatonism();
+    else if (state === 2) drawStorm();
+    else if (state === 3) drawFall();
+    else if (state === 4) drawPreserver();
+    else if (state === 5) drawAlgebra();
+    else if (state === 6) drawConics();
+    else if (state === 7) drawAstrolabe();
+    else if (state === 8) drawHydrometer();
+    else if (state === 9) drawLegacy();
+
+    // Cinematic fade overlay
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0;
+            updateUI();
+            document.getElementById("label").style.opacity = 1;
+            document.getElementById("insight-bar").style.opacity = 1;
+            document.getElementById("act-indicator").style.opacity = 1;
+            if (state !== 9) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(11, 12, 16, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE HISTORY
+// ============================================================
+
+function drawLighthouse() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Lighthouse of Alexandria (Abstract)
+    fill(20); stroke(255, 30); strokeWeight(2);
+    rect(-60, 0, 120, 300); // Base
+    rect(-40, -100, 80, 100); // Mid
+    rect(-20, -150, 40, 50); // Top
+
+    // The Light of Knowledge
+    drawingContext.shadowBlur = 100; drawingContext.shadowColor = '#F2A900';
+    fill(242, 169, 0); noStroke();
+    ellipse(0, -160, 30);
+    drawingContext.shadowBlur = 0;
+
+    // Rotating beams
+    let a1 = time; let a2 = time + PI;
+    let beamLen = 500;
+    
+    fill(242, 169, 0, 30); noStroke();
+    beginShape();
+    vertex(0, -160); vertex(cos(a1-0.2)*beamLen, sin(a1-0.2)*beamLen - 160); vertex(cos(a1+0.2)*beamLen, sin(a1+0.2)*beamLen - 160);
+    endShape(CLOSE);
+    beginShape();
+    vertex(0, -160); vertex(cos(a2-0.2)*beamLen, sin(a2-0.2)*beamLen - 160); vertex(cos(a2+0.2)*beamLen, sin(a2+0.2)*beamLen - 160);
+    endShape(CLOSE);
+
+    fill(255, 150); textSize(18); textAlign(CENTER); letterSpacing = 3;
+    text("THE LIGHT OF THE ANCIENT WORLD", 0, 150);
+    pop();
+}
+
+function drawNeoplatonism() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    rotate(time * 0.1);
+
+    // The One (Center)
+    drawingContext.shadowBlur = 40; drawingContext.shadowColor = '#F2A900';
+    fill(242, 169, 0); noStroke(); ellipse(0, 0, 40);
+    drawingContext.shadowBlur = 0;
+
+    // Emanations of reality (Concentric rings)
+    stroke(242, 169, 0, 100); noFill(); strokeWeight(2);
+    for(let i=1; i<=4; i++) {
+        let r = i * 60;
+        ellipse(0, 0, r*2);
+        
+        // Orbiting students/ideas
+        let a = -time * (0.5 + i*0.2);
+        fill(255, 150); noStroke();
+        ellipse(cos(a)*r, sin(a)*r, 10);
+        ellipse(cos(a+PI)*r, sin(a+PI)*r, 10);
+    }
+
+    pop();
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+    fill(255); noStroke(); textAlign(CENTER); textSize(24);
+    text("Mathematics as a Spiritual Path", 0, 280);
+    pop();
+}
+
+function drawStorm() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Hypatia (Logic - Gold) vs The Mob (Chaos - Crimson)
+    
+    // Center glow (Hypatia)
+    drawingContext.shadowBlur = 60; drawingContext.shadowColor = '#F2A900';
+    fill(242, 169, 0); noStroke(); ellipse(0, 0, 50);
+    drawingContext.shadowBlur = 0;
+
+    // Chaos particles creeping in
+    let numChaos = 150;
+    for(let i=0; i<numChaos; i++) {
+        // Noise driven flocking towards center
+        let a = noise(i*10, time*0.5) * TWO_PI;
+        let r = map(noise(i*20, time*0.2), 0, 1, 50, 400) - (time%5)*20; // slowly closing in
+        
+        if (r < 60) r = 60; // Barrier
+
+        let x = cos(a) * r;
+        let y = sin(a) * r;
+
+        fill(233, 75, 60, 150); noStroke(); // Crimson
+        ellipse(x, y, random(3, 8));
+        
+        // Jagged connecting lines
+        if (i > 0 && r < 150) {
+            stroke(233, 75, 60, 50); strokeWeight(1);
+            line(x, y, 0, 0);
+        }
+    }
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(24); letterSpacing = 2;
+    text("POLITICS MEETS SCIENCE", 0, -200);
+    pop();
+}
+
+function drawFall() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Shattering geometry / Burning
+    let t = min(time * 0.5, 1.0); // Progress of destruction
+    
+    // Glowing mathematical ring shattering
+    stroke(242, 169, 0, 200 * (1-t)); strokeWeight(4); noFill();
+    ellipse(0, 0, 200);
+
+    // Broken shards expanding outward
+    randomSeed(42); // Keep shards consistent
+    noStroke();
+    for(let i=0; i<30; i++) {
+        let a = random(TWO_PI);
+        let dist = 100 + t * random(100, 300); // Shards fly outward
+        let x = cos(a) * dist;
+        let y = sin(a) * dist;
+        
+        push();
+        translate(x, y);
+        rotate(a + t*random(5));
+        
+        // Morph from Gold to Crimson/Charcoal
+        let shardCol = lerpColor(color(242, 169, 0), color(20, 10, 10), t);
+        fill(shardCol);
+        
+        triangle(0, -10, 15, 10, -15, 10);
+        pop();
+    }
+
+    // Flames at bottom
+    for(let i=-200; i<=200; i+=10) {
+        let flameH = noise(i*0.05, time*2) * 150 * t;
+        fill(233, 75, 60, 150);
+        triangle(i, 200, i+10, 200, i+5, 200-flameH);
+        fill(242, 169, 0, 100);
+        triangle(i+2, 200, i+8, 200, i+5, 200-(flameH*0.6));
+    }
+
+    fill(255, 150 * t); textAlign(CENTER); textSize(32); letterSpacing = 6;
+    text("THE LIGHT GOES OUT", 0, 0);
+    pop();
+}
+
+// ============================================================
+// ACT II: THE SCIENCE
+// ============================================================
+
+function drawPreserver() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Faded works of Ptolemy/Euclid in background
+    stroke(255, 20); noFill(); strokeWeight(2);
+    ellipse(-150, -50, 150); // circle
+    rect(50, -100, 100, 100); // square
+    
+    // Hypatia's editing pen/logic tracing over them
+    let t = (sin(time*2) + 1)/2;
+    let traceX = lerp(-225, -75, t);
+    let traceY = -50 - sin(t*PI)*75; // arc over circle
+    
+    stroke(69, 162, 158); strokeWeight(4);
+    arc(-150, -50, 150, 150, PI, PI + t*PI); // Highlighting the geometry
+
+    // Scrolls
+    fill(20, 25, 30); stroke(69, 162, 158, 150); strokeWeight(2);
+    rect(-100, 80, 200, 60, 5);
+    
+    fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(18);
+    text("COMMENTARY ON THE ALMAGEST", 0, 110);
+
+    fill(242, 169, 0); textSize(14);
+    text("Correcting the math of the ancestors.", 0, 160);
+    pop();
+}
+
+function drawAlgebra() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Diophantine Equation visualization
+    fill(69, 162, 158); noStroke(); textAlign(CENTER); textSize(48);
+    text("ax + by = c", 0, -80);
+
+    let a = 3; let b = 5; let c = 14; // Example
+    
+    // Grid representing integer solutions
+    stroke(255, 20); strokeWeight(1);
+    for(let i=-150; i<=150; i+=30) {
+        line(i, -30, i, 180);
+        line(-150, i+30, 150, i+30);
+    }
+
+    // Line plotting the equation
+    stroke(255, 100); strokeWeight(3);
+    line(-150, 180, 150, -30); // Approximate sloped line
+
+    // Animated integer solution point finding the grid intersection
+    let solX = -150 + ((time*50) % 300);
+    let solY = 180 - (solX + 150) * 0.7; // follow slope
+    
+    // Snap to grid effect
+    let snapX = Math.round(solX/30)*30;
+    let snapY = Math.round(solY/30)*30;
+
+    if (abs(solX - snapX) < 10) {
+        fill(242, 169, 0); noStroke();
+        ellipse(snapX, snapY, 20);
+        // Ping
+        noFill(); stroke(242, 169, 0, 150); strokeWeight(2);
+        ellipse(snapX, snapY, 40 + sin(time*10)*10);
+        
+        fill(255); noStroke(); textSize(18);
+        text("Integer Solution Found", 0, 230);
+    } else {
+        fill(69, 162, 158); noStroke();
+        ellipse(solX, solY, 10);
+    }
+    pop();
+}
+
+function drawConics() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let coneW = 200;
+    let coneH = 300;
+    let t = (sin(time) + 1)/2; // Slicing angle animation
+
+    // 3D-ish Cone projection
+    stroke(255, 50); fill(20, 25, 30); strokeWeight(2);
+    // Base ellipse
+    ellipse(0, 100, coneW, 60);
+    // Cone sides
+    line(-coneW/2, 100, 0, 100-coneH);
+    line(coneW/2, 100, 0, 100-coneH);
+
+    // The Cutting Plane
+    let cutAngle = map(t, 0, 1, 0, PI/3); // Flat to angled
+    let cutY = 0;
+    let cutW = map(cutAngle, 0, PI/3, 130, 180);
+    let cutH = map(cutAngle, 0, PI/3, 40, 120);
+
+    push();
+    translate(0, cutY);
+    rotate(cutAngle);
+    
+    // Plane
+    fill(69, 162, 158, 50); stroke(69, 162, 158); strokeWeight(2);
+    rect(-150, -100, 300, 200);
+
+    // The resulting Conic Section (Ellipse)
+    stroke(242, 169, 0); strokeWeight(4); fill(242, 169, 0, 80);
+    ellipse(0, 0, cutW, cutH);
+    pop();
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(24);
+    if (cutAngle < 0.1) text("CIRCLE", 0, -250);
+    else text("ELLIPSE", 0, -250);
+    
+    fill(69, 162, 158); textSize(16);
+    text("The hidden orbits of the planets.", 0, -220);
+    pop();
+}
+
+function drawAstrolabe() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let r = 160;
+    
+    // Outer brass mater
+    stroke(242, 169, 0); fill(20, 20, 10); strokeWeight(6);
+    ellipse(0, 0, r*2);
+    // Hanger top
+    rect(-15, -r-30, 30, 30, 5);
+    ellipse(0, -r-35, 20);
+
+    // Inner markings (Degrees)
+    stroke(242, 169, 0, 150); strokeWeight(2);
+    for(let i=0; i<360; i+=10) {
+        let a = radians(i);
+        line(cos(a)*(r-10), sin(a)*(r-10), cos(a)*r, sin(a)*r);
+    }
+
+    // Rotating Rete (Star Map Cutout)
+    push();
+    rotate(-time * 0.2);
+    stroke(69, 162, 158); strokeWeight(3); noFill();
+    ellipse(0, 30, r*1.2); // Eccentric circle
+    // Star pointers
+    for(let i=0; i<5; i++) {
+        let a = TWO_PI * i/5;
+        let pX = cos(a)*80; let pY = sin(a)*80;
+        triangle(pX, pY, pX-10, pY+20, pX+10, pY+20);
+        fill(255); noStroke(); ellipse(pX, pY-5, 4); // Star
+    }
+    pop();
+
+    // Rotating Alidade (Pointer rule)
+    push();
+    rotate(time * 0.5);
+    stroke(255, 200); strokeWeight(4);
+    line(-r+10, 0, r-10, 0);
+    triangle(r-10, 0, r-30, -10, r-30, 10);
+    pop();
+
+    // Center pin
+    fill(255); stroke(242, 169, 0); strokeWeight(2);
+    ellipse(0, 0, 15);
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(22); letterSpacing = 3;
+    text("THE ASTROLABE", 0, r + 60);
+    pop();
+}
+
+function drawHydrometer() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    let waterLvl = -50 + sin(time)*10;
+    
+    // Beaker
+    stroke(255, 100); strokeWeight(3); noFill();
+    line(-80, -150, -80, 150);
+    line(80, -150, 80, 150);
+    arc(0, 150, 160, 40, 0, PI);
+
+    // Water
+    noStroke(); fill(69, 162, 158, 150);
+    rect(-78, waterLvl, 156, 150 - waterLvl, 0, 0, 20, 20);
+
+    // Hydrometer bobbing in water
+    // Oscillates slightly out of phase with water to show buoyancy
+    let hydroY = waterLvl + 20 + cos(time*1.2)*15; 
+    
+    // Tube
+    stroke(255); fill(30, 40, 50); strokeWeight(2);
+    rect(-15, hydroY - 100, 30, 140, 10);
+    // Weighted bottom
+    fill(242, 169, 0);
+    ellipse(0, hydroY + 40, 30, 30);
+
+    // Tick marks on tube
+    stroke(255, 150); strokeWeight(1);
+    for(let i=0; i<8; i++) {
+        let ty = hydroY - 80 + i*10;
+        line(-15, ty, -5, ty);
+    }
+
+    // Measurement arrow
+    stroke(242, 169, 0); strokeWeight(2); fill(242, 169, 0);
+    triangle(25, waterLvl, 40, waterLvl-5, 40, waterLvl+5);
+    line(40, waterLvl, 100, waterLvl);
+    
+    fill(255); noStroke(); textAlign(LEFT, CENTER); textSize(18);
+    text("Density", 110, waterLvl);
+
+    fill(255); textAlign(CENTER); textSize(22);
+    text("THE HYDROMETER", 0, 220);
+    pop();
+}
+
+function drawLegacy() {
+    push();
+    translate(width/2, height/2 + 50);
+    scale(getScaleFactor());
+
+    // Single eternal glowing star (Hypatia's legacy)
+    drawingContext.shadowBlur = 80; drawingContext.shadowColor = '#66FCF1';
+    fill(69, 162, 158); noStroke();
+    ellipse(0, -50, 40 + sin(time*3)*10);
+    drawingContext.shadowBlur = 0;
+
+    // Fading red embers from the past dropping away
+    for(let i=0; i<15; i++) {
+        let x = (noise(i*10, time*0.5)*300) - 150;
+        let y = (time * 100 + i*20) % 300 - 50;
+        fill(233, 75, 60, map(y, -50, 250, 200, 0)); // Crimson fades
+        ellipse(x, y, random(3, 6));
+    }
+
+    // Abstract geometric rings representing the surviving math
+    stroke(255, 30); noFill(); strokeWeight(2);
+    ellipse(0, -50, 150);
+    ellipse(0, -50, 250);
+    
+    push();
+    translate(0, -50); rotate(time*0.2);
+    stroke(242, 169, 0, 100);
+    triangle(0, -100, 86, 50, -86, 50);
+    pop();
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(28); letterSpacing = 3;
+    text("TRUTH IS IMMORTAL", 0, 150);
+    fill(69, 162, 158); textSize(16);
+    text("The fires died. The geometry remained.", 0, 180);
+    pop();
+}
+</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coming Soon</title>
+</head>
+<body>
+  <main>
+    <h1>Character page coming soon</h1>
+    <p>This folder is reserved for future character content.</p>
+  </main>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>

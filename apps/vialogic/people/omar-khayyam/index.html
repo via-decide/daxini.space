@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaMath | The Poet of Equations (Omar Khayyam)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #06080F; overflow: hidden;
+            color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        canvas { display: block; }
+
+        #act-indicator {
+            position: absolute; top: 30px; left: 30px;
+            color: #C9A84C; font-size: 14px; font-weight: bold; letter-spacing: 3px;
+            text-transform: uppercase; z-index: 10;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        #label {
+            position: absolute; top: 60px; left: 30px;
+            letter-spacing: 1px; border-left: 4px solid #C9A84C;
+            padding-left: 20px; z-index: 10;
+            background: rgba(6, 8, 15, 0.88); padding-right: 20px;
+            padding-bottom: 15px; border-radius: 0 10px 10px 0;
+            backdrop-filter: blur(8px); max-width: 80%;
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        h1 { margin: 0; font-size: 26px; font-weight: 300; text-transform: uppercase; color: #fff; }
+        #subtitle { color: #C9A84C; font-size: 16px; margin-top: 5px; font-weight: bold; letter-spacing: 2px; }
+        #description { color: #ccc; font-size: 15px; margin-top: 10px; max-width: 450px; line-height: 1.6; }
+
+        #insight-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(201, 168, 76, 0.08);
+            border-top: 1px solid rgba(201, 168, 76, 0.4);
+            padding: 15px 0; text-align: center;
+            font-size: 16px; color: #ddd; letter-spacing: 1px;
+            font-family: monospace; backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease-in-out; opacity: 1;
+        }
+        .highlight { color: #C9A84C; font-weight: bold; }
+
+        #nav-hint {
+            position: absolute; top: 30px; right: 30px;
+            color: #777; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; cursor: pointer;
+            transition: opacity 0.4s ease-in-out; text-align: right;
+        }
+        .viamath-logo { color: #C9A84C; font-weight: bold; font-size: 16px; margin-bottom: 5px; letter-spacing: 3px; }
+
+        @media (max-width: 700px) {
+            #act-indicator { top: 20px; left: 10px; font-size: 12px; }
+            #label { top: 45px; left: 10px; padding-left: 15px; max-width: 90%; }
+            h1 { font-size: 20px; }
+            #subtitle { font-size: 14px; }
+            #description { font-size: 13px; max-width: 100%; }
+            #insight-bar { font-size: 12px; padding: 10px 0; }
+            #nav-hint { top: 10px; right: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body onclick="nextScreen()">
+    <div id="nav-hint">
+        <a href="../../" style="text-decoration:none"><div class="viamath-logo">← VIAMATH</div></a>
+        Tap anywhere to advance ➔
+    </div>
+    <div id="act-indicator">ACT I: THE SELJUK EMPIRE</div>
+    <div id="label">
+        <h1 id="title">Nishapur, Cradle of the Polymath</h1>
+        <p id="subtitle">Khorasan, Persia — c. 1048 CE</p>
+        <p id="description">In the great trading metropolis of Nishapur — jewel of the Seljuk Empire — a child was born on May 18, 1048. His family name, Khayyam, meant 'tent-maker' in Arabic. But this boy would stitch together the vast tents of mathematics, astronomy, and poetry into one magnificent mind.</p>
+    </div>
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Nishapur was one of the largest cities in the medieval world, a crossroads of Greek, Indian, and Persian knowledge.</span>
+        <h1 id="title">Title</h1>
+        <p id="subtitle">Subtitle</p>
+        <p id="description">Description goes here.</p>
+    </div>
+    <div id="insight-bar">
+        <span class="highlight">HISTORICAL INSIGHT:</span> <span id="insight-text">Loading...</span>
+    </div>
+
+<script>
+let time = 0;
+let state = 0;
+let isTransitioning = false;
+let fadeAlpha = 0;
+let fadeDirection = 0;
+let targetState = 0;
+const FADE_SPEED = 12;
+const TOTAL_SCREENS = 11;
+let particles = [];
+
+const content = [
+    {
+        title: "Nishapur, Cradle of the Polymath", sub: "Khorasan, Persia — c. 1048 CE",
+        desc: "In the great trading metropolis of Nishapur — jewel of the Seljuk Empire — a child was born on May 18, 1048. His family name, Khayyam, meant 'tent-maker' in Arabic. But this boy would stitch together the vast tents of mathematics, astronomy, and poetry into one magnificent mind.",
+        insight: "Nishapur was one of the largest cities in the medieval world, a crossroads of Greek, Indian, and Persian knowledge."
+    },
+    {
+        title: "The Journey to Samarkand", sub: "A 20-Year-Old Prodigy, c. 1068 CE",
+        desc: "After losing his father and tutor in the same year, the young Omar joined a caravan to Samarkand — one of the greatest centers of scholarship on earth. Under the patronage of Governor Abu Tahir, he was given a position in the royal treasury — and all the time he needed to think.",
+        insight: "At age 22, he wrote his first great work on algebra — a complete theory of cubic equations — sitting in Samarkand."
+    },
+    {
+        title: "The Sultan's Astronomer", sub: "Isfahan, c. 1074 CE",
+        desc: "Sultan Malik-Shah I, the most powerful ruler of the age, summoned Khayyam to his magnificent capital Isfahan. He gave him one task: reform the ancient Persian calendar. Khayyam assembled a team of eight astronomers and built a new observatory. After five years of meticulous work, they produced the Jalali Calendar.",
+        insight: "Khayyam calculated the year as 365.24219858156 days — more accurate than the Gregorian calendar of 1582, introduced 500 years later."
+    },
+    // ACT II: THE ALGEBRA OF CUBICS
+    {
+        title: "The Unconquered Mountain", sub: "The Cubic Equation",
+        desc: "Al-Khwarizmi had mastered quadratic equations (degree 2). But the cubic — degree 3 — had resisted every mathematician for centuries. Its solution required a volume; it lived in three-dimensional space. Khayyam was the first to conquer it systematically. He classified all 25 types of cubic equations and solved every single one.",
+        insight: "He wrote: 'It is impossible to solve a cubic equation by compass and straightedge alone.' He was right — this would be proven 800 years later."
+    },
+    {
+        title: "The Geometric Intersection", sub: "Where the Parabola Meets the Circle",
+        desc: "Khayyam's revolutionary insight: a cubic equation x³ + bx = c can be solved by drawing a parabola (y = x²/b) and a semicircle (radius = c/2b), then finding where they cross. The x-coordinate of the intersection is the solution. Geometry was his algebra.",
+        insight: "He solved x³ + 4x = 5 by constructing a semicircle and parabola — their crossing gives x = 1. Flawless geometric logic."
+    },
+    {
+        title: "The 25 Cases", sub: "A Complete Classification",
+        desc: "Khayyam did something no mathematician had dared: he listed and solved ALL possible forms of cubic equations. He sorted them by which terms appeared — cubes, squares, roots, and constants — and for each type, he specified exactly which pair of conic sections to use: parabola+circle, parabola+hyperbola, circle+hyperbola.",
+        insight: "He lamented he could not find a pure algebraic formula. That purely algebraic solution would come from Cardano and Tartaglia in 1545 — 400 years later."
+    },
+    {
+        title: "Beyond Real Numbers", sub: "Positive Reals as 'Ideal Numbers'",
+        desc: "Khayyam challenged Euclid's definition of ratios and proved that a broader, more intuitive definition was equivalent. He argued that ratios should be treated as 'ideal numbers' — essentially conceiving of the entire system of positive real numbers. He pushed the boundary of number itself.",
+        insight: "He was the first mathematician to think of real numbers as a continuum — not just integers or fractions."
+    },
+    // ACT III: EUCLID, POETRY, LEGACY
+    {
+        title: "The Khayyam Quadrilateral", sub: "Approaching Non-Euclidean Geometry",
+        desc: "Khayyam attempted to prove Euclid's famous 5th Postulate (the parallel postulate) using a quadrilateral with two equal sides perpendicular to the base. He proved the top angles are equal — but could not prove they were right angles. In trying, he came within one step of inventing non-Euclidean geometry 700 years early.",
+        insight: "This quadrilateral is now formally called the 'Khayyam-Saccheri Quadrilateral' in his honour."
+    },
+    {
+        title: "The Rubaiyat", sub: "The Mathematician Who Sang",
+        desc: "Between his theorems, Khayyam wrote poetry — four-line stanzas called Rubaiyat. They spoke of wine, roses, mortality, and the mystery of existence. In 1859, Edward FitzGerald translated them into English and created a sensation. Every educated person in Victorian England knew Khayyam the poet — but almost no one knew Khayyam the mathematician.",
+        insight: "'The Moving Finger writes; and, having writ, moves on.' His verses carry the same precision as his equations."
+    },
+    {
+        title: "Before Descartes", sub: "The Father of Analytic Geometry?",
+        desc: "René Descartes is credited with inventing analytic geometry in 1637 — the idea that algebra and geometry are the same language. But Khayyam had already built this bridge 550 years earlier. His cubic solutions required using algebraic equations to describe geometric curves and finding their intersection to solve equations.",
+        insight: "Descartes invented the coordinate grid. Khayyam invented the fusion of algebra and geometry that made it necessary."
+    },
+    {
+        title: "The Poet of Equations", sub: "His Eternal Legacy",
+        desc: "From the observatories of Isfahan to the quadratic formula, from calendar reform to the Rubaiyat, Omar Khayyam lived the largest life possible. His mathematics shaped Fibonacci, Tartaglia, Cardano, and Descartes. His calendar still runs in Iran today. And his poetry still echoes across every language on Earth.",
+        insight: "He gave the world a universal method for cubic equations and a calendar still accurate to this day. Welcome to ViaMath."
+    }
+];
+
+function setup() {
+    createCanvas(windowWidth, windowHeight);
+    for (let i = 0; i < 90; i++) {
+        particles.push({ x: random(width), y: random(height), s: random(1.5, 4), a: random(TWO_PI) });
+    }
+    updateUI();
+}
+
+function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+function nextScreen() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    fadeDirection = 1;
+    targetState = (state + 1) % TOTAL_SCREENS;
+    ['label','insight-bar','nav-hint','act-indicator'].forEach(id =>
+        document.getElementById(id).style.opacity = 0);
+}
+
+function updateUI() {
+    document.getElementById("title").innerText = content[state].title;
+    document.getElementById("subtitle").innerText = content[state].sub;
+    document.getElementById("description").innerText = content[state].desc;
+
+    let actInd = document.getElementById("act-indicator");
+    let labelEl = document.getElementById("label");
+    let subtitleEl = document.getElementById("subtitle");
+    let span = document.querySelector('.highlight');
+
+    let col, actText;
+    if (state < 3) {
+        col = "#C9A84C"; actText = "ACT I: THE SELJUK EMPIRE";
+        span.innerText = "HISTORICAL INSIGHT:";
+    } else if (state < 7) {
+        col = "#4FC3F7"; actText = "ACT II: THE ALGEBRA OF CUBICS";
+        span.innerText = "MATHEMATICAL GENIUS:";
+    } else {
+        col = "#CE93D8"; actText = "ACT III: EUCLID, VERSE & LEGACY";
+        span.innerText = state === 10 ? "LEGACY:" : "MATHEMATICAL GENIUS:";
+    }
+    actInd.innerText = actText;
+    actInd.style.color = col;
+    labelEl.style.borderLeftColor = col;
+    subtitleEl.style.color = col;
+    span.style.color = col;
+    document.getElementById("insight-text").innerText = content[state].insight;
+}
+
+function getScaleFactor() { return min(1, width / 800); }
+
+function getActColor() {
+    if (state < 3) return color(201, 168, 76);
+    if (state < 7) return color(79, 195, 247);
+    return color(206, 147, 216);
+}
+
+function draw() {
+    background(6, 8, 15);
+
+    // Islamic geometric star-tile background
+    stroke(255, 5); strokeWeight(1); noFill();
+    let gs = 100;
+    for (let i = -gs; i < width + gs; i += gs) {
+        for (let j = -gs; j < height + gs; j += gs) {
+            push(); translate(i, j);
+            rotate(PI / 4); rect(-35, -35, 70, 70);
+            rotate(PI / 4); rect(-35, -35, 70, 70);
+            pop();
+        }
+    }
+
+    time += 0.02;
+
+    let ac = getActColor();
+    for (let p of particles) {
+        p.y -= 0.25; p.x += sin(p.a + time) * 0.4;
+        if (p.y < 0) { p.y = height; p.x = random(width); }
+        fill(red(ac), green(ac), blue(ac), 50); noStroke();
+        ellipse(p.x, p.y, p.s);
+    }
+
+    if      (state === 0)  drawNishapur();
+    else if (state === 1)  drawSamarkand();
+    else if (state === 2)  drawJalaliCalendar();
+    else if (state === 3)  drawCubicMountain();
+    else if (state === 4)  drawConicIntersection();
+    else if (state === 5)  drawTwentyFiveCases();
+    else if (state === 6)  drawRealNumbers();
+    else if (state === 7)  drawKhayyamQuad();
+    else if (state === 8)  drawRubaiyat();
+    else if (state === 9)  drawBeforeDescartes();
+    else if (state === 10) drawLegacy();
+
+    if (isTransitioning) {
+        fadeAlpha += FADE_SPEED * fadeDirection;
+        if (fadeDirection === 1 && fadeAlpha >= 255) {
+            fadeAlpha = 255; fadeDirection = -1;
+            state = targetState; time = 0;
+            updateUI();
+            ['label','insight-bar','act-indicator'].forEach(id =>
+                document.getElementById(id).style.opacity = 1);
+            if (state !== 10) document.getElementById("nav-hint").style.opacity = 1;
+        } else if (fadeDirection === -1 && fadeAlpha <= 0) {
+            fadeAlpha = 0; isTransitioning = false; fadeDirection = 0;
+        }
+        push(); fill(6, 8, 15, fadeAlpha); noStroke(); rect(0, 0, width, height); pop();
+    }
+}
+
+// ============================================================
+// ACT I: THE SELJUK EMPIRE
+// ============================================================
+
+function drawNishapur() {
+    push();
+    translate(width / 2, height / 2 + 60);
+    scale(getScaleFactor());
+
+    // Star-lit desert sky
+    for (let i = 0; i < 30; i++) {
+        let sx = random(-350, 350), sy = random(-280, -160);
+        let sa = 150 + sin(time * 2 + i) * 80;
+        fill(255, 220, 150, sa); noStroke(); ellipse(sx, sy, random(2, 4));
+    }
+
+    // Crescent Moon
+    fill(201, 168, 76); noStroke();
+    arc(200, -200, 70, 70, PI * 0.6, PI * 1.8);
+    fill(6, 8, 15); ellipse(215, -200, 55);
+
+    // City silhouette — domes and minarets
+    fill(15, 18, 30); stroke(201, 168, 76, 60); strokeWeight(2);
+    rect(-350, 10, 700, 160); // base
+
+    let domeData = [[-200, 80, 90], [-60, 100, 130], [100, 80, 90], [250, 60, 70]];
+    for (let d of domeData) {
+        fill(20, 22, 38); stroke(201, 168, 76, 80);
+        arc(d[0], 10, d[2], d[1], PI, TWO_PI);
+    }
+    // Minarets
+    for (let mx of [-260, -20, 180, 290]) {
+        fill(18, 20, 35); stroke(201, 168, 76, 100);
+        rect(mx - 8, -110, 16, 120);
+        fill(201, 168, 76, 180); noStroke();
+        triangle(mx, -120, mx - 10, -110, mx + 10, -110);
+    }
+
+    // Glowing lamp at top minaret
+    drawingContext.shadowBlur = 40; drawingContext.shadowColor = '#C9A84C';
+    fill(255, 220, 100); noStroke(); ellipse(-20, -125, 12);
+    drawingContext.shadowBlur = 0;
+
+    fill(255); noStroke(); textAlign(CENTER); textSize(22); letterSpacing = 3;
+    text("NISHAPUR — GATEWAY OF THE SILK ROAD", 0, 110);
+    pop();
+}
+
+function drawSamarkand() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // Caravan route — winding path
+    noFill(); stroke(201, 168, 76, 80); strokeWeight(3); drawingContext.setLineDash([12, 10]);
+    beginShape();
+    for (let i = 0; i <= 60; i++) {
+        let t = i / 60;
+        let px = lerp(-280, 220, t);
+        let py = sin(t * PI) * -80 + 50;
+        curveVertex(px, py);
+    }
+    endShape();
+    drawingContext.setLineDash([]);
+
+    // City nodes
+    let cities = [{ name: "NISHAPUR", x: -280 }, { name: "MERV", x: -80 }, { name: "BUKHARA", x: 60 }, { name: "SAMARKAND", x: 220 }];
+    for (let c of cities) {
+        fill(c.name === "SAMARKAND" ? color(79, 195, 247) : color(201, 168, 76)); noStroke();
+        ellipse(c.x, 50, c.name === "SAMARKAND" ? 20 : 14);
+        fill(255); textSize(13); textAlign(CENTER);
+        text(c.name, c.x, 75);
+    }
+
+    // Traveling scholar
+    let tp = (time * 0.25) % 1.0;
+    let tx = lerp(-280, 220, tp);
+    let ty = sin(tp * PI) * -80 + 50;
+    fill(255, 220, 100); noStroke(); ellipse(tx, ty, 16);
+    fill(6, 8, 15); textSize(14); textAlign(CENTER, CENTER); text("ع", tx, ty);
+
+    // Treatise on Algebra book visual
+    drawingContext.shadowBlur = 40; drawingContext.shadowColor = '#4FC3F7';
+    fill(10, 20, 35); stroke(79, 195, 247); strokeWeight(2); rect(-120, -150, 240, 170, 8);
+    drawingContext.shadowBlur = 0;
+    stroke(79, 195, 247, 50); strokeWeight(1);
+    for (let i = 1; i < 5; i++) line(-95, -150 + i * 34, 95, -150 + i * 34);
+    fill(79, 195, 247); noStroke(); textSize(20); textAlign(CENTER, CENTER);
+    text("رسالة في البراهين", 0, -65);
+    fill(255, 220, 100); textSize(14);
+    text("Treatise on Algebra", 0, -40);
+    fill(255, 150); textSize(13);
+    text("Samarkand, c. 1070 CE", 0, -18);
+    pop();
+}
+
+function drawJalaliCalendar() {
+    push();
+    translate(width / 2, height / 2 + 40);
+    scale(getScaleFactor());
+
+    let r = 170;
+
+    // Earth orbit
+    noFill(); stroke(255, 30); strokeWeight(2); ellipse(0, 0, r * 2, r * 2);
+
+    // Sun
+    drawingContext.shadowBlur = 60; drawingContext.shadowColor = '#FFA500';
+    fill(255, 200, 80); noStroke(); ellipse(0, 0, 50);
+    drawingContext.shadowBlur = 0;
+
+    // Earth orbiting
+    let ea = time * 0.3 - HALF_PI;
+    let ex = cos(ea) * r, ey = sin(ea) * r;
+    fill(30, 80, 150); stroke(79, 195, 247); strokeWeight(2); ellipse(ex, ey, 28);
+
+    // Year length readout
+    let yearLen = 365.24219858156;
+    fill(201, 168, 76); noStroke(); textSize(36); textAlign(CENTER);
+    text("365.24219858 days", 0, -r - 50);
+
+    // Comparison bar
+    let items = [
+        { name: "Khayyam's Jalali\n(1079 CE)", val: 365.24219858156, col: color(201, 168, 76) },
+        { name: "Gregorian\n(1582 CE)", val: 365.2425, col: color(79, 195, 247) },
+        { name: "Modern Value", val: 365.242190, col: color(206, 147, 216) }
+    ];
+    for (let i = 0; i < items.length; i++) {
+        let bx = map(i, 0, 2, -200, 200);
+        let diff = abs(items[i].val - 365.24219) * 10000;
+        let bh = min(diff * 200, 60);
+
+        fill(red(items[i].col), green(items[i].col), blue(items[i].col), 100);
+        stroke(items[i].col); strokeWeight(2);
+        rect(bx - 35, r - bh, 70, bh, 5);
+
+        fill(255); noStroke(); textSize(12); textAlign(CENTER);
+        text(items[i].name, bx, r + 30);
+    }
+    fill(255, 150); textSize(14); textAlign(CENTER);
+    text("← Lower bar = more accurate →", 0, r + 60);
+
+    fill(201, 168, 76); textSize(16);
+    text("His calendar was used in Persia for 900 years.", 0, r + 90);
+    pop();
+}
+
+// ============================================================
+// ACT II: THE ALGEBRA OF CUBICS
+// ============================================================
+
+function drawCubicMountain() {
+    push();
+    translate(width / 2, height / 2 + 80);
+    scale(getScaleFactor());
+
+    // Draw cubic curve y = x^3 - 3x as a mountain
+    stroke(79, 195, 247); strokeWeight(3); noFill();
+    beginShape();
+    for (let x = -200; x <= 200; x += 3) {
+        let xn = x / 60;
+        let yn = -(xn * xn * xn - 3 * xn) * 40;
+        vertex(x, yn);
+    }
+    endShape();
+
+    // Axes
+    stroke(255, 50); strokeWeight(2);
+    line(-280, 0, 280, 0); line(0, -220, 0, 100);
+
+    // Degree labels
+    fill(201, 168, 76); noStroke(); textSize(48); textAlign(CENTER);
+    text("x³  +  bx  =  c", 0, -240);
+
+    // Difficulty ramp
+    let steps = [{ label: "Linear\nx¹", x: -200 }, { label: "Quadratic\nx²", x: -60 }, { label: "Cubic\nx³", x: 100 }];
+    for (let i = 0; i < steps.length; i++) {
+        let col = i === 2 ? color(201, 168, 76) : color(255, 100);
+        fill(col); noStroke(); textSize(i === 2 ? 18 : 15); textAlign(CENTER);
+        text(steps[i].label, steps[i].x, 80 - i * 25);
+
+        fill(col); noStroke();
+        rect(steps[i].x - 30, 10 - i * 25, 60, 20 + i * 25, 5);
+    }
+
+    fill(255, 150); textSize(16); textAlign(CENTER);
+    text("25 types. Every single one solved for the first time.", 0, 120);
+    pop();
+}
+
+function drawConicIntersection() {
+    push();
+    translate(width / 2 - 30, height / 2 + 60);
+    scale(getScaleFactor());
+
+    // Coordinate axes
+    stroke(255, 40); strokeWeight(2);
+    line(-50, 0, 320, 0); line(0, -220, 0, 80);
+    fill(255, 100); textSize(16); textAlign(LEFT); text("x", 325, 5);
+    textAlign(CENTER); text("y", 5, -225);
+
+    // Example: x³ + 4x = 5  → parabola y = x²/4, semicircle r = 5/8 centered at (5/8, 0)
+    let b = 4, c = 5;
+    let radius = c / (2 * b); // = 0.625 scaled
+    let scale_ = 120;
+    let cx = radius * scale_, cy = 0;
+
+    // Parabola: y = x²/b
+    stroke(201, 168, 76); strokeWeight(3); noFill();
+    beginShape();
+    for (let x = 0; x <= 2.5; x += 0.05) {
+        vertex(x * scale_, -(x * x / b) * scale_);
+    }
+    endShape();
+    fill(201, 168, 76); textSize(16); textAlign(LEFT);
+    text("y = x²/b", 2.5 * scale_ + 5, -(2.5 * 2.5 / b) * scale_);
+
+    // Semicircle
+    stroke(79, 195, 247); strokeWeight(3); noFill();
+    arc(cx, cy, radius * 2 * scale_, radius * 2 * scale_, PI, TWO_PI);
+    fill(79, 195, 247); textSize(16);
+    text("Semicircle r = c/2b", cx + radius * scale_ + 5, -10);
+
+    // Intersection point: x = 1
+    let ix = 1 * scale_, iy = -(1 / b) * scale_;
+    drawingContext.shadowBlur = 30; drawingContext.shadowColor = '#FF5252';
+    fill(255, 80, 80); noStroke(); ellipse(ix, iy, 14);
+    drawingContext.shadowBlur = 0;
+    stroke(255, 80, 80); strokeWeight(2); drawingContext.setLineDash([5, 5]);
+    line(ix, iy, ix, 0);
+    drawingContext.setLineDash([]);
+    fill(255, 80, 80); noStroke(); textSize(18); textAlign(CENTER);
+    text("x = 1", ix, 20);
+
+    // Equation at top
+    fill(255); textSize(32); textAlign(CENTER);
+    text("x³ + 4x = 5", 130, -195);
+    fill(255, 150); textSize(15);
+    text("Parabola ∩ Semicircle  →  Solution", 130, -165);
+
+    pop();
+}
+
+function drawTwentyFiveCases() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // 25 small equation tiles
+    let cases = [
+        "x³ = c", "x³ + bx = c", "x³ = bx + c",
+        "x³ + c = bx", "x³ + bx² = c", "x³ = bx² + c",
+        "x³ + c = bx²", "x³ + bx² + cx = d", "x³ + bx² = cx + d",
+        "x³ + cx = bx² + d", "x³ + d = bx² + cx",
+        "x³ + bx + d = cx²", "x³ = bx² + cx + d",
+        "x³ + bx² + d = cx", "x³ + cx + d = bx²",
+        "x³ + bx² + cx + d = 0", "x³ + bx = cx²",
+        "x³ + cx = bx²", "x³ = bx + cx²",
+        "x³ + bx² + c = dx", "x³ + bx + c = dx²",
+        "x³ + cx² = bx + d", "x³ + bx² + cx² = d",
+        "x³ = bx² + c + dx", "x³ + b = cx + dx²"
+    ];
+
+    let active = Math.floor(time * 1.5) % 25;
+    let cols = 5;
+
+    for (let i = 0; i < 25; i++) {
+        let col = i % cols;
+        let row = Math.floor(i / cols);
+        let px = map(col, 0, 4, -240, 240);
+        let py = map(row, 0, 4, -160, 160);
+
+        let isActive = i === active;
+        drawingContext.shadowBlur = isActive ? 30 : 0;
+        drawingContext.shadowColor = '#4FC3F7';
+        fill(isActive ? color(20, 50, 80) : color(12, 18, 30));
+        stroke(isActive ? color(79, 195, 247) : color(79, 195, 247, 60));
+        strokeWeight(isActive ? 2 : 1);
+        rect(px - 46, py - 18, 92, 36, 6);
+        drawingContext.shadowBlur = 0;
+
+        fill(isActive ? 255 : color(150));
+        noStroke(); textSize(isActive ? 13 : 11); textAlign(CENTER, CENTER);
+        text(cases[i], px, py);
+    }
+
+    fill(255); noStroke(); textSize(26); textAlign(CENTER);
+    text("25 Types of Cubic Equations", 0, -200);
+    fill(255, 150); textSize(15);
+    text("All classified. All solved. First time in history.", 0, 210);
+    pop();
+}
+
+function drawRealNumbers() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // Number line expanding from integers to reals
+    stroke(255, 50); strokeWeight(3);
+    line(-280, 0, 280, 0);
+
+    // Integer marks
+    for (let i = -5; i <= 5; i++) {
+        let nx = i * 55;
+        stroke(255, 100); strokeWeight(2); line(nx, -10, nx, 10);
+        fill(201, 168, 76); noStroke(); textSize(16); textAlign(CENTER); text(i, nx, -25);
+    }
+
+    // Irrational/real points filling the gaps — animated
+    for (let i = 0; i < 80; i++) {
+        let px = map(sin(i * 1.3 + time * 2), -1, 1, -280, 280);
+        let pa = 100 + sin(time * 4 + i) * 80;
+        fill(206, 147, 216, pa); noStroke(); ellipse(px, 0, 5);
+    }
+
+    // Label zones
+    fill(201, 168, 76); textSize(18); textAlign(CENTER);
+    text("Integers", 0, -60);
+    stroke(201, 168, 76, 80); strokeWeight(2); drawingContext.setLineDash([5, 5]);
+    line(-110, -45, 110, -45);
+    drawingContext.setLineDash([]);
+
+    fill(206, 147, 216); textSize(18);
+    text("Real Number Continuum (Khayyam's Vision)", 0, 50);
+
+    // Key insight formula
+    drawingContext.shadowBlur = 25; drawingContext.shadowColor = '#CE93D8';
+    fill(15, 12, 22); stroke(206, 147, 216); strokeWeight(2); rect(-240, 90, 480, 55, 10);
+    drawingContext.shadowBlur = 0;
+    fill(255); noStroke(); textSize(20); textAlign(CENTER, CENTER);
+    text("Ratios should be treated as ideal numbers — not just fractions.", 0, 118);
+
+    fill(255, 150); noStroke(); textSize(15); textAlign(CENTER);
+    text("He conceived positive real numbers as a complete, unbroken line.", 0, 185);
+    pop();
+}
+
+// ============================================================
+// ACT III: EUCLID, VERSE & LEGACY
+// ============================================================
+
+function drawKhayyamQuad() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // The Khayyam-Saccheri Quadrilateral
+    let w = 220, h = 160;
+    let bx = -w / 2, by = 80;
+
+    // Base AB
+    stroke(255, 80); strokeWeight(3);
+    line(bx, by, bx + w, by);
+
+    // Two equal sides AD and BC, perpendicular to base
+    stroke(201, 168, 76); strokeWeight(3);
+    line(bx, by, bx, by - h);     // AD
+    line(bx + w, by, bx + w, by - h); // BC
+
+    // Right angle markers at base
+    stroke(255); strokeWeight(2); noFill();
+    rect(bx, by - 20, 20, -20);
+    rect(bx + w - 20, by - 20, 20, -20);
+
+    // Top side DC — the unknown
+    stroke(79, 195, 247); strokeWeight(3);
+    line(bx, by - h, bx + w, by - h);
+
+    // Top angle arcs
+    let topAngle = HALF_PI + sin(time * 0.5) * 0.12; // oscillates near 90°
+    stroke(206, 147, 216); noFill(); strokeWeight(2);
+    arc(bx, by - h, 50, 50, 0, topAngle);
+    arc(bx + w, by - h, 50, 50, PI - topAngle, PI);
+
+    // Labels
+    fill(255); noStroke(); textSize(18); textAlign(CENTER, CENTER);
+    text("A", bx - 20, by + 5);
+    text("B", bx + w + 20, by + 5);
+    text("D", bx - 20, by - h - 5);
+    text("C", bx + w + 20, by - h - 5);
+
+    fill(201, 168, 76); textSize(16);
+    text("|AD| = |BC|", -250, by - h / 2);
+
+    fill(206, 147, 216); textSize(16); textAlign(CENTER);
+    text("∠D = ∠C  (proved)", 0, by - h - 50);
+
+    fill(255, 80, 80); textSize(16);
+    text("∠D = ∠C = 90°?  (Not proved — but so close!)", 0, by - h - 75);
+
+    fill(255); textSize(22); textAlign(CENTER);
+    text("The Khayyam–Saccheri Quadrilateral", 0, -230);
+    fill(255, 150); textSize(15);
+    text("He came within one step of inventing non-Euclidean geometry.", 0, 165);
+    pop();
+}
+
+function drawRubaiyat() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // Animated rose petals (symbol of the Rubaiyat)
+    for (let i = 0; i < 12; i++) {
+        let a = TWO_PI * i / 12 + time * 0.1;
+        let petal = map(sin(time * 0.8 + i), -1, 1, 0.7, 1.0);
+        push();
+        rotate(a);
+        fill(180, 30, 60, 80); stroke(255, 80, 100, 150); strokeWeight(1.5);
+        beginShape();
+        vertex(0, 0);
+        bezierVertex(30 * petal, 35 * petal, 80 * petal, 35 * petal, 110 * petal, 0);
+        bezierVertex(80 * petal, -35 * petal, 30 * petal, -35 * petal, 0, 0);
+        endShape();
+        pop();
+    }
+
+    // Central glow
+    drawingContext.shadowBlur = 50; drawingContext.shadowColor = '#CE93D8';
+    fill(15, 10, 25); stroke(206, 147, 216); strokeWeight(3); ellipse(0, 0, 60);
+    drawingContext.shadowBlur = 0;
+    fill(255); noStroke(); textSize(14); textAlign(CENTER, CENTER); text("رباعیات", 0, 0);
+
+    // Poem lines floating
+    let verses = [
+        '"The Moving Finger writes; and, having writ, moves on."',
+        '"A Book of Verses underneath the Bough..."',
+        '"Ah, make the most of what we yet may spend..."',
+        '"Into this Universe, and Why not knowing..."'
+    ];
+    let vi = Math.floor(time * 0.4) % verses.length;
+    fill(255, 220, 180, 200 + sin(time * 2) * 50);
+    noStroke(); textSize(17); textAlign(CENTER);
+    text(verses[vi], 0, -200);
+
+    fill(201, 168, 76); textSize(14);
+    text("— Rubaiyat of Omar Khayyam  (trans. Edward FitzGerald, 1859)", 0, -170);
+
+    fill(255); noStroke(); textSize(22); textAlign(CENTER);
+    text("The Mathematician Who Also Sang", 0, 220);
+    pop();
+}
+
+function drawBeforeDescartes() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    // Two nodes: Khayyam (1070) and Descartes (1637) with a bridge
+    let k = { x: -220, y: 0, label: "KHAYYAM", year: "1070 CE" };
+    let d = { x: 220, y: 0, label: "DESCARTES", year: "1637 CE" };
+
+    // Bridge
+    stroke(201, 168, 76, 100); strokeWeight(4); drawingContext.setLineDash([15, 10]);
+    bezier(k.x, k.y, k.x + 80, -120, d.x - 80, -120, d.x, d.y);
+    drawingContext.setLineDash([]);
+
+    // Gap label
+    fill(255, 150); noStroke(); textSize(16); textAlign(CENTER);
+    text("567 Years", 0, -145);
+
+    // Nodes
+    for (let n of [k, d]) {
+        let isK = n === k;
+        drawingContext.shadowBlur = 40;
+        drawingContext.shadowColor = isK ? '#C9A84C' : '#4FC3F7';
+        fill(10, 18, 30); stroke(isK ? color(201, 168, 76) : color(79, 195, 247)); strokeWeight(3);
+        ellipse(n.x, n.y, 130, 130);
+        drawingContext.shadowBlur = 0;
+        fill(isK ? color(201, 168, 76) : color(79, 195, 247));
+        noStroke(); textSize(14); textAlign(CENTER, CENTER);
+        text(n.label, n.x, n.y - 10);
+        fill(255); textSize(13); text(n.year, n.x, n.y + 12);
+    }
+
+    // The shared concept
+    fill(206, 147, 216); noStroke(); textSize(26); textAlign(CENTER);
+    text("Algebra  ≡  Geometry", 0, 100);
+
+    fill(255, 150); textSize(16);
+    text("Both used equations to describe curves and curves to solve equations.", 0, 135);
+    fill(255, 80, 80); textSize(15);
+    text("Khayyam: no coordinates, but already the fusion.", 0, 165);
+
+    fill(255); textSize(24); textAlign(CENTER);
+    text("He was Descartes before Descartes.", 0, -210);
+    pop();
+}
+
+function drawLegacy() {
+    push();
+    translate(width / 2, height / 2 + 50);
+    scale(getScaleFactor());
+
+    let r = 180;
+
+    // Outer ring — spinning constellation of ideas
+    let ideas = ["x³", "Jalali", "Conics", "Rubaiyat", "Real ℝ", "Geometry", "Algebra", "Parallel"];
+    noFill(); stroke(201, 168, 76, 50); strokeWeight(2);
+    ellipse(0, 0, r * 2);
+
+    for (let i = 0; i < ideas.length; i++) {
+        let a = TWO_PI * i / ideas.length + time * 0.3;
+        let px = cos(a) * r, py = sin(a) * r;
+        fill(201, 168, 76); noStroke(); ellipse(px, py, 10);
+
+        push(); translate(px, py); rotate(0);
+        fill(255, 200); textSize(16); textAlign(CENTER, CENTER);
+        text(ideas[i], cos(a) * 30, sin(a) * 30);
+        pop();
+
+        stroke(201, 168, 76, 30); strokeWeight(1);
+        line(px, py, 0, 0);
+    }
+
+    // Center jewel
+    drawingContext.shadowBlur = 80; drawingContext.shadowColor = '#C9A84C';
+    fill(12, 15, 25); stroke(201, 168, 76); strokeWeight(5); ellipse(0, 0, 120);
+    drawingContext.shadowBlur = 0;
+    fill(255); noStroke(); textSize(13); textAlign(CENTER, CENTER);
+    text("عمر خیام\nOMAR\nKHAYYAM", 0, 0);
+
+    // Legacy lineage below
+    fill(255); noStroke(); textSize(30); textAlign(CENTER); letterSpacing = 3;
+    text("THE POET OF EQUATIONS", 0, r + 55);
+    fill(255, 150); textSize(16); letterSpacing = 1;
+    text("Nishapur  →  Samarkand  →  Isfahan  →  The Universe", 0, r + 85);
+    pop();
+}
+</script>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>

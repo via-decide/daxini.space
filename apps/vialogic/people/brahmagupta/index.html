@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViaLogic | Mission Tracks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+Gujarati:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, sans-serif; background: #05060f; color: #e2e8f0; }
+    .app { max-width: 980px; margin: 0 auto; padding: 24px; display: grid; gap: 20px; }
+    .panel { background: #0f172a; border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 16px; }
+    .cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+    .track-card { border: 1px solid rgba(255,255,255,.18); border-radius: 14px; padding: 14px; cursor: pointer; }
+    .track-card.active { border-color: #ff8f00; box-shadow: 0 0 0 1px #ff8f00 inset; }
+    .muted { color: #94a3b8; }
+    .stats { display:flex; gap: 16px; flex-wrap: wrap; }
+    .pill { background:#1e293b; padding:6px 10px; border-radius:999px; font-size:12px; }
+    .missions { display: grid; gap: 10px; }
+    .mission { border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px; }
+    .mission.locked { opacity: .55; }
+    .concepts { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .concepts span { font-size: 12px; background: #1e293b; padding: 4px 8px; border-radius: 999px; }
+    .question { display: grid; gap: 10px; }
+    .gu { font-family: 'Noto Sans Gujarati', sans-serif; font-size: 14px; color: #94a3b8; }
+    .options { display:grid; gap:8px; }
+    .opt { text-align:left; background:#1e293b; color:#e2e8f0; border:1px solid rgba(255,255,255,.15); border-radius:10px; padding:10px; cursor:pointer; }
+    .feedback { min-height: 24px; font-weight: 600; }
+    .toast { position: fixed; right: 12px; top: 12px; background:#14532d; color:#dcfce7; padding:10px 12px; border-radius:8px; display:none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel">
+      <h1>Mission Tracks</h1>
+      <p class="muted">Choose a Genius Card track to begin.</p>
+      <div class="cards" id="track-list"></div>
+    </div>
+
+    <div class="panel" id="summary-panel" hidden>
+      <h2 id="track-name"></h2>
+      <div class="stats">
+        <div class="pill" id="genius-name"></div>
+        <div class="pill" id="level-name"></div>
+        <div class="pill" id="sparks-total"></div>
+        <div class="pill" id="xp-total"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="mission-panel" hidden>
+      <h2>Missions</h2>
+      <div class="missions" id="mission-list"></div>
+    </div>
+
+    <div class="panel" id="question-panel" hidden>
+      <h2 id="question-mission-title"></h2>
+      <div class="question">
+        <div id="q-en"></div>
+        <div id="q-gu" class="gu"></div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GG_STATE_KEY = 'vialogic_gg_state';
+    const GG_PROGRESS_KEY = 'vialogic_gg_progress';
+
+    const fallbackLeonardoTrack = {
+      track: 'Default Track',
+      genius_card: 'Leonardo da Vinci',
+      progression: { genius_card_levels: [{ level: 1, name: 'Polymath', xp_required: 0 }], unlock_order: [] },
+      missions: []
+    };
+
+    const appState = {
+      tracks: { default: fallbackLeonardoTrack, gg: null },
+      activeTrack: null,
+      ggMission: null,
+      ggQuestionIndex: 0,
+      ggMissionCorrect: {}
+    };
+
+    function mergeState(existing, updates) {
+      return { ...existing, ...updates };
+    }
+
+    function getCurrentLevel(totalXP, levels) {
+      return levels.filter(l => totalXP >= l.xp_required).at(-1);
+    }
+
+    function initGGState() {
+      const existing = JSON.parse(localStorage.getItem(GG_STATE_KEY) || '{}');
+      const base = {
+        track: 'Gujarat Ganitam',
+        total_sparks: 0,
+        total_genius_xp: 0,
+        current_level: 1,
+        missions_completed: [],
+        missions_unlocked: ['mission_01'],
+        questions_answered: {}
+      };
+      const merged = mergeState(base, existing);
+      localStorage.setItem(GG_STATE_KEY, JSON.stringify(merged));
+      localStorage.setItem(GG_PROGRESS_KEY, JSON.stringify(merged));
+      return merged;
+    }
+
+    function saveGGState(updates) {
+      const existing = initGGState();
+      const merged = mergeState(existing, updates);
+      localStorage.setItem(GG_STATE_KEY, JSON.stringify(merged));
+      localStorage.setItem(GG_PROGRESS_KEY, JSON.stringify(merged));
+      return merged;
+    }
+
+    async function loadTracks() {
+      const res = await fetch('../../data/gujarat-ganitam.json');
+      appState.tracks.gg = await res.json();
+      renderTrackSelector();
+    }
+
+    function renderTrackSelector() {
+      const list = document.getElementById('track-list');
+      list.textContent = '';
+      const ggState = initGGState();
+      const ggLevel = getCurrentLevel(ggState.total_genius_xp, appState.tracks.gg.progression.genius_card_levels);
+
+      [
+        { id: 'default', track: appState.tracks.default.track, genius: appState.tracks.default.genius_card, level: 'Polymath', desc: 'Existing Leonardo track remains available.' },
+        { id: 'gg', track: appState.tracks.gg.track, genius: appState.tracks.gg.genius_card, level: ggLevel.name, desc: 'Bilingual mission track.' }
+      ].forEach(item => {
+        const card = document.createElement('button');
+        card.className = 'track-card';
+        card.type = 'button';
+        const t = document.createElement('div'); t.textContent = item.genius;
+        const d = document.createElement('div'); d.className = 'muted'; d.textContent = item.track;
+        const l = document.createElement('div'); l.className = 'pill'; l.textContent = `Level: ${item.level}`;
+        const p = document.createElement('p'); p.className = 'muted'; p.textContent = item.desc;
+        card.append(t, d, l, p);
+        card.addEventListener('click', () => selectTrack(item.id));
+        list.appendChild(card);
+      });
+    }
+
+    function selectTrack(trackId) {
+      appState.activeTrack = trackId;
+      document.querySelectorAll('.track-card').forEach((c, idx) => c.classList.toggle('active', (idx === (trackId === 'default' ? 0 : 1))));
+      if (trackId === 'default') {
+        showDefaultTrack();
+        return;
+      }
+      showGGTrack();
+    }
+
+    function showDefaultTrack() {
+      document.getElementById('summary-panel').hidden = false;
+      document.getElementById('mission-panel').hidden = false;
+      document.getElementById('question-panel').hidden = true;
+      document.getElementById('track-name').textContent = 'Default Track';
+      document.getElementById('genius-name').textContent = 'Genius: Leonardo da Vinci';
+      document.getElementById('level-name').textContent = 'Level: Polymath';
+      document.getElementById('sparks-total').textContent = 'Sparks: Existing system';
+      document.getElementById('xp-total').textContent = 'XP: Existing system';
+      const missionList = document.getElementById('mission-list');
+      missionList.textContent = '';
+      const p = document.createElement('p');
+      p.className = 'muted';
+      p.textContent = 'This track is unchanged in this page; use existing Leonardo flow as before.';
+      missionList.appendChild(p);
+    }
+
+    function showGGTrack() {
+      const ggState = initGGState();
+      const track = appState.tracks.gg;
+      const level = getCurrentLevel(ggState.total_genius_xp, track.progression.genius_card_levels);
+      document.getElementById('summary-panel').hidden = false;
+      document.getElementById('mission-panel').hidden = false;
+      document.getElementById('question-panel').hidden = true;
+      document.getElementById('track-name').textContent = track.track;
+      document.getElementById('genius-name').textContent = `Genius Card: ${track.genius_card}`;
+      document.getElementById('level-name').textContent = `Level: ${level.name}`;
+      document.getElementById('sparks-total').textContent = `Sparks: ${ggState.total_sparks}`;
+      document.getElementById('xp-total').textContent = `XP: ${ggState.total_genius_xp}`;
+      renderMissionList();
+    }
+
+    function renderMissionList() {
+      const track = appState.tracks.gg;
+      const ggState = initGGState();
+      const list = document.getElementById('mission-list');
+      list.textContent = '';
+      track.progression.unlock_order.forEach((id) => {
+        const mission = track.missions.find((m) => m.id === id);
+        const unlocked = ggState.missions_unlocked.includes(id) || id === 'mission_01';
+        const card = document.createElement('div');
+        card.className = `mission${unlocked ? '' : ' locked'}`;
+        const h = document.createElement('h3'); h.textContent = `${unlocked ? '' : '🔒 '}${mission.title}`;
+        const lore = document.createElement('p'); lore.className = 'muted'; lore.textContent = unlocked ? mission.lore.slice(0, 160) + (mission.lore.length > 160 ? '…' : '') : '';
+        const rewards = document.createElement('div'); rewards.className = 'stats';
+        const s = document.createElement('span'); s.className = 'pill'; s.textContent = `Sparks +${mission.sparks_reward}`;
+        const x = document.createElement('span'); x.className = 'pill'; x.textContent = `XP +${mission.genius_xp}`;
+        rewards.append(s, x);
+        const concepts = document.createElement('div'); concepts.className = 'concepts';
+        mission.concepts.forEach((c) => { const tag = document.createElement('span'); tag.textContent = c; concepts.appendChild(tag); });
+        card.append(h, lore, rewards);
+        if (unlocked) {
+          card.append(concepts);
+          card.addEventListener('click', () => openMission(mission.id));
+        }
+        list.appendChild(card);
+      });
+    }
+
+    function openMission(missionId) {
+      appState.ggMission = appState.tracks.gg.missions.find((m) => m.id === missionId);
+      appState.ggQuestionIndex = 0;
+      appState.ggMissionCorrect = {};
+      document.getElementById('question-panel').hidden = false;
+      document.getElementById('question-mission-title').textContent = appState.ggMission.title;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const mission = appState.ggMission;
+      const q = mission.questions[appState.ggQuestionIndex];
+      document.getElementById('q-en').textContent = q.text_en;
+      document.getElementById('q-gu').textContent = q.text_gu;
+      document.getElementById('feedback').textContent = '';
+      const options = document.getElementById('options');
+      options.textContent = '';
+      q.options.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.type = 'button';
+        btn.textContent = `${opt.label}. ${opt.value}`;
+        btn.addEventListener('click', () => submitAnswer(q, opt.label));
+        options.appendChild(btn);
+      });
+    }
+
+    function submitAnswer(question, selectedLabel) {
+      const ggState = initGGState();
+      const existingQuestion = ggState.questions_answered[question.id] || { correct: false, attempts: 0 };
+      const updatedQuestion = { ...existingQuestion, attempts: existingQuestion.attempts + 1 };
+      if (selectedLabel === question.answer) {
+        updatedQuestion.correct = true;
+        appState.ggMissionCorrect[question.id] = true;
+        document.getElementById('feedback').textContent = question.lore_feedback_correct;
+        const newSparks = ggState.total_sparks + question.sparks;
+        saveGGState({
+          total_sparks: newSparks,
+          questions_answered: { ...ggState.questions_answered, [question.id]: updatedQuestion }
+        });
+        setTimeout(() => {
+          appState.ggQuestionIndex += 1;
+          if (appState.ggQuestionIndex >= appState.ggMission.questions.length) {
+            completeMission();
+          } else {
+            renderQuestion();
+          }
+        }, 300);
+      } else {
+        document.getElementById('feedback').textContent = question.lore_feedback_wrong;
+        saveGGState({
+          questions_answered: { ...ggState.questions_answered, [question.id]: updatedQuestion }
+        });
+      }
+      showGGTrack();
+    }
+
+    function completeMission() {
+      const mission = appState.ggMission;
+      const ggState = initGGState();
+      if (!ggState.missions_completed.includes(mission.id)) {
+        const completed = [...ggState.missions_completed, mission.id];
+        const unlocked = [...ggState.missions_unlocked];
+        const order = appState.tracks.gg.progression.unlock_order;
+        const currentIndex = order.indexOf(mission.id);
+        if (currentIndex >= 0 && currentIndex < order.length - 1) {
+          const nextMission = order[currentIndex + 1];
+          if (!unlocked.includes(nextMission)) unlocked.push(nextMission);
+        }
+        const totalXP = ggState.total_genius_xp + mission.genius_xp;
+        const totalSparks = ggState.total_sparks + mission.sparks_reward;
+        const prevLevel = getCurrentLevel(ggState.total_genius_xp, appState.tracks.gg.progression.genius_card_levels);
+        const newLevel = getCurrentLevel(totalXP, appState.tracks.gg.progression.genius_card_levels);
+        saveGGState({
+          total_sparks: totalSparks,
+          total_genius_xp: totalXP,
+          current_level: newLevel.level,
+          missions_completed: completed,
+          missions_unlocked: unlocked
+        });
+        if (newLevel.level > prevLevel.level) {
+          showToast(`Level Up! ${newLevel.name}`);
+        }
+      }
+      showGGTrack();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 1800);
+    }
+
+    loadTracks().catch((err) => {
+      console.error(err);
+      showToast('Failed to load Gujarat Ganitam data');
+    });
+  </script>
+
+    <!-- Sovereign Audit: Back to Map -->
+    <a href="../../index.html" class="vialogic-back-btn" style="position:fixed; top:20px; left:20px; z-index:9999; text-decoration:none; color:white; background:rgba(0,229,255,0.15); border:1px solid rgba(0,229,255,0.4); padding:8px 16px; border-radius:99px; font-family:sans-serif; font-size:12px; font-weight:bold; backdrop-filter:blur(8px); cursor:pointer;">← VIALOGIC MAP</a>
+        
+</body>
+</html>
