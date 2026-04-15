@@ -1,0 +1,20 @@
+{
+  "modules": [
+    {
+      "name": "Zayvora",
+      "url": "logichub.app"
+    },
+    {
+      "name": "Mars Workspace",
+      "url": "daxini.xyz"
+    },
+    {
+      "name": "SkillHex",
+      "url": "skillhex.app"
+    },
+    {
+      "name": "Security",
+      "url": "hanuman.solutions"
+    }
+  ]
+}

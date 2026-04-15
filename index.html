@@ -412,6 +412,8 @@
   </div>
 
   <script>
+    import('./main.js');
+
     /* =========================================================
        1. STARFIELD GENERATOR
        ========================================================= */
@@ -532,6 +534,28 @@
         tags: ['video', 'documentation', 'guide', 'export']
       },
       {
+        slug: 'viadecide',
+        name: 'ViaDecide',
+        icon: '🧭',
+        url: 'https://viadecide.com',
+        status: 'live',
+        desc: 'Decision intelligence layer and ecosystem navigation control plane',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['decision', 'navigation', 'ecosystem', 'hub']
+      },
+      {
+        slug: 'aporaksha',
+        name: 'Aporaksha',
+        icon: '🪔',
+        url: 'https://aporaksha.com',
+        status: 'live',
+        desc: 'Aporaksha ecosystem root module and operating doctrine surface',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['ecosystem', 'identity', 'launcher', 'protocol']
+      },
+      {
         slug: 'via-logic',
         name: 'ViaLogic',
         icon: '🕹️',
@@ -563,6 +587,17 @@
         ownerType: 'mine',
         tier: 'core',
         tags: ['study', 'learning', 'exam', 'education']
+      },
+      {
+        slug: 'hanuman-security',
+        name: 'Hanuman',
+        icon: '🛡️',
+        url: 'https://hanuman.solutions',
+        status: 'live',
+        desc: 'Security telemetry module and ecosystem defense intelligence',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['security', 'telemetry', 'ecosystem', 'monitoring']
       },
       {
         slug: 'mars-sim',
@@ -817,7 +852,7 @@
           `;
           nodeEl.title = `${appData.name} — ${appData.desc}`;
           nodeEl.onclick = () => {
-            if (appData.url.includes('github.com')) window.open(appData.url, '_blank');
+            if (typeof window.sendEvent === 'function') window.sendEvent('module_interaction', appData.slug);
             animateFractalTransition(pos, false);
             setTimeout(() => launchAppBySlug(appData.slug), 300);
           };
@@ -863,6 +898,55 @@
        5. SMART IFRAME ROUTER
        ========================================================= */
     const wm = document.getElementById('window-manager');
+    const moduleLaunchHistory = [];
+
+    function extractHost(url) {
+      try {
+        const parsed = new URL(url, window.location.origin);
+        return parsed.hostname.replace(/^www\./, '');
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function shouldLaunchAsModule(appData) {
+      if (!appData || !appData.url || appData.url === 'offline') return false;
+      const host = extractHost(appData.url);
+      return Boolean(host && window.ECOSYSTEM_MODULES && window.ECOSYSTEM_MODULES.has(host));
+    }
+
+    function trackSecuritySignals(host) {
+      const now = Date.now();
+      moduleLaunchHistory.push(now);
+      while (moduleLaunchHistory.length && now - moduleLaunchHistory[0] > 10000) {
+        moduleLaunchHistory.shift();
+      }
+
+      if (moduleLaunchHistory.length >= 4 && typeof window.sendSecurityEvent === 'function') {
+        window.sendSecurityEvent({
+          type: 'rapid_module_switch',
+          module: host,
+          timestamp: now
+        });
+      }
+
+      if (document.referrer) {
+        try {
+          const referrerHost = new URL(document.referrer).hostname.replace(/^www\./, '');
+          const currentHost = window.location.hostname.replace(/^www\./, '');
+          if (referrerHost && referrerHost !== currentHost && typeof window.sendSecurityEvent === 'function') {
+            window.sendSecurityEvent({
+              type: 'unknown_referrer',
+              referrer: referrerHost,
+              module: host,
+              timestamp: now
+            });
+          }
+        } catch (error) {
+          // Ignore malformed referrer values.
+        }
+      }
+    }
 
     function launchApp(posIndex) {
       const appData = DAXINI_GALAXY.apps[posIndex];
@@ -873,6 +957,14 @@
     function launchAppBySlug(slug, options = {}) {
       const appData = focusApp(slug, { syncRoute: options.syncRoute !== false, replaceRoute: options.replaceRoute === true });
       if (!appData) return;
+
+      const moduleHost = extractHost(appData.url);
+      if (shouldLaunchAsModule(appData) && typeof window.launchModule === 'function') {
+        trackSecuritySignals(moduleHost);
+        logDiag('ROUTER', `Launching module "${appData.name}" with Passport identity → ${moduleHost}`);
+        window.launchModule(moduleHost);
+        return appData;
+      }
 
       logDiag('ROUTER', `Booting "${appData.name}" [${appData.status.toUpperCase()}] → ${appData.url}`);
       wm.innerHTML = '';
@@ -956,6 +1048,7 @@
       syncRoute('', false);
       // ── Restore SEO panel when app is closed ──
       showSeoPanel();
+      if (typeof window.sendEvent === 'function') window.sendEvent('module_close', slug || name || 'unknown');
       logDiag('TERMINATE', `Closed ${name || slug}`);
     }
 
@@ -1106,8 +1199,7 @@
       if (path.length === 2 && path[0] === 4) {
         const target = path[1];
         if (DAXINI_GALAXY.apps[target]) {
-          const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com')) window.open(url, '_blank');
+          if (typeof window.sendEvent === 'function') window.sendEvent('module_interaction', DAXINI_GALAXY.apps[target].slug);
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
@@ -1128,8 +1220,7 @@
       if (path.length === 1 && path[0] !== 4) {
         const target = path[0];
         if (DAXINI_GALAXY.apps[target]) {
-          const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com')) window.open(url, '_blank');
+          if (typeof window.sendEvent === 'function') window.sendEvent('module_interaction', DAXINI_GALAXY.apps[target].slug);
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
