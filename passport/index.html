@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daxini Passport</title>
+
+<style>
+body{
+background:#000;
+color:#fff;
+font-family:sans-serif;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh
+}
+
+button{
+padding:12px 20px;
+margin-top:20px;
+background:#0ea5e9;
+border:none;
+color:#fff;
+border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Daxini Passport</h2>
+<p>Generate identity to access ecosystem modules</p>
+
+<button onclick="createPassport()">Generate Passport</button>
+
+<script>
+
+function createPassport(){
+
+const token = "passport_"+Date.now()
+
+localStorage.setItem("passport_token",token)
+
+window.location.href="/"
+
+}
+
+</script>
+
+</body>
+</html>
