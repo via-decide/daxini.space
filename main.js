@@ -14,6 +14,10 @@ const ECOSYSTEM_MODULES = new Set([
 const passportToken = getPassportToken();
 if (passportToken) {
   sendEvent('passport_login', 'daxini.space');
+  if (window.DaxiniReputationEngine) {
+    window.DaxiniReputationEngine.ensurePassportProfile(passportToken);
+    window.DaxiniReputationEngine.recordSessionActivity(passportToken);
+  }
 }
 
 sendEvent('session_start', 'daxini.space');

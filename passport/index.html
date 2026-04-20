@@ -32,19 +32,38 @@ border-radius:6px;
 
 <h2>Daxini Passport</h2>
 <p>Generate identity to access ecosystem modules</p>
+<p id="rep-summary"></p>
 
 <button onclick="createPassport()">Generate Passport</button>
 
+<script src="../reputation-engine.js"></script>
 <script>
+function renderProfileSummary(token) {
+  if (!window.DaxiniReputationEngine || !token) return;
+  const profile = window.DaxiniReputationEngine.getPassportProfile(token);
+  const repSummary = document.getElementById('rep-summary');
+  if (!repSummary || !profile) return;
+  const badge = profile.reputation.badge ? profile.reputation.badge.label : 'No badge yet';
+  repSummary.textContent = `Reputation: ${profile.reputation.overall} · Badge: ${badge}`;
+}
 
 function createPassport(){
 
 const token = "passport_"+Date.now()
 
 localStorage.setItem("passport_token",token)
+if (window.DaxiniReputationEngine) {
+window.DaxiniReputationEngine.ensurePassportProfile(token)
+}
 
 window.location.href="/"
 
+}
+
+const existingToken = localStorage.getItem("passport_token")
+if (existingToken && window.DaxiniReputationEngine) {
+window.DaxiniReputationEngine.ensurePassportProfile(existingToken)
+renderProfileSummary(existingToken)
 }
 
 </script>

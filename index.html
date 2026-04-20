@@ -64,6 +64,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Vercel Web Analytics -->
+  <script src="./reputation-engine.js"></script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
@@ -986,12 +987,45 @@
         items.push({ slug: app.slug, name: app.name, addedAt: new Date().toISOString() });
         localStorage.setItem(key, JSON.stringify(items));
       }
+      const token = localStorage.getItem('passport_token');
+      if (token && window.DaxiniReputationEngine) {
+        window.DaxiniReputationEngine.updatePassportReputation(token, {
+          creator: app.ownerType || app.creator || 'community',
+          templates_used: 1,
+          session_activity: 1
+        });
+      }
       logDiag('WORKSPACE', `${app.name} saved to workspace.`);
     }
 
     function duplicateInLogichub(app) {
       const destination = `https://logichub.app/?duplicate=${encodeURIComponent(app.slug)}`;
+      const token = localStorage.getItem('passport_token');
+      if (token && window.DaxiniReputationEngine) {
+        window.DaxiniReputationEngine.updatePassportReputation(token, {
+          creator: app.ownerType || app.creator || 'community',
+          remixes: 1,
+          forks: 1,
+          session_activity: 1
+        });
+      }
       window.open(destination, '_blank', 'noopener');
+    }
+
+    function rateMarketplaceApp(app) {
+      const token = localStorage.getItem('passport_token');
+      if (!token || !window.DaxiniReputationEngine) return;
+      const raw = window.prompt(`Rate ${app.name} from 1-5`, '5');
+      if (raw === null) return;
+      const rating = Math.max(1, Math.min(5, Number(raw) || 0));
+      if (!rating) return;
+      window.DaxiniReputationEngine.updatePassportReputation(token, {
+        creator: app.ownerType || app.creator || 'community',
+        ratings: rating,
+        session_activity: 1
+      });
+      renderMarketplace();
+      renderMarketplaceDetails(app);
     }
 
     function applyMarketplaceFilters(apps) {
@@ -1023,20 +1057,39 @@
       const filtered = applyMarketplaceFilters(APP_LIBRARY);
       grid.innerHTML = '';
       filtered.forEach(app => {
+        const creatorLabel = app.ownerType || app.creator || 'community';
+        const creatorRep = window.DaxiniReputationEngine
+          ? window.DaxiniReputationEngine.getCreatorReputation(creatorLabel)
+          : { reputation: 0, badge: { key: 'none', label: 'No badge yet' } };
+        const badgeText = creatorRep.badge && creatorRep.badge.key !== 'none'
+          ? ` · badge: ${creatorRep.badge.label}`
+          : '';
         const card = document.createElement('article');
         card.className = 'marketplace-card';
         card.innerHTML = `
           <h3>${app.icon} ${app.name}</h3>
-          <div class="marketplace-meta">type: ${inferType(app)} · creator: ${app.ownerType} · category: ${inferCategory(app)}</div>
+          <div class="marketplace-meta">type: ${inferType(app)} · creator: ${creatorLabel} · category: ${inferCategory(app)}${badgeText}</div>
           <p>${app.desc || 'No description provided.'}</p>
           <div class="marketplace-actions">
             <button type="button" class="btn-launch">Launch</button>
+            <button type="button">Rate ★</button>
             <button type="button">Duplicate / Open in Logichub</button>
             <button type="button">Open in Workspace</button>
           </div>
         `;
-        const [launchBtn, duplicateBtn, workspaceBtn] = card.querySelectorAll('button');
-        launchBtn.addEventListener('click', () => launchAppBySlug(app.slug));
+        const [launchBtn, rateBtn, duplicateBtn, workspaceBtn] = card.querySelectorAll('button');
+        launchBtn.addEventListener('click', () => {
+          const token = localStorage.getItem('passport_token');
+          if (token && window.DaxiniReputationEngine) {
+            window.DaxiniReputationEngine.updatePassportReputation(token, {
+              creator: creatorLabel,
+              downloads: 1,
+              session_activity: 1
+            });
+          }
+          launchAppBySlug(app.slug);
+        });
+        rateBtn.addEventListener('click', () => rateMarketplaceApp(app));
         duplicateBtn.addEventListener('click', () => duplicateInLogichub(app));
         workspaceBtn.addEventListener('click', () => openInWorkspace(app));
         card.addEventListener('click', (event) => {
