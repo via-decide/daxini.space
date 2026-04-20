@@ -414,6 +414,35 @@
       padding: 7px; font-size: 11px; color: #b5d8ff;
     }
     .mobile-tab.active { color: #fff; background: rgba(0,229,255,0.12); }
+    .featured-row {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .featured-card {
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 10px;
+      background: rgba(5, 13, 24, 0.9);
+      padding: 8px;
+      font-size: 11px;
+      color: #cbe9ff;
+    }
+    .featured-card strong { display: block; color: #fff; margin-bottom: 2px; }
+    .publish-cta {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,103,31,0.5);
+      background: rgba(255,103,31,0.14);
+      color: #ffd3bf;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+    }
 
     @media (max-width: 768px) {
       #marketplace-home { top: max(env(safe-area-inset-top), 6px); left: 6px; right: 6px; max-height: 64vh; }
@@ -439,13 +468,19 @@
       <h2>DAXINI.SPACE</h2>
       <p>Discover apps, tools, and simulations built across the ecosystem.</p>
       <a class="marketplace-top-cta" href="https://logichub.app/" target="_blank" rel="noopener">Build in Logichub → Publish here</a>
+      <a class="publish-cta" href="https://logichub.app/" target="_blank" rel="noopener">Publish Your Creation</a>
     </div>
     <div class="category-row" aria-label="Visible categories">
       <span class="category-chip">Tools</span>
-      <span class="category-chip">Games</span>
-      <span class="category-chip">AI Apps</span>
+      <span class="category-chip">Apps</span>
       <span class="category-chip">Simulations</span>
-      <span class="category-chip">New Releases</span>
+      <span class="category-chip">Games</span>
+      <span class="category-chip">Research Artifacts</span>
+    </div>
+    <div class="featured-row" aria-label="Featured sections">
+      <div class="featured-card"><strong>Trending tools</strong>Explore what builders are launching most this week.</div>
+      <div class="featured-card"><strong>New simulations</strong>Try recently published worlds and scenario engines.</div>
+      <div class="featured-card"><strong>Top creators</strong>Follow creators with high install and remix activity.</div>
     </div>
     <div class="mobile-tabs" id="mobile-tabs">
       <button type="button" class="mobile-tab active" data-tab="discover">Discover</button>
@@ -458,7 +493,7 @@
         <option value="newest">newest</option>
         <option value="trending">trending</option>
       </select>
-      <input id="filter-creator" type="search" placeholder="by creator">
+      <input id="filter-creator" type="search" placeholder="by creator (install or publish)">
       <select id="filter-source">
         <option value="">source: all</option>
         <option value="logichub">from Logichub</option>
@@ -958,12 +993,12 @@
       if (type === 'tools') return 'Tools';
       if (type === 'games') return 'Games';
       if (type === 'simulations') return 'Simulations';
-      if (type === 'documents') return 'Documents';
-      if (type === 'worlds') return 'Worlds';
+      if (type === 'documents' || type === 'worlds' || type === 'research') return 'Research Artifacts';
       const tags = app.tags || [];
       if (tags.includes('game')) return 'Games';
       if (tags.includes('simulation') || tags.includes('space')) return 'Simulations';
-      if (tags.includes('prompt') || tags.includes('llm') || tags.includes('ai')) return 'AI Apps';
+      if (tags.includes('research') || tags.includes('paper') || tags.includes('artifact')) return 'Research Artifacts';
+      if (tags.includes('prompt') || tags.includes('llm') || tags.includes('ai')) return 'Apps';
       return 'Tools';
     }
 
@@ -1088,7 +1123,7 @@
       const grid = document.getElementById('marketplace-grid');
       if (!grid) return;
 
-      const categories = ['Tools', 'Games', 'AI Apps', 'Simulations'];
+      const categories = ['Tools', 'Apps', 'Simulations', 'Games', 'Research Artifacts'];
       const categorySelect = document.getElementById('filter-category');
       if (categorySelect && !categorySelect.dataset.ready) {
         categorySelect.innerHTML = `<option value="">category: all</option>${categories.map(value => `<option value="${value}">${value}</option>`).join('')}`;
