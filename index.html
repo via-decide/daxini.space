@@ -133,6 +133,15 @@
     #room-lore { font-size: 11px; color: #888; max-width: 250px; line-height: 1.5; margin: 0 auto; }
 
     /* OS VERSION BADGE */
+    .route-links {
+      margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; pointer-events: auto;
+    }
+    .route-links a {
+      color: var(--cyan); text-decoration: none; font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      border: 1px solid rgba(0,229,255,0.3); border-radius: 999px; padding: 6px 10px;
+    }
+    .route-links a:hover { border-color: var(--cyan); }
+
     .os-badge {
       display: inline-block; margin-top: 12px;
       font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
@@ -351,9 +360,57 @@
       color: #fff;
       border-bottom-color: rgba(255,255,255,0.5);
     }
+
+    #ui-fallback {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+      background: #030508;
+      z-index: 120000;
+    }
+
+    .route-view {
+      position: fixed;
+      inset: 0;
+      z-index: 80000;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, rgba(0,229,255,0.08), rgba(3,5,8,0.98));
+    }
+
+    .route-view__card {
+      width: min(560px, 100%);
+      border: 1px solid rgba(0,229,255,0.3);
+      border-radius: 16px;
+      background: rgba(10, 12, 18, 0.85);
+      padding: 24px;
+      display: grid;
+      gap: 12px;
+      text-align: left;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .route-view__card a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
   </style>
 </head>
 <body>
+  <div id="ui-fallback" role="status">Loading Daxini Engine...</div>
+  <div id="route-view-root" class="route-view" hidden></div>
 
   <!-- STARFIELD -->
   <div id="starfield"></div>
@@ -390,6 +447,12 @@
     <div id="room-center">
       <h1 id="room-title">DAXINI.SPACE</h1>
       <div id="room-lore">Explore a prompt app store and AI tool directory where opening one app refreshes the 8-room grid with related core apps and free-tier LogicHub community apps.</div>
+      <nav class="route-links" aria-label="Primary pages">
+        <a href="/" data-route>Home</a>
+        <a href="/zayvora" data-route>Zayvora</a>
+        <a href="/pricing" data-route>Pricing</a>
+        <a href="/login" data-route>Login</a>
+      </nav>
       <div class="os-badge">Prompt app store · AI tool directory · free-tier community apps</div>
     </div>
   </div>
@@ -411,6 +474,10 @@
     <div class="minimap-hint">swipe to launch</div>
   </div>
 
+  <script src="/app/router.js"></script>
+  <script src="/app/auth.js"></script>
+  <script src="/app/ui.js"></script>
+  <script src="/app/bootstrap.js"></script>
   <script>
     import('./main.js');
 
