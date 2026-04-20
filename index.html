@@ -351,6 +351,73 @@
       color: #fff;
       border-bottom-color: rgba(255,255,255,0.5);
     }
+
+    /* =========================================================
+       MARKETPLACE STOREFRONT
+       ========================================================= */
+    #marketplace-home {
+      position: fixed;
+      top: max(env(safe-area-inset-top), 12px);
+      left: 12px;
+      right: 12px;
+      z-index: 80;
+      background: rgba(6, 10, 18, 0.92);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 16px;
+      padding: 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      max-height: min(70vh, 720px);
+      overflow: auto;
+    }
+    .marketplace-hero h2 { font-family: var(--font-display); font-size: 24px; letter-spacing: 0.03em; margin-bottom: 8px; }
+    .marketplace-hero p { font-size: 12px; color: #9fb3d1; line-height: 1.5; margin-bottom: 10px; }
+    .marketplace-top-cta {
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+      color: #02060f; background: linear-gradient(90deg, #00e5ff, #58f2ff);
+      border-radius: 999px; padding: 7px 12px; font-size: 11px; font-weight: 700;
+    }
+    .category-row, .filter-row, .mobile-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .category-chip {
+      border: 1px solid rgba(0,229,255,0.25); background: rgba(0,229,255,0.08);
+      color: #c2f7ff; border-radius: 999px; padding: 5px 10px; font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .filter-row select, .filter-row input {
+      background: #09101d; color: #dce7ff; border: 1px solid rgba(0,229,255,0.18); border-radius: 10px;
+      padding: 8px; font-size: 11px; min-width: 130px;
+    }
+    #marketplace-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px;
+    }
+    .marketplace-card { background: #0f1726; border: 1px solid #23344f; border-radius: 12px; padding: 12px; }
+    .marketplace-card h3 { font-size: 14px; margin-bottom: 6px; }
+    .marketplace-meta { font-size: 11px; color: #9fb3d1; line-height: 1.4; margin-bottom: 6px; }
+    .marketplace-card p { font-size: 11px; color: #dce7ff; line-height: 1.45; margin-bottom: 8px; }
+    .marketplace-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .marketplace-actions button {
+      border: 1px solid rgba(0,229,255,0.18); background: #0c1322; color: #dce7ff; border-radius: 8px;
+      padding: 6px 8px; font-size: 10px; cursor: pointer;
+    }
+    .marketplace-actions .btn-launch { background: rgba(0,229,255,0.14); border-color: rgba(0,229,255,0.4); }
+    #marketplace-detail {
+      margin-top: 12px; border: 1px solid rgba(0,229,255,0.16); border-radius: 12px;
+      background: #090f1b; padding: 10px; font-size: 11px; color: #dce7ff; line-height: 1.55;
+    }
+    #marketplace-detail h3 { font-size: 14px; margin-bottom: 6px; color: #fff; }
+    .mobile-tabs { display: none; }
+    .mobile-tab {
+      flex: 1; text-align: center; border: 1px solid rgba(0,229,255,0.2); border-radius: 10px;
+      padding: 7px; font-size: 11px; color: #b5d8ff;
+    }
+    .mobile-tab.active { color: #fff; background: rgba(0,229,255,0.12); }
+
+    @media (max-width: 768px) {
+      #marketplace-home { top: max(env(safe-area-inset-top), 6px); left: 6px; right: 6px; max-height: 64vh; }
+      .mobile-tabs { display: flex; }
+      .minimap-hint { display: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -363,6 +430,42 @@
 
   <!-- APP COUNT -->
   <div id="app-count-badge"></div>
+
+  <section id="marketplace-home" aria-label="Marketplace storefront">
+    <div class="marketplace-hero">
+      <h2>DAXINI.SPACE</h2>
+      <p>Discover apps, tools, and simulations built across the ecosystem.</p>
+      <a class="marketplace-top-cta" href="https://logichub.app/" target="_blank" rel="noopener">Build in Logichub → Publish here</a>
+    </div>
+    <div class="category-row" aria-label="Visible categories">
+      <span class="category-chip">Tools</span>
+      <span class="category-chip">Games</span>
+      <span class="category-chip">AI Apps</span>
+      <span class="category-chip">Simulations</span>
+      <span class="category-chip">New Releases</span>
+    </div>
+    <div class="mobile-tabs" id="mobile-tabs">
+      <button type="button" class="mobile-tab active" data-tab="discover">Discover</button>
+      <button type="button" class="mobile-tab" data-tab="launch">Launch</button>
+      <button type="button" class="mobile-tab" data-tab="publish">Publish</button>
+    </div>
+    <div class="filter-row">
+      <select id="filter-category"><option value="">category: all</option></select>
+      <select id="filter-sort">
+        <option value="newest">newest</option>
+        <option value="trending">trending</option>
+      </select>
+      <input id="filter-creator" type="search" placeholder="by creator">
+      <select id="filter-source">
+        <option value="">source: all</option>
+        <option value="logichub">from Logichub</option>
+        <option value="via-decide">from Decide Engine</option>
+      </select>
+    </div>
+    <div id="marketplace-grid" aria-live="polite"></div>
+    <aside id="marketplace-detail">Select any listing to view launch URL, build notes, install/use flow, and related apps.</aside>
+  </section>
+
 
   <section class="seo-summary-panel" aria-label="Daxini.space summary">
     <h2>Daxini.space is a prompt app store and AI tool directory</h2>
@@ -825,6 +928,153 @@
       }
     }
 
+
+    const MARKETPLACE_STATE = {
+      category: '',
+      creator: '',
+      sort: 'newest',
+      source: '',
+      selectedSlug: ''
+    };
+
+    function inferCategory(app) {
+      const tags = app.tags || [];
+      if (tags.includes('game')) return 'Games';
+      if (tags.includes('simulation') || tags.includes('space')) return 'Simulations';
+      if (tags.includes('prompt') || tags.includes('llm') || tags.includes('ai')) return 'AI Apps';
+      return 'Tools';
+    }
+
+    function inferType(app) {
+      return app.ownerType === 'community' ? 'Community App' : 'Core App';
+    }
+
+    function trendingScore(app) {
+      const tagCount = (app.tags || []).length;
+      const liveBoost = app.status === 'live' ? 20 : 0;
+      const sourceBoost = app.source === 'logichub' ? 6 : 10;
+      return tagCount * 3 + liveBoost + sourceBoost;
+    }
+
+    function relatedAppsFor(app, count = 3) {
+      return APP_LIBRARY
+        .filter(candidate => candidate.slug !== app.slug)
+        .map(candidate => ({ candidate, score: relatedScore(candidate, app) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, count)
+        .map(item => item.candidate.name);
+    }
+
+    function renderMarketplaceDetails(app) {
+      const detail = document.getElementById('marketplace-detail');
+      if (!detail || !app) return;
+      const related = relatedAppsFor(app).map(name => `<li>${name}</li>`).join('');
+      detail.innerHTML = `
+        <h3>${app.name}</h3>
+        <div><strong>Launch URL:</strong> ${app.url}</div>
+        <div><strong>What it does:</strong> ${app.desc || 'Utility app in the Daxini ecosystem.'}</div>
+        <div><strong>How it was made:</strong> Built with browser-first logic and published through ${app.source === 'logichub' ? 'Logichub public feed' : 'Decide Engine core registry'}.</div>
+        <div><strong>Install / use flow:</strong> Launch → duplicate in Logichub → open in workspace for saved access.</div>
+        <div><strong>Related apps:</strong><ul>${related || '<li>No related apps found yet.</li>'}</ul></div>
+      `;
+    }
+
+    function openInWorkspace(app) {
+      const key = 'daxini.workspace.apps';
+      const items = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!items.find(item => item.slug === app.slug)) {
+        items.push({ slug: app.slug, name: app.name, addedAt: new Date().toISOString() });
+        localStorage.setItem(key, JSON.stringify(items));
+      }
+      logDiag('WORKSPACE', `${app.name} saved to workspace.`);
+    }
+
+    function duplicateInLogichub(app) {
+      const destination = `https://logichub.app/?duplicate=${encodeURIComponent(app.slug)}`;
+      window.open(destination, '_blank', 'noopener');
+    }
+
+    function applyMarketplaceFilters(apps) {
+      return apps
+        .filter(app => {
+          const category = inferCategory(app);
+          if (MARKETPLACE_STATE.category && MARKETPLACE_STATE.category !== category) return false;
+          if (MARKETPLACE_STATE.source && MARKETPLACE_STATE.source !== app.source) return false;
+          if (MARKETPLACE_STATE.creator && !String(app.ownerType || '').toLowerCase().includes(MARKETPLACE_STATE.creator)) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          if (MARKETPLACE_STATE.sort === 'trending') return trendingScore(b) - trendingScore(a);
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+        });
+    }
+
+    function renderMarketplace() {
+      const grid = document.getElementById('marketplace-grid');
+      if (!grid) return;
+
+      const categories = ['Tools', 'Games', 'AI Apps', 'Simulations'];
+      const categorySelect = document.getElementById('filter-category');
+      if (categorySelect && !categorySelect.dataset.ready) {
+        categorySelect.innerHTML = `<option value="">category: all</option>${categories.map(value => `<option value="${value}">${value}</option>`).join('')}`;
+        categorySelect.dataset.ready = '1';
+      }
+
+      const filtered = applyMarketplaceFilters(APP_LIBRARY);
+      grid.innerHTML = '';
+      filtered.forEach(app => {
+        const card = document.createElement('article');
+        card.className = 'marketplace-card';
+        card.innerHTML = `
+          <h3>${app.icon} ${app.name}</h3>
+          <div class="marketplace-meta">type: ${inferType(app)} · creator: ${app.ownerType} · category: ${inferCategory(app)}</div>
+          <p>${app.desc || 'No description provided.'}</p>
+          <div class="marketplace-actions">
+            <button type="button" class="btn-launch">Launch</button>
+            <button type="button">Duplicate / Open in Logichub</button>
+            <button type="button">Open in Workspace</button>
+          </div>
+        `;
+        const [launchBtn, duplicateBtn, workspaceBtn] = card.querySelectorAll('button');
+        launchBtn.addEventListener('click', () => launchAppBySlug(app.slug));
+        duplicateBtn.addEventListener('click', () => duplicateInLogichub(app));
+        workspaceBtn.addEventListener('click', () => openInWorkspace(app));
+        card.addEventListener('click', (event) => {
+          if (event.target.tagName === 'BUTTON') return;
+          MARKETPLACE_STATE.selectedSlug = app.slug;
+          renderMarketplaceDetails(app);
+        });
+        grid.appendChild(card);
+      });
+
+      if (!MARKETPLACE_STATE.selectedSlug && filtered[0]) {
+        MARKETPLACE_STATE.selectedSlug = filtered[0].slug;
+        renderMarketplaceDetails(filtered[0]);
+      }
+    }
+
+    function bindMarketplaceFilters() {
+      const category = document.getElementById('filter-category');
+      const sort = document.getElementById('filter-sort');
+      const creator = document.getElementById('filter-creator');
+      const source = document.getElementById('filter-source');
+      const tabs = document.querySelectorAll('#mobile-tabs .mobile-tab');
+
+      if (category) category.addEventListener('change', () => { MARKETPLACE_STATE.category = category.value; renderMarketplace(); });
+      if (sort) sort.addEventListener('change', () => { MARKETPLACE_STATE.sort = sort.value; renderMarketplace(); });
+      if (creator) creator.addEventListener('input', () => { MARKETPLACE_STATE.creator = creator.value.trim().toLowerCase(); renderMarketplace(); });
+      if (source) source.addEventListener('change', () => { MARKETPLACE_STATE.source = source.value; renderMarketplace(); });
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(item => item.classList.remove('active'));
+          tab.classList.add('active');
+          if (tab.dataset.tab === 'launch') document.getElementById('marketplace-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (tab.dataset.tab === 'publish') window.open('https://logichub.app/', '_blank', 'noopener');
+        });
+      });
+    }
+
     function renderRoom() {
       const centerApp = DAXINI_GALAXY.centerApp;
       document.getElementById('room-title').textContent = centerApp ? `${centerApp.icon} ${centerApp.name}` : DAXINI_GALAXY.name;
@@ -835,6 +1085,8 @@
       const liveCount = APP_LIBRARY.filter(a => a.status === 'live').length;
       const communityCount = APP_LIBRARY.filter(a => a.ownerType === 'community').length;
       document.getElementById('app-count-badge').textContent = `${liveCount} LIVE · ${APP_LIBRARY.length} TOTAL · ${communityCount} COMMUNITY`;
+
+      renderMarketplace();
 
       ROOM_POSITIONS.forEach(pos => {
         const nodeEl = document.getElementById(`node-${pos}`);
@@ -1061,6 +1313,8 @@
     async function initializeStore() {
       CORE_APPS.forEach(app => upsertApp(app));
       await loadCommunityApps();
+      bindMarketplaceFilters();
+      renderMarketplace();
       const routeSlug = getRouteSlug();
       if (routeSlug && getAppBySlug(routeSlug)) {
         focusApp(routeSlug, { syncRoute: false, replaceRoute: true });
