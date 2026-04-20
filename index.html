@@ -429,6 +429,21 @@
       color: #cbe9ff;
     }
     .featured-card strong { display: block; color: #fff; margin-bottom: 2px; }
+    .creator-spotlight {
+      margin-top: 10px;
+      border: 1px solid rgba(0,229,255,0.16);
+      border-radius: 12px;
+      background: #090f1b;
+      padding: 10px;
+    }
+    .creator-spotlight h3 { margin: 0 0 8px; font-size: 13px; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
+    #creator-spotlight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+    .creator-stat { border: 1px solid rgba(0,229,255,0.14); border-radius: 10px; background: rgba(8, 16, 31, 0.9); padding: 8px; font-size: 11px; color: #cbe9ff; }
+    .creator-stat strong { display: block; color: #fff; margin-bottom: 4px; }
+    .creator-stat button {
+      margin-top: 6px; border: 1px solid rgba(0,229,255,0.22); background: #0c1322; color: #dce7ff;
+      border-radius: 8px; padding: 5px 7px; font-size: 10px; cursor: pointer;
+    }
     .publish-cta {
       margin-top: 10px;
       display: inline-flex;
@@ -482,6 +497,10 @@
       <div class="featured-card"><strong>New simulations</strong>Try recently published worlds and scenario engines.</div>
       <div class="featured-card"><strong>Top creators</strong>Follow creators with high install and remix activity.</div>
     </div>
+    <section class="creator-spotlight" aria-label="Creator spotlight">
+      <h3>Creator Spotlight</h3>
+      <div id="creator-spotlight-grid"></div>
+    </section>
     <div class="mobile-tabs" id="mobile-tabs">
       <button type="button" class="mobile-tab active" data-tab="discover">Discover</button>
       <button type="button" class="mobile-tab" data-tab="launch">Launch</button>
@@ -1030,6 +1049,52 @@
       return 'app_sales';
     }
 
+    function buildCreatorStats(apps) {
+      const index = {};
+      apps.forEach((app) => {
+        const creator = app.ownerType || app.creator || 'community';
+        const state = index[creator] || { creator, passport: creator, assets: 0, downloads: 0, reputation: 0, newest: 0, simulations: 0 };
+        state.assets += 1;
+        state.downloads += trendingScore(app);
+        state.reputation += trendingScore(app) + ((app.tags || []).length * 2);
+        if (inferCategory(app) === 'Simulations') state.simulations += 1;
+        state.newest = Math.max(state.newest, new Date((app.provenance && app.provenance.created_at) || app.createdAt || 0).getTime() || 0);
+        index[creator] = state;
+      });
+      return Object.values(index);
+    }
+
+    function renderCreatorSpotlight(stats) {
+      const wrap = document.getElementById('creator-spotlight-grid');
+      if (!wrap) return;
+      const topCreators = [...stats].sort((a, b) => b.reputation - a.reputation).slice(0, 3);
+      const mostDownloadedTools = [...stats].sort((a, b) => b.downloads - a.downloads).slice(0, 3);
+      const newestSimulations = [...stats].sort((a, b) => b.newest - a.newest).slice(0, 3);
+      const rows = [['Top creators', topCreators], ['Most downloaded tools', mostDownloadedTools], ['Newest simulations', newestSimulations]];
+      wrap.innerHTML = rows.map(([title, creators]) => `<article class="creator-stat"><strong>${title}</strong>${creators.map((c) => `<div>${c.creator} · rep ${Math.round(c.reputation)}</div>`).join('')}</article>`).join('');
+      wrap.querySelectorAll('.creator-stat').forEach((card, idx) => {
+        const creators = rows[idx][1];
+        if (!creators[0]) return;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = `Open ${creators[0].creator}`;
+        button.addEventListener('click', () => renderCreatorProfile(creators[0]));
+        card.appendChild(button);
+      });
+    }
+
+    function renderCreatorProfile(creator) {
+      const detail = document.getElementById('marketplace-detail');
+      if (!detail || !creator) return;
+      detail.innerHTML = `
+        <h3>${creator.creator} · Creator page</h3>
+        <div><strong>passport:</strong> ${creator.passport}</div>
+        <div><strong>assets:</strong> ${creator.assets}</div>
+        <div><strong>reputation:</strong> ${Math.round(creator.reputation)}</div>
+        <div><strong>downloads:</strong> ${Math.round(creator.downloads)}</div>
+      `;
+    }
+
     function renderMarketplaceDetails(app) {
       const detail = document.getElementById('marketplace-detail');
       if (!detail || !app) return;
@@ -1131,6 +1196,8 @@
       }
 
       const filtered = applyMarketplaceFilters(APP_LIBRARY);
+      const creatorStats = buildCreatorStats(filtered.length ? filtered : APP_LIBRARY);
+      renderCreatorSpotlight(creatorStats);
       grid.innerHTML = '';
       filtered.forEach(app => {
         const creatorLabel = app.ownerType || app.creator || 'community';
@@ -1151,9 +1218,10 @@
             <button type="button">Rate ★</button>
             <button type="button">Duplicate / Open in Logichub</button>
             <button type="button">Open in Workspace</button>
+            <button type="button">Creator Page</button>
           </div>
         `;
-        const [launchBtn, rateBtn, duplicateBtn, workspaceBtn] = card.querySelectorAll('button');
+        const [launchBtn, rateBtn, duplicateBtn, workspaceBtn, creatorBtn] = card.querySelectorAll('button');
         launchBtn.addEventListener('click', () => {
           const token = localStorage.getItem('passport_token');
           if (token && window.DaxiniReputationEngine) {
@@ -1171,6 +1239,10 @@
         rateBtn.addEventListener('click', () => rateMarketplaceApp(app));
         duplicateBtn.addEventListener('click', () => duplicateInLogichub(app));
         workspaceBtn.addEventListener('click', () => openInWorkspace(app));
+        creatorBtn.addEventListener('click', () => {
+          const stats = buildCreatorStats(APP_LIBRARY).find((entry) => entry.creator === creatorLabel);
+          renderCreatorProfile(stats || { creator: creatorLabel, passport: creatorLabel, assets: 0, reputation: 0, downloads: 0 });
+        });
         card.addEventListener('click', (event) => {
           if (event.target.tagName === 'BUTTON') return;
           MARKETPLACE_STATE.selectedSlug = app.slug;
