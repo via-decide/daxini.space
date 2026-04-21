@@ -27,6 +27,14 @@ function createAppCard(app, actions = {}) {
   provenance.textContent = `Version history: ${versionCount || 1} release${versionCount === 1 ? '' : 's'} • Remix lineage: ${app.provenance && app.provenance.remix_parent ? `asset → derived_from → ${app.provenance.remix_parent}` : 'Original asset'}`;
   provenance.style.cssText = 'margin:0;color:#89a8d6;font-size:12px';
 
+  const monetization = document.createElement('p');
+  const model = app.monetization && app.monetization.pricing_model ? app.monetization.pricing_model : 'free';
+  const fee = app.monetization && Number.isFinite(Number(app.monetization.platform_fee_pct)) ? Number(app.monetization.platform_fee_pct) : 5;
+  const security = app.compliance && app.compliance.security_validated ? 'security ✓' : 'security pending';
+  const performance = app.compliance && app.compliance.performance_validated ? 'performance ✓' : 'performance pending';
+  monetization.textContent = `PWA-first • ${model} • fee ${fee}% • ${security} • ${performance}`;
+  monetization.style.cssText = 'margin:0;color:#7ee0b5;font-size:12px';
+
   const description = document.createElement('p');
   description.textContent = app.description || 'No description';
   description.style.cssText = 'margin:0;color:#dce7ff;font-size:13px';
@@ -50,7 +58,7 @@ function createAppCard(app, actions = {}) {
   installButton.addEventListener('click', () => actions.onInstall && actions.onInstall(app));
 
   controls.append(launchButton, duplicateButton, installButton);
-  card.append(title, meta, provenance, description, controls);
+  card.append(title, meta, provenance, monetization, description, controls);
 
   return card;
 }

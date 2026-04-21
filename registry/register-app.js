@@ -13,6 +13,7 @@ const ALLOWED_CATEGORIES = new Set([
   'utilities',
   'simulations'
 ]);
+const PLATFORM_FEE_RANGE = { min: 5, max: 10 };
 
 function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -95,6 +96,17 @@ function createRegisterAppHandler(options = {}) {
       }
 
       const version = payload.version || '1.0.0';
+      const monetization = payload.monetization || {};
+      const pricingModel = String(monetization.pricing_model || 'free').toLowerCase();
+      const platformFee = Number(monetization.platform_fee_pct || 5);
+      if (!['free', 'one_time', 'saas_no_subscription'].includes(pricingModel)) {
+        sendJson(res, 400, { error: 'invalid pricing_model', allowed: ['free', 'one_time', 'saas_no_subscription'] });
+        return true;
+      }
+      if (!Number.isFinite(platformFee) || platformFee < PLATFORM_FEE_RANGE.min || platformFee > PLATFORM_FEE_RANGE.max) {
+        sendJson(res, 400, { error: `platform_fee_pct must be between ${PLATFORM_FEE_RANGE.min} and ${PLATFORM_FEE_RANGE.max}` });
+        return true;
+      }
       const bundlePointer = await persistDeploymentBundle(slug, version, payload.bundle || payload.code || {}, payload.metadata || {});
       const updatedIndex = await registry.register({
         id: slug,
@@ -108,7 +120,17 @@ function createRegisterAppHandler(options = {}) {
         bundle_path: bundlePointer.bundle_path,
         metadata_path: bundlePointer.metadata_path,
         subdomain: payload.subdomain || null,
-        version
+        version,
+        monetization: {
+          hosting: 'pwa_bundle',
+          pricing_model: pricingModel,
+          platform_fee_pct: platformFee,
+          auto_updates: true
+        },
+        compliance: {
+          security_validated: Boolean(payload.security_validated),
+          performance_validated: Boolean(payload.performance_validated)
+        }
       });
 
       const tracker = new VersionTracker(slug);

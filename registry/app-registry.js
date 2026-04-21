@@ -117,6 +117,18 @@ class AppRegistry {
       subdomain: metadata.subdomain || null,
       popularity: Number.isFinite(Number(metadata.popularity)) ? Number(metadata.popularity) : 0,
       installs: Number.isFinite(Number(metadata.installs)) ? Number(metadata.installs) : 0,
+      monetization: {
+        hosting: 'pwa_bundle',
+        pricing_model: 'free',
+        platform_fee_pct: 5,
+        auto_updates: true,
+        ...(metadata.monetization || {})
+      },
+      compliance: {
+        security_validated: false,
+        performance_validated: false,
+        ...(metadata.compliance || {})
+      },
       created_at: metadata.created_at || now,
       updated_at: now
     };
