@@ -1,5 +1,7 @@
 'use strict';
 
+const fsPromises = require('node:fs/promises');
+const path = require('node:path');
 const { AppRegistry, normalizeSlug } = require('./app-registry');
 const VersionTracker = require('../logichub/src/versioning/version-tracker');
 
@@ -39,22 +41,43 @@ function sendJson(res, statusCode, payload) {
 
 function createRegisterAppHandler(options = {}) {
   const registry = new AppRegistry(options);
+  const rootDir = options.rootDir || process.cwd();
+
+  async function persistDeploymentBundle(slug, version, bundle, metadata = {}) {
+    const versionTag = String(version || '1.0.0').trim() || '1.0.0';
+    const appRoot = path.join(rootDir, 'apps', slug);
+    const versionDir = path.join(appRoot, `v${versionTag}`);
+    const latestDir = path.join(appRoot, 'latest');
+    await fsPromises.mkdir(versionDir, { recursive: true });
+    await fsPromises.mkdir(latestDir, { recursive: true });
+    await fsPromises.writeFile(path.join(versionDir, 'bundle.json'), `${JSON.stringify(bundle || {}, null, 2)}\n`, 'utf8');
+    await fsPromises.writeFile(path.join(versionDir, 'metadata.json'), `${JSON.stringify(metadata || {}, null, 2)}\n`, 'utf8');
+    await fsPromises.copyFile(path.join(versionDir, 'bundle.json'), path.join(latestDir, 'bundle.json'));
+    await fsPromises.copyFile(path.join(versionDir, 'metadata.json'), path.join(latestDir, 'metadata.json'));
+    return {
+      bundle_path: `/apps/${slug}/latest/bundle.json`,
+      metadata_path: `/apps/${slug}/latest/metadata.json`
+    };
+  }
 
   return async function registerAppHandler(req, res) {
     const method = (req.method || 'GET').toUpperCase();
     const urlPath = (req.url || '').split('?')[0];
 
-    if (method !== 'POST' || urlPath !== '/api/register-app') {
+    const isRegisterRoute = urlPath === '/api/register-app';
+    const isDeployRoute = urlPath === '/api/deploy';
+    if (method !== 'POST' || (!isRegisterRoute && !isDeployRoute)) {
       return false;
     }
 
     try {
       const payload = await parseJsonBody(req);
-      const slug = normalizeSlug(payload.slug || payload.name);
+      const appName = payload.app_name || payload.name;
+      const slug = normalizeSlug(payload.slug || appName);
       const category = String(payload.category || 'utilities').trim().toLowerCase();
 
-      if (!payload.name || !payload.creator || !payload.description) {
-        sendJson(res, 400, { error: 'name, creator, and description are required' });
+      if (!appName || !payload.creator) {
+        sendJson(res, 400, { error: 'app_name/name and creator are required' });
         return true;
       }
 
@@ -72,15 +95,19 @@ function createRegisterAppHandler(options = {}) {
       }
 
       const version = payload.version || '1.0.0';
+      const bundlePointer = await persistDeploymentBundle(slug, version, payload.bundle || payload.code || {}, payload.metadata || {});
       const updatedIndex = await registry.register({
         id: slug,
         slug,
-        name: payload.name,
+        name: appName,
         creator: payload.creator,
-        description: payload.description,
+        description: payload.description || (payload.metadata && payload.metadata.description) || '',
         category,
         runtime: 'edge-runtime',
         deployment_url: `/apps/${slug}`,
+        bundle_path: bundlePointer.bundle_path,
+        metadata_path: bundlePointer.metadata_path,
+        subdomain: payload.subdomain || null,
         version
       });
 
@@ -93,7 +120,7 @@ function createRegisterAppHandler(options = {}) {
       }, {
         creator: payload.creator,
         changes: payload.changes || ['feature: Published app update'],
-        changelog: payload.changelog || `Published ${payload.name}` ,
+        changelog: payload.changelog || `Published ${appName}` ,
         version
       });
       await tracker.publishVersion(version);
