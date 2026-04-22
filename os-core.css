@@ -119,6 +119,23 @@ body::before {
 }
 .room-node-app:hover { border-color: #fff; transform: scale(1.15); }
 
+/* Spatial Positioning — Matches 3×3 thumb matrix */
+#node-0 { top: 15%; left: 10%; }
+#node-1 { top: 10%; left: 50%; transform: translateX(-50%); }
+#node-2 { top: 15%; right: 10%; }
+#node-3 { top: 40%; left: 5%; }
+#node-5 { top: 40%; right: 5%; }
+#node-6 { bottom: 35%; left: 10%; }
+#node-7 { bottom: 30%; left: 50%; transform: translateX(-50%); }
+#node-8 { bottom: 35%; right: 10%; }
+
+#room-center { text-align: center; pointer-events: none; z-index: 2; }
+#room-title {
+  font-family: var(--font-display); font-size: 32px; font-weight: 800;
+  letter-spacing: -1px; margin-bottom: 8px; text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 255, 150, 0.3);
+}
+
 /* ════════════════════════════════════════════════════════════
    HUD — CONCLUDE (top right)
    ════════════════════════════════════════════════════════════ */
