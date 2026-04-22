@@ -21,6 +21,7 @@ class OSShell {
         <span class="status-pill">DAXINI SPACE ACTIVE</span>
       </div>
       <div class="status-right">
+        <span id="os-passport-status" style="margin-right:15px; color:rgba(255,255,255,0.3)">PASSPORT LOCKED</span>
         <span id="os-pwa-status">●</span>
       </div>
     `;
@@ -120,6 +121,13 @@ class OSShell {
   attachEvents() {
     window.addEventListener('os:window_opened', () => this.checkHomeState());
     window.addEventListener('os:window_closed', () => this.checkHomeState());
+    window.addEventListener('os:passport_verified', () => {
+      const status = document.getElementById('os-passport-status');
+      if (status) {
+        status.textContent = 'PASSPORT VERIFIED';
+        status.style.color = 'var(--matrix-green)';
+      }
+    });
   }
 
   checkHomeState() {
