@@ -1,291 +1,123 @@
-/* css/os-core.css — VIA Spatial OS v2 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sora:wght@400;700&family=Syne:wght@700;800&display=swap');
 
-/* ════════════════════════════════════════════════════════════
-   BASE
-   ════════════════════════════════════════════════════════════ */
+:root {
+  --brand-saffron: #ff671f;
+  --matrix-green: #00ff96;
+  --bg-deep: #020205;
+  --glass-bg: rgba(10, 15, 12, 0.45);
+  --glass-border: rgba(0, 255, 150, 0.15);
+  --system-blur: 40px;
+  --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Syne', sans-serif;
+}
+
 body {
   margin: 0;
   overflow: hidden;
-  background: #000000;
+  background: var(--bg-deep);
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-touch-callout: none;
   touch-action: none;
-  --brand-saffron: #ff671f;
-  --matrix-green: #00ff96;
 }
 
-/* ════════════════════════════════════════════════════════════
-   WINDOW MANAGER (Split-Screen)
-   ════════════════════════════════════════════════════════════ */
-.window-stack {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 10px;
-  height: 100vh;
-  padding: 10px;
-  padding-bottom: 320px; /* CLEARANCE FOR THUMB GRID */
-  z-index: 100;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.glass-window {
-  background: rgba(10, 15, 12, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--matrix-green);
-  border-radius: 16px;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  animation: warp-in-panel 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.window-header {
-  height: 30px;
-  border-bottom: 1px solid rgba(0, 255, 150, 0.2);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
-  align-items: center;
-  font-size: 12px;
-  background: rgba(0,0,0,0.3);
-}
-
-.header-title {
-  color: var(--matrix-green);
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.header-close-btn {
-  color: rgba(255, 90, 70, 0.8);
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0 5px;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.header-close-btn:active, .header-close-btn:hover {
-  color: rgba(255, 90, 70, 1);
-  transform: scale(1.1);
-}
-
-.window-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow-y: auto;
-  position: relative;
-}
-
-@keyframes warp-in-panel {
-  0% { transform: scale(0.9); opacity: 0; transform-origin: center bottom; }
-  100% { transform: scale(1); opacity: 1; transform-origin: center bottom; }
-}
-
-.warp-transition {
-  will-change: transform, opacity;
-}
-
-.warp-out {
-  transform: scale(0) !important;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.warp-in {
-  transform: scale(1) !important;
-  opacity: 1;
-  text-shadow: 0 0 30px var(--matrix-green);
-  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-/* Z-axis transitions override — slower, more dramatic scale curve
-   Applied temporarily by JS triggerZTransition() */
-#spatial-canvas.z-transition-descend {
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-}
-#spatial-canvas.z-transition-ascend {
-  transition: transform 0.65s cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-/* ════════════════════════════════════════════════════════════
-   OS NODES
-   ════════════════════════════════════════════════════════════ */
-.os-node {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.os-node h2 {
-  font-weight: 500;
-  letter-spacing: -0.4px;
-  color: #e8eaef;
-  font-size: 26px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 16px 32px;
-  border-radius: 100px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-}
-/* Nodes are injected and positioned dynamically via inline styles by SpatialMatrix */
-
-/* ════════════════════════════════════════════════════════════
-   HUD — ROOM NAME PANEL (top center)
-   ════════════════════════════════════════════════════════════ */
-#hud-room-name-panel {
+/* Dynamic Mesh Background */
+body::before {
+  content: '';
   position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 1000;
-  pointer-events: none;
-  white-space: nowrap;
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(255, 103, 31, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(0, 255, 150, 0.05) 0%, transparent 40%);
+  z-index: -1;
+  animation: mesh-drift 20s infinite alternate;
 }
 
-#hud-room-name {
-  font-size: 17px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  letter-spacing: -0.3px;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+@keyframes mesh-drift {
+  from { transform: translate(0,0) rotate(0deg); }
+  to { transform: translate(5%, 5%) rotate(5deg); }
 }
 
-#hud-room-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 4px;
-  letter-spacing: 0.1px;
+/* Premium Glass Windows */
+.glass-window {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--system-blur));
+  -webkit-backdrop-filter: blur(var(--system-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  transition: all 0.5s var(--spring-easing);
+  animation: ios-app-launch 0.6s var(--spring-easing);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes ios-app-launch {
+  0% { transform: scale(0.3) translateY(100px); opacity: 0; filter: blur(20px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
 }
 
 /* ════════════════════════════════════════════════════════════
-   HUD — HOLOGRAPHIC MINIMAP (bottom center)
+   HUD — HOLOGRAPHIC MINIMAP (The Pattern Grid)
    ════════════════════════════════════════════════════════════ */
 #os-minimap {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom, 20px) + 30px);
+  bottom: calc(env(safe-area-inset-bottom, 20px) + 40px);
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
-  height: 240px;
+  width: 260px;
+  height: 260px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 48px;
+  z-index: 9999;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s var(--spring-easing), border-color 0.3s ease;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 16px;
   padding: 24px;
-  background: rgba(2, 2, 5, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 255, 150, 0.2);
-  border-radius: 32px;
-  z-index: 9999;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .hud-dot {
-  width: 6px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.3);
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 50%;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.2s ease;
   place-self: center;
 }
 
 .hud-dot.active {
-  width: 8px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 8px rgba(0, 255, 100, 0.8);
-}
-
-.sigil-recognition {
-  transform: translateX(-50%) scale(1.1) !important;
-  filter: brightness(1.3);
-  border-color: var(--brand-saffron) !important;
-  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-  animation: sigil-pulse 0.4s ease-in-out;
-}
-
-@keyframes sigil-pulse {
-  0% { box-shadow: 0 0 10px rgba(255, 103, 31, 0.2); }
-  50% { box-shadow: 0 0 30px rgba(255, 103, 31, 0.6); }
-  100% { box-shadow: 0 0 10px rgba(255, 103, 31, 0.2); }
-}
-
-/* Depth label below minimap */
-#hud-depth-label {
-  position: fixed;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
-  z-index: 1001;
-  transition: color 0.3s ease;
-  pointer-events: none;
+  background: #fff;
+  transform: scale(1.8);
+  box-shadow: 0 0 15px #fff;
 }
 
 /* ════════════════════════════════════════════════════════════
-   ACCESS NODES (IN-ROOM NAVIGATION)
+   FRACTAL ROOM ENVIRONMENT
    ════════════════════════════════════════════════════════════ */
-.node-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  padding: 20px;
-  width: 100%;
-  max-width: 400px;
-  margin-top: 20px;
+#room-environment {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  z-index: 10; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
 }
 
-.access-node {
-  background: rgba(4, 10, 6, 0.6);
-  border: 1px solid var(--matrix-green);
-  padding: 16px;
-  color: var(--matrix-green);
-  text-transform: uppercase;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 255, 150, 0.1);
+.room-node-app {
+  position: absolute; width: 100px; height: 100px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 22px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 12px; cursor: pointer; pointer-events: auto;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s var(--spring-easing);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
-
-.access-node:active, .access-node:hover {
-  background: var(--matrix-green);
-  color: #000;
-  transform: scale(0.95);
-  box-shadow: 0 0 20px rgba(0, 255, 150, 0.4);
-}
+.room-node-app:hover { border-color: #fff; transform: scale(1.15); }
 
 /* ════════════════════════════════════════════════════════════
    HUD — CONCLUDE (top right)
