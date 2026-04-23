@@ -75,7 +75,15 @@ class OSShell {
     const overlay = document.createElement('div');
     overlay.id = 'os-onboarding';
     overlay.innerHTML = `
-      <div class="onboarding-text">SWIPE FROM CENTER TO LAUNCH</div>
+      <div class="onboarding-content">
+        <h2 class="onboarding-title">WELCOME TO DAXINI.SPACE</h2>
+        <div class="onboarding-steps">
+          <div class="onboarding-step">1. <b>TAP</b> dots on the minimap to launch apps</div>
+          <div class="onboarding-step">2. <b>SWIPE</b> from center to dots for expert launch</div>
+          <div class="onboarding-step">3. <b>TRACE</b> complex patterns to access shards</div>
+        </div>
+        <div class="onboarding-footer">READY TO START</div>
+      </div>
       <div class="ghost-gesture"></div>
     `;
     document.body.appendChild(overlay);
@@ -85,29 +93,52 @@ class OSShell {
       #os-onboarding {
         position: fixed; inset: 0; z-index: 15000;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.7); pointer-events: none;
-        animation: fade-out 1s forwards 8s;
-        backdrop-filter: blur(10px);
+        background: rgba(2, 2, 5, 0.95);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        transition: opacity 1s ease;
       }
-      .onboarding-text {
-        font-family: var(--font-display); font-weight: 800; letter-spacing: 4px; 
-        color: #fff; text-shadow: 0 0 30px var(--matrix-green); 
-        margin-top: 200px; font-size: 24px;
+      .onboarding-content {
+        max-width: 320px; text-align: center; color: #fff; font-family: var(--font-mono);
+      }
+      .onboarding-title {
+        font-size: 14px; letter-spacing: 4px; color: var(--matrix-green); margin-bottom: 30px;
+        text-shadow: 0 0 20px var(--matrix-green);
+      }
+      .onboarding-steps {
+        display: flex; flex-direction: column; gap: 20px; text-align: left; margin-bottom: 40px;
+      }
+      .onboarding-step {
+        font-size: 11px; line-height: 1.6; color: #a0a8b8;
+      }
+      .onboarding-step b { color: #fff; text-shadow: 0 0 5px #fff; }
+      .onboarding-footer {
+        font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 2px;
       }
       .ghost-gesture {
         position: absolute; width: 40px; height: 40px;
         background: var(--matrix-green); border-radius: 50%;
-        bottom: 180px; left: 50%; transform: translateX(-50%);
+        bottom: 120px; left: 50%; transform: translateX(-50%);
         box-shadow: 0 0 30px var(--matrix-green);
-        animation: ghost-swipe 2.5s infinite;
+        animation: ghost-swipe 3s infinite;
       }
       @keyframes ghost-swipe {
-        0% { transform: translate(-50%, 0) scale(1); opacity: 0; }
-        20% { opacity: 1; }
-        60% { transform: translate(-150px, -150px) scale(0.5); opacity: 0; }
-        100% { opacity: 0; }
+        0% { transform: translate(-50%, 50px) scale(1); opacity: 0; }
+        20% { opacity: 0.5; }
+        50% { transform: translate(-50%, -100px) scale(0.8); opacity: 0.5; }
+        80%, 100% { transform: translate(-50%, -100px) scale(0.5); opacity: 0; }
       }
-      @keyframes fade-out { to { opacity: 0; visibility: hidden; } }
+    `;
+    document.head.appendChild(style);
+
+    const dismiss = () => {
+      localStorage.setItem('os_onboarded', 'true');
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 1000);
+    };
+
+    window.addEventListener('os:window_opened', dismiss, { once: true });
+    overlay.addEventListener('click', dismiss, { once: true });
+  }
       
       /* Pulse for center dot */
       #dot-4 { animation: pulse-center 2s infinite; }

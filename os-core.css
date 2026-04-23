@@ -105,6 +105,45 @@ body::before {
   box-shadow: 0 0 15px #fff;
 }
 
+#os-action-hint {
+  position: absolute;
+  top: -30px; left: 0; width: 100%;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matrix-green);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+#os-action-hint.active { opacity: 1; }
+
+.minimap-hint {
+  position: absolute;
+  bottom: -20px; left: 0; width: 100%;
+  text-align: center;
+  font-size: 8px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dot-cell {
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+}
+.dot-cell::after {
+  content: ''; position: absolute; inset: -10px;
+}
+.dot {
+  width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.dot.active { background: #fff; transform: scale(2.5); box-shadow: 0 0 15px #fff; }
+.dot.center-dot { background: var(--matrix-green); box-shadow: 0 0 10px var(--matrix-green); }
+
 /* ════════════════════════════════════════════════════════════
    FRACTAL ROOM ENVIRONMENT
    ════════════════════════════════════════════════════════════ */
