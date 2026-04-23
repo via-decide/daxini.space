@@ -60,6 +60,63 @@ class OSShell {
     setInterval(() => this.updateClock(), 60000);
     
     document.getElementById('os-clock').onclick = () => this.toggleControlCenter();
+    this.initOnboarding();
+  }
+
+  initOnboarding() {
+    if (localStorage.getItem('os_onboarded')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'os-onboarding';
+    overlay.innerHTML = `
+      <div class="onboarding-text">SWIPE FROM CENTER TO LAUNCH</div>
+      <div class="ghost-gesture"></div>
+    `;
+    document.body.appendChild(overlay);
+
+    const style = document.createElement('style');
+    style.textContent = `
+      #os-onboarding {
+        position: fixed; inset: 0; z-index: 15000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        background: rgba(0,0,0,0.7); pointer-events: none;
+        animation: fade-out 1s forwards 8s;
+        backdrop-filter: blur(10px);
+      }
+      .onboarding-text {
+        font-family: var(--font-display); font-weight: 800; letter-spacing: 4px; 
+        color: #fff; text-shadow: 0 0 30px var(--matrix-green); 
+        margin-top: 200px; font-size: 24px;
+      }
+      .ghost-gesture {
+        position: absolute; width: 40px; height: 40px;
+        background: var(--matrix-green); border-radius: 50%;
+        bottom: 180px; left: 50%; transform: translateX(-50%);
+        box-shadow: 0 0 30px var(--matrix-green);
+        animation: ghost-swipe 2.5s infinite;
+      }
+      @keyframes ghost-swipe {
+        0% { transform: translate(-50%, 0) scale(1); opacity: 0; }
+        20% { opacity: 1; }
+        60% { transform: translate(-150px, -150px) scale(0.5); opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes fade-out { to { opacity: 0; visibility: hidden; } }
+      
+      /* Pulse for center dot */
+      #dot-4 { animation: pulse-center 2s infinite; }
+      @keyframes pulse-center {
+        0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+        70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
+        100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    window.addEventListener('os:window_opened', () => {
+      localStorage.setItem('os_onboarded', 'true');
+      overlay.remove();
+    }, { once: true });
   }
 
   updateClock() {

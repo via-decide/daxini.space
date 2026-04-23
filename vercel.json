@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/app/:slug", "destination": "/?app=:slug" },
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}

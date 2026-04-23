@@ -49,7 +49,16 @@ const DaxiniUI = {
 
   renderRoom() {
     const centerApp = DaxiniRegistry.getAppBySlug(this.state.focusSlug);
-    document.getElementById('room-title').textContent = centerApp ? centerApp.name.toUpperCase() : 'DAXINI.SPACE';
+    const titleEl = document.getElementById('room-title');
+    const newTitle = centerApp ? centerApp.name.toUpperCase() : 'DAXINI.SPACE';
+    
+    if (titleEl.textContent !== newTitle) {
+      titleEl.style.opacity = 0;
+      setTimeout(() => {
+        titleEl.textContent = newTitle;
+        titleEl.style.opacity = 1;
+      }, 200);
+    }
     
     DaxiniRegistry.ROOM_POSITIONS.forEach(pos => {
       const nodeEl = document.getElementById(`node-${pos}`);
@@ -57,14 +66,28 @@ const DaxiniUI = {
       if (!nodeEl) return;
 
       if (appData) {
-        nodeEl.style.display = 'flex';
-        nodeEl.innerHTML = `
-          <div class="app-icon">${appData.icon}</div>
-          <div class="app-name">${appData.name}</div>
-        `;
-        nodeEl.onclick = () => this.launchAppBySlug(appData.slug);
+        // Only update if content changed to prevent flickering
+        const currentSlug = nodeEl.getAttribute('data-slug');
+        if (currentSlug !== appData.slug) {
+          nodeEl.style.display = 'flex';
+          nodeEl.setAttribute('data-slug', appData.slug);
+          nodeEl.innerHTML = `
+            <div class="app-icon">${appData.icon}</div>
+            <div class="app-name">${appData.name}</div>
+          `;
+          nodeEl.onclick = () => this.launchAppBySlug(appData.slug);
+          
+          // Simple entry animation
+          nodeEl.style.transform = 'scale(0.8)';
+          nodeEl.style.opacity = '0';
+          setTimeout(() => {
+            nodeEl.style.transform = 'scale(1)';
+            nodeEl.style.opacity = '1';
+          }, 50 * pos);
+        }
       } else {
         nodeEl.style.display = 'none';
+        nodeEl.removeAttribute('data-slug');
       }
     });
   },

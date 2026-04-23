@@ -53,19 +53,27 @@ class PatternTracer {
     const x = t.clientX - mapRect.left;
     const y = t.clientY - mapRect.top;
 
-    const col = Math.floor((x / mapRect.width) * 3);
-    const row = Math.floor((y / mapRect.height) * 3);
+    // FORGIVING HIT RADIUS (increased from strict grid cell to circular radius)
+    const centerX = x / mapRect.width;
+    const centerY = y / mapRect.height;
+    
+    const col = Math.floor(centerX * 3);
+    const row = Math.floor(centerY * 3);
 
     if (col >= 0 && col <= 2 && row >= 0 && row <= 2) {
       const idx = row * 3 + col;
-      if (this.path.length === 0 || this.path[this.path.length - 1] !== idx) {
-        this.path.push(idx);
-        const dot = document.getElementById(`dot-${idx}`);
-        dot.classList.add('active');
-        
-        // Haptic Feedback
-        if ('vibrate' in navigator) {
-          navigator.vibrate(15);
+      
+      // Check distance to dot center for "Magnetism"
+      const dotCenter = this.getDotCenter(idx);
+      const dist = Math.hypot(x - dotCenter.x, y - dotCenter.y);
+      
+      if (dist < 40) { // 40px magnetism radius
+        if (this.path.length === 0 || this.path[this.path.length - 1] !== idx) {
+          this.path.push(idx);
+          const dot = document.getElementById(`dot-${idx}`);
+          dot.classList.add('active');
+          
+          if ('vibrate' in navigator) navigator.vibrate(15);
         }
       }
     }
@@ -78,6 +86,12 @@ class PatternTracer {
     this.updateSVG();
     
     const seed = this.path.join(',');
+    
+    // SMART-TAP FALLBACK: If only one dot (not center) is tapped
+    if (this.path.length === 1 && this.path[0] !== 4) {
+      this.showTapHint();
+    }
+
     window.dispatchEvent(new CustomEvent('os:pattern_locked', { detail: { seed, path: this.path } }));
 
     // Reset Visuals after a delay
@@ -87,6 +101,17 @@ class PatternTracer {
         this.dots.forEach(d => d.classList.remove('active'));
       }
     }, 400);
+  }
+
+  showTapHint() {
+    const center = document.getElementById('dot-4');
+    center.style.transition = 'none';
+    center.style.transform = 'scale(3)';
+    center.style.background = 'var(--matrix-green)';
+    void center.offsetWidth;
+    center.style.transition = 'all 0.5s var(--spring-easing)';
+    center.style.transform = 'scale(1)';
+    center.style.background = '';
   }
 
   updateSVG(touchX, touchY) {
