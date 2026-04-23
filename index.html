@@ -12,6 +12,26 @@
   <!-- STARFIELD -->
   <div id="starfield"></div>
 
+  <!-- IDENTITY HUD -->
+  <div id="identity-hud"></div>
+
+  <!-- SOVEREIGN AUTH OVERLAY -->
+  <div id="zv-auth-overlay" class="zv-auth-overlay hidden">
+    <div class="zv-auth-modal">
+      <div class="zv-auth-icon">🛡️</div>
+      <h2 class="zv-auth-title">Sovereign Authorization</h2>
+      <p class="zv-auth-desc">Access to the Daxini Pattern OS requires a verified Sovereign Passport. Please enter your hardware ID to authorize this session.</p>
+      <form id="zv-auth-form" class="zv-auth-form">
+        <div class="zv-auth-group">
+          <label>PHYSICAL PASSPORT ID</label>
+          <input type="text" id="zv-nfc-input" placeholder="Enter Hardware ID..." required>
+        </div>
+        <button type="submit" class="zv-auth-btn">Authorize Hardware</button>
+        <div id="zv-auth-status" class="zv-auth-status"></div>
+      </form>
+    </div>
+  </div>
+
   <!-- WINDOW MANAGER -->
   <div id="window-manager"></div>
 
@@ -64,6 +84,15 @@
         sf.appendChild(star);
       }
     })();
+
+    // Helper to route logs to spatial-engine's diagnostics
+    window.logDiag = function(action, message) {
+        if (window.OS && window.OS.updateDiagnostics) {
+            window.OS.updateDiagnostics('ZAYVORA', action, message);
+        } else {
+            console.log(`[${action}] ${message}`);
+        }
+    };
   </script>
 </body>
 </html>

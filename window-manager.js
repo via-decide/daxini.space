@@ -64,6 +64,11 @@ class WindowManager {
       this.closeWindow(oldest);
     }
 
+    // ── Zayvora: Trace Orchestration ──
+    if (window.DaxiniPassport && window.DaxiniPassport.traceOrchestration) {
+      window.DaxiniPassport.traceOrchestration(room.title || 'Uncharted Sector');
+    }
+
     const win = document.createElement('div');
     win.className = 'glass-window';
 
