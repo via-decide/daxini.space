@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daxini Apps Directory</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #0b0f17; color: #fff; }
+    h1 { margin-top: 0; }
+    ul { padding-left: 20px; }
+    a { color: #67d8ff; }
+    small { color: #b8c7d9; }
+  </style>
+  <script src="../apps-manifest.js"></script>
+</head>
+<body>
+  <h1>Available Apps</h1>
+  <ul id="apps-list"></ul>
+  <script>
+    (function renderApps() {
+      const list = document.getElementById('apps-list');
+      const manifest = window.DAXINI_APPS_MANIFEST || { apps: [] };
+      manifest.apps.forEach((app) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${app.path}">${app.title}</a> <small>(${app.name} · v${app.version} · ${app.creator})</small>`;
+        list.appendChild(li);
+      });
+    })();
+  </script>
+</body>
+</html>
