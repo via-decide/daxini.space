@@ -6322,7 +6322,20 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 const cleanPDF = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
 
 // ✅ FIXED MAPPING LOGIC
+async function verifyAlchemistAccess() {
+  const token = new URLSearchParams(window.location.search).get("token");
+  if (!token) return false;
+  try {
+    const response = await fetch(`/api/verify-subscription?token=${encodeURIComponent(token)}&product=alchemist`);
+    if (!response.ok) return false; const result = await response.json(); return result.valid === true;
+  } catch (_) { return false; }
+}
 async function init() {
+  if (!(await verifyAlchemistAccess())) {
+    UI.stack.innerHTML = '<div class="card"><div class="card-q" style="font-family:var(--font-code);color:var(--red);">Access Denied</div></div>';
+    log("ACCESS DENIED", "danger");
+    return;
+  }
   log("SYSTEM BOOT", "active");
   RAW_DATA = INJECTED_DATA.map(d => ({
     id: d.Question_ID,
