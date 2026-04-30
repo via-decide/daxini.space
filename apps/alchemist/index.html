@@ -6356,5 +6356,18 @@ async function init() {
 }
 init();
 </script>
+
+<div id="mini-alchemist" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;padding:8px;border-radius:8px;display:grid;gap:6px;">
+  <textarea id="input" placeholder="Input" style="min-height:64px;background:#000;color:#fff;border:1px solid #444;padding:6px;"></textarea>
+  <button id="run" style="padding:8px;background:#ffd600;border:0;font-weight:700;">Run</button>
+  <div id="output" style="min-height:24px;color:#2ecc71;font-family:var(--font-code);"></div>
+</div>
+
+<script>
+const transform=t=>String(t||'').toUpperCase();
+document.getElementById('run').addEventListener('click',()=>{
+  document.getElementById('output').textContent=transform(document.getElementById('input').value);
+});
+</script>
 </body>
     </html>
