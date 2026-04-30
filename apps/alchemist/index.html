@@ -6364,7 +6364,7 @@ init();
 </div>
 
 <script>
-const transform=t=>String(t||'').toUpperCase();
+const transform=input=>String(input||'').split('.').map(s=>s.trim()).filter(Boolean).map((s,i)=>`${i+1}. ${s}`).join('\n');
 document.getElementById('run').addEventListener('click',()=>{
   document.getElementById('output').textContent=transform(document.getElementById('input').value);
 });
