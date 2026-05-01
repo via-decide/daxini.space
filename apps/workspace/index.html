@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Workspace · Daxini Space</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #030508; color: #e6e9ef; font: 14px/1.5 system-ui, sans-serif; }
+    header { padding: 32px 24px 16px; border-bottom: 1px solid #1a1f2b; }
+    header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 500; }
+    header p { margin: 0; opacity: .55; font-size: 13px; }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .composer { display: grid; gap: 12px; padding: 16px; background: #0a0f18; border: 1px solid #1a1f2b; border-radius: 12px; margin-bottom: 24px; }
+    textarea { width: 100%; min-height: 80px; resize: vertical; background: #050810; border: 1px solid #1a1f2b; color: #e6e9ef; padding: 12px; border-radius: 8px; font: inherit; }
+    textarea:focus { outline: none; border-color: #3b6df7; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    button { background: #3b6df7; color: white; border: 0; padding: 10px 16px; border-radius: 8px; font: inherit; font-weight: 500; cursor: pointer; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .hint { font-size: 12px; opacity: .55; }
+    .status { font-size: 13px; opacity: .8; min-height: 18px; }
+    .status.error { color: #f47171; opacity: 1; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .tile { background: #0a0f18; border: 1px solid #1a1f2b; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; transition: border-color .15s; }
+    .tile:hover { border-color: #3b6df7; }
+    .tile-img { aspect-ratio: 1 / 1; background: #050810; display: grid; place-items: center; overflow: hidden; }
+    .tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tile-meta { padding: 12px; }
+    .tile-meta strong { display: block; font-weight: 500; margin-bottom: 4px; font-size: 14px; }
+    .tile-meta span { font-size: 12px; opacity: .55; }
+    .empty { opacity: .45; padding: 48px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Workspace</h1>
+    <p>Describe an image. Save it to your gallery as a .zay artifact.</p>
+  </header>
+  <main>
+    <form class="composer" id="composer">
+      <textarea id="description" placeholder="A serene mountain landscape at sunrise in watercolor style" required></textarea>
+      <div class="row">
+        <button type="submit" id="submit">Generate &amp; Save</button>
+        <span class="hint">Posts to LogicHub /api/publish-image. Commits .zay to apps/&lt;slug&gt;/.</span>
+      </div>
+      <div class="status" id="status"></div>
+    </form>
+    <section>
+      <div class="grid" id="gallery"></div>
+      <div class="empty" id="empty" hidden>No images yet. Generate the first one above.</div>
+    </section>
+  </main>
+  <script>
+    const PUBLISH_ENDPOINT = (window.LOGICHUB_PUBLISH_ENDPOINT) || 'https://logichub.vercel.app/api/publish-image';
+    const REGISTRY_URL = '/apps/images_registry.json';
+
+    const els = {
+      form: document.getElementById('composer'),
+      desc: document.getElementById('description'),
+      submit: document.getElementById('submit'),
+      status: document.getElementById('status'),
+      gallery: document.getElementById('gallery'),
+      empty: document.getElementById('empty')
+    };
+
+    async function loadRegistry() {
+      try {
+        const r = await fetch(REGISTRY_URL, { cache: 'no-store' });
+        if (!r.ok) throw new Error('registry ' + r.status);
+        const data = await r.json();
+        renderGallery(Array.isArray(data.apps) ? data.apps : []);
+      } catch (err) {
+        els.empty.hidden = false;
+        els.empty.textContent = 'Could not load registry: ' + err.message;
+      }
+    }
+
+    function renderGallery(apps) {
+      els.gallery.innerHTML = '';
+      if (!apps.length) { els.empty.hidden = false; return; }
+      els.empty.hidden = true;
+      const frag = document.createDocumentFragment();
+      for (const app of apps) {
+        const a = document.createElement('a');
+        a.className = 'tile';
+        a.href = app.url || ('/apps/' + app.slug + '/index.html');
+        a.innerHTML =
+          '<div class="tile-img"><img src="/apps/' + app.slug + '/image.png" alt="" loading="lazy" onerror="this.style.display=\'none\'"></div>' +
+          '<div class="tile-meta"><strong></strong><span></span></div>';
+        a.querySelector('strong').textContent = app.name || app.slug;
+        a.querySelector('span').textContent = (app.tags || []).join(' · ');
+        frag.appendChild(a);
+      }
+      els.gallery.appendChild(frag);
+    }
+
+    els.form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const description = els.desc.value.trim();
+      if (!description) return;
+      els.submit.disabled = true;
+      els.status.classList.remove('error');
+      els.status.textContent = 'Generating… (this can take a minute)';
+      try {
+        const r = await fetch(PUBLISH_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description })
+        });
+        const data = await r.json();
+        if (!r.ok || !data.success) throw new Error(data.error || ('HTTP ' + r.status));
+        els.status.textContent = 'Saved → ' + data.url;
+        els.desc.value = '';
+        await loadRegistry();
+      } catch (err) {
+        els.status.classList.add('error');
+        els.status.textContent = err.message;
+      } finally {
+        els.submit.disabled = false;
+      }
+    });
+
+    loadRegistry();
+  </script>
+</body>
+</html>
