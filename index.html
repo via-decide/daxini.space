@@ -81,6 +81,10 @@
       --glass-border: rgba(0, 229, 255, 0.2);
       --font-mono: 'JetBrains Mono', monospace;
       --font-display: 'Syne', sans-serif;
+      /* Zayvora Core Variables */
+      --z-accent: #00f2ff;
+      --z-glass: rgba(20, 20, 25, 0.7);
+      --z-border: rgba(255, 255, 255, 0.1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
@@ -151,10 +155,11 @@
       transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .room-node-app:hover, .room-node-app:active {
+    .room-node-app:hover, .room-node-app:active, .room-node-app:focus-visible {
       border-color: var(--cyan); transform: scale(1.1);
       box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
     }
+    .room-node-app:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
     .room-node-app:active { transform: scale(0.97); }
 
     /* Status Indicators on Nodes */
@@ -215,12 +220,15 @@
     .window-controls { display: flex; align-items: center; gap: 10px; }
     .window-btn {
       color: rgba(255,255,255,0.5); font-size: 11px; cursor: pointer;
-      padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+      padding: 0 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
       transition: all 0.15s; font-family: var(--font-mono);
+      min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
     }
     .window-btn:hover { color: #fff; border-color: rgba(0,229,255,0.4); }
-    .window-close { color: #fff; font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; opacity: 0.7; }
+    .window-btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+    .window-close { color: #fff; font-size: 18px; cursor: pointer; padding: 0; line-height: 1; opacity: 0.7; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; }
     .window-close:active { opacity: 1; color: var(--saffron); }
+    .window-close:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
     .window-content { flex: 1; width: 100%; border: none; background: #fff; min-height: 0; }
 
@@ -346,10 +354,96 @@
       letter-spacing: 0.04em;
       border-bottom: 1px solid rgba(0,229,255,0.24);
       padding-bottom: 1px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
     .seo-summary-links a:hover {
       color: #fff;
       border-bottom-color: rgba(255,255,255,0.5);
+    }
+    .seo-summary-links a:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    /* =========================================================
+       ZAYVORA SOVEREIGN COMPONENTS
+       ========================================================= */
+    #identity-hud {
+      position: fixed;
+      top: max(env(safe-area-inset-top), 10px);
+      left: 50%; transform: translateX(-50%);
+      width: min(600px, 90vw);
+      z-index: 10000;
+      pointer-events: none;
+    }
+    .identity-bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 20px;
+      background: rgba(0, 242, 255, 0.05);
+      border: 1px solid var(--z-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 999px;
+      font-size: 9px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1rem;
+      color: var(--z-accent);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      pointer-events: auto;
+    }
+    .identity-bar b { color: #fff; text-shadow: 0 0 8px var(--z-accent); }
+
+    /* AUTH OVERLAY */
+    .zv-auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(3, 5, 8, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 200000;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    .zv-auth-overlay.hidden { opacity: 0; pointer-events: none; }
+    .zv-auth-modal {
+      width: min(400px, 90vw);
+      background: #0d0f14;
+      border: 1px solid var(--z-border);
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .zv-auth-icon { font-size: 40px; margin-bottom: 16px; }
+    .zv-auth-title { font-family: var(--font-display); font-size: 20px; margin-bottom: 12px; color: #fff; }
+    .zv-auth-desc { font-size: 11px; color: #888; line-height: 1.6; margin-bottom: 24px; }
+    .zv-auth-form { display: flex; flex-direction: column; gap: 16px; }
+    .zv-auth-group { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .zv-auth-group label { font-size: 9px; color: var(--z-accent); letter-spacing: 1px; }
+    .zv-auth-group input {
+      width: 100%; background: #05070a; border: 1px solid var(--z-border);
+      border-radius: 8px; padding: 12px; color: #fff; font-family: var(--font-mono); font-size: 11px;
+    }
+    .zv-auth-group input:focus { outline: none; border-color: var(--z-accent); }
+    .zv-auth-btn {
+      background: var(--z-accent); color: #000; border: none; border-radius: 8px;
+      padding: 14px; font-weight: 700; font-family: var(--font-mono); font-size: 11px;
+      cursor: pointer; transition: transform 0.2s; margin-top: 10px; min-height: 44px;
+    }
+    .zv-auth-btn:active { transform: scale(0.98); }
+    .zv-auth-btn:focus-visible { outline: 2px solid var(--z-accent); outline-offset: 4px; }
+    .zv-auth-status { font-size: 10px; color: #ff3366; margin-top: 12px; min-height: 15px; }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
   </style>
 </head>
@@ -357,6 +451,26 @@
 
   <!-- STARFIELD -->
   <div id="starfield"></div>
+
+  <!-- IDENTITY HUD -->
+  <div id="identity-hud"></div>
+
+  <!-- SOVEREIGN AUTH OVERLAY -->
+  <div id="zv-auth-overlay" class="zv-auth-overlay">
+    <div class="zv-auth-modal">
+      <div class="zv-auth-icon">🛡️</div>
+      <h2 class="zv-auth-title">Sovereign Authorization</h2>
+      <p class="zv-auth-desc">Access to the Daxini Pattern OS requires a verified Sovereign Passport. Please enter your hardware ID to authorize this session.</p>
+      <form id="zv-auth-form" class="zv-auth-form">
+        <div class="zv-auth-group">
+          <label>PHYSICAL PASSPORT ID</label>
+          <input type="text" id="zv-nfc-input" placeholder="Enter Hardware ID..." required>
+        </div>
+        <button type="submit" class="zv-auth-btn">Authorize Hardware</button>
+        <div id="zv-auth-status" class="zv-auth-status"></div>
+      </form>
+    </div>
+  </div>
 
   <!-- DIAGNOSTICS -->
   <div id="os-diagnostics"><div id="diag-content"></div></div>
@@ -378,14 +492,14 @@
 
   <!-- FRACTAL DESKTOP -->
   <div id="room-environment">
-    <div class="room-node-app" id="node-0"></div>
-    <div class="room-node-app" id="node-1"></div>
-    <div class="room-node-app" id="node-2"></div>
-    <div class="room-node-app" id="node-3"></div>
-    <div class="room-node-app" id="node-5"></div>
-    <div class="room-node-app" id="node-6"></div>
-    <div class="room-node-app" id="node-7"></div>
-    <div class="room-node-app" id="node-8"></div>
+    <div class="room-node-app" id="node-0" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-1" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-2" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-3" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-5" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-6" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-7" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-8" tabindex="0" role="button"></div>
 
     <div id="room-center">
       <h1 id="room-title">DAXINI.SPACE</h1>
@@ -412,6 +526,81 @@
   </div>
 
   <script>
+    /* =========================================================
+       0. ZAYVORA SOVEREIGN INTEGRATION
+       ========================================================= */
+    const ZAYVORA = {
+        TOKEN_KEY: 'sovereign_token',
+        STAGES: [
+            'Analyzing Pattern Context',
+            'Verifying Integrity Chain',
+            'Allocating Local Resources',
+            'Establishing Peer Consensus',
+            'Mounting Sovereign Instance'
+        ],
+
+        async bootstrap() {
+            const token = localStorage.getItem(this.TOKEN_KEY);
+            const HUD = document.getElementById('identity-hud');
+            const overlay = document.getElementById('zv-auth-overlay');
+
+            if (!token) {
+                overlay.classList.add('hidden'); // Ensure hidden by default for guests
+                HUD.innerHTML = `
+                    <div class="identity-bar">
+                        <span>IDENTITY: <b>GUEST_NODE</b></span>
+                        <span>SKILLHEX: <b>--</b></span>
+                        <span style="cursor:pointer; color:#fff; border:1px solid var(--z-accent); padding:0 8px; border-radius:4px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">AUTHORIZE PASSPORT</span>
+                    </div>
+                `;
+                logDiag('SYSTEM', 'Operating in Public Guest Mode.');
+                return;
+            }
+
+            overlay.classList.add('hidden');
+            // Mock profile for now as we don't have the backend active here
+            HUD.innerHTML = `
+                <div class="identity-bar">
+                    <span>IDENTITY: <b>VERIFIED_NODE_${token.substring(0,6).toUpperCase()}</b></span>
+                    <span>SKILLHEX: <b>850</b></span>
+                    <span>STATUS: <b>AUTHORIZED</b></span>
+                </div>
+            `;
+            logDiag('IDENTITY', 'Sovereign session established via hardware ID.');
+        },
+
+        async authorize(passportId) {
+            const status = document.getElementById('zv-auth-status');
+            status.textContent = 'Verifying Hardware...';
+            
+            // Simulate cryptographic verification
+            await new Promise(r => setTimeout(r, 800));
+            
+            localStorage.setItem(this.TOKEN_KEY, `node_${passportId}_${Math.random().toString(36).substr(2,9)}`);
+            this.bootstrap();
+            logDiag('AUTH', `Hardware authorized: ${passportId}`);
+        },
+
+        traceOrchestration(appName) {
+            let delay = 0;
+            this.STAGES.forEach((stage, i) => {
+                setTimeout(() => {
+                    logDiag('ORCHESTRATE', `${stage}...`);
+                    if (i === this.STAGES.length - 1) {
+                        logDiag('READY', `${appName} mounted in sovereign viewport.`);
+                    }
+                }, delay);
+                delay += 150 + Math.random() * 200;
+            });
+        }
+    };
+
+    document.getElementById('zv-auth-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('zv-nfc-input').value;
+        if (input) ZAYVORA.authorize(input);
+    });
+
     /* =========================================================
        1. STARFIELD GENERATOR
        ========================================================= */
@@ -816,13 +1005,26 @@
             <div class="app-name">${appData.name}<br><span style="font-size:8px; opacity:0.65;">${tierLabel}</span></div>
           `;
           nodeEl.title = `${appData.name} — ${appData.desc}`;
-          nodeEl.onclick = () => {
+          nodeEl.setAttribute('aria-label', `Launch ${appData.name}`);
+          
+          const clickHandler = () => {
             if (appData.url.includes('github.com')) window.open(appData.url, '_blank');
             animateFractalTransition(pos, false);
             setTimeout(() => launchAppBySlug(appData.slug), 300);
           };
+          
+          nodeEl.onclick = clickHandler;
+          nodeEl.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              clickHandler();
+            }
+          };
         } else {
           nodeEl.style.display = 'none';
+          nodeEl.removeAttribute('aria-label');
+          nodeEl.onclick = null;
+          nodeEl.onkeydown = null;
         }
       });
     }
@@ -864,9 +1066,13 @@
        ========================================================= */
     const wm = document.getElementById('window-manager');
 
-    function launchApp(posIndex) {
-      const appData = DAXINI_GALAXY.apps[posIndex];
+    function launchApp(index) {
+      const appData = DAXINI_GALAXY.apps[index];
       if (!appData) return;
+      
+      // ── Zayvora: Trace Orchestration ──
+      ZAYVORA.traceOrchestration(appData.name);
+      
       return launchAppBySlug(appData.slug);
     }
 
@@ -937,8 +1143,8 @@
         <div class="window-header">
           <span class="window-title">${statusIndicator} ${appData.name}</span>
           <div class="window-controls">
-            ${appData.status === 'live' && !appData.url.includes('github.com') ? `<span class="window-btn" onclick="reloadFrame(this)" title="Reload">↺</span>` : ''}
-            <span class="window-close" title="Close" onclick="closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')">✕</span>
+            ${appData.status === 'live' && !appData.url.includes('github.com') ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
+            <span class="window-close" tabindex="0" role="button" aria-label="Close window" title="Close" onclick="closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')}">✕</span>
           </div>
         </div>
         ${windowContent}
@@ -1138,10 +1344,66 @@
     }
 
     /* =========================================================
-       8. BOOT SEQUENCE
+       8. LOGICHUB BRIDGE — postMessage listener
+       Handles messages from embedded logichub.app iframes.
        ========================================================= */
+    const LOGICHUB_ORIGIN = 'https://logichub.app';
+
+    window.addEventListener('message', function(event) {
+      // Only trust logichub.app
+      if (event.origin !== LOGICHUB_ORIGIN) return;
+
+      const { type, data, requestId } = event.data || {};
+
+      switch (type) {
+        case 'ZAYVORA_READY':
+          logDiag('BRIDGE', `LogicHub iframe ready — app: ${data?.title || 'unknown'}`);
+          // Mark the active window as bridged
+          const activeWin = document.querySelector('.glass-window');
+          if (activeWin) activeWin.dataset.bridged = 'true';
+          break;
+
+        case 'ZAYVORA_RESULT':
+          logDiag('BRIDGE', `LogicHub result [req:${requestId}] received.`);
+          // Dispatch a custom event so other parts of the page can react
+          window.dispatchEvent(new CustomEvent('logichub:result', { detail: { requestId, data } }));
+          break;
+
+        case 'ZAYVORA_META':
+          logDiag('BRIDGE', `LogicHub meta — ${data?.title} at ${data?.url}`);
+          break;
+
+        case 'ZAYVORA_ERROR':
+          logDiag('BRIDGE', `LogicHub error [req:${requestId}]: ${data?.error}`);
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    /**
+     * Send a command to the currently active embedded logichub.app iframe.
+     * Usage: daxini_sendToApp('ZAYVORA_EXECUTE', { prompt: 'hello' })
+     */
+    window.daxini_sendToApp = function(type, payload) {
+      const iframe = document.querySelector('.glass-window[data-bridged="true"] iframe');
+      if (!iframe || !iframe.contentWindow) {
+        logDiag('BRIDGE', 'No active bridged iframe found.');
+        return;
+      }
+      const requestId = `daxini_${Date.now()}`;
+      iframe.contentWindow.postMessage({ type, payload, requestId }, LOGICHUB_ORIGIN);
+      return requestId;
+    };
+
+    /* =========================================================
+       9. BOOT SEQUENCE
+       ========================================================= */
+    ZAYVORA.bootstrap();
     initializeStore();
     logDiag('SYSTEM', 'Daxini Space OS v2.2.0 online. Contextual app routing armed.');
+    logDiag('BRIDGE', 'LogicHub bridge active. Listening for iframe messages from logichub.app.');
     logDiag('ROUTE', 'Open any app to refresh the 8-room grid with related core and free-tier apps.');
     logDiag('NEW', 'Store routes now carry the focused app in the URL for direct linking.');
 

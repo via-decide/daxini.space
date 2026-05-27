@@ -72,13 +72,20 @@ body {
   font-weight: bold;
   cursor: pointer;
   padding: 0 5px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s, color 0.2s;
+  border-radius: 4px;
 }
 
 .header-close-btn:active, .header-close-btn:hover {
   color: rgba(255, 90, 70, 1);
   transform: scale(1.1);
 }
+.header-close-btn:focus-visible { outline: 2px solid var(--matrix-green); outline-offset: 2px; }
 
 .window-body {
   flex: 1;
@@ -286,6 +293,7 @@ body {
   transform: scale(0.95);
   box-shadow: 0 0 20px rgba(0, 255, 150, 0.4);
 }
+.access-node:focus-visible { outline: 2px solid var(--matrix-green); outline-offset: 4px; }
 
 /* ════════════════════════════════════════════════════════════
    HUD — CONCLUDE (top right)
@@ -321,6 +329,11 @@ body {
   transform: scale(0.95);
 }
 
+#btn-conclude-mission:focus-visible {
+  outline: 2px solid rgba(255, 90, 70, 1);
+  outline-offset: 4px;
+}
+
 /* ════════════════════════════════════════════════════════════
    INSTALL CTA — .btn-glitch (inside install trap)
    ════════════════════════════════════════════════════════════ */
@@ -350,6 +363,11 @@ body {
 .btn-glitch:active {
   transform: scale(0.97);
   background: rgba(0, 255, 150, 0.18);
+}
+
+.btn-glitch:focus-visible {
+  outline: 2px solid var(--matrix-green);
+  outline-offset: 4px;
 }
 
 @keyframes glitch-idle {
