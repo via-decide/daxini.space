@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer Benzene Hexagon (Solid boundary) -->
+  <path fill="#000000" fill-rule="evenodd" d="
+    M 50 5 L 89 27.5 L 89 72.5 L 50 95 L 11 72.5 L 11 27.5 Z 
+    M 50 13 L 82 31.5 L 82 68.5 L 50 87 L 18 68.5 L 18 31.5 Z
+  "/>
+</svg>

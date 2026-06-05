@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="500" height="500">
+  <defs>
+    <style>
+      .solid { fill: #000000; }
+      .outline { fill: none; stroke: #000000; stroke-linejoin: round; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <!-- Outer Benzene Hexagon (Solid boundary for the faceplate) -->
+  <path class="solid" fill-rule="evenodd" d="
+    M 50 5 L 89 27.5 L 89 72.5 L 50 95 L 11 72.5 L 11 27.5 Z 
+    M 50 13 L 18 31.5 L 18 68.5 L 50 87 L 82 68.5 L 82 31.5 Z
+  "/>
+
+  <!-- Benzene Double Bonds -->
+  <polygon class="solid" points="20,34 24,34 24,66 20,66" />
+  <polygon class="solid" points="49,82 51,85 73,72 71,69" />
+  <polygon class="solid" points="49,18 51,15 73,28 71,31" />
+
+  <!-- Flask Body (Using strokes for precise geometry, most slicers like Orca/Bambu handle this well) -->
+  <path class="outline" stroke-width="6" d="M 42 30 L 58 30 L 58 45 L 75 75 L 25 75 L 42 45 Z" />
+  
+  <!-- Flask Rim -->
+  <line class="outline" stroke-width="6" x1="38" y1="30" x2="62" y2="30" />
+  
+  <!-- Liquid Level Line -->
+  <line class="outline" stroke-width="4" x1="33" y1="60" x2="67" y2="60" />
+
+  <!-- Chemical Bubbles -->
+  <circle class="solid" cx="45" cy="68" r="3.5" />
+  <circle class="solid" cx="55" cy="65" r="2.5" />
+  <circle class="solid" cx="50" cy="55" r="3" />
+  <circle class="solid" cx="48" cy="40" r="2" />
+  <circle class="solid" cx="52" cy="35" r="1.5" />
+</svg>

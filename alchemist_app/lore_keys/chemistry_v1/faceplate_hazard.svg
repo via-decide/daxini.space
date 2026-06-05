@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <path fill="#000000" fill-rule="evenodd" d="
+    M 50 5 L 89 27.5 L 89 72.5 L 50 95 L 11 72.5 L 11 27.5 Z 
+    M 50 13 L 82 31.5 L 82 68.5 L 50 87 L 18 68.5 L 18 31.5 Z
+  "/>
+  
+  <!-- Hazard Triangle -->
+  <polygon fill="#000000" points="50,25 75,75 25,75" />
+  
+  <!-- Inner Triangle Cutout (Drawn as a white polygon. Slicers handle this by allowing you to delete this object or assign it 0 height) -->
+  <polygon fill="#FFFFFF" points="50,38 65,68 35,68" />
+  
+  <!-- Center Exclamation -->
+  <rect fill="#000000" x="47" y="45" width="6" height="12" rx="2" />
+  <circle fill="#000000" cx="50" cy="62" r="3" />
+</svg>

@@ -1,0 +1,30 @@
+/*
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=utf-8
+
+/MASTER_VAULT.json
+  Cache-Control: public, max-age=300
+  Content-Type: application/json
+
+/kernel/*
+  Cache-Control: public, max-age=604800, immutable
+  Content-Type: application/javascript
+
+/*.pdf
+  Content-Type: application/pdf
+  Content-Disposition: attachment
+
+/*.epub
+  Content-Type: application/epub+zip
+
+/*.zay
+  Content-Type: application/json
+
+/api/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Access-Control-Allow-Origin: *

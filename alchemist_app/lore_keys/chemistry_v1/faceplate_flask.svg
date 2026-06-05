@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <path fill="#000000" fill-rule="evenodd" d="
+    M 50 5 L 89 27.5 L 89 72.5 L 50 95 L 11 72.5 L 11 27.5 Z 
+    M 50 13 L 82 31.5 L 82 68.5 L 50 87 L 18 68.5 L 18 31.5 Z
+  "/>
+  
+  <!-- Solid Flask Body -->
+  <polygon fill="#000000" points="45,30 55,30 55,45 75,80 25,80 45,45" />
+  <!-- Flask Rim -->
+  <rect fill="#000000" x="42" y="26" width="16" height="4" rx="2" />
+  
+  <!-- Bubble accents (Separate solid bodies) -->
+  <circle fill="#000000" cx="50" cy="50" r="4" />
+  <circle fill="#000000" cx="42" cy="65" r="3" />
+  <circle fill="#000000" cx="58" cy="70" r="2.5" />
+</svg>

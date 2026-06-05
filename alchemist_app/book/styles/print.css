@@ -1,0 +1,54 @@
+@page {
+  size: 6in 9in;
+  margin-top: 0.75in;
+  margin-bottom: 0.75in;
+  margin-inside: var(--inside-margin, 0.75in);
+  margin-outside: 0.625in;
+
+  @top-left {
+    content: string(chapter);
+    font-size: 8pt;
+  }
+
+  @bottom-center {
+    content: counter(page);
+    font-size: 9pt;
+  }
+}
+
+body {
+  font-family: "Libertinus Serif", "Source Serif 4", "Crimson Pro", serif;
+  font-size: 11pt;
+  line-height: 1.45;
+  color: #111;
+}
+
+h1 {
+  string-set: chapter content();
+  break-before: right;
+  page-break-before: right;
+}
+
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+p, li {
+  widows: 2;
+  orphans: 2;
+}
+
+figure {
+  page-break-inside: avoid;
+  text-align: center;
+}
+
+img, svg {
+  max-width: 100%;
+  filter: grayscale(100%);
+}
+
+figcaption {
+  font-size: 9pt;
+  font-style: italic;
+}

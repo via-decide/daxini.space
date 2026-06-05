@@ -1,0 +1,91 @@
+name: Kernel Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'kernel/**'
+      - 'tests/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'kernel/**'
+      - 'tests/**'
+      - '.github/workflows/test.yml'
+
+jobs:
+  kernel-tests:
+    name: Alchemist Kernel
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run block-system tests
+        run: node kernel/alchemist/block-system.test.js
+
+      - name: Run session-engine tests
+        run: node kernel/alchemist/session-engine.test.js
+
+      - name: Run credit-system tests
+        run: node kernel/alchemist/credit-system.test.js
+
+      - name: Run ingestion-engine tests
+        run: node kernel/alchemist/ingestion-engine.test.js
+
+      - name: Run session-review tests
+        run: node kernel/alchemist/session-review.test.js
+
+      - name: Run ui-activation tests
+        run: node kernel/alchemist/ui-activation.test.js
+
+      - name: Run ui-integration tests
+        run: node kernel/alchemist/ui-integration.test.js
+
+      - name: Run zay-compiler tests
+        run: node kernel/alchemist/zay-compiler.test.js
+
+      - name: Run 3d-block tests
+        run: node kernel/alchemist/3d-block.test.js
+
+  zay-interchange:
+    name: ZAY Interchange Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run ZAY importer tests
+        run: node kernel/alchemist/zay-importer.test.js
+
+      - name: Validate MASTER_VAULT.json
+        run: node -e "const d=JSON.parse(require('fs').readFileSync('MASTER_VAULT.json','utf8')); if(!Array.isArray(d))throw new Error('Not array'); const bad=d.filter(q=>!q.id||!q.q||!q.correct); if(bad.length)throw new Error(bad.length+' invalid entries'); console.log('MASTER_VAULT.json: '+d.length+' valid entries');"
+
+  python-backend:
+    name: Python Publishing Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run publishing tests
+        run: pytest tests/ -q

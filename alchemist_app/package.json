@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "test": "node tests/run-tests.mjs",
+    "validate:vault": "node scripts/validate-vault.mjs"
+  }
+}

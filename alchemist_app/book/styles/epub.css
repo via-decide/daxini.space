@@ -1,0 +1,50 @@
+:root {
+  color-scheme: light dark;
+  --body-font: "Source Serif 4", "Crimson Pro", "Libertinus Serif", serif;
+  --mono-font: "Source Code Pro", "Courier New", monospace;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+section.chapter {
+  break-before: page;
+  page-break-before: always;
+  max-width: 70ch;
+  margin: 0 auto;
+}
+
+h1, h2, h3 {
+  line-height: 1.2;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+p, li {
+  widows: 2;
+  orphans: 2;
+}
+
+figure {
+  margin: 1.2em auto;
+  text-align: center;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+code, pre {
+  font-family: var(--mono-font);
+}
