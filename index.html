@@ -63,7 +63,7 @@
   <meta name="theme-color" content="#030508">
 
   <!-- Premium Typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vercel Web Analytics -->
   <script>
@@ -76,21 +76,23 @@
        CORE VARIABLES & RESET
        ========================================================= */
     :root {
-      --bg: #030508;
+      --bg: #020305;
       --cyan: #00e5ff;
       --saffron: #ff671f;
-      --glass-bg: rgba(10, 12, 18, 0.75);
-      --glass-border: rgba(0, 229, 255, 0.2);
+      --glass-bg: rgba(6, 9, 14, 0.85);
+      --glass-border: rgba(0, 229, 255, 0.15);
       --font-mono: 'JetBrains Mono', monospace;
-      --font-display: 'Syne', sans-serif;
+      --font-display: 'Oxanium', sans-serif;
+      --font-body: 'Outfit', sans-serif;
       /* Zayvora Core Variables */
       --z-accent: #00f2ff;
-      --z-glass: rgba(20, 20, 25, 0.7);
-      --z-border: rgba(255, 255, 255, 0.1);
+      --z-saffron: #ff671f;
+      --z-glass: rgba(10, 14, 22, 0.8);
+      --z-border: rgba(0, 242, 255, 0.12);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-    body { background-color: var(--bg); color: #fff; font-family: var(--font-mono); overflow: hidden; touch-action: none; }
+    body { background-color: var(--bg); color: #fff; font-family: var(--font-body); overflow: hidden; touch-action: none; }
 
     /* =========================================================
        DIAGNOSTICS HUD
@@ -105,19 +107,9 @@
     .diag-log { margin-bottom: 4px; }
     .diag-time { color: #555; margin-right: 8px; }
 
-    /* =========================================================
-       STARFIELD BACKGROUND
-       ========================================================= */
     #starfield {
       position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-    }
-    .star {
-      position: absolute; background: #fff; border-radius: 50%;
-      animation: twinkle linear infinite;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.1; }
-      50% { opacity: 0.7; }
+      opacity: 0.65;
     }
 
     /* =========================================================
@@ -129,7 +121,15 @@
       background-image: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
     }
 
-    #room-center { text-align: center; pointer-events: none; z-index: 2; }
+    #room-center { 
+      text-align: center; pointer-events: none; z-index: 2; 
+      animation: center-load 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.05s;
+    }
+    @keyframes center-load {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
     #room-title {
       font-family: var(--font-display); font-size: 32px; font-weight: 800;
       letter-spacing: -1px; margin-bottom: 8px; text-transform: uppercase;
@@ -150,19 +150,45 @@
     .room-node-app {
       position: absolute; width: 90px; height: 90px;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: 16px; display: flex; flex-direction: column;
+      border-radius: 20px; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center; padding: 8px; cursor: pointer; pointer-events: auto;
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+      animation: node-load 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     .room-node-app:hover, .room-node-app:active, .room-node-app:focus-visible {
-      border-color: var(--cyan); transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+      border-color: var(--cyan); transform: scale(1.08) !important;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    /* Specific overrides for centered nodes because of default translateX */
+    #node-1:hover, #node-7:hover {
+      transform: translateX(-50%) scale(1.08) !important;
     }
     .room-node-app:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
-    .room-node-app:active { transform: scale(0.97); }
+    .room-node-app:active { transform: scale(0.96) !important; }
+    #node-1:active, #node-7:active { transform: translateX(-50%) scale(0.96) !important; }
+
+    @keyframes node-load {
+      from { opacity: 0; filter: blur(6px); }
+      to { opacity: 1; filter: blur(0); }
+    }
+
+    @keyframes panel-load {
+      from { transform: translateX(-30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes minimap-load {
+      from { transform: translateX(-50%) translateY(30px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    @keyframes identity-load {
+      from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
 
     /* Status Indicators on Nodes */
     .status-dot {
@@ -172,18 +198,19 @@
     .status-pending { background: var(--saffron); box-shadow: 0 0 8px var(--saffron); }
     @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
 
-    .app-icon { font-size: 24px; margin-bottom: 6px; }
+    .app-icon { font-size: 24px; margin-bottom: 6px; transition: transform 0.3s; }
+    .room-node-app:hover .app-icon { transform: translateY(-3px); }
     .app-name { font-size: 9px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; }
 
-    /* Spatial Positioning — Matches 3×3 thumb matrix */
-    #node-0 { top: 15%; left: 10%; }
-    #node-1 { top: 10%; left: 50%; transform: translateX(-50%); }
-    #node-2 { top: 15%; right: 10%; }
-    #node-3 { top: 40%; left: 5%; }
-    #node-5 { top: 40%; right: 5%; }
-    #node-6 { bottom: 35%; left: 10%; }
-    #node-7 { bottom: 30%; left: 50%; transform: translateX(-50%); }
-    #node-8 { bottom: 35%; right: 10%; }
+    /* Spatial Positioning — Matches 3×3 thumb matrix & Staggered delays */
+    #node-0 { top: 15%; left: 10%; animation-delay: 0.1s; }
+    #node-1 { top: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0.15s; }
+    #node-2 { top: 15%; right: 10%; animation-delay: 0.2s; }
+    #node-3 { top: 40%; left: 5%; animation-delay: 0.25s; }
+    #node-5 { top: 40%; right: 5%; animation-delay: 0.3s; }
+    #node-6 { bottom: 35%; left: 10%; animation-delay: 0.35s; }
+    #node-7 { bottom: 30%; left: 50%; transform: translateX(-50%); animation-delay: 0.4s; }
+    #node-8 { bottom: 35%; right: 10%; animation-delay: 0.45s; }
 
     /* =========================================================
        WINDOW MANAGER (The App Viewport)
@@ -250,25 +277,32 @@
     .term-blink { animation: blink 1s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* =========================================================
-       THUMB ZONE MATRIX
-       ========================================================= */
     #os-minimap {
       position: fixed;
       bottom: calc(env(safe-area-inset-bottom, 10px) + 20px);
       left: 50%; transform: translateX(-50%);
       width: 220px; height: 220px;
       z-index: 9999; touch-action: none;
-      background: rgba(0,0,0,0.4); border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
+      background: rgba(3, 5, 8, 0.75);
+      border-radius: 24px;
+      border: 1px solid rgba(0, 242, 255, 0.16);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0, 242, 255, 0.05);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      animation: minimap-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.5s;
+    }
+    #os-minimap:hover {
+      border-color: rgba(0, 242, 255, 0.3);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 25px rgba(0, 242, 255, 0.1);
     }
 
     #grid-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     #trace-line {
-      fill: none; stroke: var(--cyan); stroke-width: 4px;
+      fill: none; stroke: var(--z-accent); stroke-width: 4px;
       stroke-linecap: round; stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(0,229,255,0.5));
+      filter: drop-shadow(0 0 8px rgba(0,242,255,0.6));
       transition: stroke 0.2s, filter 0.2s;
     }
 
@@ -279,17 +313,32 @@
     }
     .dot-cell { display: flex; align-items: center; justify-content: center; pointer-events: none; }
     .dot {
-      width: 10px; height: 10px; background: rgba(255,255,255,0.2);
-      border-radius: 50%; transition: all 0.2s;
+      width: 8px; height: 8px; background: rgba(255,255,255,0.15);
+      border-radius: 50%; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .dot.active { background: var(--cyan); box-shadow: 0 0 15px var(--cyan); transform: scale(1.5); }
-    .dot.center-dot { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); background: transparent; }
+    .dot.active { 
+      background: var(--z-accent); 
+      box-shadow: 0 0 18px var(--z-accent), 0 0 6px var(--z-accent); 
+      transform: scale(1.6); 
+    }
+    .dot.center-dot { 
+      width: 12px; height: 12px; 
+      border: 2px solid rgba(0, 242, 255, 0.5); 
+      background: transparent; 
+    }
+    .dot.center-dot.active {
+      background: var(--z-accent);
+      border-color: var(--z-accent);
+      box-shadow: 0 0 18px var(--z-accent);
+    }
 
     /* Minimap hint label */
     .minimap-hint {
       position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
-      font-size: 9px; color: rgba(255,255,255,0.2); letter-spacing: 1px;
+      font-size: 9px; color: rgba(0, 242, 255, 0.4); letter-spacing: 1px;
       text-transform: uppercase; white-space: nowrap;
+      font-family: var(--font-mono);
+      text-shadow: 0 0 5px rgba(0, 242, 255, 0.15);
     }
 
     /* SIGIL RECOGNITION */
@@ -308,66 +357,320 @@
     }
 
     /* =========================================================
-       SEO SUMMARY PANEL — hides when any app is open
+       SOVEREIGN CONTROL PANEL HUD (Side Panel)
        ========================================================= */
     .seo-summary-panel {
       position: fixed;
       top: max(env(safe-area-inset-top), 14px);
       left: 16px;
-      width: min(340px, calc(100vw - 92px));
+      width: min(380px, calc(100vw - 92px));
+      max-height: calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
       z-index: 220;
-      background: rgba(4, 7, 12, 0.84);
-      border: 1px solid rgba(0,229,255,0.16);
-      border-radius: 18px;
-      padding: 12px 14px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-      /* smooth transition for hide/show */
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      background: var(--z-glass);
+      border: 1px solid var(--z-border);
+      border-radius: 20px;
+      padding: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: panel-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.15s;
     }
     .seo-summary-panel.hidden {
       opacity: 0;
       pointer-events: none;
-      transform: translateY(-8px);
+      transform: translateX(-20px);
+      animation: none;
     }
-    .seo-summary-panel h2 {
-      font-family: var(--font-display);
-      font-size: 18px;
-      line-height: 1.1;
-      margin-bottom: 8px;
-      color: #fff;
-    }
-    .seo-summary-panel p {
-      font-size: 11px;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.72);
-      margin-bottom: 8px;
-    }
-    .seo-summary-links {
+    
+    .hud-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--z-border);
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.2);
     }
-    .seo-summary-links a {
+    .hud-header-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #fff;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-header-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9px;
+      font-family: var(--font-mono);
       color: var(--cyan);
-      text-decoration: none;
-      font-size: 10px;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid rgba(0,229,255,0.24);
-      padding-bottom: 1px;
-      min-height: 44px;
+    }
+    .hud-header-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulse-dot 1.5s infinite;
+    }
+    
+    /* Tabs Navigation */
+    .hud-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--z-border);
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .hud-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 10px 0;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      outline: none;
+      min-height: 38px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
     }
-    .seo-summary-links a:hover {
+    .hud-tab-btn:hover {
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.02);
+    }
+    .hud-tab-btn.active {
+      color: var(--z-accent);
+      border-bottom: 2px solid var(--z-accent);
+      background: rgba(0, 242, 255, 0.03);
+    }
+    
+    /* Tab Content Area */
+    .hud-content {
+      padding: 16px 18px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-family: var(--font-body);
+    }
+    .hud-tab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .hud-tab-panel.active {
+      display: flex;
+    }
+    
+    /* Standard panel UI components */
+    .hud-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.2s;
+    }
+    .hud-card:hover {
+      border-color: rgba(0, 229, 255, 0.15);
+    }
+    .hud-card-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hud-card-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+    }
+    .hud-card-link {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(0, 229, 255, 0.3);
+      align-self: flex-start;
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .hud-card-link:hover {
       color: #fff;
       border-bottom-color: rgba(255,255,255,0.5);
     }
-    .seo-summary-links a:focus-visible {
-      outline: 2px solid var(--cyan);
-      outline-offset: 4px;
+    
+    /* Telemetry Panel Elements */
+    .telemetry-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .telemetry-label {
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .telemetry-val {
+      font-weight: 700;
+    }
+    .telemetry-val.status-ok { color: var(--cyan); }
+    .telemetry-val.status-warn { color: var(--saffron); }
+    .telemetry-val.status-off { color: rgba(255,255,255,0.2); }
+    
+    /* Dials & Gauges */
+    .telemetry-gauge {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .telemetry-gauge-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+    .telemetry-gauge-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .telemetry-gauge-fill {
+      height: 100%;
+      background: var(--z-accent);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* Failure Taxonomy list */
+    .failure-taxonomy-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px dashed rgba(255, 103, 31, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      max-height: 110px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--saffron);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .failure-item {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* Live Log Console */
+    .hud-console {
+      background: #030508;
+      border: 1px solid var(--z-border);
+      border-radius: 10px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--cyan);
+      min-height: 100px;
+      max-height: 120px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .hud-console-line {
+      line-height: 1.4;
+    }
+    
+    /* Tiers cards and comparisons */
+    .tier-badge {
+      font-size: 8px;
+      font-family: var(--font-mono);
+      background: rgba(0, 242, 255, 0.1);
+      border: 1px solid var(--z-border);
+      color: var(--z-accent);
+      padding: 2px 6px;
       border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+      align-self: flex-start;
+    }
+    .tier-badge.tier-premium {
+      background: rgba(255, 103, 31, 0.1);
+      border-color: rgba(255, 103, 31, 0.2);
+      color: var(--saffron);
+    }
+    
+    .hud-btn {
+      width: 100%;
+      border: none;
+      background: var(--z-accent);
+      color: #000;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.2s, background-color 0.2s;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hud-btn:hover {
+      background: #00d9ff;
+    }
+    .hud-btn:active {
+      transform: scale(0.98);
+    }
+    .hud-btn.btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+    }
+    .hud-btn.btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.3);
+    }
+    .hud-btn.btn-saffron {
+      background: var(--saffron);
+      color: #fff;
+    }
+    .hud-btn.btn-saffron:hover {
+      background: #ff5500;
     }
 
     /* =========================================================
@@ -380,6 +683,8 @@
       width: min(600px, 90vw);
       z-index: 10000;
       pointer-events: none;
+      animation: identity-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.1s;
     }
     .identity-bar {
       display: flex;
@@ -451,8 +756,8 @@
 </head>
 <body>
 
-  <!-- STARFIELD -->
-  <div id="starfield"></div>
+  <!-- STARFIELD CANVAS -->
+  <canvas id="starfield"></canvas>
 
   <!-- IDENTITY HUD -->
   <div id="identity-hud"></div>
@@ -480,12 +785,165 @@
   <!-- APP COUNT -->
   <div id="app-count-badge"></div>
 
-  <section class="seo-summary-panel" aria-label="Daxini.space summary">
-    <h2>Daxini.space is a prompt app store and AI tool directory</h2>
-    <p>Discover LogicHub apps, ViaDecide tools, and free-tier community apps in one spatial app store. Open any app and the surrounding grid refreshes with related prompt apps and AI tools.</p>
-    <div class="seo-summary-links">
-      <a href="https://logichub.app/">Build apps in LogicHub</a>
-      <a href="https://daxini.space/?app=logichub">Open featured app route</a>
+  <section class="seo-summary-panel" aria-label="Zayvora Sovereign Control Console">
+    <div class="hud-header">
+      <div class="hud-header-title">🛡️ Zayvora Substrate HUD</div>
+      <div class="hud-header-status">
+        <div class="hud-header-dot"></div>
+        <span id="hud-status-text">GUEST_MODE</span>
+      </div>
+    </div>
+    
+    <div class="hud-tabs">
+      <button class="hud-tab-btn active" id="tab-btn-ecosystem" onclick="switchHudTab('ecosystem')">Portal</button>
+      <button class="hud-tab-btn" id="tab-btn-telemetry" onclick="switchHudTab('telemetry')">Diag</button>
+      <button class="hud-tab-btn" id="tab-btn-tiers" onclick="switchHudTab('tiers')">Tiers</button>
+      <button class="hud-tab-btn" id="tab-btn-passport" onclick="switchHudTab('passport')">Key</button>
+    </div>
+    
+    <div class="hud-content">
+      <!-- ECOSYSTEM TAB -->
+      <div id="hud-panel-ecosystem" class="hud-tab-panel active">
+        <p style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:4px;">
+          Discover LogicHub apps, ViaDecide tools, and free-tier community apps in a spatial app store. Open any app to refresh adjacent routes.
+        </p>
+        
+        <div class="hud-card">
+          <div class="hud-card-title">⚡ LogicHub</div>
+          <p class="hud-card-desc">No-code AI app builder, workflow developer, and rapid prototype generation tool.</p>
+          <a class="hud-card-link" href="https://logichub.app/" target="_blank">Build on LogicHub ↗</a>
+        </div>
+        
+        <div class="hud-card">
+          <div class="hud-card-title">⚗️ Prompt Alchemy</div>
+          <p class="hud-card-desc">High-precision prompt optimization and improvement playground.</p>
+          <a class="hud-card-link" href="https://via-decide.github.io/PromptAlchemy/" target="_blank">Launch Workspace ↗</a>
+        </div>
+        
+        <div class="hud-card">
+          <div class="hud-card-title">📚 Books & publications</div>
+          <p class="hud-card-desc">Read manuals, study guides, and the sovereign engineering handbook.</p>
+          <a class="hud-card-link" href="/books">Explore Publications Index ↗</a>
+        </div>
+      </div>
+      
+      <!-- TELEMETRY TAB -->
+      <div id="hud-panel-telemetry" class="hud-tab-panel">
+        <div class="telemetry-row">
+          <span class="telemetry-label">Antigravity Beast-Mode</span>
+          <span id="tel-beast-mode" class="telemetry-val status-off" style="cursor:pointer;" onclick="toggleBeastMode()">OFF (CLICK TO TOGGLE)</span>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">Synthesis Pipeline</span>
+          <span id="tel-pipeline" class="telemetry-val status-ok">IDLE</span>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">Context Fetcher</span>
+          <span id="tel-fetcher" class="telemetry-val status-ok">IDLE</span>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">PR Controller</span>
+          <span id="tel-pr" class="telemetry-val status-off">CLOSED</span>
+        </div>
+        <div class="telemetry-row">
+          <span class="telemetry-label">Intent Deconstruct</span>
+          <span id="tel-planning" class="telemetry-val status-ok">ACTIVE</span>
+        </div>
+        
+        <!-- Live Gauges -->
+        <div class="telemetry-gauge">
+          <div class="telemetry-gauge-header">
+            <span>AI Risk Assessment</span>
+            <span id="gauge-risk-val">0.14</span>
+          </div>
+          <div class="telemetry-gauge-bar">
+            <div id="gauge-risk-fill" class="telemetry-gauge-fill" style="width: 14%; background: var(--cyan);"></div>
+          </div>
+        </div>
+        
+        <div class="telemetry-gauge">
+          <div class="telemetry-gauge-header">
+            <span>CPU Scheduling Utilization</span>
+            <span id="gauge-cpu-val">34%</span>
+          </div>
+          <div class="telemetry-gauge-bar">
+            <div id="gauge-cpu-fill" class="telemetry-gauge-fill" style="width: 34%;"></div>
+          </div>
+        </div>
+        
+        <!-- Failure Taxonomy -->
+        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-weight:700;">Zayvora Failure Modes</p>
+        <div class="failure-taxonomy-box">
+          <div class="failure-item"><span>F001: SENSOR_DRIFT</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F002: POLICY_RULE_CHANGED</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F003: HASH_CHAIN_BREAK</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F004: DUPLICATE_EXECUTION</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F005: MQTT_DELIVERY_FAIL</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F006: RELAY_NON_RESPONSE</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F007: CLOCK_DESYNC</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F008: PARTIAL_EXECUTION</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F009: AUTHORITY_LOSS</span><span style="opacity:0.6;">NOMINAL</span></div>
+          <div class="failure-item"><span>F010: ORPHANED_EVENT</span><span style="opacity:0.6;">NOMINAL</span></div>
+        </div>
+        
+        <!-- Live trace logs -->
+        <div id="hud-live-console" class="hud-console">
+          <div class="hud-console-line" style="color:rgba(255,255,255,0.4);">Initializing Zayvora OS Observer...</div>
+        </div>
+      </div>
+      
+      <!-- TIERS TAB -->
+      <div id="hud-panel-tiers" class="hud-tab-panel">
+        <div class="hud-card" style="border-left: 2px solid var(--cyan);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="hud-card-title">Visualizer SDK</div>
+            <span class="tier-badge">Tier 1</span>
+          </div>
+          <p class="hud-card-desc">Free download visualizer, basic templates, and RP2040 edge firmware configurations.</p>
+          <button class="hud-btn btn-outline" style="margin-top:4px;" onclick="logDiag('DOWNLOAD', 'Visualizer SDK download queued')">Download Free SDK</button>
+        </div>
+        
+        <div class="hud-card" style="border-left: 2px solid var(--saffron); background: rgba(255,103,31,0.02);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="hud-card-title" style="color:var(--saffron);">Workspace SSD</div>
+            <span class="tier-badge tier-premium">Tier 2</span>
+          </div>
+          <p class="hud-card-desc"><strong>$400 + $200/yr</strong>. NVMe SSD loaded with immutable toolchains, local Zayvora intelligence model, and encrypted sandbox env. Saves $6,000+/year/dev.</p>
+          <button class="hud-btn btn-saffron" style="margin-top:4px;" onclick="window.open('https://aporaksha.com', '_blank')">Order Workspace SSD</button>
+        </div>
+        
+        <div class="hud-card" style="border-left: 2px solid #fff;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="hud-card-title">Hardware Lab Node</div>
+            <span class="tier-badge">Tier 3</span>
+          </div>
+          <p class="hud-card-desc"><strong>$5k - $20k</strong>. Enclosure with JTAG/SWD, logic analyzer, SDR, SWD probe bridges, and capture/replay framework.</p>
+          <button class="hud-btn btn-outline" style="margin-top:4px;" onclick="window.open('https://hanuman.solutions', '_blank')">Inquire Lab Node</button>
+        </div>
+      </div>
+      
+      <!-- PASSPORT TAB -->
+      <div id="hud-panel-passport" class="hud-tab-panel">
+        <div class="hud-card">
+          <div class="hud-card-title">Sovereign Profile</div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Status</span>
+            <span id="pass-status" class="telemetry-val">UNAUTHORIZED</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Credential Node</span>
+            <span id="pass-node" class="telemetry-val">GUEST_NODE</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Skill Index</span>
+            <span id="pass-skill" class="telemetry-val">--</span>
+          </div>
+          <button class="hud-btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">Authenticate Passport</button>
+        </div>
+        <p style="font-size:10px;color:rgba(255,255,255,0.45);line-height:1.4;padding:4px;">
+          Sovereign passports utilize cryptographic hardware IDs to verify session security and authenticate distributed consensus.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -545,6 +1003,11 @@
             const token = localStorage.getItem(this.TOKEN_KEY);
             const HUD = document.getElementById('identity-hud');
             const overlay = document.getElementById('zv-auth-overlay');
+            
+            const passStatus = document.getElementById('pass-status');
+            const passNode = document.getElementById('pass-node');
+            const passSkill = document.getElementById('pass-skill');
+            const hudStatusText = document.getElementById('hud-status-text');
 
             if (!token) {
                 overlay.classList.add('hidden'); // Ensure hidden by default for guests
@@ -555,19 +1018,27 @@
                         <span style="cursor:pointer; color:#fff; border:1px solid var(--z-accent); padding:0 8px; border-radius:4px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">AUTHORIZE PASSPORT</span>
                     </div>
                 `;
+                if (passStatus) passStatus.textContent = 'UNAUTHORIZED';
+                if (passNode) passNode.textContent = 'GUEST_NODE';
+                if (passSkill) passSkill.textContent = '--';
+                if (hudStatusText) hudStatusText.textContent = 'GUEST_MODE';
                 logDiag('SYSTEM', 'Operating in Public Guest Mode.');
                 return;
             }
 
             overlay.classList.add('hidden');
-            // Mock profile for now as we don't have the backend active here
+            const nodeName = `VERIFIED_NODE_${token.substring(5,11).toUpperCase()}`;
             HUD.innerHTML = `
                 <div class="identity-bar">
-                    <span>IDENTITY: <b>VERIFIED_NODE_${token.substring(0,6).toUpperCase()}</b></span>
+                    <span>IDENTITY: <b>${nodeName}</b></span>
                     <span>SKILLHEX: <b>850</b></span>
                     <span>STATUS: <b>AUTHORIZED</b></span>
                 </div>
             `;
+            if (passStatus) passStatus.textContent = 'AUTHORIZED';
+            if (passNode) passNode.textContent = nodeName;
+            if (passSkill) passSkill.textContent = '850';
+            if (hudStatusText) hudStatusText.textContent = 'SECURE_NODE';
             logDiag('IDENTITY', 'Sovereign session established via hardware ID.');
         },
 
@@ -597,6 +1068,105 @@
         }
     };
 
+    // Global HUD Helpers
+    window.switchHudTab = function(tabId) {
+      document.querySelectorAll('.hud-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.hud-tab-btn').forEach(b => b.classList.remove('active'));
+      
+      const targetPanel = document.getElementById(`hud-panel-${tabId}`);
+      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (targetPanel) targetPanel.classList.add('active');
+      if (targetBtn) targetBtn.classList.add('active');
+      logDiag('UI_TAB', `Switched HUD view to: ${tabId.toUpperCase()}`);
+    };
+
+    window.toggleBeastMode = function() {
+      const el = document.getElementById('tel-beast-mode');
+      if (!el) return;
+      const isOff = el.classList.contains('status-off');
+      if (isOff) {
+        el.textContent = 'ACTIVE (CLICK TO TOGGLE)';
+        el.className = 'telemetry-val status-ok';
+        document.body.classList.add('beast-mode-active');
+        logDiag('SYS_BEAST', 'Antigravity Beast-Mode override initiated.');
+        appendConsoleLine('BEAST_MODE ACTIVATED - Resource priority escalated.', 'var(--cyan)');
+      } else {
+        el.textContent = 'OFF (CLICK TO TOGGLE)';
+        el.className = 'telemetry-val status-off';
+        document.body.classList.remove('beast-mode-active');
+        logDiag('SYS_BEAST', 'Beast-Mode override terminated.');
+        appendConsoleLine('BEAST_MODE DEACTIVATED - Rescheduling tasks.', 'rgba(255,255,255,0.4)');
+      }
+    };
+
+    // Dynamic console trace logging
+    const consoleLogs = [
+      'EVENT TRUTH verified -> hash chain ok.',
+      'Analyzing causal lineage pathways...',
+      'Enforcing CAN-bus safety policies.',
+      'Replaying trace step 1024 to verify consistency...',
+      'Distributed coordination consensus: 9/9 nodes.',
+      'Checking sanity_check guardrail... PASS.',
+      'Risk assessment completed: 0.14.',
+      'F001: SENSOR_DRIFT checks passed.',
+      'F003: HASH_CHAIN_BREAK checks passed.',
+      'F007: CLOCK_DESYNC checks passed.',
+      'Policy semantics validated.',
+      'Mounting local NVMe Workspace env...'
+    ];
+
+    function appendConsoleLine(text, color = 'var(--cyan)') {
+      const consoleEl = document.getElementById('hud-live-console');
+      if (!consoleEl) return;
+      const line = document.createElement('div');
+      line.className = 'hud-console-line';
+      line.style.color = color;
+      line.textContent = `> ${text}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      if (consoleEl.children.length > 25) consoleEl.children[0].remove();
+    }
+
+    // Telemetry simulator routine
+    setInterval(() => {
+      // Gauge 1: Risk Assessment
+      const riskVal = (0.10 + Math.random() * 0.15).toFixed(2);
+      const riskFill = document.getElementById('gauge-risk-fill');
+      const riskText = document.getElementById('gauge-risk-val');
+      if (riskFill) riskFill.style.width = `${riskVal * 100}%`;
+      if (riskText) riskText.textContent = riskVal;
+
+      // Gauge 2: CPU utilization
+      const cpuVal = Math.floor(25 + Math.random() * 20);
+      const cpuFill = document.getElementById('gauge-cpu-fill');
+      const cpuText = document.getElementById('gauge-cpu-val');
+      if (cpuFill) cpuFill.style.width = `${cpuVal}%`;
+      if (cpuText) cpuText.textContent = `${cpuVal}%`;
+
+      // Pipeline & Fetcher state fluctuation
+      const pipelineVal = document.getElementById('tel-pipeline');
+      const fetcherVal = document.getElementById('tel-fetcher');
+      if (pipelineVal && Math.random() > 0.7) {
+        const states = ['IDLE', 'RUNNING', 'PAUSED'];
+        const state = states[Math.floor(Math.random() * states.length)];
+        pipelineVal.textContent = state;
+        pipelineVal.className = `telemetry-val ${state === 'RUNNING' ? 'status-ok' : (state === 'PAUSED' ? 'status-warn' : 'status-off')}`;
+        appendConsoleLine(`Pipeline state shifted: ${state}`, state === 'RUNNING' ? 'var(--cyan)' : 'var(--saffron)');
+      }
+      if (fetcherVal && Math.random() > 0.8) {
+        const isFetching = Math.random() > 0.5;
+        fetcherVal.textContent = isFetching ? 'FETCHING' : 'IDLE';
+        fetcherVal.className = `telemetry-val ${isFetching ? 'status-ok' : 'status-off'}`;
+        if (isFetching) appendConsoleLine('Context Fetcher: reading local repo workspace structure.', 'var(--cyan)');
+      }
+
+      // Live console update
+      if (Math.random() > 0.5) {
+        const logLine = consoleLogs[Math.floor(Math.random() * consoleLogs.length)];
+        appendConsoleLine(logLine, 'rgba(255,255,255,0.65)');
+      }
+    }, 2500);
+
     document.getElementById('zv-auth-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const input = document.getElementById('zv-nfc-input').value;
@@ -606,21 +1176,115 @@
     /* =========================================================
        1. STARFIELD GENERATOR
        ========================================================= */
+    /* =========================================================
+       1. INTERACTIVE DISTRIBUTED COORDINATION CANVAS
+       ========================================================= */
     (function() {
-      const sf = document.getElementById('starfield');
-      for (let i = 0; i < 80; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        const size = Math.random() * 2 + 0.5;
-        star.style.cssText = `
-          width:${size}px; height:${size}px;
-          top:${Math.random()*100}%;
-          left:${Math.random()*100}%;
-          animation-duration:${2 + Math.random()*4}s;
-          animation-delay:${Math.random()*4}s;
-        `;
-        sf.appendChild(star);
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const particleCount = 60;
+      const connectionDist = 110;
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+      
+      let mouse = { x: null, y: null, active: false };
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.radius = Math.random() * 1.5 + 0.5;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > width) this.vx = -this.vx;
+          if (this.y < 0 || this.y > height) this.vy = -this.vy;
+
+          if (mouse.active) {
+            const dx = this.x - mouse.x;
+            const dy = this.y - mouse.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 150) {
+              const force = (150 - dist) / 1500;
+              this.x += (dx / dist) * force * 15;
+              this.y += (dy / dist) * force * 15;
+            }
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
+          ctx.fill();
+        }
       }
+
+      function init() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle());
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+
+        // Draw connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            if (dist < connectionDist) {
+              const alpha = (1 - (dist / connectionDist)) * 0.12;
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        init();
+      });
+
+      // Mouse interactive logic
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+      window.addEventListener('mouseleave', () => {
+        mouse.active = false;
+      });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          mouse.x = e.touches[0].clientX;
+          mouse.y = e.touches[0].clientY;
+          mouse.active = true;
+        }
+      });
+      window.addEventListener('touchend', () => {
+        mouse.active = false;
+      });
+
+      init();
+      animate();
     })();
 
     /* =========================================================
