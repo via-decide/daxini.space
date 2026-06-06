@@ -2,150 +2,286 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dharam Daxini — Kindle Publications</title>
-    <meta name="description" content="Kindle Editions by Dharam Daxini. Books on Analytical Chemistry, Internet of Things, and Sovereign System Architecture.">
+    <meta name="description" content="Official Kindle publications by Dharam Daxini. Deep technical course companions, lab guides, and engineering manuals.">
+    
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            /* Light Theme Tokens */
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(15, 23, 42, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(15, 23, 42, 0.06);
+            --accent-primary: #0284c7;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+            --amazon-orange: #ff9900;
+            --amazon-orange-hover: #e68a00;
+            --font-display: 'Syne', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark Theme Tokens */
+                --bg-color: #030508;
+                --text-color: #f8fafc;
+                --text-muted: #94a3b8;
+                --card-bg: rgba(10, 12, 18, 0.6);
+                --card-border: rgba(0, 229, 255, 0.1);
+                --glass-bg: rgba(3, 5, 8, 0.75);
+                --glass-border: rgba(0, 229, 255, 0.15);
+                --accent-primary: #00e5ff;
+                --accent-glow: rgba(0, 229, 255, 0.25);
+                --amazon-orange: #ff9900;
+                --amazon-orange-hover: #e68a00;
+            }
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
             line-height: 1.6;
-            color: #1a1a1a;
-            background: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--accent-glow) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 103, 31, 0.05) 0%, transparent 45%);
+            background-attachment: fixed;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: #0b0c10;
-                color: #e8e8e8;
-            }
+
+        /* Ambient subtle grids */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 229, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: -1;
         }
-        
+
         a {
-            color: #1a5fa8;
+            color: var(--accent-primary);
             text-decoration: none;
-            transition: color 0.15s ease;
+            transition: var(--transition);
         }
-        
-        @media (prefers-color-scheme: dark) {
-            a {
-                color: #66b2ff;
-            }
-        }
-        
+
         a:hover {
-            text-decoration: underline;
+            opacity: 0.85;
         }
-        
+
+        /* Premium Header */
         .header {
-            padding: 5rem 2rem 3rem;
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 6rem 2rem 3rem;
             text-align: center;
+            position: relative;
         }
-        
-        .header h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin-bottom: 0.8rem;
-            color: #000;
-            letter-spacing: -0.03em;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .header h1 {
-                color: #ffffff;
-            }
-        }
-        
-        .header .subtitle {
-            font-size: 1.25rem;
-            color: #555;
-            margin-bottom: 2rem;
-            font-weight: 400;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .header .subtitle {
-                color: #999;
-            }
-        }
-        
+
         .nav-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.6rem 1.4rem;
+            border-radius: 999px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .nav-separator {
+            width: 4px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-color) 30%, var(--accent-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* Filter Pills */
+        .filters {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
         }
-        
-        .nav-links a {
-            font-weight: 500;
+
+        .filter-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            padding: 0.6rem 1.4rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: var(--transition);
         }
-        
+
+        .filter-btn:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #030508;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        /* Container & Cards */
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem 5rem;
+            padding: 0 2rem 8rem;
         }
-        
-        .books-list {
-            display: flex;
-            flex-direction: column;
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 2.5rem;
         }
-        
+
         .book-card {
             display: flex;
-            background: #fafafa;
-            border: 1px solid #eaeaea;
-            border-radius: 16px;
-            padding: 2.2rem;
-            gap: 2.2rem;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            gap: 3rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: var(--transition);
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .book-card {
-                background: #12131a;
-                border-color: #1f212e;
-            }
+
+        .book-card.hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
         }
-        
+
         .book-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
-            border-color: #ccc;
+            transform: translateY(-6px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05), 0 0 0 1px var(--accent-primary);
         }
-        
+
         @media (prefers-color-scheme: dark) {
             .book-card:hover {
-                box-shadow: 0 12px 30px rgba(0,0,0,0.2);
-                border-color: #2e3147;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 15px var(--accent-glow);
             }
         }
-        
+
+        /* High Fidelity CSS Book Cover Mock */
+        .book-cover-container {
+            flex-shrink: 0;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+        }
+
         .book-cover-mock {
-            width: 150px;
-            height: 220px;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border-radius: 8px;
+            width: 170px;
+            height: 250px;
+            border-radius: 6px 14px 14px 6px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 1.2rem;
+            padding: 1.5rem 1.2rem;
             color: #fff;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            flex-shrink: 0;
             position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 10px 15px 30px rgba(0,0,0,0.35);
+            transition: var(--transition);
             overflow: hidden;
         }
-        
+
+        .book-card:hover .book-cover-mock {
+            transform: rotateY(-12deg) translateZ(10px);
+            box-shadow: 15px 20px 35px rgba(0,0,0,0.45);
+        }
+
+        /* 3D Spine and Page Highlights */
+        .book-cover-mock::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(255,255,255,0.15) 30%, rgba(0,0,0,0.2) 100%);
+            border-radius: 6px 0 0 6px;
+            z-index: 5;
+        }
+
+        /* Glossy overlay effect */
         .book-cover-mock::after {
             content: '';
             position: absolute;
@@ -153,372 +289,511 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 10%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.15) 100%);
+            background: linear-gradient(125deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 30%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.25) 100%);
+            z-index: 2;
         }
-        
+
         .cover-vol {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-primary);
+            text-shadow: 0 0 10px rgba(0,229,255,0.3);
+            z-index: 3;
+        }
+
+        .cover-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-top: 1.5rem;
+            z-index: 3;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            flex-grow: 1;
+        }
+
+        .cover-author {
+            font-family: var(--font-body);
             font-size: 0.7rem;
             font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        
-        .cover-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            line-height: 1.3;
-            margin-top: 1rem;
-            word-wrap: break-word;
-        }
-        
-        .cover-author {
-            font-size: 0.65rem;
-            font-weight: 600;
             letter-spacing: 0.05em;
-            opacity: 0.7;
+            text-transform: uppercase;
+            opacity: 0.85;
+            z-index: 3;
         }
-        
-        /* Specific Cover Palettes */
-        .cover-chem { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
-        .cover-iot { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
-        .cover-space { background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%); }
-        .cover-stack { background: linear-gradient(135deg, #141e30 0%, #243b55 100%); }
-        
+
+        /* Cover Color Palettes */
+        .cover-sovereign { 
+            background: linear-gradient(145deg, #090e15 0%, #1e1b4b 100%); 
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        .cover-sovereign .cover-vol { color: #818cf8; text-shadow: 0 0 8px rgba(129,140,248,0.4); }
+
+        .cover-iot { 
+            background: linear-gradient(145deg, #022c22 0%, #064e3b 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .cover-iot .cover-vol { color: #34d399; text-shadow: 0 0 8px rgba(52,211,153,0.4); }
+
+        .cover-chemistry { 
+            background: linear-gradient(145deg, #4c0519 0%, #881337 100%);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+        }
+        .cover-chemistry .cover-vol { color: #fb7185; text-shadow: 0 0 8px rgba(251,113,133,0.4); }
+
+        /* Book Details info layout */
         .book-info {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             flex-grow: 1;
         }
-        
-        .book-genre {
-            font-size: 0.75rem;
-            font-weight: 700;
+
+        .book-genre-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: #c77d11;
-            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.75rem;
         }
-        
+
         .book-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #000;
-            line-height: 1.3;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .book-title {
-                color: #ffffff;
-            }
-        }
-        
+
         .book-subtitle {
-            font-size: 1rem;
-            color: #555;
-            margin-bottom: 1.2rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .book-subtitle {
-                color: #aaa;
-            }
+
+        .book-metadata {
+            display: flex;
+            gap: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1.25rem;
+            flex-wrap: wrap;
         }
-        
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .meta-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+        }
+
+        /* Action Buttons / CTAs */
         .book-actions {
             display: flex;
             gap: 1rem;
-            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
-        
-        .btn-kindle {
+
+        .btn-amazon {
             padding: 0.8rem 1.6rem;
-            background: #ff9900;
-            color: #000000;
-            border: 1px solid #d47f00;
-            border-radius: 8px;
+            background: var(--amazon-orange);
+            color: #030508;
+            border: 1px solid var(--amazon-orange);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.15);
+        }
+
+        .btn-amazon:hover {
+            background: var(--amazon-orange-hover);
+            border-color: var(--amazon-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 153, 0, 0.3);
+            opacity: 1;
+        }
+
+        .btn-secondary {
+            padding: 0.8rem 1.6rem;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
-            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.6rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-        
-        .btn-kindle:hover {
-            background: #f59200;
-            border-color: #c27400;
-            text-decoration: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+            opacity: 1;
         }
-        
-        .btn-kindle-sub {
-            padding: 0.8rem 1.6rem;
-            background: transparent;
-            color: #555;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .btn-kindle-sub {
-                color: #ccc;
-                border-color: #444;
-            }
-        }
-        
-        .btn-kindle-sub:hover {
-            border-color: #999;
-            color: #000;
-            text-decoration: none;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .btn-kindle-sub:hover {
-                color: #fff;
-                border-color: #777;
-            }
-        }
-        
+
+        /* Premium Footer */
         .footer {
-            border-top: 1px solid #eaeaea;
-            padding: 3rem 2rem;
+            border-top: 1px solid var(--card-border);
+            padding: 4rem 2rem;
             text-align: center;
-            font-size: 0.9rem;
-            color: #666;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.01);
+            position: relative;
         }
-        
-        @media (prefers-color-scheme: dark) {
-            .footer {
-                border-top-color: #1f212e;
-                color: #555;
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Layouts */
+        @media (max-width: 900px) {
+            .book-card {
+                gap: 2rem;
+                padding: 2rem;
             }
         }
-        
-        @media (max-width: 680px) {
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 4rem 1.5rem 2rem;
+            }
+            .filters {
+                margin-bottom: 2.5rem;
+            }
             .book-card {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                padding: 1.8rem;
+                padding: 2rem 1.5rem;
+                gap: 2rem;
             }
             .book-cover-mock {
-                width: 130px;
-                height: 190px;
+                width: 140px;
+                height: 205px;
+                padding: 1.2rem 1rem;
+            }
+            .book-metadata {
+                justify-content: center;
             }
             .book-actions {
                 justify-content: center;
+                width: 100%;
+            }
+            .btn-amazon, .btn-secondary {
+                flex: 1;
+                min-width: 140px;
             }
         }
     </style>
 </head>
 <body>
+
     <div class="header">
-        <h1>Kindle Publications</h1>
-        <p class="subtitle">Official Kindle eBooks &amp; Course Companions by Dharam Daxini</p>
         <div class="nav-links">
-            <a href="/books">← Go to Sovereign Books (EPUBs)</a>
+            <a href="/books">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Sovereign Books
+            </a>
+            <div class="nav-separator"></div>
             <a href="https://daxini.space">daxini.space</a>
+        </div>
+        
+        <h1>Kindle Publications</h1>
+        <p class="subtitle">Official Kindle eBooks, technical manuals, and course companions by Dharam Daxini.</p>
+        
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterBooks('all')">All Publications</button>
+            <button class="filter-btn" onclick="filterBooks('sovereign')">Sovereign Tech &amp; AI</button>
+            <button class="filter-btn" onclick="filterBooks('iot')">Internet of Things</button>
+            <button class="filter-btn" onclick="filterBooks('chemistry')">Analytical Chemistry</button>
         </div>
     </div>
 
     <div class="container">
-        <div class="books-list">
+        <div class="books-grid">
             
-            <!-- Book 1 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-stack">
-                    <span class="cover-vol">Omnibus</span>
-                    <span class="cover-title">The Daxini Stack</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 1: The Daxini Stack -->
+            <div class="book-card" data-category="sovereign">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-sovereign">
+                        <span class="cover-vol">Omnibus</span>
+                        <span class="cover-title">The Daxini Stack</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Sovereign Architecture</span>
+                        <span class="book-genre-badge">Sovereign Systems &amp; AI</span>
                         <h2 class="book-title">The Daxini Stack: Engineering a Local-First AI System</h2>
                         <p class="book-subtitle">
                             The complete guide to engineering a local-first sovereign AI engine. Pinned checkpoints, Supervisor validation loops, and offline execution pipelines.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0F9WY9BW5" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0F9WY9BW5" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0F9WY9BW5</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0F9WY9BW5" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0F9WY9BW5" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 2 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-space">
-                    <span class="cover-vol">Handbook</span>
-                    <span class="cover-title">daxini.space Handbook</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 2: daxini.space Handbook -->
+            <div class="book-card" data-category="sovereign">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-sovereign">
+                        <span class="cover-vol">Handbook</span>
+                        <span class="cover-title">daxini.space Handbook</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Infrastructure</span>
+                        <span class="book-genre-badge">Infrastructure</span>
                         <h2 class="book-title">The daxini.space Handbook: Build Sovereign. Deploy Local. Own Your Stack.</h2>
                         <p class="book-subtitle">
                             A practical handbook on configuring, deploying, and maintaining local-first stacks. Focuses on minimizing network vulnerability and protecting codebase assets.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0F35351JP" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0F35351JP" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0F35351JP</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0F35351JP" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0F35351JP" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 3 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-iot">
-                    <span class="cover-vol">IoT Companion</span>
-                    <span class="cover-title">Internet of Things</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 3: IoT Course Companion Expanded -->
+            <div class="book-card" data-category="iot">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-iot">
+                        <span class="cover-vol">IoT Expanded</span>
+                        <span class="cover-title">Internet of Things</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Embedded Systems</span>
+                        <span class="book-genre-badge">Embedded Systems</span>
                         <h2 class="book-title">Internet of Things — A Complete NPTEL Course Companion (Expanded Edition)</h2>
                         <p class="book-subtitle">
                             Comprehensive study guide and course companion updated with advanced hardware architecture, networking protocols, and real-world system designs.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0GWXQ2RD9" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0GWXQ2RD9" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0GWXQ2RD9</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0GWXQ2RD9" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0GWXQ2RD9" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 4 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-iot">
-                    <span class="cover-vol">IoT Companion</span>
-                    <span class="cover-title">IoT Standard Companion</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 4: IoT Course Companion Standard -->
+            <div class="book-card" data-category="iot">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-iot">
+                        <span class="cover-vol">IoT Companion</span>
+                        <span class="cover-title">IoT Standard Companion</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Embedded Systems</span>
+                        <span class="book-genre-badge">Embedded Systems</span>
                         <h2 class="book-title">Internet of Things: A Complete NPTEL Course Companion</h2>
                         <p class="book-subtitle">
                             The standard edition companion for NPTEL IoT courses, providing clear explanations, summaries, and assessments.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0GX2DLMNB" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0GX2DLMNB" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0GX2DLMNB</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0GX2DLMNB" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0GX2DLMNB" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 5 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-chem">
-                    <span class="cover-vol">Data Analysis</span>
-                    <span class="cover-title">Errors, Stats &amp; Data Analysis</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 5: Analytical Chemistry: Errors, Statistics & Data Analysis -->
+            <div class="book-card" data-category="chemistry">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-chemistry">
+                        <span class="cover-vol">Data Analysis</span>
+                        <span class="cover-title">Errors, Stats &amp; Analysis</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Analytical Chemistry</span>
+                        <span class="book-genre-badge">Analytical Chemistry</span>
                         <h2 class="book-title">Analytical Chemistry: Errors, Statistics &amp; Data Analysis</h2>
                         <p class="book-subtitle">
                             Step-by-step guidance on precision, accuracy, standard deviation, hypothesis testing, and rigorous data analysis methodologies in laboratory chemistry.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0GQ6YKVDL" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0GQ6YKVDL" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0GQ6YKVDL</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0GQ6YKVDL" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0GQ6YKVDL" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 6 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-chem">
-                    <span class="cover-vol">Lab Guide</span>
-                    <span class="cover-title">Volumetric Analysis</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 6: Analytical Chemistry: Volumetric Analysis -->
+            <div class="book-card" data-category="chemistry">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-chemistry">
+                        <span class="cover-vol">Lab Guide</span>
+                        <span class="cover-title">Volumetric Analysis</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Analytical Chemistry</span>
+                        <span class="book-genre-badge">Analytical Chemistry</span>
                         <h2 class="book-title">Analytical Chemistry: Volumetric Analysis – B.Sc Lab Guide</h2>
                         <p class="book-subtitle">
                             A robust laboratory companion for undergraduate students, detailing titration techniques, standard solution preparation, and calculation models.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0GWR7273P" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0GWR7273P" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0GWR7273P</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0GWR7273P" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0GWR7273P" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Book 7 -->
-            <div class="book-card">
-                <div class="book-cover-mock cover-chem">
-                    <span class="cover-vol">Study Guide</span>
-                    <span class="cover-title">Gravimetric Analysis</span>
-                    <span class="cover-author">D. Daxini</span>
+            <!-- Book 7: Analytical Chemistry — Gravimetric Analysis -->
+            <div class="book-card" data-category="chemistry">
+                <div class="book-cover-container">
+                    <div class="book-cover-mock cover-chemistry">
+                        <span class="cover-vol">Study Guide</span>
+                        <span class="cover-title">Gravimetric Analysis</span>
+                        <span class="cover-author">D. Daxini</span>
+                    </div>
                 </div>
                 <div class="book-info">
                     <div>
-                        <span class="book-genre">Analytical Chemistry</span>
+                        <span class="book-genre-badge">Analytical Chemistry</span>
                         <h2 class="book-title">Analytical Chemistry — Gravimetric Analysis Study Guide</h2>
                         <p class="book-subtitle">
                             In-depth analysis of precipitation, filtration, washing, and ignition sequences for precise gravimetric determinations in chemical analysis.
                         </p>
                     </div>
-                    <div class="book-actions">
-                        <a href="https://www.amazon.in/dp/B0GWV2TPJ1" target="_blank" class="btn-kindle">
-                            Buy on Amazon (IN)
-                        </a>
-                        <a href="https://www.amazon.com/dp/B0GWV2TPJ1" target="_blank" class="btn-kindle-sub">
-                            Amazon (US)
-                        </a>
+                    <div>
+                        <div class="book-metadata">
+                            <span class="meta-item"><span class="meta-dot"></span>ASIN: B0GWV2TPJ1</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Edition</span>
+                            <span class="meta-item"><span class="meta-dot"></span>Kindle Unlimited</span>
+                        </div>
+                        <div class="book-actions">
+                            <a href="https://www.amazon.in/dp/B0GWV2TPJ1" target="_blank" class="btn-amazon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L18 2A2 2 0 0 1 20 4L20 20A2 2 0 0 1 18 22L6 22A2 2 0 0 1 4 20L4 4A2 2 0 0 1 6 2z"></path><path d="M6 2v20"></path><path d="M18 2v20"></path></svg>
+                                Buy on Amazon (IN)
+                            </a>
+                            <a href="https://www.amazon.com/dp/B0GWV2TPJ1" target="_blank" class="btn-secondary">
+                                Amazon (US)
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -528,9 +803,47 @@
 
     <div class="footer">
         <p>&copy; 2026 Aporaksha Labs Private Limited. All Rights Reserved.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">
+        <p style="font-size: 0.75rem; opacity: 0.7;">
             Kindle, Kindle Unlimited, and Amazon are trademarks of Amazon.com, Inc. or its affiliates.
         </p>
     </div>
+
+    <script>
+        function filterBooks(category) {
+            // Update active state of filter buttons
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Find clicked button and set active
+            const clickedBtn = Array.from(buttons).find(btn => {
+                const onclickStr = btn.getAttribute('onclick');
+                return onclickStr && onclickStr.includes(category);
+            });
+            if (clickedBtn) clickedBtn.classList.add('active');
+
+            // Filter book cards with smooth animation
+            const cards = document.querySelectorAll('.book-card');
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                
+                if (category === 'all' || cardCategory === category) {
+                    card.classList.remove('hidden');
+                    // Force reflow
+                    void card.offsetWidth;
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    // Delay setting display none until transitions finish
+                    setTimeout(() => {
+                        if (card.style.opacity === '0') {
+                            card.classList.add('hidden');
+                        }
+                    }, 300);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
