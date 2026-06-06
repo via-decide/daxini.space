@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Daxini Stack — Books & Resources</title>
+    <meta name="description" content="The Daxini Stack: Blueprint for Sovereign AI Infrastructure. Read free or buy on Amazon KDP. All 5 volumes + complete edition.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+            line-height: 1.8;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f0f0f;
+                color: #e8e8e8;
+            }
+        }
+        
+        a {
+            color: #1a5fa8;
+            text-decoration: none;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            a {
+                color: #7db4e8;
+            }
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .header {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .header {
+                border-bottom-color: #333;
+            }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .header h1 {
+                color: #fff;
+            }
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .header .subtitle {
+                color: #aaa;
+            }
+        }
+        
+        .header .tagline {
+            font-size: 0.95rem;
+            color: #888;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .header .tagline {
+                color: #999;
+            }
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #000;
+            letter-spacing: -0.02em;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .section-title {
+                color: #fff;
+            }
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .book-card {
+            background: #fafafa;
+            border: 0.5px solid #ddd;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-card {
+                background: #1a1a1a;
+                border-color: #333;
+            }
+        }
+        
+        .book-card:hover {
+            border-color: #999;
+            background: #fff;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-card:hover {
+                background: #222;
+                border-color: #555;
+            }
+        }
+        
+        .book-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+        
+        .badge-vol {
+            background: #e8f0f8;
+            color: #185fa5;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .badge-vol {
+                background: #0c447c;
+                color: #7db4e8;
+            }
+        }
+        
+        .badge-complete {
+            background: #e8f5e9;
+            color: #27500a;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .badge-complete {
+                background: #27500a;
+                color: #a5d6a7;
+            }
+        }
+        
+        .book-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-title {
+                color: #fff;
+            }
+        }
+        
+        .book-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-subtitle {
+                color: #aaa;
+            }
+        }
+        
+        .book-description {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-description {
+                color: #999;
+            }
+        }
+        
+        .book-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .book-meta {
+                color: #666;
+            }
+        }
+        
+        .book-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.7rem 1rem;
+            border: 0.5px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            color: #000;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .btn {
+                background: #222;
+                border-color: #444;
+                color: #fff;
+            }
+        }
+        
+        .btn:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .btn:hover {
+                background: #333;
+                border-color: #666;
+            }
+        }
+        
+        .btn-primary {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .btn-primary {
+                background: #fff;
+                color: #000;
+                border-color: #fff;
+            }
+        }
+        
+        .btn-primary:hover {
+            background: #333;
+            border-color: #333;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .btn-primary:hover {
+                background: #ddd;
+                border-color: #ddd;
+            }
+        }
+        
+        .info-box {
+            background: #f0f7ff;
+            border: 0.5px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .info-box {
+                background: #0c2d47;
+                border-color: #1a5fa8;
+            }
+        }
+        
+        .info-box strong {
+            font-weight: 600;
+        }
+        
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .distribution-card {
+            background: #fafafa;
+            border: 0.5px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .distribution-card {
+                background: #1a1a1a;
+                border-color: #333;
+            }
+        }
+        
+        .distribution-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #000;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .distribution-card h3 {
+                color: #fff;
+            }
+        }
+        
+        .distribution-card p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .distribution-card p {
+                color: #aaa;
+            }
+        }
+        
+        .footer {
+            border-top: 1px solid #e0e0e0;
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .footer {
+                border-top-color: #333;
+                color: #666;
+            }
+        }
+        
+        .footer a {
+            color: #1a5fa8;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .footer a {
+                color: #7db4e8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>The Daxini Stack</h1>
+        <p class="subtitle">Blueprint for Sovereign AI Infrastructure</p>
+        <p class="tagline">
+            5 volumes on local-first architecture, deterministic execution, and sovereign infrastructure.
+            Read free or buy on Amazon for Kindle Unlimited access.
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title">Complete Edition</h2>
+            <div class="books-grid">
+                <div class="book-card">
+                    <span class="book-badge badge-complete">Complete Edition</span>
+                    <h3 class="book-title">The Daxini Stack</h3>
+                    <p class="book-subtitle">Complete Edition — All 5 Volumes</p>
+                    <p class="book-description">
+                        The complete guide to sovereign AI infrastructure. All 41 pages, all 5 volumes integrated into a single coherent narrative: Local-First Manifesto, Systems Architecture, Zayvora Playbook, Ship First, and Advanced Sovereign AI.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~41 pages</div>
+                        <div class="book-meta-item">11,600+ words</div>
+                        <div class="book-meta-item">EPUB 2.0</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/The_Daxini_Stack_Complete_Edition.epub" class="btn">
+                            <span>Download EPUB</span>
+                        </a>
+                        <a href="https://amazon.in/dp/B0GYCT4MPL" target="_blank" class="btn btn-primary">
+                            <span>Buy on Amazon</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>How to use:</strong> Download the free EPUB and read locally, or purchase on Amazon for Kindle Unlimited access and seamless reading across devices.
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Individual Volumes</h2>
+            <p style="color: #666; margin-bottom: 2rem; font-size: 0.95rem;">
+                All 5 volumes are available individually, free to download. Each stands alone but is designed to be read as part of the complete stack.
+            </p>
+            <div class="books-grid">
+                <div class="book-card">
+                    <span class="book-badge badge-vol">Volume 1</span>
+                    <h3 class="book-title">The Local-First Manifesto</h3>
+                    <p class="book-subtitle">A Blueprint for Sovereign AI Infrastructure</p>
+                    <p class="book-description">
+                        Why cloud-API wrappers are architectural failures. The Vault Architecture, environment entropy, removing network dependency, and building for disconnected correctness.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~9 pages</div>
+                        <div class="book-meta-item">2,200 words</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/Volume_1_The_Local-First_Manifesto.epub" class="btn">
+                            Download EPUB
+                        </a>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <span class="book-badge badge-vol">Volume 2</span>
+                    <h3 class="book-title">AI Systems Architecture &amp; Evolution</h3>
+                    <p class="book-subtitle">Deterministic Execution for the Sovereign Node</p>
+                    <p class="book-description">
+                        From static scripts to deterministic execution. The 3-Tier Model, Supervisor loops with execution gates, trace synthesis, and the continuous learning pipeline.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~10 pages</div>
+                        <div class="book-meta-item">2,300 words</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/Volume_2_AI_Systems_Architecture_And_Evolution.epub" class="btn">
+                            Download EPUB
+                        </a>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <span class="book-badge badge-vol">Volume 3</span>
+                    <h3 class="book-title">The Zayvora Playbook</h3>
+                    <p class="book-subtitle">Operating a Sovereign Engineering Engine</p>
+                    <p class="book-description">
+                        The CEA-0000 protocol and its three invariants. Frozen kernel immutability, NEX-FUSE pipelines, execution gates, and hardware crash recovery procedures.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~10 pages</div>
+                        <div class="book-meta-item">2,300 words</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/Volume_3_The_Zayvora_Playbook.epub" class="btn">
+                            Download EPUB
+                        </a>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <span class="book-badge badge-vol">Volume 4</span>
+                    <h3 class="book-title">Ship First</h3>
+                    <p class="book-subtitle">Distribution Loops and Knowledge Artifacts</p>
+                    <p class="book-description">
+                        Sovereign distribution without paid acquisition. Knowledge Artifacts, the Compression Protocol, the Alchemist ecosystem, and closing the distribution loop.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~10 pages</div>
+                        <div class="book-meta-item">2,400 words</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/Volume_4_Ship_First.epub" class="btn">
+                            Download EPUB
+                        </a>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <span class="book-badge badge-vol">Volume 5</span>
+                    <h3 class="book-title">Advanced Sovereign AI</h3>
+                    <p class="book-subtitle">The Future of Portable Knowledge and the .zay Specification</p>
+                    <p class="book-description">
+                        Portable knowledge beyond PDFs. The .zay bundle format, multi-agent swarms, the sovereignty gradient, and decentralized ecosystem governance.
+                    </p>
+                    <div class="book-meta">
+                        <div class="book-meta-item">~10 pages</div>
+                        <div class="book-meta-item">2,200 words</div>
+                    </div>
+                    <div class="book-actions">
+                        <a href="./epubs/Volume_5_Advanced_Sovereign_AI.epub" class="btn">
+                            Download EPUB
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Where to Find The Daxini Stack</h2>
+            <div class="distribution-grid">
+                <div class="distribution-card">
+                    <h3>Amazon KDP</h3>
+                    <p>
+                        The complete edition is available on Amazon for Kindle Unlimited access. Single payment, unlimited reading across all your devices.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <a href="https://amazon.in/dp/B0GYCT4MPL" target="_blank" style="font-weight: 500;">Buy the omnibus edition →</a>
+                    </p>
+                </div>
+
+                <div class="distribution-card">
+                    <h3>GitHub Releases</h3>
+                    <p>
+                        All 5 volumes + omnibus available as free downloads. Source markdown and EPUB files from the official repositories.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <a href="https://github.com/via-decide/daxini-stack/releases" target="_blank" style="font-weight: 500;">GitHub releases →</a>
+                    </p>
+                </div>
+
+                <div class="distribution-card">
+                    <h3>Alchemist Graph</h3>
+                    <p>
+                        Explore the ecosystem as an interconnected knowledge graph. Navigate by concept, decision record, and implementation pattern.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <a href="https://alchemist.daxini.space" target="_blank" style="font-weight: 500;">Alchemist explorer →</a>
+                    </p>
+                </div>
+
+                <div class="distribution-card">
+                    <h3>Direct Download</h3>
+                    <p>
+                        Download any volume or the complete edition directly from this page. All files are in EPUB 2.0 format, compatible with any e-reader.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <a href="#" style="font-weight: 500;" onclick="document.querySelector('.section-title').scrollIntoView(); return false;">See all editions above →</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">About This Stack</h2>
+            <p style="font-size: 0.95rem; color: #555; line-height: 1.8; margin-bottom: 1.5rem;">
+                The Daxini Stack is a 5-volume blueprint for sovereign AI infrastructure. It describes the architecture, operations, and distribution of systems that are fully owned and controlled by the operator.
+            </p>
+            <p style="font-size: 0.95rem; color: #555; line-height: 1.8;">
+                <strong>Built on principles:</strong> Local-first execution (no remote dependencies), deterministic behavior (reproducible outcomes), kernel immutability (frozen execution basis), and sovereign distribution (no platform dependency).
+            </p>
+            <p style="font-size: 0.95rem; color: #555; line-height: 1.8; margin-top: 1rem;">
+                <strong>Author:</strong> Dharam Daxini, Aporaksha Labs Private Limited  
+                <strong>License:</strong> All volumes are copyright Aporaksha Labs. Free to read, share, and learn from. Commercial use or redistribution requires explicit permission.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>
+            The Daxini Stack &mdash; <a href="https://daxini.space">daxini.space</a> &mdash; 
+            <a href="https://aporaksha.ai">Aporaksha Labs</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">
+            Built with Alchemist. Local-first. Sovereign. Offline-capable.
+        </p>
+    </div>
+</body>
+</html>
