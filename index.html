@@ -1015,7 +1015,7 @@
           nodeEl.setAttribute('aria-label', `Launch ${appData.name}`);
           
           const clickHandler = () => {
-            if (appData.url.includes('github.com')) window.open(appData.url, '_blank');
+            if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) window.open(appData.url, '_blank');
             animateFractalTransition(pos, false);
             setTimeout(() => launchAppBySlug(appData.slug), 300);
           };
@@ -1080,7 +1080,7 @@
       // ── Zayvora: Trace Orchestration ──
       ZAYVORA.traceOrchestration(appData.name);
       
-      return launchAppBySlug(appData.slug);
+      return launchAppBySlug(appData.slug, { autoOpen: false });
     }
 
     function launchAppBySlug(slug, options = {}) {
@@ -1101,15 +1101,26 @@
       const metaLine = `<div style="font-size:10px; color:#6fe7f6; margin-top:6px;">${appData.ownerType === 'community' ? 'FREE-TIER COMMUNITY APP' : 'VIADECIDE CORE APP'}</div>`;
 
       if (appData.status === 'live' && appData.url !== 'offline') {
-        if (appData.url.includes('github.com')) {
+        if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) {
+          if (options.autoOpen !== false) {
+            try {
+              window.open(appData.url, '_blank');
+            } catch (e) {
+              console.warn('Popup blocker prevented auto-open:', e);
+            }
+          }
           statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
+          const isGithub = appData.url.includes('github.com');
+          const typeLabel = isGithub ? 'GitHub source repository' : 'external corporate site';
           windowContent = `
             <div class="offline-terminal">
               <div class="term-icon">🔗</div>
               <div class="term-title">EXTERNAL THREAD SPAWNED</div>
               <p class="term-desc">
-                <strong style="color:#fff;">${appData.name}</strong> is a GitHub source repository.<br><br>
+                <strong style="color:#fff;">${appData.name}</strong> is an ${typeLabel}.<br><br>
                 Security protocols prevent UI embedding. The application has been opened securely in a new browser tab.<br><br>
+                If the page did not open automatically (blocked by popup blocker), click the link below to open it:<br>
+                <a href="${appData.url}" target="_blank" style="color:var(--cyan); text-decoration:underline; font-weight:bold; display:inline-block; margin-top:8px;">Open ${appData.name} manually ↗</a><br><br>
                 ${metaLine}
                 <span style="color:var(--cyan); display:block; margin-top:10px;">STATUS: ACTIVE IN NEW TAB <span class="term-blink">_</span></span>
               </p>
@@ -1150,7 +1161,7 @@
         <div class="window-header">
           <span class="window-title">${statusIndicator} ${appData.name}</span>
           <div class="window-controls">
-            ${appData.status === 'live' && !appData.url.includes('github.com') ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
+            ${appData.status === 'live' && !appData.url.includes('github.com') && !appData.url.includes('daxini.xyz') ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
             <span class="window-close" tabindex="0" role="button" aria-label="Close window" title="Close" onclick="closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')}">✕</span>
           </div>
         </div>
@@ -1320,7 +1331,7 @@
         const target = path[1];
         if (DAXINI_GALAXY.apps[target]) {
           const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com')) window.open(url, '_blank');
+          if (url.includes('github.com') || url.includes('daxini.xyz')) window.open(url, '_blank');
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
@@ -1342,7 +1353,7 @@
         const target = path[0];
         if (DAXINI_GALAXY.apps[target]) {
           const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com')) window.open(url, '_blank');
+          if (url.includes('github.com') || url.includes('daxini.xyz')) window.open(url, '_blank');
           animateFractalTransition(target, false);
           setTimeout(() => launchApp(target), 300);
         }
