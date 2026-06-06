@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/books", "destination": "/books.html" },
+    { "source": "/kindle", "destination": "/kindle.html" },
     { "source": "/app/:slug", "destination": "/?app=:slug" },
     { "source": "/(.*)", "destination": "/" }
   ]
