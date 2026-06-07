@@ -571,6 +571,14 @@
             <button class="btn-action btn-outline" onclick="changeRoom()">Set</button>
           </div>
         </div>
+
+        <div class="form-group">
+          <label>API Server URL (Tunnel / Custom)</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="input-api-url" class="input-control" style="flex:1;" placeholder="Default (Auto-detect)">
+            <button class="btn-action btn-outline" onclick="saveApiUrl()">Save</button>
+          </div>
+        </div>
       </div>
 
       <!-- Realtime Telemetry HUD -->
@@ -618,10 +626,16 @@
     let lastFetchTime = 0;
     
     // API Configuration
-    // Automatically detect local port 8080 API server when loaded via static server
-    const BACKEND_URL = window.location.port === '8000' 
-      ? 'http://localhost:8080/api/zayvora/chat' 
-      : '/api/zayvora/chat';
+    function getBackendUrl() {
+      const savedUrl = localStorage.getItem('zv_chat_api_url');
+      if (savedUrl && savedUrl.trim()) {
+        return savedUrl.trim() + '/api/zayvora/chat';
+      }
+      // Automatically detect local port 8080 API server when loaded via static server
+      return window.location.port === '8000' 
+        ? 'http://localhost:8080/api/zayvora/chat' 
+        : '/api/zayvora/chat';
+    }
 
     // Parse URL room parameters
     function initParams() {
@@ -632,6 +646,24 @@
         document.getElementById('input-room').value = roomParam;
         document.getElementById('room-label').textContent = roomParam;
       }
+      
+      const savedUrl = localStorage.getItem('zv_chat_api_url');
+      if (savedUrl) {
+        document.getElementById('input-api-url').value = savedUrl;
+      }
+    }
+
+    function saveApiUrl() {
+      const urlInput = document.getElementById('input-api-url').value.trim();
+      const cleanUrl = urlInput.replace(/\/+$/, '');
+      if (cleanUrl) {
+        localStorage.setItem('zv_chat_api_url', cleanUrl);
+        alert(`API server endpoint URL saved: ${cleanUrl}`);
+      } else {
+        localStorage.removeItem('zv_chat_api_url');
+        alert('API server endpoint set to Auto-detect default.');
+      }
+      fetchTranscript();
     }
 
     function setIdentity(id) {
@@ -672,7 +704,7 @@
       const startTime = performance.now();
 
       try {
-        const response = await fetch(BACKEND_URL, {
+        const response = await fetch(getBackendUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -704,7 +736,7 @@
     async function fetchTranscript() {
       const startTime = performance.now();
       try {
-        const response = await fetch(BACKEND_URL, {
+        const response = await fetch(getBackendUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -736,7 +768,7 @@
 
     async function fetchRawContext() {
       try {
-        const response = await fetch(BACKEND_URL, {
+        const response = await fetch(getBackendUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
