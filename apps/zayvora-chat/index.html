@@ -749,6 +749,11 @@
         </div>
 
         <div class="form-group">
+          <label>Room Access Key (Optional 🔐)</label>
+          <input type="password" id="input-room-key" class="input-control" placeholder="Enter key for private room">
+        </div>
+
+        <div class="form-group">
           <label>API Server URL (Tunnel / Custom)</label>
           <div style="display:flex; gap:8px;">
             <input type="text" id="input-api-url" class="input-control" style="flex:1;" placeholder="Default (Auto-detect)">
@@ -805,6 +810,7 @@
 
   <script>
     let currentRoom = 'room-123';
+    let displayRoom = 'room-123';
     let currentIdentity = 'A';
     let autoRefreshInterval = null;
     let lastFetchTime = 0;
@@ -821,20 +827,36 @@
         : '/api/zayvora/chat';
     }
 
+    // SHA-256 digest helper
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     // Parse URL room parameters
-    function initParams() {
+    async function initParams() {
       const urlParams = new URLSearchParams(window.location.search);
       const roomParam = urlParams.get('room');
+      const keyParam = urlParams.get('key');
+      
       if (roomParam) {
-        currentRoom = roomParam;
         document.getElementById('input-room').value = roomParam;
-        document.getElementById('room-label').textContent = roomParam;
+        if (keyParam) {
+          document.getElementById('input-room-key').value = keyParam;
+        }
+        await changeRoom();
+      } else {
+        await changeRoom();
       }
       
       const savedUrl = localStorage.getItem('zv_chat_api_url');
       if (savedUrl) {
         document.getElementById('input-api-url').value = savedUrl;
       }
+
+      startAutoRefresh();
     }
 
     function saveApiUrl() {
@@ -856,15 +878,31 @@
       document.getElementById('btn-identity-b').classList.toggle('active', id === 'B');
     }
 
-    function changeRoom() {
+    async function changeRoom() {
       const roomVal = document.getElementById('input-room').value.trim();
+      const keyVal = document.getElementById('input-room-key').value.trim();
       if (!roomVal) return;
-      currentRoom = roomVal;
-      document.getElementById('room-label').textContent = roomVal;
+      
+      displayRoom = roomVal;
+      
+      if (keyVal) {
+        currentRoom = await sha256(roomVal + ":" + keyVal);
+        document.getElementById('room-label').textContent = `${roomVal} (🔐 PRIVATE)`;
+        document.getElementById('room-label').style.color = 'var(--cyan)';
+      } else {
+        currentRoom = roomVal;
+        document.getElementById('room-label').textContent = `${roomVal} (🔓 PUBLIC)`;
+        document.getElementById('room-label').style.color = 'var(--saffron)';
+      }
       
       // Update URL query string without reloading page
       const url = new URL(window.location.href);
       url.searchParams.set('room', roomVal);
+      if (keyVal) {
+        url.searchParams.set('key', keyVal);
+      } else {
+        url.searchParams.delete('key');
+      }
       window.history.pushState({ room: roomVal }, '', url.toString());
       
       // Clear stream and fetch room transcript
@@ -1092,7 +1130,6 @@
 
     // Initialize App
     initParams();
-    startAutoRefresh();
   </script>
 
   <!-- Sidebar overlay backdrop -->
