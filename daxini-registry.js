@@ -104,6 +104,17 @@ const CORE_APPS = [
     ownerType: 'mine',
     tier: 'core',
     tags: ['study', 'learning', 'exam', 'education']
+  },
+  {
+    slug: 'zayvora-chat',
+    name: 'Zayvora Chat',
+    icon: '💬',
+    url: '/apps/zayvora-chat/index.html',
+    status: 'live',
+    desc: 'Database-less chat experiment using the LLM conversation thread itself as a temporary message bus.',
+    ownerType: 'mine',
+    tier: 'experimental',
+    tags: ['chat', 'llm', 'experiment', 'bus']
   }
 ];
 
