@@ -579,6 +579,14 @@
             <button class="btn-action btn-outline" onclick="saveApiUrl()">Save</button>
           </div>
         </div>
+
+        <div class="form-group">
+          <label>Fetch Mode</label>
+          <select id="select-fetch-mode" class="input-control" onchange="fetchTranscript()">
+            <option value="cache">Fast Cache (Instant)</option>
+            <option value="llm">Zayvora LLM Readout (Slow)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Realtime Telemetry HUD -->
@@ -631,9 +639,9 @@
       if (savedUrl && savedUrl.trim()) {
         return savedUrl.trim() + '/api/zayvora/chat';
       }
-      // Automatically detect local port 8080 API server when loaded via static server
+      // Automatically detect port 8080 API server matching the current hostname
       return window.location.port === '8000' 
-        ? 'http://localhost:8080/api/zayvora/chat' 
+        ? `http://${window.location.hostname}:8080/api/zayvora/chat` 
         : '/api/zayvora/chat';
     }
 
@@ -736,12 +744,14 @@
     async function fetchTranscript() {
       const startTime = performance.now();
       try {
+        const modeVal = document.getElementById('select-fetch-mode').value;
         const response = await fetch(getBackendUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             thread: currentRoom,
-            action: 'fetch'
+            action: 'fetch',
+            mode: modeVal
           })
         });
 
@@ -750,7 +760,7 @@
         
         const latency = Math.round(performance.now() - startTime);
         document.getElementById('lbl-latency').textContent = `${latency} ms`;
-        document.getElementById('lbl-mode').textContent = data.mode === 'llm' ? 'ZAYVORA' : 'FALLBACK';
+        document.getElementById('lbl-mode').textContent = data.mode.toUpperCase();
         document.getElementById('backend-status').textContent = 'ONLINE';
         document.getElementById('backend-status').style.color = 'var(--cyan)';
 
