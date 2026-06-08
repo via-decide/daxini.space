@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Compliance — Lore Labs</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #111; --border: #222; --gold: #ffd600; --green: #2ecc71; --text: #e0e0e0; --text-dim: #888; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; padding: 40px 20px; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 2rem; color: #fff; margin-bottom: 8px; }
+  .subtitle { color: var(--gold); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 32px; }
+  .effective { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 40px; }
+  h2 { font-size: 1.15rem; color: #fff; margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1rem; color: var(--gold); margin: 20px 0 8px; }
+  p, li { font-size: 0.95rem; margin-bottom: 12px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; }
+  .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin: 4px 4px 4px 0; }
+  .badge-green { background: rgba(46,204,113,0.15); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+  .badge-gold { background: rgba(255,214,0,0.1); color: var(--gold); border: 1px solid rgba(255,214,0,0.3); }
+  .highlight { background: #0a1a0a; border-left: 3px solid var(--green); padding: 16px 20px; border-radius: 4px; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  th { color: var(--gold); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
+  td:first-child { color: #fff; font-weight: 500; }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Data Compliance</h1>
+<p class="subtitle">Lore Labs — VIA Connect</p>
+<p class="effective">Effective Date: June 4, 2026 &nbsp;|&nbsp; Last Updated: June 4, 2026</p>
+
+<div>
+  <span class="badge badge-green">DPDP 2023 Compliant</span>
+  <span class="badge badge-green">GDPR Compliant</span>
+  <span class="badge badge-green">CCPA Compliant</span>
+  <span class="badge badge-gold">Local-First Architecture</span>
+</div>
+
+<div class="highlight" style="margin-top: 24px;">
+<p><strong>Our compliance posture is simple:</strong> We don't collect your data. Your learning data lives on your device, under your control. This is not a policy decision — it is an architectural decision. The system was designed this way from the ground up.</p>
+</div>
+
+<h2>1. Architecture Overview</h2>
+<p>VIA Connect uses a <strong>local-first architecture</strong>. This means:</p>
+<ul>
+  <li>All computation happens on your device</li>
+  <li>All data is stored in your browser's IndexedDB and localStorage</li>
+  <li>No user data is transmitted to any server for processing or storage</li>
+  <li>No cloud synchronization exists</li>
+  <li>No user accounts are required for core functionality</li>
+</ul>
+<p>This architectural choice eliminates entire categories of compliance risk by design, rather than by policy.</p>
+
+<h2>2. Compliance Matrix</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Requirement</th>
+      <th>DPDP 2023</th>
+      <th>GDPR</th>
+      <th>CCPA</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Data Minimization</td>
+      <td>Sec. 6(1)</td>
+      <td>Art. 5(1)(c)</td>
+      <td>—</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Purpose Limitation</td>
+      <td>Sec. 5</td>
+      <td>Art. 5(1)(b)</td>
+      <td>§1798.100</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Right to Access</td>
+      <td>Sec. 11</td>
+      <td>Art. 15</td>
+      <td>§1798.110</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Right to Erasure</td>
+      <td>Sec. 12</td>
+      <td>Art. 17</td>
+      <td>§1798.105</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Right to Portability</td>
+      <td>Sec. 13</td>
+      <td>Art. 20</td>
+      <td>—</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Consent Management</td>
+      <td>Sec. 6</td>
+      <td>Art. 7</td>
+      <td>§1798.120</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Data Breach Notification</td>
+      <td>Sec. 8</td>
+      <td>Art. 33-34</td>
+      <td>§1798.150</td>
+      <td><span class="badge badge-gold">N/A</span></td>
+    </tr>
+    <tr>
+      <td>No Sale of Data</td>
+      <td>—</td>
+      <td>—</td>
+      <td>§1798.120</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+    <tr>
+      <td>Children's Data (Under 18)</td>
+      <td>Sec. 9</td>
+      <td>Art. 8</td>
+      <td>—</td>
+      <td><span class="badge badge-green">Pass</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Data Breach Notification</strong> is marked N/A because we do not maintain centralized data stores. There is no server-side database to breach. User data exists only on user devices.</p>
+
+<h2>3. Data Flow Diagram</h2>
+<div style="background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 20px 0; font-family: monospace; font-size: 0.85rem; line-height: 2;">
+  <p style="color: var(--gold); margin-bottom: 16px;">DATA FLOW: ALCHEMIST APPLICATION</p>
+  <p>User Device (Browser/App)</p>
+  <p>&nbsp;&nbsp;├── IndexedDB &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Session history, blocks, progress</p>
+  <p>&nbsp;&nbsp;├── localStorage &nbsp;&nbsp;&nbsp;&nbsp;→ Credit ledger, preferences</p>
+  <p>&nbsp;&nbsp;├── File System &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ EPUB imports, PDF/ZAY exports</p>
+  <p>&nbsp;&nbsp;└── <span style="color: var(--green);">ALL DATA STAYS HERE</span></p>
+  <p style="margin-top: 12px; color: var(--text-dim);">Server (only for payments)</p>
+  <p style="color: var(--text-dim);">&nbsp;&nbsp;└── Stripe API &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Payment processing only</p>
+  <p style="color: var(--text-dim);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color: #888;">No user learning data transmitted</span></p>
+</div>
+
+<h2>4. Third-Party Services</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>Purpose</th>
+      <th>Data Shared</th>
+      <th>Privacy Policy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Stripe, Inc.</td>
+      <td>Payment processing</td>
+      <td>Payment info only</td>
+      <td><a href="https://stripe.com/privacy" target="_blank">stripe.com/privacy</a></td>
+    </tr>
+    <tr>
+      <td>GitHub Pages</td>
+      <td>App hosting</td>
+      <td>IP address (standard HTTP)</td>
+      <td><a href="https://docs.github.com/en/site-policy/privacy-policies" target="_blank">github.com/privacy</a></td>
+    </tr>
+    <tr>
+      <td>Google Fonts</td>
+      <td>Typography</td>
+      <td>IP address (standard HTTP)</td>
+      <td><a href="https://policies.google.com/privacy" target="_blank">google.com/privacy</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>5. How to Exercise Your Rights</h2>
+
+<h3>Access Your Data</h3>
+<p>Open the VIA Connect application. All your data is visible within the app. Use the Library panel to browse your session history and content blocks.</p>
+
+<h3>Export Your Data</h3>
+<p>Use the built-in export features to download your data in PDF, EPUB, or .zay format. This satisfies the right to data portability.</p>
+
+<h3>Delete Your Data</h3>
+<p>Clear your browser's site data for the VIA Connect domain, or uninstall the application. Since no copy of your data exists on our servers, this permanently deletes all your data.</p>
+
+<h3>Contact the Data Protection Officer</h3>
+<p>For any data-related requests or complaints:</p>
+<ul>
+  <li><strong>Email:</strong> <a href="mailto:privacy@lorelabs.in">privacy@lorelabs.in</a></li>
+  <li><strong>Response time:</strong> Within 72 hours</li>
+</ul>
+
+<h2>6. Regulatory Contact</h2>
+<p>If you believe your data rights have been violated, you may lodge a complaint with:</p>
+<ul>
+  <li><strong>India:</strong> Data Protection Board of India (under DPDP Act 2023)</li>
+  <li><strong>EU/EEA:</strong> Your local Data Protection Authority</li>
+  <li><strong>California:</strong> California Attorney General's Office</li>
+</ul>
+
+<div class="footer">
+  <p>&copy; 2026 Lore Labs. All rights reserved. &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms.html">Terms of Use</a></p>
+</div>
+
+</div>
+</body>
+</html>

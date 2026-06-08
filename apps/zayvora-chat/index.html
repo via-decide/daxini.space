@@ -473,6 +473,26 @@
     .p-4 { padding: 16px; }
     .mt-4 { margin-top: 16px; }
     .text-center { text-align: center; }
+
+    /* FAQ Cards */
+    .faq-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .faq-q {
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--accent);
+    }
+    .faq-a {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -512,6 +532,14 @@
         <p style="font-size: 11px; text-align: center; color: var(--text-muted); font-family: var(--font-mono);">
           Keys are generated locally. No cloud sync.
         </p>
+        <button class="btn btn-outline" style="margin-top: 12px; padding: 12px;" onclick="app.openFAQ()">
+          How it Works (Architecture)
+        </button>
+        <div style="margin-top: 24px; display: flex; justify-content: center; gap: 15px; font-size: 11px;">
+          <a href="privacy.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">Privacy</a>
+          <a href="terms.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">Terms</a>
+          <a href="data-compliance.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">Data</a>
+        </div>
       </div>
     </div>
 
@@ -686,6 +714,40 @@
         <video id="qr-video" style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
         <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:250px; height:250px; border:2px dashed var(--accent); border-radius:12px; box-shadow: 0 0 0 4000px rgba(0,0,0,0.6);"></div>
         <canvas id="qr-canvas-hidden" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <!-- FAQ View -->
+    <div id="sub-view-faq" class="sub-view">
+      <div class="sub-view-header">
+        <button class="btn-back" onclick="app.closeFAQ()">‹</button>
+        <div class="sub-view-title">Architecture & Philosophy</div>
+      </div>
+      <div class="p-4" style="flex:1; overflow-y:auto; padding-bottom: 40px;">
+        <div class="faq-card">
+          <div class="faq-q">How does Person A discover Person B?</div>
+          <div class="faq-a">Through out-of-band exchange. Person A shares their public key via an invite link or QR code. There is no central directory to search—you must intentionally share your identity.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">How do messages arrive offline?</div>
+          <div class="faq-a">They don't. Messages are held securely in your local outbox. When both peers are online simultaneously, the direct WebRTC connection is established and the pending messages are delivered end-to-end.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">How are devices synchronized?</div>
+          <div class="faq-a">By design, they aren't. Your cryptographic identity is mathematically bound to your physical device. To use multiple devices, you create a new node on each and add them as trusted peers.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">How is trust established?</div>
+          <div class="faq-a">Through mutual verification. A new connection request enters a temporary sandbox. Both parties must explicitly approve the connection before permanent trust is established and messages are exchanged.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">How are keys rotated?</div>
+          <div class="faq-a">To rotate keys, you wipe your local identity and generate a new one. Your previous private keys are cryptographically destroyed from your device.</div>
+        </div>
+        <div class="faq-card">
+          <div class="faq-q">How are backups handled?</div>
+          <div class="faq-a">You own your data. All messages and files are stored locally in your browser's IndexedDB and OPFS. Future updates will allow exporting these to a portable .zay bundle. There are no cloud backups.</div>
+        </div>
       </div>
     </div>
 
@@ -915,7 +977,7 @@
       sendHandshakePing(contactId) {
           const doConnect = () => {
               if (!this.peer || !this.myIdentity) return;
-              const conn = this.peer.connect(contactId + "_via");
+              const conn = this.peer.connect(contactId + "_via", { reliable: true });
               conn.on('open', () => {
                   conn.send({
                       type: 'system_handshake',
@@ -930,12 +992,18 @@
           };
 
           if (this.peer && !this.peer.disconnected && !this.peer.destroyed) {
-              // Usually if peer exists, connect queues it. We can add a slight delay just in case.
-              setTimeout(doConnect, 1000);
+              if (this.peer.open) {
+                  doConnect();
+              } else {
+                  this.peer.on('open', doConnect);
+              }
           } else {
               // If peer is entirely missing, wait a bit and retry
               setTimeout(() => {
-                  if (this.peer) doConnect();
+                  if (this.peer) {
+                      if (this.peer.open) doConnect();
+                      else this.peer.on('open', doConnect);
+                  }
               }, 2500);
           }
       },
@@ -987,6 +1055,14 @@
           this.activeChatId = null;
           this.loadConversations();
         }
+      },
+
+      openFAQ() {
+        this.openSubView('sub-view-faq');
+      },
+
+      closeFAQ() {
+        this.closeSubView('sub-view-faq');
       },
 
       handleTopAction() {
@@ -1539,7 +1615,15 @@
       initPeerNetwork() {
         if (this.myIdentity && window.Peer) {
           // Create PeerJS node using our fingerprint
-          this.peer = new Peer(this.myIdentity.id + "_via");
+          this.peer = new Peer(this.myIdentity.id + "_via", {
+             debug: 2,
+             config: {
+                 iceServers: [
+                     { urls: 'stun:stun.l.google.com:19302' },
+                     { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+                 ]
+             }
+          });
           
           this.peer.on('open', id => {
             console.log('P2P Node Active. Peer ID:', id);

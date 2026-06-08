@@ -265,15 +265,25 @@
             if (!files.length) return;
             const file = files[0];
             
-            if (!file.name.endsWith('.zay') && !file.name.endsWith('.zip')) {
-                alert('Please upload a .zay bundle');
-                return;
-            }
-
             try {
                 // Switch UI
                 dropzone.style.display = 'none';
                 viewer.style.display = 'flex';
+                document.getElementById('markdownContent').innerHTML = '';
+                document.getElementById('contextData').innerHTML = '';
+                document.getElementById('evidenceData').innerHTML = '';
+                
+                // Attempt to read as text first to see if it's JSON
+                const text = await file.text();
+                try {
+                    const bundle = JSON.parse(text);
+                    if (bundle.type === 'zayvora_bundle') {
+                        renderJsonBundle(bundle);
+                        return;
+                    }
+                } catch(e) {
+                    // Not a JSON file, proceed to treat as ZIP
+                }
                 
                 // Read Zip
                 const zip = await JSZip.loadAsync(file);
@@ -339,9 +349,63 @@
 
             } catch (err) {
                 console.error(err);
-                alert('Error parsing .zay bundle. Is it a valid ZIP?');
+                alert('Error parsing .zay bundle. Is it a valid JSON or ZIP?');
                 dropzone.style.display = 'flex';
                 viewer.style.display = 'none';
+            }
+        }
+
+        function renderJsonBundle(bundle) {
+            const metadata = bundle.metadata || {};
+            document.getElementById('manifestData').innerHTML = `
+                <div class="meta-item">
+                    <span class="meta-label">Title</span>
+                    <span class="meta-value">${metadata.title || 'Unknown'}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Author</span>
+                    <span class="meta-value">${metadata.author || 'Unknown'}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Version</span>
+                    <span class="meta-value">${bundle.version || '1.0'}</span>
+                </div>
+            `;
+            
+            let tocHtml = '';
+            const docs = bundle.documents || [];
+            docs.forEach((doc, idx) => {
+                tocHtml += `
+                    <div class="meta-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.5rem;" onclick="loadJsonDoc(${idx})">
+                        <span class="meta-label" style="color: var(--accent); font-weight: 600;">DOC ${String(idx + 1).padStart(2, '0')}</span>
+                        <span class="meta-value" style="font-size: 0.85rem;">${doc.title || `Document ${idx+1}`}</span>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('contextData').innerHTML = tocHtml;
+            document.getElementById('evidenceData').innerHTML = `
+                <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+                    JSON bundle verified.<br>
+                    Total documents: ${docs.length}<br>
+                    Format: Common .zay bundle
+                </div>
+            `;
+            
+            window.activeJsonDocs = docs;
+            if (docs.length > 0) {
+                loadJsonDoc(0);
+            }
+        }
+
+        function loadJsonDoc(index) {
+            const doc = window.activeJsonDocs[index];
+            if (!doc) return;
+            const contentDiv = document.getElementById('markdownContent');
+            if (doc.format === 'markdown') {
+                contentDiv.innerHTML = marked.parse(doc.content);
+            } else {
+                contentDiv.innerHTML = doc.content;
             }
         }
     </script>
