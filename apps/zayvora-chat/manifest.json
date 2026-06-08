@@ -1,0 +1,17 @@
+{
+  "name": "Zayvora Chat",
+  "short_name": "Zayvora",
+  "description": "Zayvora OS LLM Message Bus Experiment",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#020305",
+  "theme_color": "#020305",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

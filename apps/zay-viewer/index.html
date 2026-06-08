@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.zay Bundle Viewer — Daxini Stack</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #08080a;
+            --surface: #111114;
+            --surface-hover: #1a1a20;
+            --border: #22222a;
+            --text: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Instrument Serif', serif;
+            font-weight: 400;
+        }
+
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        /* Nav */
+        nav {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        /* Dropzone */
+        #dropzone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border);
+            margin: 2rem;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        #dropzone.dragover {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
+        #dropzone h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #dropzone p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-muted);
+        }
+
+        /* Viewer Layout */
+        #viewer {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+            flex-direction: row;
+        }
+
+        .panel {
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        #sidebar {
+            width: 300px;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        #content {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Markdown Styles */
+        #content h1 { font-size: 3rem; margin-bottom: 1rem; }
+        #content h2 { font-size: 2rem; margin: 2rem 0 1rem; }
+        #content h3 { font-size: 1.5rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+        #content p { margin-bottom: 1.2rem; color: #d1d5db; font-size: 1.1rem; line-height: 1.8; }
+        #content ul { margin-bottom: 1.2rem; padding-left: 1.5rem; color: #d1d5db; font-size: 1.1rem;}
+
+        /* Metadata sections */
+        .meta-section h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .meta-item {
+            margin-bottom: 0.75rem;
+        }
+        
+        .meta-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+        }
+        
+        .meta-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .json-block {
+            background: #000;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #10b981;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="logo">DAXINI.SPACE</a>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent);">.zay viewer prototype</div>
+    </nav>
+
+    <!-- Upload Screen -->
+    <div id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <h2>Drop a .zay bundle here</h2>
+        <p>Portable knowledge with execution context.</p>
+        <button class="btn">Select File</button>
+        <input type="file" id="fileInput" accept=".zay,.zip" style="display: none;">
+        
+        <div style="margin-top: 3rem; text-align: center; color: var(--text-muted);">
+            <p style="font-size: 0.9rem;">Need a sample?</p>
+            <a href="/epubs/volume_1_local_first.zay" download style="color: var(--accent); text-decoration: none;">Download Volume 1 Sample Bundle</a>
+        </div>
+    </div>
+
+    <!-- Viewer Screen -->
+    <div id="viewer">
+        <div id="sidebar" class="panel">
+            <div class="meta-section">
+                <h3>Manifest</h3>
+                <div id="manifestData"></div>
+            </div>
+            
+            <div class="meta-section">
+                <h3>Decisions & Context</h3>
+                <div id="contextData"></div>
+            </div>
+
+            <div class="meta-section">
+                <h3>Execution Evidence</h3>
+                <div id="evidenceData"></div>
+            </div>
+        </div>
+
+        <div id="content" class="panel">
+            <div id="markdownContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const viewer = document.getElementById('viewer');
+
+        // Drag events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.remove('dragover'), false);
+        });
+
+        // Handle file drop/selection
+        dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+        fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+        async function handleFiles(files) {
+            if (!files.length) return;
+            const file = files[0];
+            
+            if (!file.name.endsWith('.zay') && !file.name.endsWith('.zip')) {
+                alert('Please upload a .zay bundle');
+                return;
+            }
+
+            try {
+                // Switch UI
+                dropzone.style.display = 'none';
+                viewer.style.display = 'flex';
+                
+                // Read Zip
+                const zip = await JSZip.loadAsync(file);
+                
+                // 1. Load Manifest
+                if (zip.file('manifest.json')) {
+                    const manifestStr = await zip.file('manifest.json').async('string');
+                    const manifest = JSON.parse(manifestStr);
+                    
+                    document.getElementById('manifestData').innerHTML = `
+                        <div class="meta-item">
+                            <span class="meta-label">Title</span>
+                            <span class="meta-value">${manifest.title || 'Unknown'}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Author</span>
+                            <span class="meta-value">${manifest.author || 'Unknown'}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Version</span>
+                            <span class="meta-value">${manifest.zay_version || '1.0'}</span>
+                        </div>
+                    `;
+                }
+
+                // 2. Load Content (assuming 01-chapter.md for prototype)
+                let contentFound = false;
+                for (const relativePath in zip.files) {
+                    if (relativePath.startsWith('content/') && relativePath.endsWith('.md')) {
+                        const mdContent = await zip.file(relativePath).async('string');
+                        document.getElementById('markdownContent').innerHTML += marked.parse(mdContent);
+                        contentFound = true;
+                    }
+                }
+                if (!contentFound) {
+                    document.getElementById('markdownContent').innerHTML = '<i>No markdown content found in bundle.</i>';
+                }
+
+                // 3. Load Context (decisions.json)
+                if (zip.file('context/decisions.json')) {
+                    const decStr = await zip.file('context/decisions.json').async('string');
+                    const decisions = JSON.parse(decStr).architectural_decisions || [];
+                    
+                    let html = '';
+                    decisions.forEach(d => {
+                        html += `
+                            <div class="meta-item" style="background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 4px;">
+                                <span class="meta-label" style="color: var(--accent);">${d.id}</span>
+                                <span class="meta-value">${d.decision}</span>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('contextData').innerHTML = html;
+                }
+
+                // 4. Load Evidence (traces.json)
+                if (zip.file('evidence/traces.json')) {
+                    const traceStr = await zip.file('evidence/traces.json').async('string');
+                    document.getElementById('evidenceData').innerHTML = `
+                        <pre class="json-block">${traceStr}</pre>
+                    `;
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert('Error parsing .zay bundle. Is it a valid ZIP?');
+                dropzone.style.display = 'flex';
+                viewer.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

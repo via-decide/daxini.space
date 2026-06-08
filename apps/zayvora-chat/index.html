@@ -2,302 +2,104 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Zayvora OS — LLM Message Bus Experiment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>VIA Connect</title>
   
-  <!-- Premium Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0a0a0c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg: #020305;
-      --card-bg: rgba(10, 14, 22, 0.85);
-      --border-color: rgba(0, 242, 255, 0.16);
-      --cyan: #00e5ff;
-      --saffron: #ff671f;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-display: 'Oxanium', sans-serif;
-      --font-body: 'Outfit', sans-serif;
-      --text-muted: rgba(255, 255, 255, 0.5);
+      --bg: #0a0a0c;
+      --surface: #111115;
+      --surface-2: #18181e;
+      --surface-3: #22222a;
+      --border: #2a2a35;
+      --border-light: #333340;
+      --text: #e8e8f0;
+      --text-muted: #7a7a90;
+      --text-faint: #404055;
+      --accent: #4f8ef7;
+      --accent-dim: rgba(79, 142, 247, 0.15);
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-sans: 'DM Sans', sans-serif;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      background-color: var(--bg);
-      color: #ffffff;
-      font-family: var(--font-body);
-      overflow-x: hidden;
-      min-height: 100vh;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.03) 0%, transparent 40%),
-        radial-gradient(circle at 90% 80%, rgba(255, 103, 31, 0.03) 0%, transparent 40%);
-    }
-
-    header {
-      background: rgba(0, 0, 0, 0.4);
-      border-bottom: 1px solid var(--border-color);
-      padding: 16px 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      justify-content: center;
     }
 
-    .header-title {
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #fff;
+    .app-shell {
+      width: 100%;
+      max-width: 600px;
+      height: 100%;
+      background: var(--surface);
+      position: relative;
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
     }
 
-    .header-status {
+    @media (max-width: 600px) {
+      .app-shell { border: none; }
+    }
+
+    .view {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .view.active { display: flex; }
+
+    /* Onboarding */
+    .onboarding-container {
+      padding: 40px 24px;
       display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--cyan);
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan);
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 1fr 360px;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
       gap: 24px;
     }
 
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: 1fr;
-      }
+    .logo-container {
+      margin-bottom: 20px;
     }
 
-    /* Header title extra span default */
-    .title-extra {
-      display: inline;
-    }
-
-    /* Sidebar drawer default layouts */
-    .sidebar-overlay {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .floating-settings-btn {
-      display: none;
-    }
-
-    .sidebar-header {
-      display: none;
-    }
-
-    .table-container {
-      width: 100%;
-    }
-
-    /* Mobile Responsive Overrides */
-    @media (max-width: 768px) {
-      .title-extra {
-        display: none;
-      }
-
-      header {
-        padding: 12px 16px;
-      }
-
-      .header-title {
-        font-size: 14px;
-        letter-spacing: 1px;
-      }
-
-      main {
-        padding: 12px;
-        gap: 12px;
-      }
-
-      .panel {
-        padding: 14px;
-        border-radius: 12px;
-      }
-
-      /* Sidebar Drawer on Mobile */
-      .sidebar-panel {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 85%;
-        max-width: 320px;
-        background: #020305 !important;
-        border-left: 1px solid var(--border-color);
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.85);
-        z-index: 1000;
-        padding: 20px 16px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .sidebar-panel.open {
-        transform: translateX(0);
-      }
-
-      .sidebar-overlay.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .floating-settings-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: #0a0e16;
-        border: 1px solid var(--cyan);
-        box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
-        color: var(--cyan);
-        font-size: 20px;
-        cursor: pointer;
-        z-index: 900;
-        transition: all 0.2s;
-      }
-
-      .floating-settings-btn:active {
-        transform: scale(0.9);
-      }
-
-      .sidebar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        margin-bottom: 12px;
-      }
-
-      .sidebar-header span {
-        font-family: var(--font-display);
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--cyan);
-        letter-spacing: 1.5px;
-      }
-
-      .sidebar-close-btn {
-        background: transparent;
-        border: none;
-        color: #fff;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 4px 8px;
-      }
-
-      .chat-stream {
-        height: calc(100vh - 230px);
-        min-height: 300px;
-        padding: 12px;
-        gap: 10px;
-      }
-
-      .message {
-        max-width: 90%;
-        font-size: 12px;
-        padding: 8px 12px;
-      }
-
-      .table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 8px;
-        margin-top: 8px;
-      }
-
-      .report-view table {
-        min-width: 500px;
-      }
-
-      .tab-btn {
-        padding: 10px 16px;
-        font-size: 11px;
-      }
-    }
-
-    .panel {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 20px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    .logo-text {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 2px;
       display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .panel-title {
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: #fff;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 10px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
-    /* Form Controls */
-    .form-group {
+    .logo-dot {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .input-group {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -305,66 +107,249 @@
 
     label {
       font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1px;
-      color: var(--cyan);
+      font-size: 11px;
       text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
     }
 
-    .input-control {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .input-field {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 16px;
       border-radius: 8px;
-      padding: 10px 14px;
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 13px;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      outline: none;
       transition: border-color 0.2s;
     }
-
-    .input-control:focus {
-      outline: none;
-      border-color: var(--cyan);
+    
+    .input-field:focus {
+      border-color: var(--accent);
     }
 
-    /* Segmented selector */
-    .segmented-control {
-      display: flex;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-      padding: 2px;
-    }
-
-    .segment-btn {
-      flex: 1;
+    .btn {
+      background: var(--accent);
+      color: #fff;
       border: none;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .btn:active { opacity: 0.8; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-outline {
       background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* Main App Layout */
+    .topbar {
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      background: var(--surface);
+      z-index: 10;
+      flex-shrink: 0;
+      justify-content: space-between;
+    }
+
+    .topbar-title {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .topbar-actions button {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .tab-content {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .tab-content.active { display: flex; }
+
+    /* Bottom Nav */
+    .bottom-nav {
+      height: 64px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom);
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    /* Lists (Conversations & Contacts) */
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .list-item:hover { background: var(--surface-2); }
+    .list-item:active { background: var(--surface-3); }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-right: 16px;
+      flex-shrink: 0;
+      color: var(--text);
+    }
+
+    .avatar.self {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .list-details { flex: 1; min-width: 0; }
+    
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .list-title {
+      font-weight: 600;
+      font-size: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-time {
+      font-size: 11px;
       color: var(--text-muted);
       font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 8px 0;
+    }
+
+    .list-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* Modals & Sub-views */
+    .sub-view {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--surface);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .sub-view.open { transform: translateX(0); }
+
+    .sub-view-header {
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+      gap: 16px;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 24px;
       cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 6px;
-      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
     }
 
-    .segment-btn.active {
-      background: var(--cyan);
-      color: #000;
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+    .sub-view-title { font-size: 16px; font-weight: 600; flex: 1; }
+
+    /* Chat View */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      overflow: hidden;
     }
 
-    /* Chat Area */
-    .chat-stream {
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.2);
-      height: 400px;
+    .chat-messages {
+      flex: 1;
       overflow-y: auto;
       padding: 16px;
       display: flex;
@@ -372,772 +357,938 @@
       gap: 12px;
     }
 
-    .message {
+    .message-bubble {
       max-width: 80%;
-      border-radius: 12px;
       padding: 10px 14px;
-      font-size: 13px;
-      line-height: 1.5;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.4;
       position: relative;
     }
 
-    .message.sender-a {
-      align-self: flex-start;
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px solid rgba(0, 229, 255, 0.2);
-      border-bottom-left-radius: 2px;
-    }
-
-    .message.sender-b {
+    .msg-out {
       align-self: flex-end;
-      background: rgba(255, 103, 31, 0.08);
-      border: 1px solid rgba(255, 103, 31, 0.2);
-      border-bottom-right-radius: 2px;
+      background: var(--accent);
+      color: #fff;
+      border-bottom-right-radius: 4px;
     }
 
-    .message-meta {
+    .msg-in {
+      align-self: flex-start;
+      background: var(--surface-3);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-meta {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 4px;
+      text-align: right;
       font-family: var(--font-mono);
-      font-size: 9px;
-      margin-bottom: 4px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chat-composer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      display: flex;
       gap: 12px;
-    }
-
-    .message.sender-a .message-meta {
-      color: var(--cyan);
-    }
-
-    .message.sender-b .message-meta {
-      color: var(--saffron);
-    }
-
-    .message-text {
-      word-break: break-word;
-    }
-
-    /* Chat Input Form */
-    .chat-input-bar {
-      display: flex;
-      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
     }
 
     .chat-input {
       flex: 1;
-    }
-
-    .btn-action {
-      background: var(--cyan);
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-    }
-
-    .btn-action:hover {
-      background: #00d9ff;
-      transform: scale(1.02);
-    }
-
-    .btn-action:active {
-      transform: scale(0.98);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-    }
-
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    /* Telemetry HUD details */
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .tel-item {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .tel-label {
-      font-family: var(--font-mono);
-      font-size: 8px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .tel-val {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .tel-val.status-ok { color: var(--cyan); }
-    .tel-val.status-warning { color: var(--saffron); }
-
-    /* Collapsible Raw Context section */
-    .raw-viewer {
-      background: #030508;
-      border: 1px solid rgba(0, 242, 255, 0.1);
-      border-radius: 10px;
-      padding: 12px;
-      max-height: 180px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: #62cfdf;
-    }
-
-    /* Tabs for decision report and chat */
-    .tab-bar {
-      display: flex;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 16px;
-    }
-
-    .tab-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 12px 24px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-      border-bottom: 2px solid transparent;
-    }
-
-    .tab-btn:hover {
-      color: #fff;
-    }
-
-    .tab-btn.active {
-      color: var(--cyan);
-      border-bottom-color: var(--cyan);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* Decision report layout */
-    .report-view {
-      font-size: 13px;
-      line-height: 1.6;
-      color: rgba(255, 255, 255, 0.8);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .report-view h3 {
-      font-family: var(--font-display);
-      color: var(--cyan);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 10px 16px;
+      color: var(--text);
+      font-family: var(--font-sans);
       font-size: 15px;
-      margin-top: 10px;
-      text-transform: uppercase;
+      outline: none;
     }
 
-    .report-view ul {
-      margin-left: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .report-view table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-    }
-
-    .report-view th, .report-view td {
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 8px 12px;
-      text-align: left;
-    }
-
-    .report-view th {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--cyan);
-      font-family: var(--font-mono);
-      font-size: 10px;
-    }
-
-    .report-view p strong {
+    .btn-send {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
       color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
     }
 
-    .report-alert {
-      background: rgba(255, 103, 31, 0.05);
-      border-left: 3px solid var(--saffron);
-      padding: 12px;
-      border-radius: 0 8px 8px 0;
-      color: #ffaa80;
-      font-size: 12px;
+    .btn-send:disabled {
+      background: var(--surface-3);
+      color: var(--text-muted);
     }
+
+    .btn-attach {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Key display */
+    .key-display {
+      background: #000;
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      word-break: break-all;
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    /* Helper Classes */
+    .p-4 { padding: 16px; }
+    .mt-4 { margin-top: 16px; }
+    .text-center { text-align: center; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-title">
-      <span>💬</span> Zayvora OS<span class="title-extra"> — LLM Message Bus Experiment</span>
-    </div>
-    <div class="header-status">
-      <div class="status-dot"></div>
-      <span id="backend-status">CONNECTING</span>
-    </div>
-  </header>
+  <div class="app-shell">
+    
+    <!-- ==================== ONBOARDING VIEW ==================== -->
+    <div id="view-onboarding" class="view">
+      <div class="onboarding-container">
+        <div class="logo-container">
+          <div class="logo-text">
+            <div class="logo-dot"></div>
+            VIA CONNECT
+          </div>
+          <p style="color: var(--text-muted); margin-top: 8px; font-size: 14px;">Local-First Sovereign Communication.</p>
+        </div>
+        
+        <div class="input-group">
+          <label>Display Name</label>
+          <input type="text" id="input-name" class="input-field" placeholder="Enter your name" autocomplete="off">
+        </div>
 
-  <main>
-    <div style="display:flex; flex-direction:column; gap:16px;">
-      <!-- Navigation Tabs -->
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('chat')">Live Experiment</button>
-        <button class="tab-btn" onclick="switchTab('report')">Architecture Report</button>
+        <div class="input-group">
+          <label>Avatar (Emoji)</label>
+          <input type="text" id="input-avatar" class="input-field" placeholder="😎" value="😎" maxlength="2">
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <div class="key-gen-status" id="keygen-status" style="display:none; text-align:center; color: var(--accent); font-family: var(--font-mono); font-size: 12px;">
+          Generating cryptographic identity...
+        </div>
+
+        <button class="btn" id="btn-create-identity" onclick="app.generateIdentity()">
+          Create Identity
+        </button>
+        <p style="font-size: 11px; text-align: center; color: var(--text-muted); font-family: var(--font-mono);">
+          Keys are generated locally. No cloud sync.
+        </p>
       </div>
+    </div>
 
-      <!-- CHAT INTERFACE TAB -->
-      <div id="tab-chat" class="tab-content active">
-        <div class="panel">
-          <div class="panel-title">
-            <span>Room: <span id="room-label" style="color:var(--cyan);">room-123</span></span>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <label style="display:inline; margin:0;">Auto Refresh</label>
-              <input type="checkbox" id="chk-auto-refresh" checked onchange="toggleAutoRefresh()">
-            </div>
-          </div>
-
-          <!-- Message History Screen -->
-          <div class="chat-stream" id="chat-stream">
-            <div style="text-align:center; color:var(--text-muted); font-size:11px; margin-top:50px;">
-              No messages synced in this room context yet. Send a message to seed the thread.
-            </div>
-          </div>
-
-          <!-- Message Composers -->
-          <form id="chat-composer" class="chat-input-bar" onsubmit="sendMessage(event)">
-            <input type="text" id="txt-message" class="input-control chat-input" placeholder="Type a message to relay..." required>
-            <button type="submit" class="btn-action" id="btn-send">Send</button>
-          </form>
+    <!-- ==================== MAIN APPLICATION ==================== -->
+    <div id="view-main" class="view">
+      <!-- Top Bar -->
+      <div class="topbar">
+        <div class="topbar-title" id="topbar-title">Conversations</div>
+        <div class="topbar-actions">
+          <button id="btn-top-action" onclick="app.handleTopAction()">+</button>
         </div>
       </div>
 
-      <!-- DECISION REPORT TAB -->
-      <div id="tab-report" class="tab-content">
-        <div class="panel">
-          <div class="panel-title">Database-less Storage Decision Report</div>
+      <!-- Tab: Conversations -->
+      <div id="tab-conversations" class="tab-content active">
+        <div id="conversations-list">
+          <div class="empty-state">
+            <div style="font-size: 40px; margin-bottom: 16px;">💬</div>
+            <p>No conversations yet.</p>
+            <p style="font-size: 13px; margin-top: 8px;">Go to Contacts to start a chat.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Contacts -->
+      <div id="tab-contacts" class="tab-content">
+        <div class="p-4" style="border-bottom: 1px solid var(--border);">
+          <button class="btn btn-outline" style="width: 100%;" onclick="app.openAddContact()">
+            + Add Contact
+          </button>
+        </div>
+        <div id="contacts-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab: Search -->
+      <div id="tab-search" class="tab-content">
+        <div class="p-4" style="border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--surface);">
+          <input type="text" id="input-search" class="input-field" placeholder="Search messages, contacts..." style="width: 100%;" oninput="app.performSearch()">
+        </div>
+        <div id="search-results" class="p-4">
+          <div class="text-center" style="color: var(--text-muted); margin-top: 40px;">
+            Enter a query to search local index.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Profile -->
+      <div id="tab-profile" class="tab-content">
+        <div class="p-4 text-center">
+          <div id="profile-avatar" class="avatar self" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;"></div>
+          <h2 id="profile-name" style="margin-bottom: 4px;">User</h2>
+          <p style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono);">Your Sovereign Node</p>
           
-          <div class="report-view">
-            <p>This report documents the architectural findings of running a multi-user messaging system using the LLM's conversation history array as the sole storage mechanism.</p>
-            
-            <div class="report-alert">
-              <strong>CAUTION:</strong> Using the LLM context as a message relay is not recommended for production applications. It is slow, expensive, and subject to hard data loss when context limits are reached.
-            </div>
-
-            <h3>Comparison Matrix</h3>
-            <div class="table-container">
-              <table>
-              <thead>
-                <tr>
-                  <th>Criteria</th>
-                  <th>LLM Thread Storage</th>
-                  <th>Lightweight DB (SQLite/Redis)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Reliability</strong></td>
-                  <td>Extremely Low. Ollama crash or context pruning wipes history.</td>
-                  <td>High. Persistent storage with crash recovery.</td>
-                </tr>
-                <tr>
-                  <td><strong>Read latency</strong></td>
-                  <td>~1.5s - 3.5s (LLM parses history to extract transcript).</td>
-                  <td>&lt;5ms. Direct indexed queries.</td>
-                </tr>
-                <tr>
-                  <td><strong>Message fidelity</strong></td>
-                  <td>Unreliable. LLM might rewrite or summarize text.</td>
-                  <td>100% exact message matches.</td>
-                </tr>
-                <tr>
-                  <td><strong>Cost curve</strong></td>
-                  <td>Exponential scaling. Every single fetch re-processes all history.</td>
-                  <td>Flat scaling. Negligible RAM/Disk overhead.</td>
-                </tr>
-                <tr>
-                  <td><strong>Concurrent edits</strong></td>
-                  <td>High risk of race conditions. No locking/ordering checks.</td>
-                  <td>Atomicity guarantees (ACID or memory lock threads).</td>
-                </tr>
-              </tbody>
-            </table>
-            </div>
-
-            <h3>Context Window Degradation</h3>
-            <ul>
-              <li><strong>Exhaustion Curve:</strong> At the default context window limit of 2,048 tokens, the thread is exhausted after approximately 25-30 conversational turns.</li>
-              <li><strong>Summarization Drift:</strong> When context size exceeds limits, older logs are dropped or summarized, changing historical context (e.g. <i>"[A] Hello"</i> becomes <i>"[A] requested assistance"</i>).</li>
-              <li><strong>Token Costs:</strong> Bandwidth grows by O(N²) where N is message count, since N messages are transferred and computed repeatedly.</li>
-            </ul>
-
-            <h3>Recommendation</h3>
-            <p>Deploy the LLM solely for cognitive parsing (like intent analysis, translations, or safety filters) and route the actual message storage through a <strong>20-line SQLite backend</strong> or <strong>Redis Key-Value store</strong>.</p>
+          <div class="key-display" id="profile-fingerprint">
+            Loading fingerprint...
           </div>
+          
+          <button class="btn btn-outline" style="width: 100%; margin-bottom: 12px;" onclick="alert('Copying public key logic here...')">Copy Public Key (For Invites)</button>
+          
+          <div class="input-group mt-4">
+            <label>Storage Status</label>
+            <div style="background: var(--surface-2); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+              IndexedDB: Active (via Dexie)<br>
+              P2P: <span id="p2p-status" style="color: var(--accent);">Connecting...</span>
+            </div>
+          </div>
+          
+          <button class="btn btn-outline" style="width: 100%; margin-top: 24px; border-color: #ef4444; color: #ef4444;" onclick="app.wipeData()">
+            Wipe Local Node
+          </button>
         </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <button class="nav-btn active" data-tab="conversations" onclick="app.switchTab('conversations')">
+          <span class="nav-icon">💬</span>
+          Chats
+        </button>
+        <button class="nav-btn" data-tab="contacts" onclick="app.switchTab('contacts')">
+          <span class="nav-icon">👥</span>
+          Contacts
+        </button>
+        <button class="nav-btn" data-tab="search" onclick="app.switchTab('search')">
+          <span class="nav-icon">🔍</span>
+          Search
+        </button>
+        <button class="nav-btn" data-tab="profile" onclick="app.switchTab('profile')">
+          <span class="nav-icon">👤</span>
+          Profile
+        </button>
       </div>
     </div>
 
-    <!-- SIDE PANEL Controls & Telemetry -->
-    <div class="sidebar-panel" id="sidebar-panel">
-      <!-- Mobile Close Header -->
-      <div class="sidebar-header">
-        <span>CONSOLE CONTROLS</span>
-        <button type="button" class="sidebar-close-btn" onclick="toggleSidebar(false)">✕</button>
+    <!-- ==================== SUB VIEWS ==================== -->
+    
+    <!-- Chat View -->
+    <div id="sub-view-chat" class="sub-view">
+      <div class="sub-view-header">
+        <button class="btn-back" onclick="app.closeSubView('sub-view-chat')">‹</button>
+        <div class="avatar" id="chat-header-avatar" style="width: 32px; height: 32px; font-size: 14px; margin-right: 0;"></div>
+        <div class="sub-view-title" id="chat-header-name">Contact</div>
+        <div style="font-size: 10px; color: var(--accent); font-family: var(--font-mono);">Encrypted</div>
       </div>
-      
-      <!-- Experiment Setup Panel -->
-      <div class="panel">
-        <div class="panel-title">Session Configuration</div>
-        
-        <div class="form-group">
-          <label>Select Identity</label>
-          <div class="segmented-control">
-            <button class="segment-btn active" id="btn-identity-a" onclick="setIdentity('A')">Person A</button>
-            <button class="segment-btn" id="btn-identity-b" onclick="setIdentity('B')">Person B</button>
-          </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages-container">
+          <!-- Messages inserted here -->
         </div>
-
-        <div class="form-group">
-          <label>Active Chat Room</label>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="input-room" class="input-control" style="flex:1;" value="room-123">
-            <button class="btn-action btn-outline" onclick="changeRoom()">Set</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Room Access Key (Optional 🔐)</label>
-          <input type="password" id="input-room-key" class="input-control" placeholder="Enter key for private room">
-        </div>
-
-        <div class="form-group">
-          <label>API Server URL (Tunnel / Custom)</label>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="input-api-url" class="input-control" style="flex:1;" placeholder="Default (Auto-detect)">
-            <button class="btn-action btn-outline" onclick="saveApiUrl()">Save</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Fetch Mode</label>
-          <select id="select-fetch-mode" class="input-control" onchange="fetchTranscript()">
-            <option value="cache">Fast Cache (Instant)</option>
-            <option value="llm">Zayvora LLM Readout (Slow)</option>
-          </select>
-        </div>
+        <form class="chat-composer" onsubmit="app.sendMessage(event)">
+          <button type="button" class="btn-attach" onclick="document.getElementById('file-upload').click()">📎</button>
+          <input type="file" id="file-upload" style="display:none" onchange="app.sendFile(event)">
+          <input type="text" id="chat-input-text" class="chat-input" placeholder="Message (P2P encrypted)..." autocomplete="off" required>
+          <button type="submit" id="chat-btn-send" class="btn-send">➤</button>
+        </form>
       </div>
-
-      <!-- Realtime Telemetry HUD -->
-      <div class="panel">
-        <div class="panel-title">Telemetry & Benchmarks</div>
-        
-        <div class="telemetry-grid">
-          <div class="tel-item">
-            <span class="tel-label">Fetch Latency</span>
-            <span class="tel-val" id="lbl-latency">-- ms</span>
-          </div>
-          <div class="tel-item">
-            <span class="tel-label">Relay Mode</span>
-            <span class="tel-val" id="lbl-mode">--</span>
-          </div>
-          <div class="tel-item">
-            <span class="tel-label">Context Size</span>
-            <span class="tel-val" id="lbl-context-size">-- / 2048</span>
-          </div>
-          <div class="tel-item">
-            <span class="tel-label">Est. Cost (Sovereign)</span>
-            <span class="tel-val" id="lbl-cost">$0.0000</span>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 8px;">
-          <label>Retention Status</label>
-          <span id="lbl-retention" class="tel-val status-ok" style="font-size: 11px;">NOMINAL (0 MESSAGES)</span>
-        </div>
-      </div>
-
-      <!-- Raw Context Monitor -->
-      <div class="panel">
-        <div class="panel-title">Raw LLM Context Array</div>
-        <pre class="raw-viewer" id="raw-json-viewer">// Sync room to inspect raw array...</pre>
-      </div>
-
     </div>
-  </main>
+
+    <!-- Add Contact View -->
+    <div id="sub-view-add-contact" class="sub-view">
+      <div class="sub-view-header">
+        <button class="btn-back" onclick="app.closeSubView('sub-view-add-contact')">‹</button>
+        <div class="sub-view-title">Add Contact</div>
+      </div>
+      <div class="p-4" style="flex:1; overflow-y:auto;">
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+          To connect with someone, paste their public key identity string below.
+        </p>
+        <form onsubmit="app.saveContact(event)">
+          <div class="input-group">
+            <label>Contact Name</label>
+            <input type="text" id="add-contact-name" class="input-field" placeholder="Alias for this contact" required>
+          </div>
+          <div class="input-group mt-4">
+            <label>Public Key String</label>
+            <textarea id="add-contact-key" class="input-field" placeholder="Paste the long JWK string here..." rows="4" style="resize:none; font-family:var(--font-mono); font-size:11px;" required></textarea>
+          </div>
+          <button type="submit" class="btn mt-4" style="width: 100%;">Save Contact</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dependencies -->
+  <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
   <script>
-    let currentRoom = 'room-123';
-    let displayRoom = 'room-123';
-    let currentIdentity = 'A';
-    let autoRefreshInterval = null;
-    let lastFetchTime = 0;
-    
-    // API Configuration
-    function getBackendUrl() {
-      const savedUrl = localStorage.getItem('zv_chat_api_url');
-      if (savedUrl && savedUrl.trim()) {
-        return savedUrl.trim() + '/api/zayvora/chat';
+    /**
+     * VIA Connect V1 - Sovereign Engineering Layer
+     */
+
+    // --- 1. Database Schema (Dexie) ---
+    const db = new Dexie('via-connect');
+    db.version(1).stores({
+      identity: 'id', // only one record expected
+      contacts: 'id, trustState, addedAt',
+      messages: 'id, chatId, createdAt',
+      fileMetadata: 'id, chatId',
+      searchIndex: 'token',
+      outbox: 'id, contactId'
+    });
+
+    // --- 1.5 OPFS Manager ---
+    class OPFSManager {
+      constructor() { this.root = null; }
+      async init() { this.root = await navigator.storage.getDirectory(); }
+      async writeFile(contactId, fileId, data) {
+        const dir = await this.root.getDirectoryHandle('files', { create: true });
+        const sub = await dir.getDirectoryHandle(contactId, { create: true });
+        const fh = await sub.getFileHandle(`${fileId}.bin`, { create: true });
+        const writable = await fh.createWritable();
+        await writable.write(data);
+        await writable.close();
       }
-      // Automatically detect port 8080 API server matching the current hostname
-      return window.location.port === '8000' 
-        ? `http://${window.location.hostname}:8080/api/zayvora/chat` 
-        : '/api/zayvora/chat';
-    }
-
-    // SHA-256 digest helper
-    async function sha256(message) {
-      const msgBuffer = new TextEncoder().encode(message);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // Parse URL room parameters
-    async function initParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomParam = urlParams.get('room');
-      const keyParam = urlParams.get('key');
-      
-      if (roomParam) {
-        document.getElementById('input-room').value = roomParam;
-        if (keyParam) {
-          document.getElementById('input-room-key').value = keyParam;
-        }
-        await changeRoom();
-      } else {
-        await changeRoom();
+      async readFile(contactId, fileId) {
+        const dir = await this.root.getDirectoryHandle('files');
+        const sub = await dir.getDirectoryHandle(contactId);
+        const fh = await sub.getFileHandle(`${fileId}.bin`);
+        const file = await fh.getFile();
+        return await file.arrayBuffer();
       }
-      
-      const savedUrl = localStorage.getItem('zv_chat_api_url');
-      if (savedUrl) {
-        document.getElementById('input-api-url').value = savedUrl;
+      async storageUsage() {
+        if (!navigator.storage || !navigator.storage.estimate) return { used: 0, quota: 0 };
+        const est = await navigator.storage.estimate();
+        return { used: est.usage || 0, quota: est.quota || 0 };
       }
-
-      startAutoRefresh();
     }
+    const opfs = new OPFSManager();
 
-    function saveApiUrl() {
-      const urlInput = document.getElementById('input-api-url').value.trim();
-      const cleanUrl = urlInput.replace(/\/+$/, '');
-      if (cleanUrl) {
-        localStorage.setItem('zv_chat_api_url', cleanUrl);
-        alert(`API server endpoint URL saved: ${cleanUrl}`);
-      } else {
-        localStorage.removeItem('zv_chat_api_url');
-        alert('API server endpoint set to Auto-detect default.');
-      }
-      fetchTranscript();
-    }
+    // --- 2. Crypto Utilities (SubtleCrypto) ---
+    const cryptoUtils = {
+      async generateIdentityPair() {
+        const keyPair = await crypto.subtle.generateKey(
+          { name: 'ECDH', namedCurve: 'P-256' },
+          false, // private key non-extractable
+          ['deriveKey']
+        );
+        const publicKeyJWK = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
+        const rawPublic = await crypto.subtle.exportKey('raw', keyPair.publicKey);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', rawPublic);
+        const fingerprint = Array.from(new Uint8Array(hashBuffer))
+          .map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+        return { fingerprint, publicKeyJWK, privateKey: keyPair.privateKey };
+      },
 
-    function setIdentity(id) {
-      currentIdentity = id;
-      document.getElementById('btn-identity-a').classList.toggle('active', id === 'A');
-      document.getElementById('btn-identity-b').classList.toggle('active', id === 'B');
-    }
+      async deriveSharedKey(privateKey, publicKeyJWK) {
+        const publicKey = await crypto.subtle.importKey(
+          'jwk',
+          publicKeyJWK,
+          { name: 'ECDH', namedCurve: 'P-256' },
+          true,
+          []
+        );
+        return await crypto.subtle.deriveKey(
+          { name: 'ECDH', public: publicKey },
+          privateKey,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      },
 
-    async function changeRoom() {
-      const roomVal = document.getElementById('input-room').value.trim();
-      const keyVal = document.getElementById('input-room-key').value.trim();
-      if (!roomVal) return;
-      
-      displayRoom = roomVal;
-      
-      if (keyVal) {
-        currentRoom = await sha256(roomVal + ":" + keyVal);
-        document.getElementById('room-label').textContent = `${roomVal} (🔐 PRIVATE)`;
-        document.getElementById('room-label').style.color = 'var(--cyan)';
-      } else {
-        currentRoom = roomVal;
-        document.getElementById('room-label').textContent = `${roomVal} (🔓 PUBLIC)`;
-        document.getElementById('room-label').style.color = 'var(--saffron)';
-      }
-      
-      // Update URL query string without reloading page
-      const url = new URL(window.location.href);
-      url.searchParams.set('room', roomVal);
-      if (keyVal) {
-        url.searchParams.set('key', keyVal);
-      } else {
-        url.searchParams.delete('key');
-      }
-      window.history.pushState({ room: roomVal }, '', url.toString());
-      
-      // Clear stream and fetch room transcript
-      document.getElementById('chat-stream').innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:11px; margin-top:50px;">Syncing room context...</div>`;
-      fetchTranscript();
-    }
-
-    async function sendMessage(e) {
-      e.preventDefault();
-      const txtMessage = document.getElementById('txt-message');
-      const text = txtMessage.value.trim();
-      if (!text) return;
-
-      const formattedMessage = `[${currentIdentity}] ${text}`;
-      txtMessage.value = '';
-      
-      const sendButton = document.getElementById('btn-send');
-      sendButton.disabled = true;
-      sendButton.textContent = 'Relaying...';
-
-      const startTime = performance.now();
-
-      try {
-        const response = await fetch(getBackendUrl(), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            thread: currentRoom,
-            message: formattedMessage
-          })
-        });
-
-        if (!response.ok) throw new Error('Failed to send message');
+      async encryptMessage(plaintext, privateKey, receiverPublicKeyJWK) {
+        const sharedKey = await this.deriveSharedKey(privateKey, receiverPublicKeyJWK);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encodedText = new TextEncoder().encode(plaintext);
         
-        const data = await response.json();
-        const latency = Math.round(performance.now() - startTime);
+        const ciphertextBuffer = await crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv: iv },
+          sharedKey,
+          encodedText
+        );
         
-        // Update latency benchmarks
-        document.getElementById('lbl-latency').textContent = `${latency} ms`;
-        document.getElementById('lbl-mode').textContent = data.mode === 'llm' ? 'ZAYVORA' : 'FALLBACK';
+        const ciphertextArray = Array.from(new Uint8Array(ciphertextBuffer));
+        const ivArray = Array.from(iv);
         
-        // Sync transcript immediately
-        fetchTranscript();
-      } catch (err) {
-        console.error('Error sending message:', err);
-        alert('Network / server offline. Fallback simulation mode active.');
-      } finally {
-        sendButton.disabled = false;
-        sendButton.textContent = 'Send';
-      }
-    }
-
-    async function fetchTranscript() {
-      const startTime = performance.now();
-      try {
-        const modeVal = document.getElementById('select-fetch-mode').value;
-        const response = await fetch(getBackendUrl(), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            thread: currentRoom,
-            action: 'fetch',
-            mode: modeVal
-          })
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch transcript');
-        const data = await response.json();
+        const ciphertextBase64 = btoa(String.fromCharCode.apply(null, ciphertextArray));
+        const ivBase64 = btoa(String.fromCharCode.apply(null, ivArray));
         
-        const latency = Math.round(performance.now() - startTime);
-        document.getElementById('lbl-latency').textContent = `${latency} ms`;
-        document.getElementById('lbl-mode').textContent = data.mode.toUpperCase();
-        document.getElementById('backend-status').textContent = 'ONLINE';
-        document.getElementById('backend-status').style.color = 'var(--cyan)';
+        return ivBase64 + ':' + ciphertextBase64;
+      },
 
-        // Render messages
-        renderTranscript(data.transcript);
-
-        // Fetch raw JSON context view in parallel
-        fetchRawContext();
-      } catch (err) {
-        console.error('Error fetching transcript:', err);
-        document.getElementById('backend-status').textContent = 'OFFLINE (FALLBACK)';
-        document.getElementById('backend-status').style.color = 'var(--saffron)';
-      }
-    }
-
-    async function fetchRawContext() {
-      try {
-        const response = await fetch(getBackendUrl(), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            thread: currentRoom,
-            action: 'raw'
-          })
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch raw data');
-        const data = await response.json();
-
-        // Update benchmarks HUD
-        document.getElementById('lbl-context-size').textContent = `${data.contextSize} / 2048`;
+      async encryptFile(arrayBuffer, privateKey, receiverPublicKeyJWK) {
+        const sharedKey = await this.deriveSharedKey(privateKey, receiverPublicKeyJWK);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
         
-        // Cost estimation: $0.0015 per 1K tokens
-        const cost = (data.estimatedTokens / 1000) * 0.0015;
-        document.getElementById('lbl-cost').textContent = `$${cost.toFixed(5)}`;
+        const ciphertextBuffer = await crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv: iv },
+          sharedKey,
+          arrayBuffer
+        );
+        
+        // Return a single ArrayBuffer combining IV (12 bytes) + Ciphertext
+        const payload = new Uint8Array(12 + ciphertextBuffer.byteLength);
+        payload.set(iv, 0);
+        payload.set(new Uint8Array(ciphertextBuffer), 12);
+        return payload.buffer;
+      },
 
-        // Retention warning logic
-        const retentionLabel = document.getElementById('lbl-retention');
-        if (data.contextSize <= 8) {
-          retentionLabel.textContent = `NOMINAL (${data.contextSize} MSGS)`;
-          retentionLabel.className = 'tel-val status-ok';
-        } else if (data.contextSize <= 16) {
-          retentionLabel.textContent = `WARNING (${data.contextSize} MSGS)`;
-          retentionLabel.className = 'tel-val status-warning';
-        } else {
-          retentionLabel.textContent = `CRITICAL DEGRADATION (${data.contextSize} MSGS)`;
-          retentionLabel.className = 'tel-val status-warning';
-          retentionLabel.style.color = 'red';
-        }
+      async decryptFile(encryptedPayloadBuffer, privateKey, senderPublicKeyJWK) {
+        const payload = new Uint8Array(encryptedPayloadBuffer);
+        const iv = payload.slice(0, 12);
+        const ciphertext = payload.slice(12);
+        
+        const sharedKey = await this.deriveSharedKey(privateKey, senderPublicKeyJWK);
+        return await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: iv },
+          sharedKey,
+          ciphertext
+        );
+      },
 
-        // Show raw JSON context array
-        document.getElementById('raw-json-viewer').textContent = JSON.stringify(data.messages, null, 2);
-      } catch (err) {
-        console.error('Error fetching raw context:', err);
-      }
-    }
-
-    function renderTranscript(rawTranscript) {
-      const streamEl = document.getElementById('chat-stream');
-      if (!rawTranscript || !rawTranscript.trim()) {
-        streamEl.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:11px; margin-top:50px;">No messages synced in this room context yet. Send a message to seed the thread.</div>`;
-        return;
-      }
-
-      const lines = rawTranscript.split('\n');
-      let htmlContent = '';
-      let msgCount = 0;
-
-      lines.forEach((line, idx) => {
-        const match = line.trim().match(/^\[([A-Z0-9_-]+)\]\s*(.*)$/i);
-        if (match) {
-          const sender = match[1].toUpperCase();
-          const text = match[2];
-          const alignmentClass = sender === 'A' ? 'sender-a' : 'sender-b';
+      async decryptMessage(encryptedPayload, privateKey, senderPublicKeyJWK) {
+        try {
+          const parts = encryptedPayload.split(':');
+          if (parts.length !== 2) throw new Error("Invalid payload format");
           
-          htmlContent += `
-            <div class="message ${alignmentClass}">
-              <div class="message-meta">
-                <span>Person ${sender}</span>
-                <span>[LOG #${idx + 1}]</span>
-              </div>
-              <div class="message-text">${escapeHtml(text)}</div>
+          const iv = new Uint8Array(atob(parts[0]).split('').map(c => c.charCodeAt(0)));
+          const ciphertext = new Uint8Array(atob(parts[1]).split('').map(c => c.charCodeAt(0)));
+          
+          const sharedKey = await this.deriveSharedKey(privateKey, senderPublicKeyJWK);
+          
+          const decryptedBuffer = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv },
+            sharedKey,
+            ciphertext
+          );
+          
+          return new TextDecoder().decode(decryptedBuffer);
+        } catch (e) {
+          console.error("Decryption failed:", e);
+          return "[Decryption Failed]";
+        }
+      }
+    };
+
+    // --- 3. Main Application Logic ---
+    const app = {
+      myIdentity: null,
+      peer: null,
+      activeChatId: null,
+
+      async init() {
+        await opfs.init();
+        // Check for existing identity
+        const identities = await db.identity.toArray();
+        if (identities.length > 0) {
+          this.myIdentity = identities[0];
+          this.showView('view-main');
+          this.loadProfileData();
+          this.initPeerNetwork();
+          this.loadConversations();
+        } else {
+          this.showView('view-onboarding');
+        }
+      },
+
+      showView(viewId) {
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+      },
+
+      switchTab(tabId) {
+        // Update nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+        // Update tab contents
+        document.querySelectorAll('.tab-content').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        
+        // Update Topbar Title
+        const titles = {
+          'conversations': 'Conversations',
+          'contacts': 'Contacts',
+          'search': 'Search',
+          'profile': 'My Identity'
+        };
+        document.getElementById('topbar-title').innerText = titles[tabId];
+        
+        // Load data appropriately
+        if (tabId === 'contacts') this.loadContacts();
+        if (tabId === 'conversations') this.loadConversations();
+      },
+
+      openSubView(viewId) {
+        document.getElementById(viewId).classList.add('open');
+      },
+
+      closeSubView(viewId) {
+        document.getElementById(viewId).classList.remove('open');
+        if (viewId === 'sub-view-chat') {
+          this.activeChatId = null;
+          this.loadConversations();
+        }
+      },
+
+      handleTopAction() {
+        const activeTab = document.querySelector('.nav-btn.active').dataset.tab;
+        if (activeTab === 'conversations' || activeTab === 'contacts') {
+          this.openAddContact();
+        }
+      },
+
+      openAddContact() {
+        this.openSubView('sub-view-add-contact');
+      },
+
+      // --- Identity ---
+      async generateIdentity() {
+        const name = document.getElementById('input-name').value.trim();
+        const avatar = document.getElementById('input-avatar').value.trim() || '👤';
+        
+        if (!name) return alert("Display name required.");
+
+        document.getElementById('btn-create-identity').style.display = 'none';
+        document.getElementById('keygen-status').style.display = 'block';
+
+        setTimeout(async () => {
+          try {
+            const keys = await cryptoUtils.generateIdentityPair();
+            
+            const identityRecord = {
+              id: keys.fingerprint,
+              displayName: name,
+              avatarType: 'emoji',
+              avatarValue: avatar,
+              publicKeyJWK: keys.publicKeyJWK,
+              privateKey: keys.privateKey,
+              createdAt: Date.now()
+            };
+
+            await db.identity.add(identityRecord);
+            this.myIdentity = identityRecord;
+            
+            this.showView('view-main');
+            this.loadProfileData();
+            this.initPeerNetwork();
+            this.loadConversations();
+          } catch (e) {
+            alert("Error generating identity: " + e.message);
+            document.getElementById('btn-create-identity').style.display = 'flex';
+            document.getElementById('keygen-status').style.display = 'none';
+          }
+        }, 100);
+      },
+
+      loadProfileData() {
+        if (!this.myIdentity) return;
+        document.getElementById('profile-avatar').innerText = this.myIdentity.avatarValue;
+        document.getElementById('profile-name').innerText = this.myIdentity.displayName;
+        document.getElementById('profile-fingerprint').innerText = `ID: ${this.myIdentity.id}\n\nKey: ${JSON.stringify(this.myIdentity.publicKeyJWK).slice(0, 30)}...`;
+      },
+
+      // --- Contacts ---
+      async saveContact(e) {
+        e.preventDefault();
+        const name = document.getElementById('add-contact-name').value.trim();
+        const keyString = document.getElementById('add-contact-key').value.trim();
+        
+        let jwk;
+        try {
+          jwk = JSON.parse(keyString);
+        } catch(e) {
+          // Just mock an ID if they paste something invalid for testing
+          jwk = { kty: 'mock', kid: keyString.slice(0,10) };
+        }
+
+        const contactId = `contact_${Date.now()}`; // Mock ID generation
+        
+        await db.contacts.add({
+          id: contactId,
+          displayName: name,
+          avatarType: 'emoji',
+          avatarValue: name.charAt(0).toUpperCase(),
+          publicKey: jwk,
+          trustState: 'trusted',
+          addedAt: Date.now()
+        });
+
+        document.getElementById('add-contact-name').value = '';
+        document.getElementById('add-contact-key').value = '';
+        this.closeSubView('sub-view-add-contact');
+        
+        alert("Contact Saved!");
+        if (document.querySelector('.nav-btn.active').dataset.tab === 'contacts') {
+          this.loadContacts();
+        }
+      },
+
+      async loadContacts() {
+        const contacts = await db.contacts.toArray();
+        const container = document.getElementById('contacts-list');
+        
+        if (contacts.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size: 30px; margin-bottom: 12px;">📇</div>
+              <p>No contacts saved.</p>
             </div>
           `;
-          msgCount++;
+          return;
         }
-      });
 
-      if (msgCount === 0) {
-        // Fallback for LLM responses that are not formatted nicely
-        streamEl.innerHTML = `
-          <div style="text-align:center; color:var(--saffron); font-size:11px; margin-bottom:12px;">
-            ⚠️ Raw unstructured context returned from LLM. Unparsable to standard transcript interface.
+        container.innerHTML = contacts.map(c => `
+          <div class="list-item" onclick="app.openChat('${c.id}', '${c.displayName}', '${c.avatarValue}')">
+            <div class="avatar">${c.avatarValue}</div>
+            <div class="list-details">
+              <div class="list-title">${c.displayName}</div>
+              <div class="list-subtitle" style="font-family: var(--font-mono); font-size: 10px; margin-top: 4px;">Trusted Key</div>
+            </div>
           </div>
-          <div class="message sender-a" style="max-width:100%; width:100%;">
-            <div class="message-meta" style="color:var(--saffron);">SYSTEM OBSERVER INTERCEPT</div>
-            <div class="message-text" style="font-family:var(--font-mono); white-space:pre-wrap;">${escapeHtml(rawTranscript)}</div>
-          </div>
-        `;
-      } else {
-        streamEl.innerHTML = htmlContent;
+        `).join('');
+      },
+
+      // --- Messaging ---
+      async loadConversations() {
+        const msgs = await db.messages.orderBy('createdAt').reverse().toArray();
+        const container = document.getElementById('conversations-list');
+        
+        // Group by chat
+        const chats = {};
+        for(const m of msgs) {
+          if (!chats[m.chatId]) chats[m.chatId] = m;
+        }
+
+        const chatIds = Object.keys(chats);
+        if (chatIds.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div style="font-size: 40px; margin-bottom: 16px;">💬</div>
+              <p>No conversations yet.</p>
+              <p style="font-size: 13px; margin-top: 8px;">Go to Contacts to start a chat.</p>
+            </div>`;
+          return;
+        }
+
+        let html = '';
+        for (const id of chatIds) {
+          const c = await db.contacts.get(id);
+          const name = c ? c.displayName : 'Unknown';
+          const avatar = c ? c.avatarValue : '?';
+          const lastMsg = chats[id];
+          
+          let preview = "[Encrypted]";
+          if (lastMsg.type === 'file') {
+              preview = "📎 File Attachment";
+          } else {
+              try { 
+                if (c && c.publicKey) {
+                  preview = await cryptoUtils.decryptMessage(lastMsg.encryptedPayload, this.myIdentity.privateKey, c.publicKey); 
+                }
+              } catch(e){}
+          }
+
+          const timeStr = new Date(lastMsg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          html += `
+            <div class="list-item" onclick="app.openChat('${id}', '${name}', '${avatar}')">
+              <div class="avatar">${avatar}</div>
+              <div class="list-details">
+                <div class="list-header">
+                  <div class="list-title">${name}</div>
+                  <div class="list-time">${timeStr}</div>
+                </div>
+                <div class="list-subtitle">${preview}</div>
+              </div>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      },
+
+      async openChat(contactId, name, avatar) {
+        this.activeChatId = contactId;
+        document.getElementById('chat-header-name').innerText = name;
+        document.getElementById('chat-header-avatar').innerText = avatar;
+        
+        this.openSubView('sub-view-chat');
+        await this.renderChatHistory();
+      },
+
+      async renderChatHistory() {
+        if (!this.activeChatId) return;
+        
+        const msgs = await db.messages.where('chatId').equals(this.activeChatId).sortBy('createdAt');
+        const container = document.getElementById('chat-messages-container');
+        
+        if (msgs.length === 0) {
+          container.innerHTML = `<div class="text-center" style="color: var(--text-muted); font-size: 12px; margin-top: 40px;">End-to-End Encrypted Session<br>Keys established.</div>`;
+          return;
+        }
+
+        const contact = await db.contacts.get(this.activeChatId);
+        if (!contact || !contact.publicKey) return;
+
+        let html = '';
+        for (const m of msgs) {
+          const isSelf = m.senderId === this.myIdentity.id;
+          const alignment = isSelf ? 'msg-out' : 'msg-in';
+          const timeStr = new Date(m.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          const ticks = isSelf ? '✓✓' : '';
+          
+          let contentHtml = '';
+          if (m.type === 'file') {
+             const meta = await db.fileMetadata.get(m.fileId);
+             if (meta) {
+                 try {
+                     const encryptedBlob = await opfs.readFile(this.activeChatId, m.fileId);
+                     const decryptedBuffer = await cryptoUtils.decryptFile(encryptedBlob, this.myIdentity.privateKey, contact.publicKey);
+                     const blob = new Blob([decryptedBuffer], { type: meta.mimeType });
+                     const url = URL.createObjectURL(blob);
+                     
+                     if (meta.mimeType.startsWith('image/')) {
+                         contentHtml = `<img src="${url}" style="max-width: 100%; border-radius: 8px;">`;
+                     } else {
+                         contentHtml = `📎 <a href="${url}" download="${meta.name}" style="color:var(--accent)">${meta.name}</a>`;
+                     }
+                 } catch (e) {
+                     contentHtml = `<em>[Encrypted File Unavailable]</em>`;
+                 }
+             } else {
+                 contentHtml = `<em>[File Metadata Missing]</em>`;
+             }
+          } else {
+             const text = await cryptoUtils.decryptMessage(m.encryptedPayload, this.myIdentity.privateKey, contact.publicKey);
+             contentHtml = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          }
+
+          html += `
+            <div class="message-bubble ${alignment}">
+              <div>${contentHtml}</div>
+              <div class="msg-meta">${timeStr} <span style="color: ${m.status === 'delivered' ? 'var(--accent)' : 'inherit'}">${ticks}</span></div>
+            </div>
+          `;
+        }
+        
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+      },
+
+      async sendMessage(e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-input-text');
+        const text = input.value.trim();
+        if (!text || !this.activeChatId) return;
+
+        input.value = '';
+        
+        const contact = await db.contacts.get(this.activeChatId);
+        if (!contact || !contact.publicKey) return alert("Contact public key missing. Cannot encrypt.");
+
+        // Encrypt and save
+        const ciphertext = await cryptoUtils.encryptMessage(text, this.myIdentity.privateKey, contact.publicKey);
+        const msgRecord = {
+          id: `msg_${Date.now()}`,
+          chatId: this.activeChatId,
+          senderId: this.myIdentity.id,
+          encryptedPayload: ciphertext,
+          status: 'pending',
+          createdAt: Date.now()
+        };
+
+        await db.messages.add(msgRecord);
+        await this.renderChatHistory();
+
+        // Attempt P2P Send
+        if (this.peer && this.activeChatId) {
+          const conn = this.peer.connect(contact.id + "_via");
+          conn.on('open', () => {
+            // Send the encrypted payload
+            const payload = {
+               id: msgRecord.id,
+               chatId: this.myIdentity.id, // from their perspective, the chatId is my ID
+               senderId: this.myIdentity.id,
+               encryptedPayload: ciphertext,
+               status: 'delivered',
+               createdAt: msgRecord.createdAt
+            };
+            conn.send(payload);
+            db.messages.update(msgRecord.id, {status: 'delivered'});
+            if(this.activeChatId === msgRecord.chatId) this.renderChatHistory();
+          });
+          conn.on('error', (err) => console.error("P2P send error:", err));
+        }
+      },
+
+      async sendFile(e) {
+        const file = e.target.files[0];
+        if (!file || !this.activeChatId) return;
+        
+        const contact = await db.contacts.get(this.activeChatId);
+        if (!contact || !contact.publicKey) return alert("Contact missing.");
+
+        // Clear input to allow uploading same file again if desired
+        e.target.value = '';
+
+        const arrayBuffer = await file.arrayBuffer();
+        
+        // Encrypt the file buffer
+        const encryptedBuffer = await cryptoUtils.encryptFile(arrayBuffer, this.myIdentity.privateKey, contact.publicKey);
+        
+        // Save to OPFS
+        const fileId = `file_${Date.now()}`;
+        await opfs.writeFile(this.activeChatId, fileId, encryptedBuffer);
+        
+        // Save metadata
+        const metaRecord = {
+          id: fileId,
+          chatId: this.activeChatId,
+          name: file.name,
+          mimeType: file.type,
+          createdAt: Date.now()
+        };
+        await db.fileMetadata.add(metaRecord);
+        
+        // Save message record
+        const msgRecord = {
+          id: `msg_${Date.now()}`,
+          chatId: this.activeChatId,
+          senderId: this.myIdentity.id,
+          type: 'file',
+          fileId: fileId,
+          status: 'pending',
+          createdAt: Date.now()
+        };
+        await db.messages.add(msgRecord);
+        await this.renderChatHistory();
+
+        // Send via P2P
+        if (this.peer && this.activeChatId) {
+          const conn = this.peer.connect(contact.id + "_via");
+          conn.on('open', () => {
+             const payload = {
+                id: msgRecord.id,
+                chatId: this.myIdentity.id,
+                senderId: this.myIdentity.id,
+                type: 'file',
+                fileId: fileId,
+                fileMetadata: metaRecord,
+                fileBuffer: encryptedBuffer, // send the array buffer directly over PeerJS
+                status: 'delivered',
+                createdAt: msgRecord.createdAt
+             };
+             conn.send(payload);
+             db.messages.update(msgRecord.id, {status: 'delivered'});
+             if(this.activeChatId === msgRecord.chatId) this.renderChatHistory();
+          });
+        }
+      },
+
+      // --- Network ---
+      initPeerNetwork() {
+        if (this.myIdentity && window.Peer) {
+          // Create PeerJS node using our fingerprint
+          this.peer = new Peer(this.myIdentity.id + "_via");
+          
+          this.peer.on('open', id => {
+            console.log('P2P Node Active. Peer ID:', id);
+            const statusEl = document.getElementById('p2p-status');
+            if(statusEl) {
+               statusEl.innerText = 'Connected to Signaling Relay';
+               statusEl.style.color = '#22d3a0'; // green
+            }
+          });
+
+          this.peer.on('connection', conn => {
+             conn.on('data', async (data) => {
+                console.log("Received via P2P:", data);
+                if (data && data.chatId) {
+                    if (data.type === 'file' && data.fileBuffer && data.fileMetadata) {
+                        // It's a file
+                        const incomingChatId = data.chatId; // is the sender's id
+                        await opfs.writeFile(incomingChatId, data.fileId, data.fileBuffer);
+                        await db.fileMetadata.add(data.fileMetadata);
+                        
+                        const msgRecord = {
+                            id: data.id,
+                            chatId: incomingChatId,
+                            senderId: data.senderId,
+                            type: 'file',
+                            fileId: data.fileId,
+                            status: 'delivered',
+                            createdAt: data.createdAt
+                        };
+                        await db.messages.add(msgRecord);
+                    } else if (data.encryptedPayload) {
+                        // It's text
+                        await db.messages.add(data);
+                    }
+                    
+                    if (app.activeChatId === data.chatId) {
+                        app.renderChatHistory();
+                    } else {
+                        app.loadConversations();
+                    }
+                }
+             });
+          });
+
+          this.peer.on('error', err => {
+            console.error('P2P Error:', err);
+            const statusEl = document.getElementById('p2p-status');
+            if(statusEl) {
+               statusEl.innerText = 'Relay Disconnected';
+               statusEl.style.color = '#ef4444'; 
+            }
+          });
+        }
+      },
+
+      // --- Utils ---
+      async wipeData() {
+        if(confirm("DANGER: Wiping node destroys local identity and all encrypted messages. There is no recovery. Proceed?")) {
+           await db.delete();
+           window.location.reload();
+        }
       }
-      
-      // Auto scroll to bottom
-      streamEl.scrollTop = streamEl.scrollHeight;
-    }
+    };
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
+    // Boot
+    window.addEventListener('DOMContentLoaded', () => app.init());
 
-    function toggleAutoRefresh() {
-      const isChecked = document.getElementById('chk-auto-refresh').checked;
-      if (isChecked) {
-        startAutoRefresh();
-      } else {
-        stopAutoRefresh();
-      }
-    }
-
-    function startAutoRefresh() {
-      if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-      fetchTranscript(); // immediate update
-      autoRefreshInterval = setInterval(fetchTranscript, 5000);
-    }
-
-    function stopAutoRefresh() {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-      }
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      event.target.classList.add('active');
-      document.getElementById(`tab-${tabId}`).classList.add('active');
-    }
-
-    function toggleSidebar(open) {
-      const panel = document.getElementById('sidebar-panel');
-      const overlay = document.getElementById('sidebar-overlay');
-      if (open) {
-        panel.classList.add('open');
-        overlay.classList.add('open');
-      } else {
-        panel.classList.remove('open');
-        overlay.classList.remove('open');
-      }
-    }
-
-    // Initialize App
-    initParams();
   </script>
-
-  <!-- Sidebar overlay backdrop -->
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
-
-  <!-- Floating settings button for mobile -->
-  <button class="floating-settings-btn" onclick="toggleSidebar(true)" aria-label="Settings and Telemetry">
-    ⚙️
-  </button>
 </body>
 </html>
