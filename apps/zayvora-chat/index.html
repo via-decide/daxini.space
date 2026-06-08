@@ -13,8 +13,7 @@
   
   <!-- Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   
   <style>
@@ -760,6 +759,164 @@
      * VIA Connect V1 - Sovereign Engineering Layer
      */
 
+    class ViaNetwork {
+        constructor(myId, signalingUrl) {
+            this.myId = myId;
+            this.signalingUrl = signalingUrl;
+            this.connections = {}; 
+            this.onMessage = null;
+            this.onStatusChange = null;
+        }
+
+        connect(contactId) {
+            if (this.connections[contactId]) return this.connections[contactId];
+            
+            const roomId = [this.myId, contactId].sort().join('-');
+            const ws = new WebSocket(`${this.signalingUrl}/${roomId}`);
+            const pc = new RTCPeerConnection({
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+                ]
+            });
+
+            const connObj = { ws, pc, channel: null, queue: [], status: 'connecting' };
+            this.connections[contactId] = connObj;
+            
+            const isInitiator = this.myId > contactId;
+
+            const updateStatus = (status) => {
+                connObj.status = status;
+                if (this.onStatusChange) this.onStatusChange(contactId, status);
+            };
+
+            ws.onopen = async () => {
+                updateStatus('signaling');
+                if (isInitiator) {
+                    connObj.channel = pc.createDataChannel('via-chat');
+                    this.setupChannel(contactId, connObj.channel);
+                    const offer = await pc.createOffer();
+                    await pc.setLocalDescription(offer);
+                    ws.send(JSON.stringify({ type: 'offer', sdp: pc.localDescription }));
+                } else {
+                    ws.send(JSON.stringify({ type: 'hello' }));
+                }
+            };
+
+            ws.onmessage = async (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'hello' && isInitiator) {
+                        const offer = await pc.createOffer();
+                        await pc.setLocalDescription(offer);
+                        ws.send(JSON.stringify({ type: 'offer', sdp: pc.localDescription }));
+                    } else if (msg.type === 'offer') {
+                        await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+                        const answer = await pc.createAnswer();
+                        await pc.setLocalDescription(answer);
+                        ws.send(JSON.stringify({ type: 'answer', sdp: pc.localDescription }));
+                    } else if (msg.type === 'answer') {
+                        await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp));
+                    } else if (msg.type === 'candidate') {
+                        await pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
+                    } else if (msg.type === 'chat_message') {
+                        if (this.onMessage) this.onMessage(msg.payload);
+                    } else if (msg.type === 'error') {
+                        console.error('Signaling server error:', msg.message);
+                        updateStatus('disconnected');
+                    }
+                } catch(e) {
+                    console.error("Signaling message error", e);
+                }
+            };
+
+            pc.onicecandidate = (event) => {
+                if (event.candidate && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'candidate', candidate: event.candidate }));
+                }
+            };
+
+            pc.ondatachannel = (event) => {
+                connObj.channel = event.channel;
+                this.setupChannel(contactId, connObj.channel);
+            };
+
+            pc.onconnectionstatechange = () => {
+                if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') {
+                    updateStatus('disconnected');
+                } else if (pc.connectionState === 'connected') {
+                    updateStatus('connected');
+                }
+            };
+
+            ws.onerror = () => updateStatus('disconnected');
+            ws.onclose = () => updateStatus('disconnected');
+
+            return connObj;
+        }
+
+        setupChannel(contactId, channel) {
+            const connObj = this.connections[contactId];
+            channel.binaryType = 'arraybuffer';
+            
+            let pendingFileMeta = null;
+
+            channel.onopen = () => {
+                connObj.status = 'connected';
+                if (this.onStatusChange) this.onStatusChange(contactId, 'connected');
+                while(connObj.queue.length > 0) {
+                    const data = connObj.queue.shift();
+                    this._send(channel, data);
+                }
+            };
+
+            channel.onmessage = async (event) => {
+                if (event.data instanceof ArrayBuffer) {
+                    if (pendingFileMeta) {
+                        pendingFileMeta.fileBuffer = event.data;
+                        if (this.onMessage) this.onMessage(pendingFileMeta);
+                        pendingFileMeta = null;
+                    }
+                } else {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.hasBufferNext) {
+                            delete data.hasBufferNext;
+                            pendingFileMeta = data;
+                        } else {
+                            if (this.onMessage) this.onMessage(data);
+                        }
+                    } catch(e) {
+                        console.error("Channel parse error", e);
+                    }
+                }
+            };
+        }
+
+        send(contactId, payload) {
+            const conn = this.connect(contactId);
+            if (conn.status === 'connected' && conn.channel && conn.channel.readyState === 'open') {
+                this._send(conn.channel, payload);
+            } else if (conn.ws && conn.ws.readyState === WebSocket.OPEN && !payload.fileBuffer) {
+                // Fallback to WebSocket for instant text messaging while WebRTC is negotiating
+                conn.ws.send(JSON.stringify({ type: 'chat_message', payload: payload }));
+            } else {
+                conn.queue.push(payload);
+            }
+        }
+
+        _send(channel, payload) {
+            if (payload.fileBuffer) {
+                const buffer = payload.fileBuffer;
+                delete payload.fileBuffer;
+                channel.send(JSON.stringify({ ...payload, hasBufferNext: true }));
+                channel.send(buffer);
+            } else {
+                channel.send(JSON.stringify(payload));
+            }
+        }
+    }
+
     function escapeHTML(str) {
         if (!str) return '';
         return str.toString().replace(/&/g, "&amp;")
@@ -917,7 +1074,7 @@
     // --- 3. Main Application Logic ---
     const app = {
       myIdentity: null,
-      peer: null,
+      network: null,
       activeChatId: null,
 
       async init() {
@@ -955,7 +1112,7 @@
                             avatarType: 'emoji',
                             avatarValue: payload.displayName ? payload.displayName.charAt(0).toUpperCase() : '?',
                             publicKey: payload.publicKeyJWK,
-                            trustState: 'pending_outbound',
+                            trustState: 'trusted',
                             addedAt: Date.now()
                         });
                         this.loadContacts();
@@ -965,8 +1122,7 @@
                     this.switchTab('conversations');
                     this.openChat(payload.id);
 
-                    // Dispatch handshake ping so the other party gets notified instantly
-                    this.sendHandshakePing(payload.id);
+                    if (this.network) this.network.connect(payload.id);
                 }
             } catch(e) {
                 console.error("Failed to parse connect URL", e);
@@ -976,34 +1132,22 @@
       
       sendHandshakePing(contactId) {
           const doConnect = () => {
-              if (!this.peer || !this.myIdentity) return;
-              const conn = this.peer.connect(contactId + "_via", { reliable: true });
-              conn.on('open', () => {
-                  conn.send({
-                      type: 'system_handshake',
-                      chatId: this.myIdentity.id,
-                      senderId: this.myIdentity.id,
-                      senderName: this.myIdentity.displayName,
-                      senderPublicKey: this.myIdentity.publicKeyJWK,
-                      createdAt: Date.now()
-                  });
+              if (!this.network || !this.myIdentity) return;
+              this.network.send(contactId, {
+                  type: 'system_handshake',
+                  chatId: this.myIdentity.id,
+                  senderId: this.myIdentity.id,
+                  senderName: this.myIdentity.displayName,
+                  senderPublicKey: this.myIdentity.publicKeyJWK,
+                  createdAt: Date.now()
               });
-              conn.on('error', err => console.log("Handshake ping failed:", err));
           };
 
-          if (this.peer && !this.peer.disconnected && !this.peer.destroyed) {
-              if (this.peer.open) {
-                  doConnect();
-              } else {
-                  this.peer.on('open', doConnect);
-              }
+          if (this.network) {
+              doConnect();
           } else {
-              // If peer is entirely missing, wait a bit and retry
               setTimeout(() => {
-                  if (this.peer) {
-                      if (this.peer.open) doConnect();
-                      else this.peer.on('open', doConnect);
-                  }
+                  if (this.network) doConnect();
               }, 2500);
           }
       },
@@ -1412,15 +1556,12 @@
               await db.contacts.update(this.activeChatId, { trustState: 'trusted' });
               
               // Send system message
-              if (this.peer) {
-                  const conn = this.peer.connect(this.activeChatId + "_via");
-                  conn.on('open', () => {
-                      conn.send({
-                          type: 'system_approve',
-                          chatId: this.myIdentity.id,
-                          senderId: this.myIdentity.id,
-                          createdAt: Date.now()
-                      });
+              if (this.network) {
+                  this.network.send(this.activeChatId, {
+                      type: 'system_approve',
+                      chatId: this.myIdentity.id,
+                      senderId: this.myIdentity.id,
+                      createdAt: Date.now()
                   });
               }
               
@@ -1523,10 +1664,7 @@
         await this.renderChatHistory();
 
         // Attempt P2P Send
-        if (this.peer && this.activeChatId) {
-          const conn = this.peer.connect(contact.id + "_via");
-          conn.on('open', () => {
-            // Send the encrypted payload
+        if (this.network && this.activeChatId) {
             const payload = {
                id: msgRecord.id,
                chatId: this.myIdentity.id, // from their perspective, the chatId is my ID
@@ -1537,11 +1675,9 @@
                status: 'delivered',
                createdAt: msgRecord.createdAt
             };
-            conn.send(payload);
+            this.network.send(contact.id, payload);
             db.messages.update(msgRecord.id, {status: 'delivered'});
             if(this.activeChatId === msgRecord.chatId) this.renderChatHistory();
-          });
-          conn.on('error', (err) => console.error("P2P send error:", err));
         }
       },
 
@@ -1588,9 +1724,7 @@
         await this.renderChatHistory();
 
         // Send via P2P
-        if (this.peer && this.activeChatId) {
-          const conn = this.peer.connect(contact.id + "_via");
-          conn.on('open', () => {
+        if (this.network && this.activeChatId) {
              const payload = {
                 id: msgRecord.id,
                 chatId: this.myIdentity.id,
@@ -1600,42 +1734,45 @@
                 type: 'file',
                 fileId: fileId,
                 fileMetadata: metaRecord,
-                fileBuffer: encryptedBuffer, // send the array buffer directly over PeerJS
+                fileBuffer: encryptedBuffer,
                 status: 'delivered',
                 createdAt: msgRecord.createdAt
              };
-             conn.send(payload);
+             this.network.send(contact.id, payload);
              db.messages.update(msgRecord.id, {status: 'delivered'});
              if(this.activeChatId === msgRecord.chatId) this.renderChatHistory();
-          });
         }
       },
 
       // --- Network ---
-      initPeerNetwork() {
-        if (this.myIdentity && window.Peer) {
-          // Create PeerJS node using our fingerprint
-          this.peer = new Peer(this.myIdentity.id + "_via", {
-             debug: 2,
-             config: {
-                 iceServers: [
-                     { urls: 'stun:stun.l.google.com:19302' },
-                     { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
-                 ]
-             }
-          });
+      async initPeerNetwork() {
+        if (this.myIdentity) {
+          const SIGNALING_URL = 'wss://via-signaling-server.dharam-8f8.workers.dev/connect';
+          this.network = new ViaNetwork(this.myIdentity.id, SIGNALING_URL);
           
-          this.peer.on('open', id => {
-            console.log('P2P Node Active. Peer ID:', id);
-            const statusEl = document.getElementById('p2p-status');
-            if(statusEl) {
-               statusEl.innerText = 'Connected to Signaling Relay';
-               statusEl.style.color = '#22d3a0'; // green
-            }
-          });
+          const statusEl = document.getElementById('p2p-status');
+          if(statusEl) {
+             statusEl.innerText = 'Service Active';
+             statusEl.style.color = '#22d3a0'; // green
+          }
 
-          this.peer.on('connection', conn => {
-             conn.on('data', async (data) => {
+          this.network.onStatusChange = (contactId, status) => {
+             console.log(`P2P Status with ${contactId}: ${status}`);
+             if (app.activeChatId === contactId && statusEl) {
+                 if (status === 'connected') {
+                     statusEl.innerText = 'Connected to Peer';
+                     statusEl.style.color = '#22d3a0'; 
+                 } else if (status === 'signaling') {
+                     statusEl.innerText = 'Negotiating WebRTC...';
+                     statusEl.style.color = 'var(--accent)'; 
+                 } else if (status === 'disconnected') {
+                     statusEl.innerText = 'Disconnected';
+                     statusEl.style.color = '#ef4444';
+                 }
+             }
+          };
+
+          this.network.onMessage = async (data) => {
                 console.log("Received via P2P:", data);
                 
                 if (data.type === 'system_approve' && data.chatId) {
@@ -1658,23 +1795,18 @@
                             avatarType: 'emoji',
                             avatarValue: data.senderName ? data.senderName.charAt(0).toUpperCase() : '?',
                             publicKey: data.senderPublicKey,
-                            trustState: 'pending_inbound',
+                            trustState: 'trusted',
                             addedAt: Date.now()
                         };
                         await db.contacts.add(contact);
                         app.loadContacts();
-                    } else if (contact && contact.trustState === 'pending_outbound') {
-                        // If they were pending outbound, their message implicitly moves them to temporary
-                        await db.contacts.update(data.chatId, { trustState: 'temporary' });
+                    } else if (contact && contact.trustState !== 'trusted') {
+                        await db.contacts.update(data.chatId, { trustState: 'trusted' });
                         app.loadContacts();
                     }
                     
                     if (data.type === 'system_handshake') {
-                        if (!app.activeChatId || app.activeChatId !== data.chatId) {
-                            alert(`New connection request from ${data.senderName || 'Unknown'}! Switching to Contacts tab.`);
-                            app.switchTab('contacts');
-                        }
-                        return;
+                        return; // Just an invisible ping now!
                     }
 
                     if (data.type === 'file' && data.fileBuffer && data.fileMetadata) {
@@ -1713,16 +1845,14 @@
                     // Refresh contacts if a new one was added
                     app.loadContacts();
                 }
-             });
-          });
+          };
 
-          this.peer.on('error', err => {
-            console.error('P2P Error:', err);
-            const statusEl = document.getElementById('p2p-status');
-            if(statusEl) {
-               statusEl.innerText = 'Relay Disconnected';
-               statusEl.style.color = '#ef4444'; 
-            }
+          // Auto-connect to trusted contacts
+          const contacts = await db.contacts.toArray();
+          contacts.forEach(c => {
+             if (c.trustState === 'trusted' || c.trustState === 'pending_outbound') {
+                 this.network.connect(c.id);
+             }
           });
         }
       },
