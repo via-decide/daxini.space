@@ -887,12 +887,12 @@
                             trustState: 'pending_outbound',
                             addedAt: Date.now()
                         });
-                        alert(`Connection request started with ${payload.displayName}`);
-                        this.switchTab('contacts');
-                        
-                        // Clear the URL to avoid refetching
-                        window.history.replaceState({}, document.title, window.location.pathname);
+                        this.loadContacts();
                     }
+                    
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    this.switchTab('conversations');
+                    this.openChat(payload.id);
                 }
             } catch(e) {
                 console.error("Failed to parse connect URL", e);
@@ -991,6 +991,7 @@
             this.loadProfileData();
             this.initPeerNetwork();
             this.loadConversations();
+            this.checkConnectURL();
           } catch (e) {
             alert("Error generating identity: " + e.message);
             document.getElementById('btn-create-identity').style.display = 'flex';
