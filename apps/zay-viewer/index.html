@@ -294,16 +294,17 @@
                 document.getElementById('contextData').innerHTML = '';
                 document.getElementById('evidenceData').innerHTML = '';
                 
-                // Attempt to read as text first to see if it's JSON
-                const text = await file.text();
+                // Try JSON first
+                let isJson = false;
                 try {
+                    const text = await file.text();
                     const bundle = JSON.parse(text);
                     if (bundle.type === 'zayvora_bundle') {
                         renderJsonBundle(bundle);
                         return;
                     }
                 } catch(e) {
-                    // Not a JSON file, proceed to treat as ZIP
+                    // Not JSON, proceed to ZIP
                 }
                 
                 // Read Zip
@@ -321,18 +322,17 @@
                     `;
                 }
 
-                // 2. Load Content (assuming 01-chapter.md for prototype)
-                let contentFound = false;
+                // 2. Map Markdown Content
+                window.activeZipDocs = [];
                 for (const relativePath in zip.files) {
                     if (relativePath.startsWith('content/') && relativePath.endsWith('.md')) {
                         const mdContent = await zip.file(relativePath).async('string');
-                        document.getElementById('markdownContent').innerHTML += marked.parse(mdContent);
-                        contentFound = true;
+                        window.activeZipDocs.push({ path: relativePath, content: mdContent });
                     }
                 }
-                if (!contentFound) {
-                    document.getElementById('markdownContent').innerHTML = '<p class="text-gray-500"><i>[WARN] No markdown content found in bundle.</i></p>';
-                }
+                
+                // Sort docs to keep order
+                window.activeZipDocs.sort((a, b) => a.path.localeCompare(b.path));
 
                 // 3. Load Context (decisions.json)
                 if (zip.file('context/decisions.json')) {
@@ -340,11 +340,16 @@
                     const decisions = JSON.parse(decStr).architectural_decisions || [];
                     
                     let html = '';
-                    decisions.forEach((d, idx) => {
-                        const prefix = idx === decisions.length - 1 ? '└──' : '├──';
+                    // If we have decisions, use them, otherwise use generic names
+                    const itemsToRender = decisions.length > 0 ? decisions : window.activeZipDocs;
+                    
+                    itemsToRender.forEach((d, idx) => {
+                        const prefix = idx === itemsToRender.length - 1 ? '└──' : '├──';
+                        const title = d.decision || d.path.split('/').pop().replace('.md', '');
+                        const idStr = d.id ? ` [${d.id}]` : '';
                         html += `
-                            <div class="tree-item" title="${d.decision}">
-                                <span class="text-gray-600">${prefix}</span> [${d.id}]
+                            <div class="tree-item" title="${title}" onclick="loadZipDoc(${idx})">
+                                <span class="text-gray-600">${prefix}</span> <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; max-width:200px; vertical-align:bottom;">${title}</span>${idStr}
                             </div>
                         `;
                     });
@@ -358,6 +363,13 @@
                         <pre>${traceStr}</pre>
                     `;
                 }
+                
+                // Initial load
+                if (window.activeZipDocs.length > 0) {
+                    loadZipDoc(0);
+                } else {
+                    document.getElementById('markdownContent').innerHTML = '<p class="text-gray-500"><i>[WARN] No markdown content found in bundle.</i></p>';
+                }
 
             } catch (err) {
                 console.error(err);
@@ -367,6 +379,20 @@
                 document.querySelector('header div').innerText = 'Awaiting Payload';
                 document.querySelector('header div').className = 'text-[10px] text-[#4ade80] border border-[#4ade80] px-2 py-0.5 uppercase tracking-widest';
             }
+        }
+        
+        window.loadZipDoc = function(index) {
+            const doc = window.activeZipDocs[index];
+            if (!doc) return;
+            document.getElementById('markdownContent').innerHTML = marked.parse(doc.content);
+            
+            // Update selected state in tree
+            const items = document.querySelectorAll('#contextData .tree-item');
+            items.forEach((item, i) => {
+                if (i === index) item.style.color = '#fbbf24';
+                else item.style.color = '';
+            });
+            document.getElementById('content').scrollTop = 0;
         }
 
         function renderJsonBundle(bundle) {
