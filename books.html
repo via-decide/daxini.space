@@ -3,1243 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Daxini Stack — Sovereign AI Infrastructure</title>
-    <meta name="description" content="5 volumes on local-first architecture, deterministic execution, and sovereign infrastructure. Free sample editions. Full editions on Amazon Kindle.">
-    <meta name="author" content="Dharam Daxini">
+    <title>The Daxini Archive</title>
+    <meta name="description" content="A living archive of books, experiments, field notes, systems, and ongoing investigations.">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #08080a;
-            --surface: #0e0e12;
-            --surface-2: #151519;
-            --surface-3: #1c1c22;
-            --border: rgba(255,255,255,0.06);
-            --border-hover: rgba(255,255,255,0.12);
-            --text: #eaeaf0;
-            --text-secondary: #8b8ba0;
-            --text-tertiary: #55556a;
-            --accent: #3b82f6;
-            --accent-dim: rgba(59,130,246,0.10);
-            --accent-glow: rgba(59,130,246,0.25);
-            --amazon: #ff9900;
-            --amazon-hover: #e68a00;
-            --green: #22c55e;
-            --serif: 'Instrument Serif', Georgia, serif;
-            --sans: 'Manrope', system-ui, sans-serif;
-            --mono: 'JetBrains Mono', monospace;
-            --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+            --bg: #09090b;
+            --surface: #121212;
+            --border: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #fbbf24;
+            --accent-dim: rgba(251, 191, 36, 0.1);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { scroll-behavior: smooth; }
-
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--sans);
-            line-height: 1.6;
-            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text-muted);
+            font-family: 'Crimson Text', serif;
             -webkit-font-smoothing: antialiased;
         }
-
-        /* Subtle noise grain */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.5;
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); border-left: 1px solid var(--border); }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        
+        /* Archive Atmosphere */
+        .noise {
+            position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
-
-        a { color: var(--accent); text-decoration: none; transition: opacity 0.2s var(--ease); }
-        a:hover { opacity: 0.8; }
-
-        /* ═══════════════════════════════════════════
-           NAV BAR
-        ═══════════════════════════════════════════ */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            transition: background 0.3s var(--ease);
+        .scanline {
+            position: fixed; inset: 0; pointer-events: none; z-index: 49; opacity: 0.2;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 51%);
+            background-size: 100% 4px;
         }
-        .nav.scrolled {
-            background: rgba(8,8,10,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-inner {
-            max-width: 1100px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .nav-brand {
-            font-family: var(--mono);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .nav-links a { color: var(--text-secondary); }
-        .nav-links a:hover { color: var(--text); opacity: 1; }
-
-        /* ═══════════════════════════════════════════
-           HERO
-        ═══════════════════════════════════════════ */
-        .hero {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 10rem 2rem 4rem;
-            position: relative;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        .hero-label {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-        .hero-label::before {
-            content: '';
-            width: 24px;
-            height: 1px;
-            background: var(--accent);
-        }
-        .hero h1 {
-            font-family: var(--serif);
-            font-size: clamp(2.8rem, 6vw, 5rem);
-            font-weight: 400;
-            line-height: 1.08;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.5rem;
-            max-width: 750px;
-        }
-        .hero h1 em {
-            font-style: italic;
-            color: var(--accent);
-        }
-        .hero-sub {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            line-height: 1.7;
-            margin-bottom: 2.5rem;
-        }
-        .hero-ctas {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        /* ═══════════════════════════════════════════
-           BUTTONS
-        ═══════════════════════════════════════════ */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            font-family: var(--sans);
-            cursor: pointer;
-            transition: all 0.25s var(--ease);
+        
+        /* Brutalist Components */
+        .card-brutal {
             border: 1px solid var(--border);
-            text-decoration: none;
-        }
-        .btn:hover { opacity: 1; }
-        .btn-primary {
-            background: var(--text);
-            color: var(--bg);
-            border-color: var(--text);
-        }
-        .btn-primary:hover {
-            background: #cccce0;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(255,255,255,0.08);
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--text);
-        }
-        .btn-ghost:hover {
-            background: var(--surface-2);
-            border-color: var(--border-hover);
-        }
-        .btn-amazon {
-            background: var(--amazon);
-            color: #000;
-            border-color: var(--amazon);
-            font-weight: 700;
-        }
-        .btn-amazon:hover {
-            background: var(--amazon-hover);
-            border-color: var(--amazon-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(255,153,0,0.2);
-        }
-        .btn-download {
-            background: transparent;
-            color: var(--accent);
-            border-color: rgba(59,130,246,0.3);
-        }
-        .btn-download:hover {
-            background: var(--accent-dim);
-            border-color: var(--accent);
-        }
-        .btn-sm {
-            padding: 0.55rem 1rem;
-            font-size: 0.8rem;
-        }
-
-        /* ═══════════════════════════════════════════
-           SECTION LAYOUT
-        ═══════════════════════════════════════════ */
-        .section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-        .section-divider {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            border-top: 1px solid var(--border);
-        }
-        .section-header {
-            margin-bottom: 3rem;
-        }
-        .section-label {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-tertiary);
-            margin-bottom: 0.75rem;
-        }
-        .section-title {
-            font-family: var(--serif);
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            font-weight: 400;
-            letter-spacing: -0.01em;
-            line-height: 1.2;
-        }
-        .section-sub {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-top: 0.75rem;
-            max-width: 600px;
-            line-height: 1.6;
-        }
-
-        /* ═══════════════════════════════════════════
-           KDP EDITIONS (Hero Cards)
-        ═══════════════════════════════════════════ */
-        .editions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-        .edition-card {
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            display: flex;
-            gap: 1.75rem;
-            transition: all 0.3s var(--ease);
+            transition: all 0.2s ease;
             position: relative;
-            overflow: hidden;
         }
-        .edition-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0;
-            transition: opacity 0.3s var(--ease);
-        }
-        .edition-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-        }
-        .edition-card:hover::before { opacity: 1; }
-
-        /* CSS Book Cover */
-        .book-cover {
-            flex-shrink: 0;
-            width: 120px;
-            height: 175px;
-            border-radius: 3px 10px 10px 3px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 1.2rem 1rem;
-            color: #fff;
-            position: relative;
-            box-shadow: 8px 10px 24px rgba(0,0,0,0.45);
-            transition: transform 0.4s var(--ease);
-            perspective: 800px;
-        }
-        .edition-card:hover .book-cover {
-            transform: rotateY(-8deg) scale(1.02);
-        }
-        .book-cover::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.12) 40%, rgba(0,0,0,0.2) 100%);
-            border-radius: 3px 0 0 3px;
-            z-index: 2;
-        }
-        .book-cover::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(130deg, rgba(255,255,255,0.12) 0%, transparent 35%, rgba(0,0,0,0.2) 100%);
-            border-radius: inherit;
-            z-index: 1;
-        }
-        .cover-edition-1 { background: linear-gradient(145deg, #0c1222 0%, #1e1b4b 60%, #312e81 100%); border: 1px solid rgba(99,102,241,0.15); }
-        .cover-edition-2 { background: linear-gradient(145deg, #0c1222 0%, #1e3a5f 60%, #1d4ed8 100%); border: 1px solid rgba(59,130,246,0.15); }
-        .cover-vol-1 { background: linear-gradient(145deg, #111827 0%, #1e3a5f 100%); border: 1px solid rgba(96,165,250,0.12); }
-        .cover-vol-2 { background: linear-gradient(145deg, #0f172a 0%, #312e81 100%); border: 1px solid rgba(129,140,248,0.12); }
-        .cover-vol-3 { background: linear-gradient(145deg, #0c1a12 0%, #14532d 100%); border: 1px solid rgba(34,197,94,0.12); }
-        .cover-vol-4 { background: linear-gradient(145deg, #1c1210 0%, #7c2d12 100%); border: 1px solid rgba(251,146,60,0.12); }
-        .cover-vol-5 { background: linear-gradient(145deg, #1a0c22 0%, #581c87 100%); border: 1px solid rgba(168,85,247,0.12); }
-
-        .cover-tag {
-            font-family: var(--mono);
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            opacity: 0.7;
-            z-index: 3;
-        }
-        .cover-title-text {
-            font-family: var(--serif);
-            font-size: 0.95rem;
-            line-height: 1.25;
-            z-index: 3;
-        }
-        .cover-author {
-            font-family: var(--sans);
-            font-size: 0.55rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.65;
-            z-index: 3;
-        }
-
-        .edition-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex: 1;
-            min-width: 0;
-        }
-        .edition-badge {
-            font-family: var(--mono);
+        .card-brutal:hover { border-color: var(--accent); }
+        
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--green);
-            margin-bottom: 0.5rem;
-        }
-        .edition-title {
-            font-family: var(--serif);
-            font-size: 1.35rem;
-            line-height: 1.25;
-            margin-bottom: 0.4rem;
-        }
-        .edition-sub {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-        .edition-meta {
-            display: flex;
-            gap: 1.25rem;
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-tertiary);
-            margin-bottom: 1.25rem;
-            flex-wrap: wrap;
-        }
-        .edition-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .edition-meta span::before {
-            content: '';
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.6;
-        }
-        .edition-actions {
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
-
-        /* ═══════════════════════════════════════════
-           FREE VOLUMES GRID
-        ═══════════════════════════════════════════ */
-        .volumes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.25rem;
-        }
-        .volume-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.25s var(--ease);
-            display: flex;
-            flex-direction: column;
-        }
-        .volume-card:hover {
-            border-color: var(--border-hover);
-            background: var(--surface-2);
-        }
-        .volume-number {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-        }
-        .volume-title {
-            font-family: var(--serif);
-            font-size: 1.2rem;
-            line-height: 1.3;
-            margin-bottom: 0.3rem;
-        }
-        .volume-subtitle {
-            font-size: 0.82rem;
-            color: var(--text-tertiary);
-            margin-bottom: 0.75rem;
-        }
-        .volume-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.55;
-            flex-grow: 1;
-            margin-bottom: 1.25rem;
-        }
-        .volume-meta {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-tertiary);
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 1rem;
-        }
-        .volume-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* ═══════════════════════════════════════════
-           EMAIL GATE MODAL
-        ═══════════════════════════════════════════ */
-        .gate-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 200;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            animation: fadeIn 0.2s var(--ease);
-        }
-        .gate-overlay.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .gate-box {
-            background: var(--surface-2);
-            border: 1px solid var(--border-hover);
-            border-radius: 20px;
-            padding: 2.5rem;
-            max-width: 440px;
-            width: 100%;
-            position: relative;
-            animation: slideUp 0.3s var(--ease);
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .gate-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 0.5rem;
-            line-height: 1;
-            transition: color 0.2s;
-        }
-        .gate-close:hover { color: var(--text); }
-
-        .gate-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent-dim);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-            font-size: 1.4rem;
-        }
-        .gate-title {
-            font-family: var(--serif);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .gate-sub {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
-        }
-        .gate-form {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .gate-input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-family: var(--sans);
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .gate-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-dim);
-        }
-        .gate-input::placeholder { color: var(--text-tertiary); }
-        .gate-submit {
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--accent);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-family: var(--sans);
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s var(--ease);
-        }
-        .gate-submit:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-        }
-        .gate-disclaimer {
-            font-size: 0.72rem;
-            color: var(--text-tertiary);
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        /* ═══════════════════════════════════════════
-           OTHER PUBLICATIONS
-        ═══════════════════════════════════════════ */
-        .pub-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.25rem;
-        }
-        .pub-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.25s var(--ease);
-        }
-        .pub-card:hover {
-            border-color: var(--border-hover);
-            background: var(--surface-2);
-        }
-        .pub-badge {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            font-weight: 600;
             letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-            display: inline-block;
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-        }
-        .pub-badge-iot { color: #34d399; background: rgba(34,211,153,0.1); }
-        .pub-badge-chem { color: #fb7185; background: rgba(251,113,133,0.1); }
-        .pub-badge-infra { color: #818cf8; background: rgba(129,140,248,0.1); }
-        .pub-title {
-            font-family: var(--serif);
-            font-size: 1.1rem;
-            line-height: 1.3;
-            margin-bottom: 0.4rem;
-        }
-        .pub-sub {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-        .pub-meta {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-tertiary);
-            margin-bottom: 1rem;
-        }
-        .pub-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* ═══════════════════════════════════════════
-           ECOSYSTEM CTA BANNER
-        ═══════════════════════════════════════════ */
-        .eco-banner {
-            background: var(--surface);
+            padding: 2px 6px;
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-            margin-top: 1rem;
+            background: var(--bg);
+            color: var(--text-muted);
         }
-        .eco-content {
-            flex: 1;
+        .tag-active { border-color: #4ade80; color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+        .tag-warning { border-color: #f87171; color: #f87171; background: rgba(248, 113, 113, 0.1); }
+        
+        /* Hide scrollbar for mobile nav */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px; height: 1.2em;
+            background-color: var(--accent);
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+            margin-left: 4px;
         }
-        .eco-content h3 {
-            font-family: var(--serif);
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
-        }
-        .eco-content p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1.25rem;
-        }
-        .eco-links {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* ═══════════════════════════════════════════
-           FOOTER
-        ═══════════════════════════════════════════ */
-        .footer {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+        /* Timeline Graphics */
+        .timeline-node {
+            position: relative;
+            padding-left: 24px;
+            border-left: 1px solid var(--border);
+            padding-bottom: 24px;
         }
-        .footer-left {
-            font-size: 0.82rem;
-            color: var(--text-tertiary);
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            left: -4px; top: 0;
+            width: 7px; height: 7px;
+            background: var(--bg);
+            border: 1px solid var(--text-muted);
+            transition: all 0.2s;
         }
-        .footer-left strong {
-            color: var(--text-secondary);
-            font-weight: 600;
+        .timeline-node:hover::before {
+            background: var(--accent);
+            border-color: var(--accent);
         }
-        .footer-right {
-            display: flex;
-            gap: 1.5rem;
-            font-size: 0.82rem;
-        }
-        .footer-right a {
-            color: var(--text-tertiary);
-        }
-        .footer-right a:hover { color: var(--text-secondary); opacity: 1; }
+        .timeline-node:last-child { border-left-color: transparent; }
 
-        /* ═══════════════════════════════════════════
-           TOAST
-        ═══════════════════════════════════════════ */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--green);
-            color: #000;
-            padding: 0.7rem 1.5rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            z-index: 300;
-            opacity: 0;
-            transition: all 0.35s var(--ease);
-            pointer-events: none;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ═══════════════════════════════════════════
-           RESPONSIVE
-        ═══════════════════════════════════════════ */
-        @media (max-width: 768px) {
-            .hero { padding: 8rem 1.25rem 3rem; }
-            .section { padding: 3rem 1.25rem; }
-            .section-divider { padding: 0 1.25rem; }
-            .nav { padding: 0.75rem 1.25rem; }
-            .nav-links { gap: 1rem; }
-
-            .edition-card {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                padding: 1.5rem;
-                gap: 1.25rem;
-            }
-            .edition-meta { justify-content: center; }
-            .edition-actions { justify-content: center; width: 100%; }
-            .edition-actions .btn { flex: 1; min-width: 0; }
-            
-            .editions-grid { grid-template-columns: 1fr; }
-            .volumes-grid { grid-template-columns: 1fr; }
-            .pub-grid { grid-template-columns: 1fr; }
-
-            .eco-banner {
-                flex-direction: column;
-                text-align: center;
-                padding: 2rem 1.5rem;
-                gap: 1.5rem;
-            }
-            .eco-links { justify-content: center; }
-            
-            .footer {
-                flex-direction: column;
-                text-align: center;
-                padding: 2rem 1.25rem;
-            }
-            .footer-right { justify-content: center; }
-        }
+        /* Map Canvas */
+        #knowledge-map { width: 100%; height: 300px; border: 1px solid var(--border); background: var(--bg); }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+    <div class="noise"></div>
+    <div class="scanline"></div>
 
-    <!-- NAV -->
-    <nav class="nav" id="nav">
-        <div class="nav-inner">
-            <a href="/" class="nav-brand">daxini.space</a>
-            <div class="nav-links">
-                <a href="/kindle">Kindle</a>
-                <a href="https://github.com/via-decide/daxini-stack/releases" target="_blank">GitHub</a>
-                <a href="https://github.com/via-decide" target="_blank">Aporaksha</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-label">Aporaksha Labs · 5 Volumes</div>
-        <h1>The Daxini Stack</h1>
-        <p class="hero-sub">
-            A blueprint for sovereign AI infrastructure — local-first execution, deterministic behavior, kernel immutability. Read the introduction free. Go deeper on Kindle.
-        </p>
-        <div class="hero-ctas">
-            <a href="#editions" class="btn btn-primary">View Kindle Editions</a>
-            <a href="#volumes" class="btn btn-ghost">Download Free Samples ↓</a>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- KDP EDITIONS -->
-    <section class="section" id="editions">
-        <div class="section-header">
-            <div class="section-label">Amazon Kindle</div>
-            <h2 class="section-title">Full Editions</h2>
-            <p class="section-sub">Expanded content, Kindle Unlimited access, cross-device sync. Two editions available.</p>
-        </div>
-
-        <div class="editions-grid">
-            <!-- Edition 1: B0F9WY9BW5 -->
-            <div class="edition-card">
-                <div class="book-cover cover-edition-1">
-                    <span class="cover-tag">Complete Edition</span>
-                    <span class="cover-title-text">The Daxini Stack</span>
-                    <span class="cover-author">D. Daxini</span>
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 relative z-10">
+        
+        <!-- SIDEBAR / COMMAND PALETTE -->
+        <aside class="w-full md:w-64 flex-shrink-0 font-mono text-sm">
+            <div class="card-brutal p-4 md:p-5 sticky top-4 md:top-8 z-20">
+                <div class="text-[#f4f4f5] font-bold mb-4 md:mb-6 flex items-center justify-between border-b border-[#27272a] pb-4">
+                    <span>DAXINI.ARCHIVE</span>
+                    <span class="text-[10px] text-[#4ade80] border border-[#4ade80] px-1">ONLINE</span>
                 </div>
-                <div class="edition-info">
-                    <div>
-                        <div class="edition-badge">Edition I</div>
-                        <h3 class="edition-title">The Daxini Stack — Complete Edition</h3>
-                        <p class="edition-sub">All 5 volumes in a single integrated narrative. Vault Architecture, CEA-0000 protocol, .zay specification, and sovereign distribution.</p>
+                <nav class="flex flex-row md:flex-col gap-4 md:gap-3 overflow-x-auto md:overflow-visible pb-2 md:pb-0 whitespace-nowrap scrollbar-hide">
+                    <a href="#root" class="text-[#fbbf24] hover:underline">> /root</a>
+                    <a href="#artifacts" class="hover:text-white transition-colors">  /artifacts</a>
+                    <a href="#timeline" class="hover:text-white transition-colors">  /timeline</a>
+                    <a href="#field-notes" class="hover:text-white transition-colors">  /field_notes</a>
+                    <a href="#systems" class="hover:text-white transition-colors">  /systems</a>
+                    <a href="#graph" class="hover:text-white transition-colors">  /graph_view</a>
+                </nav>
+                <div class="hidden md:block mt-8 pt-4 border-t border-[#27272a] text-xs text-gray-500">
+                    <div>SYNC: LOCAL-FIRST</div>
+                    <div>MODE: READ-ONLY</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN ARCHIVE CONTENT -->
+        <main class="flex-1 space-y-16 pb-32">
+            
+            <!-- SECTION 1: THE ARCHIVE -->
+            <section id="root" class="card-brutal p-6 md:p-10 border-t-4 border-t-[#fbbf24]">
+                <h1 class="text-3xl md:text-4xl text-[#f4f4f5] font-mono mb-4 uppercase tracking-tight">
+                    The Daxini Archive<span class="terminal-cursor"></span>
+                </h1>
+                <p class="text-lg md:text-xl text-[#a1a1aa] mb-10 max-w-2xl leading-relaxed">
+                    A living archive of research artifacts, active systems, field notes, and ongoing investigations into local-first intelligence and sovereign infrastructure.
+                </p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 font-mono">
+                    <div class="border-l border-[#fbbf24] pl-4">
+                        <div class="text-xs text-gray-500 mb-1">ARTIFACTS</div>
+                        <div class="text-3xl text-white">05</div>
                     </div>
-                    <div>
-                        <div class="edition-meta">
-                            <span>ASIN: B0F9WY9BW5</span>
-                            <span>Kindle Unlimited</span>
-                        </div>
-                        <div class="edition-actions">
-                            <a href="https://www.amazon.in/dp/B0F9WY9BW5" target="_blank" class="btn btn-amazon btn-sm">
-                                Amazon (IN)
-                            </a>
-                            <a href="https://www.amazon.com/dp/B0F9WY9BW5" target="_blank" class="btn btn-ghost btn-sm">
-                                Amazon (US)
-                            </a>
-                        </div>
+                    <div class="border-l border-[#27272a] pl-4">
+                        <div class="text-xs text-gray-500 mb-1">SYSTEMS</div>
+                        <div class="text-3xl text-white">03</div>
+                    </div>
+                    <div class="border-l border-[#27272a] pl-4">
+                        <div class="text-xs text-gray-500 mb-1">FIELD NOTES</div>
+                        <div class="text-3xl text-white">142</div>
+                    </div>
+                    <div class="border-l border-[#27272a] pl-4">
+                        <div class="text-xs text-gray-500 mb-1">EXPERIMENTS</div>
+                        <div class="text-3xl text-white">28</div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Edition 2: B0GYCT4MPL -->
-            <div class="edition-card">
-                <div class="book-cover cover-edition-2">
-                    <span class="cover-tag">Second Edition</span>
-                    <span class="cover-title-text">The Daxini Stack</span>
-                    <span class="cover-author">D. Daxini</span>
-                </div>
-                <div class="edition-info">
-                    <div>
-                        <div class="edition-badge">Edition II</div>
-                        <h3 class="edition-title">The Daxini Stack — Second Edition</h3>
-                        <p class="edition-sub">Revised and expanded. Updated execution models, hardened cryptographic layer, and refined sovereignty gradient framework.</p>
+            <!-- SECTION 2: TIMELINE -->
+            <section id="timeline">
+                <h2 class="font-mono text-sm text-gray-500 mb-6 uppercase tracking-widest border-b border-[#27272a] pb-2">Timeline of Evolution</h2>
+                <div class="ml-2 font-mono text-sm">
+                    <div class="timeline-node">
+                        <span class="text-[#fbbf24] font-bold">2024</span> &nbsp;&nbsp;
+                        <span class="text-white">Foundation Volume I</span> &mdash; Initial philosophical constraints.
                     </div>
-                    <div>
-                        <div class="edition-meta">
-                            <span>ASIN: B0GYCT4MPL</span>
-                            <span>Kindle Unlimited</span>
+                    <div class="timeline-node">
+                        <span class="text-[#fbbf24] font-bold">2025</span> &nbsp;&nbsp;
+                        <span class="text-white">Knowledge Bundles</span> &mdash; Moving from static text to executable semantic containers.
+                    </div>
+                    <div class="timeline-node">
+                        <span class="text-[#fbbf24] font-bold">2025</span> &nbsp;&nbsp;
+                        <span class="text-white">Local AI Experiments</span> &mdash; Bypassing cloud cognitive reliance.
+                    </div>
+                    <div class="timeline-node">
+                        <span class="text-[#fbbf24] font-bold">2026</span> &nbsp;&nbsp;
+                        <span class="text-white">Field Notes Archive</span> &mdash; Documenting the raw engineering process.
+                    </div>
+                    <div class="timeline-node">
+                        <span class="text-[#fbbf24] font-bold">2026</span> &nbsp;&nbsp;
+                        <span class="text-[#4ade80]">VIA Connect</span> &mdash; Serverless peer-to-peer communication deployed.
+                    </div>
+                    <div class="timeline-node border-transparent">
+                        <span class="text-[#fbbf24] font-bold">2026</span> &nbsp;&nbsp;
+                        <span class="text-white">Zayvora OS</span> &mdash; Full sovereign intelligence infrastructure in development.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ARTIFACTS (BOOKS) -->
+            <section id="artifacts">
+                <h2 class="font-mono text-sm text-gray-500 mb-6 uppercase tracking-widest border-b border-[#27272a] pb-2">Research Artifacts</h2>
+                
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Artifact 1 -->
+                    <div class="card-brutal p-6 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl text-white font-mono group-hover:text-[#fbbf24] transition-colors">Vol 1: The Sovereign Stack</h3>
+                            <span class="tag">PUBLISHED</span>
                         </div>
-                        <div class="edition-actions">
-                            <a href="https://www.amazon.in/dp/B0GYCT4MPL" target="_blank" class="btn btn-amazon btn-sm">
-                                Amazon (IN)
-                            </a>
-                            <a href="https://www.amazon.com/dp/B0GYCT4MPL" target="_blank" class="btn btn-ghost btn-sm">
-                                Amazon (US)
-                            </a>
+                        <p class="mb-4 text-[#a1a1aa] leading-relaxed">
+                            <strong>Purpose:</strong> Establish the philosophical and technical necessity for local-first architecture to prevent cognitive enclosure.
+                        </p>
+                        <p class="mb-6 text-sm text-gray-400">
+                            <strong>Problem Explored:</strong> Centralized API dependency in early knowledge systems.
+                        </p>
+                        <div class="bg-[#09090b] border border-[#27272a] p-3 font-mono text-xs flex flex-wrap items-center gap-2">
+                            <span class="text-[#4ade80]">Lineage:</span>
+                            <span class="text-gray-400">Vol 1</span> 
+                            <span class="text-gray-600">&rarr;</span> 
+                            <span class="text-gray-400">Local LLMs</span> 
+                            <span class="text-gray-600">&rarr;</span> 
+                            <span class="text-white">Zayvora Infrastructure</span>
+                        </div>
+                    </div>
+
+                    <!-- Artifact 2 -->
+                    <div class="card-brutal p-6 group">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl text-white font-mono group-hover:text-[#fbbf24] transition-colors">Vol 2: Semantic Containers</h3>
+                            <span class="tag">PUBLISHED</span>
+                        </div>
+                        <p class="mb-4 text-[#a1a1aa] leading-relaxed">
+                            <strong>Purpose:</strong> Formalize the `.zay` bundle format for portable, executable knowledge transfer without network requirements.
+                        </p>
+                        <p class="mb-6 text-sm text-gray-400">
+                            <strong>Problem Explored:</strong> Books are dead text. How do we ship reproducible execution environments disguised as documents?
+                        </p>
+                        <div class="bg-[#09090b] border border-[#27272a] p-3 font-mono text-xs flex flex-wrap items-center gap-2">
+                            <span class="text-[#4ade80]">Lineage:</span>
+                            <span class="text-gray-400">Vol 2</span> 
+                            <span class="text-gray-600">&rarr;</span> 
+                            <span class="text-gray-400">Knowledge Bundles</span> 
+                            <span class="text-gray-600">&rarr;</span> 
+                            <span class="text-white">VIA Connect Payload System</span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <div class="section-divider"></div>
+            <!-- SECTION 4: FIELD NOTES -->
+            <section id="field-notes">
+                <h2 class="font-mono text-sm text-gray-500 mb-6 uppercase tracking-widest border-b border-[#27272a] pb-2">Field Notes Archive</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Note 1 -->
+                    <div class="card-brutal p-5 bg-[#0a0a0c]">
+                        <div class="mb-3"><span class="tag tag-warning">FALSE HYPOTHESIS</span></div>
+                        <h4 class="text-white font-mono text-sm mb-2">WebRTC Signaling Fallback</h4>
+                        <p class="text-sm text-gray-400">Assumed public PeerJS relays were reliable enough for initial handshake. They are not. Introduced race conditions in identity creation. Rewriting signaling protocol to require explicit STUN fallback.</p>
+                    </div>
 
-    <!-- FREE VOLUMES -->
-    <section class="section" id="volumes">
-        <div class="section-header">
-            <div class="section-label">Free Sample Editions</div>
-            <h2 class="section-title">Individual Volumes</h2>
-            <p class="section-sub">Read the introductory editions free. Each volume stands alone. Enter your email once to unlock all downloads.</p>
-        </div>
+                    <!-- Note 2 -->
+                    <div class="card-brutal p-5 bg-[#0a0a0c]">
+                        <div class="mb-3"><span class="tag">ABANDONED THREAD</span></div>
+                        <h4 class="text-white font-mono text-sm mb-2">Cloud Backup Service</h4>
+                        <p class="text-sm text-gray-400">Considered adding optional cloud backup for Zayvora profiles. Abandoned. Too slippery a slope. Enforces the constraint: the user must physically manage their `.zay` cold storage.</p>
+                    </div>
 
-        <div class="volumes-grid">
-            <div class="volume-card">
-                <div class="volume-number">Volume 01</div>
-                <h3 class="volume-title">The Local-First Manifesto</h3>
-                <p class="volume-subtitle">A Blueprint for Sovereign AI Infrastructure</p>
-                <p class="volume-desc">Why cloud-API wrappers are architectural failures. The Vault Architecture, environment entropy, removing network dependency, and building for disconnected correctness.</p>
-                <div class="volume-meta">
-                    <span>~9 pages</span>
-                    <span>2,200 words</span>
-                </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" onclick="requestDownload('./epubs/Volume_1_The_Local-First_Manifesto.epub', 'Volume 1 — The Local-First Manifesto')">
-                        ↓ Download EPUB
-                    </button>
-                </div>
-            </div>
+                    <!-- Note 3 -->
+                    <div class="card-brutal p-5 bg-[#0a0a0c]">
+                        <div class="mb-3"><span class="tag">MAINTENANCE</span></div>
+                        <h4 class="text-white font-mono text-sm mb-2">OPFS Quota Limits</h4>
+                        <p class="text-sm text-gray-400">Hit Origin Private File System limits during intensive PDF parsing. Implemented chunked eviction strategy for temporary cache blocks.</p>
+                    </div>
 
-            <div class="volume-card">
-                <div class="volume-number">Volume 02</div>
-                <h3 class="volume-title">AI Systems Architecture & Evolution</h3>
-                <p class="volume-subtitle">Deterministic Execution for the Sovereign Node</p>
-                <p class="volume-desc">From static scripts to deterministic execution. The 3-Tier Model, Supervisor loops with execution gates, trace synthesis, and the continuous learning pipeline.</p>
-                <div class="volume-meta">
-                    <span>~10 pages</span>
-                    <span>2,300 words</span>
+                    <!-- Note 4 -->
+                    <div class="card-brutal p-5 bg-[#0a0a0c]">
+                        <div class="mb-3"><span class="tag tag-active">RETURNED PROBLEM</span></div>
+                        <h4 class="text-white font-mono text-sm mb-2">Async UI Freezes</h4>
+                        <p class="text-sm text-gray-400">Heavy crypto operations block the main thread. Returning to the Web Worker implementation designed in Vol 1 to isolate SubtleCrypto.</p>
+                    </div>
                 </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" onclick="requestDownload('./epubs/Volume_2_AI_Systems_Architecture_And_Evolution.epub', 'Volume 2 — AI Systems Architecture')">
-                        ↓ Download EPUB
-                    </button>
-                </div>
-            </div>
+            </section>
 
-            <div class="volume-card">
-                <div class="volume-number">Volume 03</div>
-                <h3 class="volume-title">The Zayvora Playbook</h3>
-                <p class="volume-subtitle">Operating a Sovereign Engineering Engine</p>
-                <p class="volume-desc">The CEA-0000 protocol and its three invariants. Frozen kernel immutability, NEX-FUSE pipelines, execution gates, and hardware crash recovery procedures.</p>
-                <div class="volume-meta">
-                    <span>~10 pages</span>
-                    <span>2,300 words</span>
-                </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" onclick="requestDownload('./epubs/Volume_3_The_Zayvora_Playbook.epub', 'Volume 3 — The Zayvora Playbook')">
-                        ↓ Download EPUB
-                    </button>
-                </div>
-            </div>
+            <!-- SECTION 5: CURRENT INVESTIGATIONS -->
+            <section id="systems">
+                <h2 class="font-mono text-sm text-gray-500 mb-6 uppercase tracking-widest border-b border-[#27272a] pb-2">Active Systems</h2>
+                
+                <div class="space-y-4">
+                    <div class="card-brutal p-4 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="w-32 flex-shrink-0">
+                            <span class="text-white font-mono text-lg">VIA Connect</span>
+                        </div>
+                        <div class="w-24 flex-shrink-0">
+                            <span class="tag tag-active">ACTIVE</span>
+                        </div>
+                        <div class="flex-1 text-sm text-gray-400">
+                            Peer-to-peer communication without cloud dependence. IndexedDB + WebRTC + SubtleCrypto.
+                        </div>
+                    </div>
 
-            <div class="volume-card">
-                <div class="volume-number">Volume 04</div>
-                <h3 class="volume-title">Ship First</h3>
-                <p class="volume-subtitle">Distribution Loops and Knowledge Artifacts</p>
-                <p class="volume-desc">Sovereign distribution without paid acquisition. Knowledge Artifacts, the Compression Protocol, the Alchemist ecosystem, and closing the distribution loop.</p>
-                <div class="volume-meta">
-                    <span>~10 pages</span>
-                    <span>2,400 words</span>
-                </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" onclick="requestDownload('./epubs/Volume_4_Ship_First.epub', 'Volume 4 — Ship First')">
-                        ↓ Download EPUB
-                    </button>
-                </div>
-            </div>
+                    <div class="card-brutal p-4 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="w-32 flex-shrink-0">
+                            <span class="text-white font-mono text-lg">Zayvora</span>
+                        </div>
+                        <div class="w-24 flex-shrink-0">
+                            <span class="tag tag-warning">DEV</span>
+                        </div>
+                        <div class="flex-1 text-sm text-gray-400">
+                            Local-first intelligence infrastructure. The operating system for knowledge bundles.
+                        </div>
+                    </div>
 
-            <div class="volume-card">
-                <div class="volume-number">Volume 05</div>
-                <h3 class="volume-title">Advanced Sovereign AI</h3>
-                <p class="volume-subtitle">The Future of Portable Knowledge and the .zay Specification</p>
-                <p class="volume-desc">Portable knowledge beyond PDFs. The .zay bundle format, multi-agent swarms, the sovereignty gradient, and decentralized ecosystem governance.</p>
-                <div class="volume-meta">
-                    <span>~10 pages</span>
-                    <span>2,200 words</span>
+                    <div class="card-brutal p-4 flex flex-col md:flex-row gap-4 items-start md:items-center">
+                        <div class="w-32 flex-shrink-0">
+                            <span class="text-white font-mono text-lg">Bundles</span>
+                        </div>
+                        <div class="w-24 flex-shrink-0">
+                            <span class="tag">RESEARCH</span>
+                        </div>
+                        <div class="flex-1 text-sm text-gray-400">
+                            Portable `.zay` semantic knowledge containers housing data, logic, and metadata.
+                        </div>
+                    </div>
                 </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" onclick="requestDownload('./epubs/Volume_5_Advanced_Sovereign_AI.epub', 'Volume 5 — Advanced Sovereign AI')">
-                        ↓ Download EPUB
-                    </button>
+            </section>
+
+            <!-- SECTION 6: KNOWLEDGE MAP -->
+            <section id="graph">
+                <h2 class="font-mono text-sm text-gray-500 mb-6 uppercase tracking-widest border-b border-[#27272a] pb-2">Knowledge Graph</h2>
+                <div class="card-brutal p-1">
+                    <canvas id="knowledge-map"></canvas>
                 </div>
-            </div>
+                <p class="text-xs font-mono text-gray-500 mt-2 text-right">Interactive dependency visualization.</p>
+            </section>
 
-            <!-- Complete EPUB -->
-            <div class="volume-card" style="border-color: rgba(34,197,94,0.15); background: rgba(34,197,94,0.03);">
-                <div class="volume-number" style="color: var(--green);">All Volumes</div>
-                <h3 class="volume-title">Complete Edition (EPUB)</h3>
-                <p class="volume-subtitle">All 5 volumes in one file</p>
-                <p class="volume-desc">The complete sample edition bundled into a single EPUB. Same content as the individual volumes — for convenience.</p>
-                <div class="volume-meta">
-                    <span>~41 pages</span>
-                    <span>11,600+ words</span>
-                </div>
-                <div class="volume-actions">
-                    <button class="btn btn-download btn-sm" style="border-color: rgba(34,197,94,0.3); color: var(--green);" onclick="requestDownload('./epubs/The_Daxini_Stack_Complete_Edition.epub', 'The Daxini Stack — Complete Edition')">
-                        ↓ Download Complete EPUB
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- OTHER PUBLICATIONS -->
-    <section class="section" id="publications">
-        <div class="section-header">
-            <div class="section-label">Other Publications</div>
-            <h2 class="section-title">Kindle Library</h2>
-            <p class="section-sub">Technical manuals, lab guides, and course companions. All on Amazon Kindle.</p>
-        </div>
-
-        <div class="pub-grid">
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-infra">Infrastructure</span>
-                <h3 class="pub-title">The daxini.space Handbook</h3>
-                <p class="pub-sub">Build Sovereign. Deploy Local. Own Your Stack. Configuring and maintaining local-first infrastructure.</p>
-                <div class="pub-meta">ASIN: B0F35351JP · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0F35351JP" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0F35351JP" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-iot">IoT · Expanded</span>
-                <h3 class="pub-title">Internet of Things (Expanded)</h3>
-                <p class="pub-sub">NPTEL Course Companion — advanced hardware architecture, networking protocols, real-world system designs.</p>
-                <div class="pub-meta">ASIN: B0GWXQ2RD9 · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0GWXQ2RD9" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0GWXQ2RD9" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-iot">IoT · Standard</span>
-                <h3 class="pub-title">Internet of Things</h3>
-                <p class="pub-sub">NPTEL Course Companion — clear explanations, summaries, and assessment preparation.</p>
-                <div class="pub-meta">ASIN: B0GX2DLMNB · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0GX2DLMNB" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0GX2DLMNB" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-chem">Chemistry</span>
-                <h3 class="pub-title">Errors, Statistics & Data Analysis</h3>
-                <p class="pub-sub">Analytical Chemistry — precision, accuracy, standard deviation, and hypothesis testing methodologies.</p>
-                <div class="pub-meta">ASIN: B0GQ6YKVDL · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0GQ6YKVDL" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0GQ6YKVDL" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-chem">Chemistry</span>
-                <h3 class="pub-title">Volumetric Analysis</h3>
-                <p class="pub-sub">B.Sc Lab Guide — titration techniques, standard solution preparation, calculation models.</p>
-                <div class="pub-meta">ASIN: B0GWR7273P · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0GWR7273P" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0GWR7273P" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-
-            <div class="pub-card">
-                <span class="pub-badge pub-badge-chem">Chemistry</span>
-                <h3 class="pub-title">Gravimetric Analysis</h3>
-                <p class="pub-sub">Study Guide — precipitation, filtration, washing, and ignition for gravimetric determinations.</p>
-                <div class="pub-meta">ASIN: B0GWV2TPJ1 · Kindle</div>
-                <div class="pub-actions">
-                    <a href="https://www.amazon.in/dp/B0GWV2TPJ1" target="_blank" class="btn btn-amazon btn-sm">Amazon (IN)</a>
-                    <a href="https://www.amazon.com/dp/B0GWV2TPJ1" target="_blank" class="btn btn-ghost btn-sm">Amazon (US)</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ecosystem Banner -->
-        <div class="eco-banner">
-            <div class="eco-content">
-                <h3>Explore the Ecosystem</h3>
-                <p>The Daxini Stack is part of a larger sovereign infrastructure. Explore the knowledge graph, browse source, or learn about the engineering lab behind it.</p>
-                <div class="eco-links">
-                    <a href="https://github.com/via-decide/daxini-stack/releases" target="_blank" class="btn btn-ghost btn-sm">GitHub Releases</a>
-                    <a href="https://daxini.space/apps/alchemist/" target="_blank" class="btn btn-ghost btn-sm">Alchemist Explorer</a>
-                    <a href="https://github.com/via-decide" target="_blank" class="btn btn-ghost btn-sm">Aporaksha Labs</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-left">
-            <strong>The Daxini Stack</strong> — © 2026 Aporaksha Labs Pvt. Ltd.
-        </div>
-        <div class="footer-right">
-            <a href="/">Home</a>
-            <a href="/kindle">Kindle</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-        </div>
-    </footer>
-
-    <!-- EMAIL GATE MODAL -->
-    <div class="gate-overlay" id="emailGate">
-        <div class="gate-box">
-            <button class="gate-close" onclick="closeGate()">✕</button>
-            <div class="gate-icon">📨</div>
-            <h3 class="gate-title">Get the free EPUB</h3>
-            <p class="gate-sub">Enter your email to unlock all free sample editions. You'll also get early access to future volumes.</p>
-            <form class="gate-form" id="gateForm" onsubmit="handleGateSubmit(event)">
-                <input type="email" class="gate-input" id="gateEmail" placeholder="you@example.com" required autocomplete="email">
-                <button type="submit" class="gate-submit" id="gateSubmitBtn">Download Now</button>
-            </form>
-            <p class="gate-disclaimer">No spam. Unsubscribe anytime. Your email goes to dharam@viadecide.com.</p>
-        </div>
+        </main>
     </div>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast"></div>
-
+    <!-- Knowledge Graph Script -->
     <script>
-        // ═══ NAV SCROLL EFFECT ═══
-        const nav = document.getElementById('nav');
-        window.addEventListener('scroll', () => {
-            nav.classList.toggle('scrolled', window.scrollY > 60);
-        }, { passive: true });
-
-        // ═══ EMAIL GATE LOGIC ═══
-        let pendingDownload = null;
-        const STORAGE_KEY = 'daxini_stack_email';
-
-        function isEmailCaptured() {
-            return !!localStorage.getItem(STORAGE_KEY);
+        const canvas = document.getElementById('knowledge-map');
+        const ctx = canvas.getContext('2d');
+        
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = 300;
         }
+        window.addEventListener('resize', resize);
+        resize();
 
-        function requestDownload(url, title) {
-            if (isEmailCaptured()) {
-                // Already captured — download directly
-                triggerDownload(url, title);
-                return;
-            }
-            // Show gate
-            pendingDownload = { url, title };
-            document.getElementById('emailGate').classList.add('active');
-            setTimeout(() => document.getElementById('gateEmail').focus(), 200);
-        }
+        // Simple hard-angled graph drawing
+        const nodes = [
+            { id: 'Artifacts', x: 0.15, y: 0.5 },
+            { id: 'Field Notes', x: 0.35, y: 0.2 },
+            { id: 'Bundles', x: 0.55, y: 0.8 },
+            { id: 'VIA', x: 0.75, y: 0.3 },
+            { id: 'Zayvora', x: 0.85, y: 0.6 }
+        ];
+        
+        const edges = [
+            [0, 1], [1, 2], [0, 2], [2, 3], [3, 4], [2, 4]
+        ];
 
-        function closeGate() {
-            document.getElementById('emailGate').classList.remove('active');
-            pendingDownload = null;
-        }
+        function drawGraph() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            ctx.strokeStyle = '#1e1e24';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+            for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
 
-        // Close on overlay click
-        document.getElementById('emailGate').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeGate();
-        });
+            // Draw edges (hard lines)
+            ctx.strokeStyle = '#3f3f46';
+            ctx.lineWidth = 1.5;
+            edges.forEach(edge => {
+                const n1 = nodes[edge[0]];
+                const n2 = nodes[edge[1]];
+                ctx.beginPath();
+                ctx.moveTo(n1.x * canvas.width, n1.y * canvas.height);
+                // Draw rigid elbow connection
+                ctx.lineTo(n2.x * canvas.width, n1.y * canvas.height);
+                ctx.lineTo(n2.x * canvas.width, n2.y * canvas.height);
+                ctx.stroke();
+            });
 
-        // Close on Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeGate();
-        });
-
-        async function handleGateSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('gateEmail').value.trim();
-            if (!email) return;
-
-            const btn = document.getElementById('gateSubmitBtn');
-            btn.textContent = 'Processing...';
-            btn.disabled = true;
-
-            // Store locally
-            localStorage.setItem(STORAGE_KEY, email);
-            localStorage.setItem('daxini_stack_captured_at', new Date().toISOString());
-
-            // Send notification to dharam@viadecide.com via mailto
-            try {
-                const downloadTitle = pendingDownload ? pendingDownload.title : 'Unknown';
-                const subject = encodeURIComponent(`[Daxini Stack] New reader: ${email}`);
-                const body = encodeURIComponent(
-                    `New email captured from daxini.space/books\n\n` +
-                    `Email: ${email}\n` +
-                    `Download: ${downloadTitle}\n` +
-                    `Time: ${new Date().toISOString()}\n` +
-                    `Source: daxini.space/books`
-                );
+            // Draw nodes
+            ctx.font = '12px "JetBrains Mono"';
+            nodes.forEach(node => {
+                const px = node.x * canvas.width;
+                const py = node.y * canvas.height;
                 
-                // Open mailto in hidden iframe to avoid navigation
-                const mailtoLink = `mailto:dharam@viadecide.com?subject=${subject}&body=${body}`;
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = mailtoLink;
-                document.body.appendChild(iframe);
-                setTimeout(() => iframe.remove(), 3000);
+                ctx.fillStyle = '#121212';
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 2;
+                ctx.fillRect(px - 4, py - 4, 8, 8);
+                ctx.strokeRect(px - 4, py - 4, 8, 8);
                 
-                console.log('[Daxini Stack] Email captured:', email);
-            } catch (err) {
-                console.warn('[Daxini Stack] mailto failed:', err);
-            }
-
-            // Close gate and trigger download
-            closeGate();
-            if (pendingDownload) {
-                triggerDownload(pendingDownload.url, pendingDownload.title);
-                pendingDownload = null;
-            }
-
-            showToast('✓ Email saved — all downloads unlocked');
+                ctx.fillStyle = '#f4f4f5';
+                ctx.fillText(`[${node.id}]`, px + 12, py + 4);
+            });
         }
-
-        function triggerDownload(url, title) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = '';
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast('↓ Downloading ' + title);
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
+        
+        // Initial draw and subtle animation
+        drawGraph();
+        setInterval(() => {
+            // Very subtle movement
+            nodes.forEach(n => {
+                n.y += (Math.random() - 0.5) * 0.005;
+                if(n.y < 0.1) n.y = 0.1;
+                if(n.y > 0.9) n.y = 0.9;
+            });
+            drawGraph();
+        }, 1000);
     </script>
 </body>
 </html>
