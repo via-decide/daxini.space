@@ -902,6 +902,23 @@
                     window.history.replaceState({}, document.title, window.location.pathname);
                     this.switchTab('conversations');
                     this.openChat(payload.id);
+
+                    // Dispatch handshake ping so the other party gets notified instantly
+                    setTimeout(() => {
+                        if (this.peer && this.myIdentity) {
+                            const conn = this.peer.connect(payload.id + "_via");
+                            conn.on('open', () => {
+                                conn.send({
+                                    type: 'system_handshake',
+                                    chatId: this.myIdentity.id,
+                                    senderId: this.myIdentity.id,
+                                    senderName: this.myIdentity.displayName,
+                                    senderPublicKey: this.myIdentity.publicKeyJWK,
+                                    createdAt: Date.now()
+                                });
+                            });
+                        }
+                    }, 1500);
                 }
             } catch(e) {
                 console.error("Failed to parse connect URL", e);
@@ -1547,10 +1564,14 @@
                             addedAt: Date.now()
                         };
                         await db.contacts.add(contact);
+                        app.loadContacts();
                     } else if (contact && contact.trustState === 'pending_outbound') {
                         // If they were pending outbound, their message implicitly moves them to temporary
                         await db.contacts.update(data.chatId, { trustState: 'temporary' });
+                        app.loadContacts();
                     }
+                    
+                    if (data.type === 'system_handshake') return;
 
                     if (data.type === 'file' && data.fileBuffer && data.fileMetadata) {
                         // It's a file
