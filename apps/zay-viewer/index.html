@@ -307,8 +307,9 @@
                     // Not JSON, proceed to ZIP
                 }
                 
-                // Read Zip
-                const zip = await JSZip.loadAsync(file);
+                // Read Zip (Use arrayBuffer to prevent deadlocks in some browsers after file.text())
+                const ab = await file.arrayBuffer();
+                const zip = await JSZip.loadAsync(ab);
                 
                 // 1. Load Manifest
                 if (zip.file('manifest.json')) {
