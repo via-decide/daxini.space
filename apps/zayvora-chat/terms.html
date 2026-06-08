@@ -3,138 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Use — Lore Labs</title>
+<title>Terms | VIA Connect</title>
 <style>
-  :root { --bg: #0a0a0a; --card: #111; --border: #222; --gold: #ffd600; --text: #e0e0e0; --text-dim: #888; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; padding: 40px 20px; }
-  .container { max-width: 720px; margin: 0 auto; }
-  h1 { font-size: 2rem; color: #fff; margin-bottom: 8px; }
-  .subtitle { color: var(--gold); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 32px; }
-  .effective { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 40px; }
-  h2 { font-size: 1.15rem; color: #fff; margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  p, li { font-size: 0.95rem; margin-bottom: 12px; }
-  ul { padding-left: 20px; }
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111;
+    --border: #222;
+    --accent: #22d3a0;
+    --text: #f0f0f0;
+    --muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.8;
+    padding: 0 20px 60px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  header {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .brand { font-size: 16px; font-weight: 700; letter-spacing: 2px; }
+  h1 { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: 14px; }
+  h2 { font-size: 1.1rem; font-weight: 700; margin: 36px 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+  p { color: #ccc; margin-bottom: 14px; font-size: 15px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .card.highlight { border-color: var(--accent); }
+  .card p { margin: 0; }
+  ul { margin: 0 0 14px 20px; color: #ccc; font-size: 15px; }
   li { margin-bottom: 8px; }
-  .highlight { background: #1a1a00; border-left: 3px solid var(--gold); padding: 16px 20px; border-radius: 4px; margin: 20px 0; }
-  a { color: var(--gold); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.8rem; }
+  .badge {
+    display: inline-block;
+    background: rgba(34,211,160,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(34,211,160,0.3);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    margin-bottom: 16px;
+  }
+  .clause {
+    counter-increment: clause;
+    margin-bottom: 36px;
+  }
+  a.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    padding: 12px 24px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="dot"></div>
+      <span class="brand">VIA CONNECT</span>
+    </div>
+    <h1>Terms of Use</h1>
+    <p class="sub">Effective: June 2026 &nbsp;·&nbsp; Jurisdiction: India</p>
+  </header>
 
-<h1>Terms of Use</h1>
-<p class="subtitle">Lore Labs — VIA Connect</p>
-<p class="effective">Effective Date: June 4, 2026 &nbsp;|&nbsp; Last Updated: June 4, 2026</p>
+  <div class="badge">PLAIN LANGUAGE TERMS</div>
 
-<div class="highlight">
-<p>By accessing or using VIA Connect, you agree to be bound by these Terms of Use. If you do not agree, do not use the application.</p>
-</div>
+  <div class="card highlight">
+    <p><strong>VIA Connect is a tool, not a service. You own your data. We own nothing. The app is provided as-is, sovereign by design.</strong></p>
+  </div>
 
-<h2>1. Acceptance of Terms</h2>
-<p>These Terms of Use ("Terms") constitute a legally binding agreement between you ("User", "you") and Lore Labs, operated by Dharam Daxini ("Company", "we", "us"). These Terms govern your access to and use of the VIA Connect application, including all content, features, and services offered through the application.</p>
+  <h2>1. What VIA Connect Is</h2>
+  <p>VIA Connect is a browser-based, peer-to-peer encrypted messaging application. It runs entirely in your browser. There is no central server storing your messages, no account system, and no subscription. It is free to use.</p>
 
-<h2>2. Description of Service</h2>
-<p>VIA Connect is a local-first learning and content creation application that provides:</p>
-<ul>
-  <li>Interactive chemistry question banks with swipe-based practice</li>
-  <li>Session-based learning with progress tracking</li>
-  <li>Content block creation and organization</li>
-  <li>EPUB reading and export capabilities</li>
-  <li>Credit-based access system for premium features</li>
-</ul>
-<p>The application stores all learning data locally on your device. We do not provide cloud storage, synchronization, or backup services unless explicitly stated.</p>
+  <h2>2. Who Can Use It</h2>
+  <p>Anyone with a modern web browser. By opening the app, you agree to use it lawfully. You must not use VIA Connect:</p>
+  <ul>
+    <li>To send illegal content, threats, or material that violates Indian law (IT Act 2000 and amendments)</li>
+    <li>To coordinate fraud, harassment, or criminal activity</li>
+    <li>To distribute malware or exploit the signaling infrastructure</li>
+  </ul>
 
-<h2>3. Account & Use</h2>
-<ul>
-  <li>You must be at least 18 years of age, or have the consent of a parent or guardian, to use this application.</li>
-  <li>If you create an account via Aporaksha (our identity layer), you are responsible for maintaining the confidentiality of your credentials.</li>
-  <li>You are solely responsible for all activity that occurs under your account or on your device.</li>
-  <li>We reserve the right to suspend or terminate access for violation of these Terms.</li>
-</ul>
+  <h2>3. Your Data Is Yours</h2>
+  <p>Your identity, messages, and files are stored exclusively on your device. We do not have access to them. We cannot read your messages, recover your identity, or restore deleted data.</p>
+  <p>When you use <strong>Wipe Local Node</strong>, your data is gone permanently. There is no backup. Understand this before wiping.</p>
 
-<h2>4. Privacy & Data</h2>
-<p>Your use of VIA Connect is also governed by our <a href="privacy.html">Privacy Policy</a>, which describes how we handle data. Key points:</p>
-<ul>
-  <li>Learning data is stored locally on your device and is not transmitted to us.</li>
-  <li>Payment data is processed by Stripe, Inc. and is subject to their terms.</li>
-  <li>We do not collect analytics, telemetry, or advertising data.</li>
-</ul>
+  <h2>4. The Signaling Relay</h2>
+  <p>VIA Connect uses a Cloudflare Workers relay to help two devices find each other (standard WebRTC signaling). This relay:</p>
+  <ul>
+    <li>Does not store messages or identity data</li>
+    <li>Processes only encrypted WebRTC negotiation packets</li>
+    <li>Is rate-limited and may be unavailable during outages</li>
+  </ul>
+  <p>We do not guarantee relay uptime. If the relay is down, new connections cannot be established. Existing direct WebRTC connections are unaffected.</p>
 
-<h2>5. Intellectual Property</h2>
-<p><strong>Our Content:</strong> All content provided within VIA Connect — including but not limited to question banks, explanations, logic fields, diagrams, user interface design, source code, and documentation — is the intellectual property of Lore Labs and is protected by copyright law under the Indian Copyright Act, 1957 and applicable international treaties.</p>
-<p><strong>Your Content:</strong> Any content you create within the application (notes, annotations, session data, exported files) remains your intellectual property. By using our export features, you receive your data in portable formats (PDF, EPUB, .zay) that you own completely.</p>
-<p><strong>Restrictions:</strong> You may not:</p>
-<ul>
-  <li>Copy, reproduce, distribute, or publicly display our question bank content</li>
-  <li>Reverse-engineer, decompile, or disassemble the application</li>
-  <li>Remove or alter any copyright, trademark, or proprietary notices</li>
-  <li>Use automated tools (scrapers, bots) to extract content from the application</li>
-  <li>Redistribute the application or any of its components for commercial purposes</li>
-</ul>
+  <h2>5. No Warranty</h2>
+  <div class="card">
+    <p>VIA Connect is provided <strong>"as is"</strong>. We make no warranty that it will be available at all times, that messages will always be delivered, or that it is free from bugs. Cryptography is complex. Do not use VIA Connect as the sole communication method for life-critical situations.</p>
+  </div>
 
-<h2>6. Prohibited Conduct</h2>
-<p>You agree not to:</p>
-<ul>
-  <li>Use the application for any unlawful purpose or in violation of any applicable law</li>
-  <li>Attempt to gain unauthorized access to any part of the application or its related systems</li>
-  <li>Manipulate credit balances, session data, or any application state through browser developer tools or external scripts with the intent to circumvent payment or access controls</li>
-  <li>Share, resell, or sublicense access to paid content or features</li>
-  <li>Upload malicious content, malware, or any material that infringes third-party rights</li>
-  <li>Impersonate any person or entity or misrepresent your affiliation</li>
-</ul>
+  <h2>6. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by Indian law: VIA Decide / Daxini XYZ shall not be liable for any loss of data, loss of messages, or damages arising from use or inability to use VIA Connect.</p>
+  <p>Since we store no user data, we cannot be responsible for its loss. You are the sole custodian of your device and its contents.</p>
 
-<h2>7. Payments & Refunds</h2>
-<ul>
-  <li>Certain features may require payment, processed through Stripe.</li>
-  <li>All prices are displayed in Indian Rupees (INR) unless otherwise stated.</li>
-  <li>Payments are non-refundable except where required by applicable consumer protection law or at our sole discretion.</li>
-  <li>GST and other applicable taxes are included in the displayed price.</li>
-  <li>We reserve the right to change pricing at any time, with notice to existing users.</li>
-</ul>
+  <h2>7. Encryption Notice</h2>
+  <p>VIA Connect uses AES-GCM end-to-end encryption. This is strong, established cryptography. However:</p>
+  <ul>
+    <li>If someone has physical access to your unlocked device, they can read your messages</li>
+    <li>If your browser is compromised by malware, encryption at the application layer cannot protect you</li>
+    <li>Security depends on you keeping your device safe</li>
+  </ul>
 
-<h2>8. Disclaimers</h2>
-<p>The application is provided <strong>"as is"</strong> and <strong>"as available"</strong> without warranties of any kind, whether express, implied, or statutory.</p>
-<ul>
-  <li>We do not guarantee uninterrupted or error-free operation.</li>
-  <li>Educational content is provided for learning purposes and does not constitute professional academic advice.</li>
-  <li>Exam scores, practice results, and progress metrics within the app are for self-assessment only and do not represent official certification or qualification.</li>
-  <li>Since data is stored locally, we are not responsible for data loss due to browser storage clearing, device failure, or uninstallation.</li>
-</ul>
+  <h2>8. Open Source</h2>
+  <p>The VIA Connect application code is open for inspection. Claims made in this document and in the Privacy Policy can be verified by reviewing the source. Trust through transparency, not through promises.</p>
 
-<h2>9. Limitation of Liability</h2>
-<p>To the maximum extent permitted by applicable law, Lore Labs shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of data, loss of profits, or loss of access, arising out of or related to your use of the application.</p>
-<p>Our total aggregate liability for any claim arising from or related to these Terms or the application shall not exceed the amount you have paid us in the twelve (12) months preceding the claim, or INR 1,000, whichever is greater.</p>
+  <h2>9. Governing Law</h2>
+  <p>These terms are governed by the laws of India. Disputes shall be subject to the exclusive jurisdiction of courts in India.</p>
 
-<h2>10. Indemnification</h2>
-<p>You agree to indemnify, defend, and hold harmless Lore Labs and its operator from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your violation of these Terms or your use of the application.</p>
+  <h2>10. Changes</h2>
+  <p>We may update these terms. Continued use after an update constitutes acceptance. We will not make changes that reduce your rights without notice on the main site.</p>
 
-<h2>11. Governing Law & Dispute Resolution</h2>
-<ul>
-  <li>These Terms are governed by and construed in accordance with the laws of India.</li>
-  <li>Any dispute arising from these Terms shall be subject to the exclusive jurisdiction of the courts in Kutch, Gujarat, India.</li>
-  <li>Before initiating legal proceedings, you agree to attempt resolution through informal negotiation by contacting us at <a href="mailto:legal@lorelabs.in">legal@lorelabs.in</a>.</li>
-</ul>
+  <h2>Contact</h2>
+  <p>Legal questions: <strong>legal@viadecide.com</strong></p>
 
-<h2>12. Modifications</h2>
-<p>We reserve the right to modify these Terms at any time. Changes will be posted on this page with an updated effective date. Continued use of the application after any modifications constitutes acceptance of the revised Terms.</p>
-
-<h2>13. Severability</h2>
-<p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
-
-<h2>14. Contact</h2>
-<ul>
-  <li><strong>Email:</strong> <a href="mailto:legal@lorelabs.in">legal@lorelabs.in</a></li>
-  <li><strong>Entity:</strong> Lore Labs (Dharam Daxini)</li>
-  <li><strong>Address:</strong> Gandhidham, Kutch, Gujarat 370201, India</li>
-</ul>
-
-<div class="footer">
-  <p>&copy; 2026 Lore Labs. All rights reserved.</p>
-</div>
-
+  <hr>
+  <a href="index.html" class="back">← Back to VIA Connect</a>
 </div>
 </body>
 </html>
