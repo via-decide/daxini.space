@@ -698,6 +698,15 @@
      * VIA Connect V1 - Sovereign Engineering Layer
      */
 
+    function escapeHTML(str) {
+        if (!str) return '';
+        return str.toString().replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     // --- 1. Database Schema (Dexie) ---
     const db = new Dexie('via-connect');
     db.version(1).stores({
@@ -1109,11 +1118,13 @@
         if (pending.length > 0) {
             html += `<div style="padding: 12px 16px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); background: var(--surface-2);">PENDING REQUESTS</div>`;
             pending.forEach(c => {
+                const safeName = escapeHTML(c.displayName);
+                const safeAvatar = escapeHTML(c.avatarValue);
                 html += `
                   <div class="list-item" onclick="app.openChat('${c.id}')">
-                    <div class="avatar" style="opacity: 0.5;">${c.avatarValue}</div>
+                    <div class="avatar" style="opacity: 0.5;">${safeAvatar}</div>
                     <div class="list-item-content">
-                      <div class="list-item-title">${c.displayName} <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:rgba(239,68,68,0.2); color:#ef4444; margin-left:8px;">Requires Approval</span></div>
+                      <div class="list-item-title">${safeName} <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:rgba(239,68,68,0.2); color:#ef4444; margin-left:8px;">Requires Approval</span></div>
                       <div class="list-item-subtitle">${c.id.slice(0,12)}...</div>
                     </div>
                   </div>
@@ -1124,11 +1135,13 @@
         if (trusted.length > 0) {
             html += `<div style="padding: 12px 16px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: var(--surface-2);">TRUSTED CONTACTS</div>`;
             trusted.forEach(c => {
+                const safeName = escapeHTML(c.displayName);
+                const safeAvatar = escapeHTML(c.avatarValue);
                 html += `
                   <div class="list-item" onclick="app.openChat('${c.id}')">
-                    <div class="avatar">${c.avatarValue}</div>
+                    <div class="avatar">${safeAvatar}</div>
                     <div class="list-item-content">
-                      <div class="list-item-title">${c.displayName}</div>
+                      <div class="list-item-title">${safeName}</div>
                       <div class="list-item-subtitle">${c.id.slice(0,12)}...</div>
                     </div>
                   </div>
@@ -1233,15 +1246,19 @@
 
           const timeStr = new Date(lastMsg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
           
+          const safeName = escapeHTML(name);
+          const safeAvatar = escapeHTML(avatar);
+          const safePreview = escapeHTML(preview);
+
           html += `
-            <div class="list-item" onclick="app.openChat('${id}', '${name}', '${avatar}')">
-              <div class="avatar">${avatar}</div>
+            <div class="list-item" onclick="app.openChat('${id}', '${safeName.replace(/'/g, "\\'")}', '${safeAvatar.replace(/'/g, "\\'")}')">
+              <div class="avatar">${safeAvatar}</div>
               <div class="list-details">
                 <div class="list-header">
-                  <div class="list-title">${name}</div>
+                  <div class="list-title">${safeName}</div>
                   <div class="list-time">${timeStr}</div>
                 </div>
-                <div class="list-subtitle">${preview}</div>
+                <div class="list-subtitle">${safePreview}</div>
               </div>
             </div>
           `;
