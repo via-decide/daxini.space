@@ -658,15 +658,7 @@
         <div style="font-size: 10px; color: var(--accent); font-family: var(--font-mono);">Encrypted</div>
       </div>
       <div class="chat-container">
-        <!-- Temporary Chat Banner -->
-        <div id="chat-temp-banner" style="display: none; background: rgba(239, 68, 68, 0.1); border-bottom: 1px solid #ef4444; padding: 12px; text-align: center; font-size: 13px;">
-            <p style="margin-bottom: 8px;"><strong>Connection Request</strong></p>
-            <p style="color: var(--text-muted); margin-bottom: 12px;">This is a temporary chat. Mutual approval is required to establish a permanent P2P connection.</p>
-            <div style="display: flex; gap: 8px; justify-content: center;">
-                <button id="btn-approve-chat" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="app.approveConnection()">Approve</button>
-                <button id="btn-block-chat" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-color: #ef4444; color: #ef4444;" onclick="app.blockConnection()">Block</button>
-            </div>
-        </div>
+        <!-- No approval banners: trust is automatic -->
         <div class="chat-messages" id="chat-messages-container">
           <!-- Messages inserted here -->
         </div>
@@ -1079,18 +1071,28 @@
 
       async init() {
         await opfs.init();
-        // Check for existing identity
         const identities = await db.identity.toArray();
         if (identities.length > 0) {
           this.myIdentity = identities[0];
-          this.showView('view-main');
-          this.loadProfileData();
-          this.initPeerNetwork();
-          this.loadConversations();
-          this.checkConnectURL();
         } else {
-          this.showView('view-onboarding');
+          // Silent first-run: generate identity, no screen shown
+          const keys = await cryptoUtils.generateIdentityPair();
+          this.myIdentity = {
+            id: keys.fingerprint,
+            displayName: 'Me',
+            avatarType: 'emoji',
+            avatarValue: '👤',
+            publicKeyJWK: keys.publicKeyJWK,
+            privateKey: keys.privateKey,
+            createdAt: Date.now()
+          };
+          await db.identity.add(this.myIdentity);
         }
+        this.showView('view-main');
+        this.loadProfileData();
+        this.initPeerNetwork();
+        this.loadConversations();
+        this.checkConnectURL();
       },
 
       async checkConnectURL() {
