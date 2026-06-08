@@ -1188,22 +1188,29 @@
             localStorage.setItem(STORAGE_KEY, email);
             localStorage.setItem('daxini_stack_captured_at', new Date().toISOString());
 
-            // Send to email endpoint (fire-and-forget)
-            // When SMTP is enabled on dharam@viadecide.com, replace this with your endpoint
+            // Send notification to dharam@viadecide.com via mailto
             try {
-                // Attempt to send to a simple webhook/API endpoint
-                // For now, we store in localStorage and log
-                console.log('[Daxini Stack] Email captured:', email);
+                const downloadTitle = pendingDownload ? pendingDownload.title : 'Unknown';
+                const subject = encodeURIComponent(`[Daxini Stack] New reader: ${email}`);
+                const body = encodeURIComponent(
+                    `New email captured from daxini.space/books\n\n` +
+                    `Email: ${email}\n` +
+                    `Download: ${downloadTitle}\n` +
+                    `Time: ${new Date().toISOString()}\n` +
+                    `Source: daxini.space/books`
+                );
                 
-                // You can wire this to any endpoint later:
-                // await fetch('https://your-api.com/subscribe', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ email, source: 'daxini-stack-books', timestamp: Date.now() })
-                // });
+                // Open mailto in hidden iframe to avoid navigation
+                const mailtoLink = `mailto:dharam@viadecide.com?subject=${subject}&body=${body}`;
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = mailtoLink;
+                document.body.appendChild(iframe);
+                setTimeout(() => iframe.remove(), 3000);
+                
+                console.log('[Daxini Stack] Email captured:', email);
             } catch (err) {
-                // Silent fail — the local capture is what matters
-                console.warn('[Daxini Stack] Endpoint not configured yet:', err);
+                console.warn('[Daxini Stack] mailto failed:', err);
             }
 
             // Close gate and trigger download
