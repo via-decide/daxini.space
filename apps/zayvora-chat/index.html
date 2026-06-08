@@ -904,26 +904,40 @@
                     this.openChat(payload.id);
 
                     // Dispatch handshake ping so the other party gets notified instantly
-                    setTimeout(() => {
-                        if (this.peer && this.myIdentity) {
-                            const conn = this.peer.connect(payload.id + "_via");
-                            conn.on('open', () => {
-                                conn.send({
-                                    type: 'system_handshake',
-                                    chatId: this.myIdentity.id,
-                                    senderId: this.myIdentity.id,
-                                    senderName: this.myIdentity.displayName,
-                                    senderPublicKey: this.myIdentity.publicKeyJWK,
-                                    createdAt: Date.now()
-                                });
-                            });
-                        }
-                    }, 1500);
+                    this.sendHandshakePing(payload.id);
                 }
             } catch(e) {
                 console.error("Failed to parse connect URL", e);
             }
         }
+      },
+      
+      sendHandshakePing(contactId) {
+          const doConnect = () => {
+              if (!this.peer || !this.myIdentity) return;
+              const conn = this.peer.connect(contactId + "_via");
+              conn.on('open', () => {
+                  conn.send({
+                      type: 'system_handshake',
+                      chatId: this.myIdentity.id,
+                      senderId: this.myIdentity.id,
+                      senderName: this.myIdentity.displayName,
+                      senderPublicKey: this.myIdentity.publicKeyJWK,
+                      createdAt: Date.now()
+                  });
+              });
+              conn.on('error', err => console.log("Handshake ping failed:", err));
+          };
+
+          if (this.peer && !this.peer.disconnected && !this.peer.destroyed) {
+              // Usually if peer exists, connect queues it. We can add a slight delay just in case.
+              setTimeout(doConnect, 1000);
+          } else {
+              // If peer is entirely missing, wait a bit and retry
+              setTimeout(() => {
+                  if (this.peer) doConnect();
+              }, 2500);
+          }
       },
 
       showView(viewId) {
@@ -1571,7 +1585,13 @@
                         app.loadContacts();
                     }
                     
-                    if (data.type === 'system_handshake') return;
+                    if (data.type === 'system_handshake') {
+                        if (!app.activeChatId || app.activeChatId !== data.chatId) {
+                            alert(`New connection request from ${data.senderName || 'Unknown'}! Switching to Contacts tab.`);
+                            app.switchTab('contacts');
+                        }
+                        return;
+                    }
 
                     if (data.type === 'file' && data.fileBuffer && data.fileMetadata) {
                         // It's a file
