@@ -867,9 +867,10 @@
 
       async checkConnectURL() {
         const urlParams = new URLSearchParams(window.location.search);
-        const connectParam = urlParams.get('connect');
-        if (connectParam) {
+        const connectParamRaw = urlParams.get('connect');
+        if (connectParamRaw) {
             try {
+                const connectParam = connectParamRaw.replace(/ /g, '+');
                 const payloadStr = atob(connectParam);
                 const payload = JSON.parse(payloadStr);
                 
@@ -1013,7 +1014,7 @@
               publicKeyJWK: this.myIdentity.publicKeyJWK
           };
           const b64 = btoa(JSON.stringify(payload));
-          const uri = `${window.location.origin}${window.location.pathname}?connect=${b64}`;
+          const uri = `${window.location.origin}${window.location.pathname}?connect=${encodeURIComponent(b64)}`;
           
           if (window.QRious) {
               new QRious({
@@ -1033,7 +1034,7 @@
               publicKeyJWK: this.myIdentity.publicKeyJWK
           };
           const b64 = btoa(JSON.stringify(payload));
-          const uri = `${window.location.origin}${window.location.pathname}?connect=${b64}`;
+          const uri = `${window.location.origin}${window.location.pathname}?connect=${encodeURIComponent(b64)}`;
           
           navigator.clipboard.writeText(uri).then(() => {
               alert("Invite link copied to clipboard!");
@@ -1045,14 +1046,26 @@
       // --- Contacts ---
       async saveContact(e) {
         e.preventDefault();
-        const name = document.getElementById('add-contact-name').value.trim();
-        const keyString = document.getElementById('add-contact-key').value.trim();
+        let name = document.getElementById('add-contact-name').value.trim();
+        let keyString = document.getElementById('add-contact-key').value.trim();
         
         let jwk;
         try {
-          jwk = JSON.parse(keyString);
+          if (keyString.includes('connect=')) {
+              let urlObj;
+              try { urlObj = new URL(keyString); } catch(err) { urlObj = new URL('http://dummy' + (keyString.startsWith('?') ? keyString : '?' + keyString)); }
+              let b64 = urlObj.searchParams.get('connect');
+              if (b64) {
+                  b64 = b64.replace(/ /g, '+');
+                  const payload = JSON.parse(atob(b64));
+                  jwk = payload.publicKeyJWK;
+                  if (!name) name = payload.displayName || 'Unknown';
+              }
+          }
+          if (!jwk) {
+              jwk = JSON.parse(keyString);
+          }
         } catch(e) {
-          // Just mock an ID if they paste something invalid for testing
           jwk = { kty: 'mock', kid: keyString.slice(0,10) };
         }
 
