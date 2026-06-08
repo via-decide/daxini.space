@@ -345,8 +345,12 @@
                     
                     itemsToRender.forEach((d, idx) => {
                         const prefix = idx === itemsToRender.length - 1 ? '└──' : '├──';
-                        const title = d.decision || d.path.split('/').pop().replace('.md', '');
+                        let title = d.decision || (d.path ? d.path.split('/').pop().replace('.md', '') : 'Untitled');
                         const idStr = d.id ? ` [${d.id}]` : '';
+                        
+                        // Sanitize title for HTML attribute
+                        title = title.replace(/"/g, '&quot;');
+
                         html += `
                             <div class="tree-item" title="${title}" onclick="loadZipDoc(${idx})">
                                 <span class="text-gray-600">${prefix}</span> <span style="font-size:0.8rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; max-width:200px; vertical-align:bottom;">${title}</span>${idStr}
