@@ -294,10 +294,12 @@
                 document.getElementById('contextData').innerHTML = '';
                 document.getElementById('evidenceData').innerHTML = '';
                 
+                // Read the file exactly once into memory to prevent browser read locks
+                const ab = await file.arrayBuffer();
+                
                 // Try JSON first
-                let isJson = false;
                 try {
-                    const text = await file.text();
+                    const text = new TextDecoder().decode(ab);
                     const bundle = JSON.parse(text);
                     if (bundle.type === 'zayvora_bundle') {
                         renderJsonBundle(bundle);
@@ -307,8 +309,7 @@
                     // Not JSON, proceed to ZIP
                 }
                 
-                // Read Zip (Use arrayBuffer to prevent deadlocks in some browsers after file.text())
-                const ab = await file.arrayBuffer();
+                // Read Zip
                 const zip = await JSZip.loadAsync(ab);
                 
                 // 1. Load Manifest
