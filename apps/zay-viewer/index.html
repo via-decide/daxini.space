@@ -3,72 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>.zay Bundle Viewer — Daxini Stack</title>
+    <title>.zay Decoder | The Daxini Archive</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
     <!-- Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
-            --bg: #08080a;
-            --surface: #111114;
-            --surface-hover: #1a1a20;
-            --border: #22222a;
-            --text: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.15);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --bg: #09090b;
+            --surface: #121212;
+            --border: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #fbbf24;
+            --terminal-green: #4ade80;
         }
 
         body {
-            font-family: 'Manrope', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, .serif {
-            font-family: 'Instrument Serif', serif;
-            font-weight: 400;
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); border-left: 1px solid var(--border); }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Effects */
+        .noise {
+            position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .scanline {
+            position: fixed; inset: 0; pointer-events: none; z-index: 49; opacity: 0.15;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 51%);
+            background-size: 100% 4px;
         }
 
-        code, pre {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85em;
+        .terminal-cursor {
+            display: inline-block; width: 8px; height: 1em;
+            background-color: var(--accent);
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom; margin-left: 4px;
         }
-
-        /* Nav */
-        nav {
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface);
-        }
-
-        .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            text-decoration: none;
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* Dropzone */
         #dropzone {
@@ -79,160 +70,187 @@
             justify-content: center;
             border: 2px dashed var(--border);
             margin: 2rem;
-            border-radius: 12px;
+            background: var(--surface);
             transition: all 0.2s ease;
             cursor: pointer;
+            position: relative;
+            z-index: 10;
         }
-
         #dropzone.dragover {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-        }
-
-        #dropzone h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        #dropzone p {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn:hover {
-            background: var(--surface-hover);
-            border-color: var(--text-muted);
+            border-color: var(--terminal-green);
+            background: rgba(74, 222, 128, 0.05);
+            color: var(--terminal-green);
         }
 
         /* Viewer Layout */
         #viewer {
-            display: none;
+            display: none; /* hidden by default */
             flex: 1;
+            flex-direction: column;
             overflow: hidden;
-            flex-direction: row;
+            position: relative;
+            z-index: 10;
+        }
+        @media (min-width: 768px) {
+            #viewer { flex-direction: row; }
         }
 
+        /* Panels */
         .panel {
-            padding: 2rem;
             overflow-y: auto;
             border-right: 1px solid var(--border);
         }
-
+        
         #sidebar {
-            width: 300px;
+            width: 100%;
+            height: 35%;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            #sidebar { width: 320px; height: 100%; border-bottom: none; }
+        }
+
+        #content-wrapper {
+            flex: 1;
             background: var(--surface);
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            overflow: hidden;
         }
 
         #content {
             flex: 1;
-            max-width: 800px;
-            margin: 0 auto;
+            overflow-y: auto;
+            padding: 2rem;
+            font-family: 'Crimson Text', serif;
+            font-size: 1.15rem;
+            color: #d1d5db;
+            line-height: 1.7;
         }
+        #content h1, #content h2, #content h3 { font-family: 'JetBrains Mono', monospace; color: var(--text-main); margin-top: 2rem; margin-bottom: 1rem; }
+        #content h1 { font-size: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        #content h2 { font-size: 1.5rem; }
+        #content p { margin-bottom: 1.2rem; }
+        #content pre { background: var(--bg); padding: 1rem; border: 1px solid var(--border); overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-bottom: 1.2rem; }
+        #content code { font-family: 'JetBrains Mono', monospace; color: var(--terminal-green); font-size: 0.85em; }
+        #content ul { list-style-type: square; padding-left: 1.5rem; margin-bottom: 1.2rem; }
 
-        /* Markdown Styles */
-        #content h1 { font-size: 3rem; margin-bottom: 1rem; }
-        #content h2 { font-size: 2rem; margin: 2rem 0 1rem; }
-        #content h3 { font-size: 1.5rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
-        #content p { margin-bottom: 1.2rem; color: #d1d5db; font-size: 1.1rem; line-height: 1.8; }
-        #content ul { margin-bottom: 1.2rem; padding-left: 1.5rem; color: #d1d5db; font-size: 1.1rem;}
-
-        /* Metadata sections */
-        .meta-section h3 {
-            font-family: 'JetBrains Mono', monospace;
+        /* Meta styling */
+        .meta-section {
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+        .meta-header {
             font-size: 0.75rem;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--text-muted);
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
         }
-
         .meta-item {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column;
         }
+        .meta-label { font-size: 0.7rem; color: #71717a; }
+        .meta-value { font-size: 0.85rem; color: var(--text-main); }
         
-        .meta-label {
-            font-size: 0.8rem;
+        /* Interactive tree */
+        .tree-item {
+            cursor: pointer;
+            padding: 0.25rem 0;
             color: var(--text-muted);
-            display: block;
+            transition: color 0.2s;
+            font-size: 0.85rem;
         }
+        .tree-item:hover { color: var(--accent); }
         
-        .meta-value {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .json-block {
-            background: #000;
-            padding: 1rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #10b981;
-            overflow-x: auto;
-            border: 1px solid var(--border);
+        /* Terminal Log */
+        #evidenceData pre {
+            font-size: 0.7rem;
+            color: var(--terminal-green);
+            white-space: pre-wrap;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="/" class="logo">DAXINI.SPACE</a>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--accent);">.zay viewer prototype</div>
-    </nav>
+    <div class="noise"></div>
+    <div class="scanline"></div>
 
-    <!-- Upload Screen -->
+    <!-- Navigation Bar -->
+    <header class="border-b border-[#27272a] bg-[#09090b] p-4 flex justify-between items-center z-20 relative">
+        <a href="/" class="text-sm font-bold tracking-widest text-[#f4f4f5] hover:text-[#fbbf24] transition-colors uppercase">
+            DAXINI.ARCHIVE <span class="text-gray-600">/</span> DECODER
+        </a>
+        <div class="text-[10px] text-[#4ade80] border border-[#4ade80] px-2 py-0.5 uppercase tracking-widest">
+            Awaiting Payload
+        </div>
+    </header>
+
+    <!-- Dropzone (Idle State) -->
     <div id="dropzone" onclick="document.getElementById('fileInput').click()">
-        <h2>Drop a .zay bundle here</h2>
-        <p>Portable knowledge with execution context.</p>
-        <button class="btn">Select File</button>
-        <input type="file" id="fileInput" accept=".zay,.zip" style="display: none;">
-        
-        <div style="margin-top: 3rem; text-align: center; color: var(--text-muted);">
-            <p style="font-size: 0.9rem;">Need a sample?</p>
-            <a href="/epubs/volume_1_local_first.zay" download style="color: var(--accent); text-decoration: none;">Download Volume 1 Sample Bundle</a>
+        <div class="text-center">
+            <h2 class="text-2xl md:text-4xl font-bold text-white mb-6 uppercase tracking-widest">
+                [AWAITING .ZAY PAYLOAD]<span class="terminal-cursor"></span>
+            </h2>
+            <p class="text-sm text-gray-500 mb-8 max-w-md mx-auto">
+                Insert a semantic knowledge container to mount its execution context.
+            </p>
+            <button class="border border-[#27272a] bg-[#09090b] text-[#a1a1aa] px-6 py-3 hover:border-[#fbbf24] hover:text-[#fbbf24] transition-all text-sm uppercase tracking-wider">
+                > Select File
+            </button>
+            <input type="file" id="fileInput" accept=".zay,.zip" style="display: none;">
+            
+            <div class="mt-12 text-xs text-gray-600">
+                <p class="mb-2">MISSING PAYLOAD?</p>
+                <a href="/epubs/volume_1_local_first.zay" download class="text-[#fbbf24] hover:underline">> wget volume_1.zay</a>
+            </div>
         </div>
     </div>
 
-    <!-- Viewer Screen -->
+    <!-- Viewer (Active State) -->
     <div id="viewer">
+        
+        <!-- Sidebar: Telemetry & TOC -->
         <div id="sidebar" class="panel">
-            <div class="meta-section">
-                <h3>Manifest</h3>
-                <div id="manifestData"></div>
+            <div class="meta-section bg-[#121212]">
+                <div class="meta-header">> MANIFEST.JSON</div>
+                <div id="manifestData">
+                    <span class="text-xs text-gray-600">No telemetry loaded.</span>
+                </div>
             </div>
             
-            <div class="meta-section">
-                <h3>Decisions & Context</h3>
-                <div id="contextData"></div>
+            <div class="meta-section flex-1 overflow-y-auto">
+                <div class="meta-header">> STRUCTURE (DECISIONS)</div>
+                <div id="contextData" class="font-mono">
+                    <span class="text-xs text-gray-600">No index loaded.</span>
+                </div>
             </div>
 
-            <div class="meta-section">
-                <h3>Execution Evidence</h3>
-                <div id="evidenceData"></div>
+            <div class="meta-section h-48 overflow-y-auto bg-black border-t border-[#27272a]">
+                <div class="meta-header">> TRACE_LOGS.JSON</div>
+                <div id="evidenceData">
+                    <span class="text-xs text-gray-600">Awaiting execution evidence...</span>
+                </div>
             </div>
         </div>
 
-        <div id="content" class="panel">
-            <div id="markdownContent"></div>
+        <!-- Main Reading Content -->
+        <div id="content-wrapper">
+            <div id="content">
+                <div id="markdownContent">
+                    <!-- Markdown gets injected here -->
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Javascript Engine -->
     <script>
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
@@ -269,6 +287,9 @@
                 // Switch UI
                 dropzone.style.display = 'none';
                 viewer.style.display = 'flex';
+                document.querySelector('header div').innerText = 'PAYLOAD MOUNTED';
+                document.querySelector('header div').className = 'text-[10px] text-[#fbbf24] border border-[#fbbf24] px-2 py-0.5 uppercase tracking-widest';
+
                 document.getElementById('markdownContent').innerHTML = '';
                 document.getElementById('contextData').innerHTML = '';
                 document.getElementById('evidenceData').innerHTML = '';
@@ -294,18 +315,9 @@
                     const manifest = JSON.parse(manifestStr);
                     
                     document.getElementById('manifestData').innerHTML = `
-                        <div class="meta-item">
-                            <span class="meta-label">Title</span>
-                            <span class="meta-value">${manifest.title || 'Unknown'}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Author</span>
-                            <span class="meta-value">${manifest.author || 'Unknown'}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Version</span>
-                            <span class="meta-value">${manifest.zay_version || '1.0'}</span>
-                        </div>
+                        <div class="meta-item"><span class="meta-label">ID</span><span class="meta-value">${manifest.title || 'Unknown'}</span></div>
+                        <div class="meta-item"><span class="meta-label">AUTHOR</span><span class="meta-value">${manifest.author || 'Unknown'}</span></div>
+                        <div class="meta-item"><span class="meta-label">SYS_VER</span><span class="meta-value">${manifest.zay_version || '1.0'}</span></div>
                     `;
                 }
 
@@ -319,7 +331,7 @@
                     }
                 }
                 if (!contentFound) {
-                    document.getElementById('markdownContent').innerHTML = '<i>No markdown content found in bundle.</i>';
+                    document.getElementById('markdownContent').innerHTML = '<p class="text-gray-500"><i>[WARN] No markdown content found in bundle.</i></p>';
                 }
 
                 // 3. Load Context (decisions.json)
@@ -328,11 +340,11 @@
                     const decisions = JSON.parse(decStr).architectural_decisions || [];
                     
                     let html = '';
-                    decisions.forEach(d => {
+                    decisions.forEach((d, idx) => {
+                        const prefix = idx === decisions.length - 1 ? '└──' : '├──';
                         html += `
-                            <div class="meta-item" style="background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 4px;">
-                                <span class="meta-label" style="color: var(--accent);">${d.id}</span>
-                                <span class="meta-value">${d.decision}</span>
+                            <div class="tree-item" title="${d.decision}">
+                                <span class="text-gray-600">${prefix}</span> [${d.id}]
                             </div>
                         `;
                     });
@@ -343,7 +355,7 @@
                 if (zip.file('evidence/traces.json')) {
                     const traceStr = await zip.file('evidence/traces.json').async('string');
                     document.getElementById('evidenceData').innerHTML = `
-                        <pre class="json-block">${traceStr}</pre>
+                        <pre>${traceStr}</pre>
                     `;
                 }
 
@@ -352,44 +364,37 @@
                 alert('Error parsing .zay bundle. Is it a valid JSON or ZIP?');
                 dropzone.style.display = 'flex';
                 viewer.style.display = 'none';
+                document.querySelector('header div').innerText = 'Awaiting Payload';
+                document.querySelector('header div').className = 'text-[10px] text-[#4ade80] border border-[#4ade80] px-2 py-0.5 uppercase tracking-widest';
             }
         }
 
         function renderJsonBundle(bundle) {
             const metadata = bundle.metadata || {};
             document.getElementById('manifestData').innerHTML = `
-                <div class="meta-item">
-                    <span class="meta-label">Title</span>
-                    <span class="meta-value">${metadata.title || 'Unknown'}</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">Author</span>
-                    <span class="meta-value">${metadata.author || 'Unknown'}</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">Version</span>
-                    <span class="meta-value">${bundle.version || '1.0'}</span>
-                </div>
+                <div class="meta-item"><span class="meta-label">ID</span><span class="meta-value">${metadata.title || 'Unknown'}</span></div>
+                <div class="meta-item"><span class="meta-label">AUTHOR</span><span class="meta-value">${metadata.author || 'Unknown'}</span></div>
+                <div class="meta-item"><span class="meta-label">SYS_VER</span><span class="meta-value">${bundle.version || '1.0'}</span></div>
             `;
             
             let tocHtml = '';
             const docs = bundle.documents || [];
             docs.forEach((doc, idx) => {
+                const prefix = idx === docs.length - 1 ? '└──' : '├──';
                 tocHtml += `
-                    <div class="meta-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 0.2s; margin-bottom: 0.5rem;" onclick="loadJsonDoc(${idx})">
-                        <span class="meta-label" style="color: var(--accent); font-weight: 600;">DOC ${String(idx + 1).padStart(2, '0')}</span>
-                        <span class="meta-value" style="font-size: 0.85rem;">${doc.title || `Document ${idx+1}`}</span>
+                    <div class="tree-item" onclick="loadJsonDoc(${idx})">
+                        <span class="text-gray-600">${prefix}</span> DOC_${String(idx + 1).padStart(2, '0')}
                     </div>
                 `;
             });
             
             document.getElementById('contextData').innerHTML = tocHtml;
             document.getElementById('evidenceData').innerHTML = `
-                <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
-                    JSON bundle verified.<br>
-                    Total documents: ${docs.length}<br>
-                    Format: Common .zay bundle
-                </div>
+                <pre>
+[SYSTEM] JSON bundle verified.
+[SYSTEM] Documents mounted: ${docs.length}
+[SYSTEM] Format: Common .zay bundle
+                </pre>
             `;
             
             window.activeJsonDocs = docs;
@@ -407,6 +412,12 @@
             } else {
                 contentDiv.innerHTML = doc.content;
             }
+            // Update selected state in tree
+            const items = document.querySelectorAll('#contextData .tree-item');
+            items.forEach((item, i) => {
+                if (i === index) item.style.color = '#fbbf24';
+                else item.style.color = '';
+            });
         }
     </script>
 </body>
