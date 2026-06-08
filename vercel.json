@@ -3,7 +3,7 @@
     { "source": "/books", "destination": "/books.html" },
     { "source": "/kindle", "destination": "/kindle.html" },
     { "source": "/zay", "destination": "/apps/zay-viewer/index.html" },
-    { "source": "/app/:slug", "destination": "/?app=:slug" },
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/chat", "destination": "/apps/zayvora-chat/index.html" },
+    { "source": "/app/:slug", "destination": "/?app=:slug" }
   ]
 }
