@@ -19,17 +19,17 @@
   
   <style>
     :root {
-      --bg: #0a0a0c;
-      --surface: #111115;
-      --surface-2: #18181e;
-      --surface-3: #22222a;
-      --border: #2a2a35;
-      --border-light: #333340;
-      --text: #e8e8f0;
-      --text-muted: #7a7a90;
-      --text-faint: #404055;
-      --accent: #4f8ef7;
-      --accent-dim: rgba(79, 142, 247, 0.15);
+      --bg: #000000;
+      --surface: rgba(28, 28, 30, 0.75);
+      --surface-2: #1c1c1e;
+      --surface-3: #2c2c2e;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-light: rgba(255, 255, 255, 0.15);
+      --text: #ffffff;
+      --text-muted: #8e8e93;
+      --text-faint: #636366;
+      --accent: #0a84ff;
+      --accent-dim: rgba(10, 132, 255, 0.15);
       --font-mono: 'IBM Plex Mono', monospace;
       --font-sans: 'DM Sans', sans-serif;
     }
@@ -169,6 +169,8 @@
       align-items: center;
       padding: 0 20px;
       background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       z-index: 10;
       flex-shrink: 0;
       justify-content: space-between;
@@ -202,9 +204,12 @@
       height: 64px;
       border-top: 1px solid var(--border);
       background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       display: flex;
       padding-bottom: env(safe-area-inset-bottom);
       flex-shrink: 0;
+      z-index: 10;
     }
 
     .nav-btn {
@@ -910,7 +915,7 @@
         });
         document.getElementById(`tab-${tabId}`).classList.add('active');
         
-        // Update Topbar Title
+        // Update Topbar Title and + Button
         const titles = {
           'conversations': 'Conversations',
           'contacts': 'Contacts',
@@ -918,6 +923,13 @@
           'profile': 'My Identity'
         };
         document.getElementById('topbar-title').innerText = titles[tabId];
+        
+        const topBtn = document.getElementById('btn-top-action');
+        if (tabId === 'conversations' || tabId === 'contacts') {
+            topBtn.style.display = 'block';
+        } else {
+            topBtn.style.display = 'none';
+        }
         
         // Load data appropriately
         if (tabId === 'contacts') this.loadContacts();
