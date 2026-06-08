@@ -11,6 +11,13 @@
   
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Dependencies -->
+  <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- QR Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+  
   <style>
     :root {
       --bg: #0a0a0c;
@@ -527,11 +534,15 @@
 
       <!-- Tab: Contacts -->
       <div id="tab-contacts" class="tab-content">
-        <div class="p-4" style="border-bottom: 1px solid var(--border);">
-          <button class="btn btn-outline" style="width: 100%;" onclick="app.openAddContact()">
-            + Add Contact
+        <div class="p-4" style="border-bottom: 1px solid var(--border); display: flex; gap: 8px;">
+          <button class="btn btn-primary" style="flex: 1;" onclick="app.openScanner()">
+            📷 Scan QR
+          </button>
+          <button class="btn btn-outline" style="flex: 1;" onclick="app.openAddContact()">
+            🔗 Paste Link
           </button>
         </div>
+        
         <div id="contacts-list">
           <!-- Populated dynamically -->
         </div>
@@ -556,11 +567,19 @@
           <h2 id="profile-name" style="margin-bottom: 4px;">User</h2>
           <p style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono);">Your Sovereign Node</p>
           
-          <div class="key-display" id="profile-fingerprint">
+          <div class="key-display" id="profile-fingerprint" style="margin-bottom: 24px;">
             Loading fingerprint...
           </div>
           
-          <button class="btn btn-outline" style="width: 100%; margin-bottom: 12px;" onclick="alert('Copying public key logic here...')">Copy Public Key (For Invites)</button>
+          <!-- QR Invite Section -->
+          <div style="background: var(--surface-2); padding: 24px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 24px;">
+            <p style="font-size: 14px; margin-bottom: 16px; color: var(--text-muted);">Share to connect</p>
+            <div style="background: #fff; padding: 12px; border-radius: 8px; display: inline-block; margin-bottom: 16px;">
+                <canvas id="qr-canvas"></canvas>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="app.copyInviteLink()">Copy Invite Link</button>
+            <p style="font-size: 12px; color: var(--text-faint);">Invite links contain your public key and node ID.</p>
+          </div>
           
           <div class="input-group mt-4">
             <label>Storage Status</label>
@@ -608,6 +627,15 @@
         <div style="font-size: 10px; color: var(--accent); font-family: var(--font-mono);">Encrypted</div>
       </div>
       <div class="chat-container">
+        <!-- Temporary Chat Banner -->
+        <div id="chat-temp-banner" style="display: none; background: rgba(239, 68, 68, 0.1); border-bottom: 1px solid #ef4444; padding: 12px; text-align: center; font-size: 13px;">
+            <p style="margin-bottom: 8px;"><strong>Connection Request</strong></p>
+            <p style="color: var(--text-muted); margin-bottom: 12px;">This is a temporary chat. Mutual approval is required to establish a permanent P2P connection.</p>
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <button id="btn-approve-chat" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="app.approveConnection()">Approve</button>
+                <button id="btn-block-chat" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-color: #ef4444; color: #ef4444;" onclick="app.blockConnection()">Block</button>
+            </div>
+        </div>
         <div class="chat-messages" id="chat-messages-container">
           <!-- Messages inserted here -->
         </div>
@@ -641,6 +669,19 @@
           </div>
           <button type="submit" class="btn mt-4" style="width: 100%;">Save Contact</button>
         </form>
+      </div>
+    </div>
+
+    <!-- Scanner View -->
+    <div id="sub-view-scanner" class="sub-view" style="background: #000;">
+      <div class="sub-view-header" style="background: transparent; border: none; position: absolute; z-index: 10; width: 100%;">
+        <button class="btn-back" onclick="app.closeScanner()">‹</button>
+        <div class="sub-view-title" style="color: #fff;">Scan QR Invite</div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative; overflow:hidden;">
+        <video id="qr-video" style="width: 100%; height: 100%; object-fit: cover;" playsinline></video>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:250px; height:250px; border:2px dashed var(--accent); border-radius:12px; box-shadow: 0 0 0 4000px rgba(0,0,0,0.6);"></div>
+        <canvas id="qr-canvas-hidden" style="display:none;"></canvas>
       </div>
     </div>
 
@@ -816,8 +857,43 @@
           this.loadProfileData();
           this.initPeerNetwork();
           this.loadConversations();
+          this.checkConnectURL();
         } else {
           this.showView('view-onboarding');
+        }
+      },
+
+      async checkConnectURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const connectParam = urlParams.get('connect');
+        if (connectParam) {
+            try {
+                const payloadStr = atob(connectParam);
+                const payload = JSON.parse(payloadStr);
+                
+                if (payload.id && payload.publicKeyJWK) {
+                    // Check if already exists
+                    const existing = await db.contacts.get(payload.id);
+                    if (!existing) {
+                        await db.contacts.add({
+                            id: payload.id,
+                            displayName: payload.displayName || 'Unknown',
+                            avatarType: 'emoji',
+                            avatarValue: payload.displayName ? payload.displayName.charAt(0).toUpperCase() : '?',
+                            publicKey: payload.publicKeyJWK,
+                            trustState: 'pending_outbound',
+                            addedAt: Date.now()
+                        });
+                        alert(`Connection request started with ${payload.displayName}`);
+                        this.switchTab('contacts');
+                        
+                        // Clear the URL to avoid refetching
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
+            } catch(e) {
+                console.error("Failed to parse connect URL", e);
+            }
         }
       },
 
@@ -918,6 +994,43 @@
         document.getElementById('profile-avatar').innerText = this.myIdentity.avatarValue;
         document.getElementById('profile-name').innerText = this.myIdentity.displayName;
         document.getElementById('profile-fingerprint').innerText = `ID: ${this.myIdentity.id}\n\nKey: ${JSON.stringify(this.myIdentity.publicKeyJWK).slice(0, 30)}...`;
+        this.generateQR();
+      },
+
+      generateQR() {
+          const payload = {
+              id: this.myIdentity.id,
+              displayName: this.myIdentity.displayName,
+              publicKeyJWK: this.myIdentity.publicKeyJWK
+          };
+          const b64 = btoa(JSON.stringify(payload));
+          const uri = `${window.location.origin}${window.location.pathname}?connect=${b64}`;
+          
+          if (window.QRious) {
+              new QRious({
+                  element: document.getElementById('qr-canvas'),
+                  value: uri,
+                  size: 200,
+                  background: 'white',
+                  foreground: 'black'
+              });
+          }
+      },
+
+      copyInviteLink() {
+          const payload = {
+              id: this.myIdentity.id,
+              displayName: this.myIdentity.displayName,
+              publicKeyJWK: this.myIdentity.publicKeyJWK
+          };
+          const b64 = btoa(JSON.stringify(payload));
+          const uri = `${window.location.origin}${window.location.pathname}?connect=${b64}`;
+          
+          navigator.clipboard.writeText(uri).then(() => {
+              alert("Invite link copied to clipboard!");
+          }).catch(err => {
+              alert("Failed to copy link: " + err);
+          });
       },
 
       // --- Contacts ---
@@ -959,26 +1072,100 @@
       async loadContacts() {
         const contacts = await db.contacts.toArray();
         const container = document.getElementById('contacts-list');
-        
         if (contacts.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div style="font-size: 30px; margin-bottom: 12px;">📇</div>
-              <p>No contacts saved.</p>
-            </div>
-          `;
+          list.innerHTML = `<div class="p-4 text-center text-muted">No contacts yet.</div>`;
           return;
         }
 
-        container.innerHTML = contacts.map(c => `
-          <div class="list-item" onclick="app.openChat('${c.id}', '${c.displayName}', '${c.avatarValue}')">
-            <div class="avatar">${c.avatarValue}</div>
-            <div class="list-details">
-              <div class="list-title">${c.displayName}</div>
-              <div class="list-subtitle" style="font-family: var(--font-mono); font-size: 10px; margin-top: 4px;">Trusted Key</div>
-            </div>
-          </div>
-        `).join('');
+        // Separate pending and trusted
+        const pending = contacts.filter(c => c.trustState.startsWith('pending') || c.trustState === 'temporary');
+        const trusted = contacts.filter(c => c.trustState === 'trusted');
+
+        let html = '';
+        
+        if (pending.length > 0) {
+            html += `<div style="padding: 12px 16px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); background: var(--surface-2);">PENDING REQUESTS</div>`;
+            pending.forEach(c => {
+                html += `
+                  <div class="list-item" onclick="app.openChat('${c.id}')">
+                    <div class="avatar" style="opacity: 0.5;">${c.avatarValue}</div>
+                    <div class="list-item-content">
+                      <div class="list-item-title">${c.displayName} <span style="font-size:10px; padding:2px 6px; border-radius:4px; background:rgba(239,68,68,0.2); color:#ef4444; margin-left:8px;">Requires Approval</span></div>
+                      <div class="list-item-subtitle">${c.id.slice(0,12)}...</div>
+                    </div>
+                  </div>
+                `;
+            });
+        }
+        
+        if (trusted.length > 0) {
+            html += `<div style="padding: 12px 16px; font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); background: var(--surface-2);">TRUSTED CONTACTS</div>`;
+            trusted.forEach(c => {
+                html += `
+                  <div class="list-item" onclick="app.openChat('${c.id}')">
+                    <div class="avatar">${c.avatarValue}</div>
+                    <div class="list-item-content">
+                      <div class="list-item-title">${c.displayName}</div>
+                      <div class="list-item-subtitle">${c.id.slice(0,12)}...</div>
+                    </div>
+                  </div>
+                `;
+            });
+        }
+
+        list.innerHTML = html;
+      },
+
+      // --- QR Scanner ---
+      qrStream: null,
+      qrInterval: null,
+      
+      openScanner() {
+          this.openSubView('sub-view-scanner');
+          const video = document.getElementById('qr-video');
+          navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
+              app.qrStream = stream;
+              video.srcObject = stream;
+              video.setAttribute("playsinline", true);
+              video.play();
+              requestAnimationFrame(app.scanLoop);
+          }).catch(function(err) {
+              alert("Error accessing camera. Please ensure you are on HTTPS and granted permissions. Fallback to Paste Link.");
+              app.closeScanner();
+          });
+      },
+      
+      closeScanner() {
+          if (this.qrStream) {
+              this.qrStream.getTracks().forEach(track => track.stop());
+              this.qrStream = null;
+          }
+          this.closeSubView('sub-view-scanner');
+      },
+      
+      scanLoop() {
+          if (!app.qrStream) return;
+          const video = document.getElementById('qr-video');
+          const canvas = document.getElementById('qr-canvas-hidden');
+          if (video.readyState === video.HAVE_ENOUGH_DATA) {
+              canvas.height = video.videoHeight;
+              canvas.width = video.videoWidth;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              var code = window.jsQR ? jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "dontInvert" }) : null;
+              if (code && code.data) {
+                  const url = code.data;
+                  if (url.includes('?connect=')) {
+                      app.closeScanner();
+                      // simulate opening the URL
+                      window.history.replaceState({}, document.title, url);
+                      app.checkConnectURL();
+                      return;
+                  }
+              }
+          }
+          requestAnimationFrame(app.scanLoop);
       },
 
       // --- Messaging ---
@@ -1039,13 +1226,69 @@
         container.innerHTML = html;
       },
 
-      async openChat(contactId, name, avatar) {
+      async openChat(contactId, nameFallback, avatarFallback) {
         this.activeChatId = contactId;
+        const contact = await db.contacts.get(contactId);
+        const name = contact ? contact.displayName : (nameFallback || 'Unknown');
+        const avatar = contact ? contact.avatarValue : (avatarFallback || '?');
+        
         document.getElementById('chat-header-name').innerText = name;
         document.getElementById('chat-header-avatar').innerText = avatar;
         
+        const banner = document.getElementById('chat-temp-banner');
+        if (contact && (contact.trustState.startsWith('pending') || contact.trustState === 'temporary')) {
+            banner.style.display = 'block';
+            if (contact.trustState === 'pending_outbound') {
+                banner.innerHTML = `<p style="color: var(--text-muted); margin-bottom: 0;">Waiting for ${name} to approve connection...</p>`;
+            } else {
+                // Inbound pending or temporary, show buttons
+                banner.innerHTML = `
+                    <p style="margin-bottom: 8px;"><strong>Connection Request</strong></p>
+                    <p style="color: var(--text-muted); margin-bottom: 12px;">Mutual approval is required to establish a permanent P2P connection.</p>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button id="btn-approve-chat" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="app.approveConnection()">Approve</button>
+                        <button id="btn-block-chat" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-color: #ef4444; color: #ef4444;" onclick="app.blockConnection()">Block</button>
+                    </div>`;
+            }
+        } else {
+            banner.style.display = 'none';
+        }
+        
         this.openSubView('sub-view-chat');
         await this.renderChatHistory();
+      },
+
+      async approveConnection() {
+          if (!this.activeChatId) return;
+          const contact = await db.contacts.get(this.activeChatId);
+          if (contact) {
+              await db.contacts.update(this.activeChatId, { trustState: 'trusted' });
+              
+              // Send system message
+              if (this.peer) {
+                  const conn = this.peer.connect(this.activeChatId + "_via");
+                  conn.on('open', () => {
+                      conn.send({
+                          type: 'system_approve',
+                          chatId: this.myIdentity.id,
+                          senderId: this.myIdentity.id,
+                          createdAt: Date.now()
+                      });
+                  });
+              }
+              
+              this.loadContacts();
+              this.openChat(this.activeChatId); // refresh banner
+          }
+      },
+
+      async blockConnection() {
+          if (!this.activeChatId) return;
+          if (confirm("Block this contact?")) {
+              await db.contacts.update(this.activeChatId, { trustState: 'blocked' });
+              this.closeSubView('sub-view-chat');
+              this.loadContacts();
+          }
       },
 
       async renderChatHistory() {
@@ -1141,6 +1384,8 @@
                id: msgRecord.id,
                chatId: this.myIdentity.id, // from their perspective, the chatId is my ID
                senderId: this.myIdentity.id,
+               senderPublicKey: this.myIdentity.publicKeyJWK,
+               senderName: this.myIdentity.displayName,
                encryptedPayload: ciphertext,
                status: 'delivered',
                createdAt: msgRecord.createdAt
@@ -1203,6 +1448,8 @@
                 id: msgRecord.id,
                 chatId: this.myIdentity.id,
                 senderId: this.myIdentity.id,
+                senderPublicKey: this.myIdentity.publicKeyJWK,
+                senderName: this.myIdentity.displayName,
                 type: 'file',
                 fileId: fileId,
                 fileMetadata: metaRecord,
@@ -1235,7 +1482,36 @@
           this.peer.on('connection', conn => {
              conn.on('data', async (data) => {
                 console.log("Received via P2P:", data);
+                
+                if (data.type === 'system_approve' && data.chatId) {
+                    const contact = await db.contacts.get(data.chatId);
+                    if (contact) {
+                        await db.contacts.update(data.chatId, { trustState: 'trusted' });
+                        if (app.activeChatId === data.chatId) app.openChat(data.chatId);
+                        app.loadContacts();
+                    }
+                    return;
+                }
+
                 if (data && data.chatId) {
+                    // Check if sender is known. If not, and they sent key, add as pending_inbound.
+                    let contact = await db.contacts.get(data.chatId);
+                    if (!contact && data.senderPublicKey) {
+                        contact = {
+                            id: data.chatId,
+                            displayName: data.senderName || 'Unknown',
+                            avatarType: 'emoji',
+                            avatarValue: data.senderName ? data.senderName.charAt(0).toUpperCase() : '?',
+                            publicKey: data.senderPublicKey,
+                            trustState: 'pending_inbound',
+                            addedAt: Date.now()
+                        };
+                        await db.contacts.add(contact);
+                    } else if (contact && contact.trustState === 'pending_outbound') {
+                        // If they were pending outbound, their message implicitly moves them to temporary
+                        await db.contacts.update(data.chatId, { trustState: 'temporary' });
+                    }
+
                     if (data.type === 'file' && data.fileBuffer && data.fileMetadata) {
                         // It's a file
                         const incomingChatId = data.chatId; // is the sender's id
@@ -1254,7 +1530,14 @@
                         await db.messages.add(msgRecord);
                     } else if (data.encryptedPayload) {
                         // It's text
-                        await db.messages.add(data);
+                        await db.messages.add({
+                            id: data.id,
+                            chatId: data.chatId,
+                            senderId: data.senderId,
+                            encryptedPayload: data.encryptedPayload,
+                            status: data.status,
+                            createdAt: data.createdAt
+                        });
                     }
                     
                     if (app.activeChatId === data.chatId) {
@@ -1262,6 +1545,8 @@
                     } else {
                         app.loadConversations();
                     }
+                    // Refresh contacts if a new one was added
+                    app.loadContacts();
                 }
              });
           });
