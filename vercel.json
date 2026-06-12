@@ -4,6 +4,7 @@
     { "source": "/kindle", "destination": "/kindle.html" },
     { "source": "/zay", "destination": "/apps/zay-viewer/index.html" },
     { "source": "/chat", "destination": "/apps/zayvora-chat/index.html" },
+    { "source": "/studyos(.*)", "destination": "/studyos/index.html" },
     { "source": "/app/:slug", "destination": "/?app=:slug" }
   ]
 }
