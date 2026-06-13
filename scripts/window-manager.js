@@ -87,13 +87,17 @@ class WindowManager {
     win.appendChild(body);
     this.stack.appendChild(win);
     
+    window.dispatchEvent(new CustomEvent('os:window_opened'));
     return win;
   }
 
   closeWindow(win) {
     win.style.transform = 'scale(0.9)';
     win.style.opacity = '0';
-    setTimeout(() => win.remove(), 300);
+    setTimeout(() => {
+      win.remove();
+      window.dispatchEvent(new CustomEvent('os:window_closed'));
+    }, 300);
   }
 }
 

@@ -114,6 +114,11 @@ class PatternTracer {
         this.patternSequence.push(coord);
         dot.classList.add('active');
         this.updatePath();
+        
+        // Haptic Feedback
+        if ('vibrate' in navigator) {
+          navigator.vibrate(12);
+        }
       }
     }
   }
