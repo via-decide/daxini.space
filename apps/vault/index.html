@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Assets - Daxini Vault</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-panel: #111;
+      --border: rgba(0, 229, 255, 0.15);
+      --border-hover: rgba(0, 229, 255, 0.4);
+      --cyan: #00e5ff;
+      --cyan-dim: rgba(0, 229, 255, 0.1);
+      --saffron: #ff9933;
+      --saffron-dim: rgba(255, 153, 51, 0.1);
+      --text: #e0e0e0;
+      --text-muted: #888;
+      --font-mono: "Menlo", "Consolas", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      padding: 30px;
+      line-height: 1.5;
+    }
+
+    header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 500;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .badge-count {
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--cyan-dim);
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .asset-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .asset-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .asset-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .asset-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .asset-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .asset-version {
+      font-family: var(--font-mono);
+      color: var(--saffron);
+      font-size: 12px;
+      background: var(--saffron-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 153, 51, 0.2);
+    }
+
+    .asset-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 16px;
+    }
+
+    .meta-item span {
+      color: var(--cyan);
+    }
+
+    .asset-components {
+      background: #000;
+      border: 1px dashed var(--border);
+      padding: 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .component-tag {
+      background: rgba(255,255,255,0.05);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: #ccc;
+    }
+
+    .asset-actions {
+      display: flex;
+      gap: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 20px;
+    }
+
+    .btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--cyan-dim);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--cyan-dim);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .btn-primary:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    .btn-upgrade {
+      border-color: var(--saffron);
+      color: var(--saffron);
+    }
+    
+    .btn-upgrade:hover {
+      background: var(--saffron);
+      color: #000;
+    }
+
+    /* Simulate a terminal output area */
+    #console {
+      margin-top: 40px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #0f0;
+      height: 120px;
+      overflow-y: auto;
+    }
+    .log-line { margin-bottom: 4px; }
+    .log-time { color: var(--text-muted); margin-right: 8px; }
+    .log-action { color: var(--cyan); margin-right: 8px; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💼 My Assets <span class="badge-count">3 BUNDLES</span></h1>
+    <p class="subtitle">Secure ownership vault. Fork, upgrade, or distribute your compiled artifacts.</p>
+  </header>
+
+  <div class="asset-grid">
+
+    <!-- ASSET 1 -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-title">CRM Bundle <span class="asset-version">v2.3</span></div>
+          <div class="asset-meta">
+            <div class="meta-item">SIZE: <span>1.2 MB</span></div>
+            <div class="meta-item">OWNED SINCE: <span>2026-05-12</span></div>
+            <div class="meta-item">UPGRADE AVAIL: <span>v2.4</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="asset-components">
+        <div class="component-tag">PRD Document</div>
+        <div class="component-tag">Architecture Graph</div>
+        <div class="component-tag">Android APK</div>
+        <div class="component-tag">Source Code</div>
+        <div class="component-tag">Version History</div>
+      </div>
+      <div class="asset-actions">
+        <button class="btn btn-primary" onclick="logAction('OPEN', 'CRM Bundle v2.3 in LogicHub Editor')">▶ Open</button>
+        <button class="btn" onclick="logAction('FORK', 'CRM Bundle (Creating new branch pipeline)')">⑂ Fork</button>
+        <button class="btn btn-upgrade" onclick="logAction('UPGRADE', 'Connecting to Marketplace for v2.4')">⚡ Upgrade (₹199)</button>
+        <button class="btn" onclick="logAction('DOWNLOAD', 'Exporting CRM_Bundle_v2.3.zip')">↓ Download</button>
+        <button class="btn" onclick="logAction('PUBLISH', 'Pushing current state to Daxini Space')">↗ Publish</button>
+      </div>
+    </div>
+
+    <!-- ASSET 2 -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-title">Inventory Operations <span class="asset-version">v1.4</span></div>
+          <div class="asset-meta">
+            <div class="meta-item">SIZE: <span>3.4 MB</span></div>
+            <div class="meta-item">OWNED SINCE: <span>2026-06-01</span></div>
+            <div class="meta-item">UPGRADE AVAIL: <span>Up to date</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="asset-components">
+        <div class="component-tag">Next.js Source</div>
+        <div class="component-tag">Firebase Rules</div>
+        <div class="component-tag">Data Model</div>
+      </div>
+      <div class="asset-actions">
+        <button class="btn btn-primary" onclick="logAction('OPEN', 'Inventory Ops v1.4 in LogicHub Editor')">▶ Open</button>
+        <button class="btn" onclick="logAction('FORK', 'Inventory Ops (Creating new branch pipeline)')">⑂ Fork</button>
+        <button class="btn" onclick="logAction('DOWNLOAD', 'Exporting Inventory_Ops_v1.4.zip')">↓ Download</button>
+        <button class="btn" onclick="logAction('PUBLISH', 'Pushing current state to Daxini Space')">↗ Publish</button>
+      </div>
+    </div>
+
+    <!-- ASSET 3 -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-title">Field Inspection App <span class="asset-version">v3.1</span></div>
+          <div class="asset-meta">
+            <div class="meta-item">SIZE: <span>0.8 MB</span></div>
+            <div class="meta-item">OWNED SINCE: <span>2026-06-15</span></div>
+            <div class="meta-item">UPGRADE AVAIL: <span>Up to date</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="asset-components">
+        <div class="component-tag">SOP Engine</div>
+        <div class="component-tag">Offline Manifest</div>
+        <div class="component-tag">Prompt Logic</div>
+      </div>
+      <div class="asset-actions">
+        <button class="btn btn-primary" onclick="logAction('OPEN', 'Field Inspection v3.1 in LogicHub Editor')">▶ Open</button>
+        <button class="btn" onclick="logAction('FORK', 'Field Inspection (Creating new branch pipeline)')">⑂ Fork</button>
+        <button class="btn" onclick="logAction('DOWNLOAD', 'Exporting Field_Inspection_v3.1.zip')">↓ Download</button>
+        <button class="btn" onclick="logAction('PUBLISH', 'Pushing current state to Daxini Space')">↗ Publish</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="console">
+    <div class="log-line"><span class="log-time">[SYSTEM]</span> Ready. Ownership cryptographically verified.</div>
+  </div>
+
+  <script>
+    const consoleEl = document.getElementById('console');
+    
+    function logAction(action, detail) {
+      const time = new Date().toISOString().split('T')[1].slice(0,8);
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-action">${action}</span> ${detail}`;
+      consoleEl.appendChild(line);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      
+      // Flash effect on button
+      if (action === 'PUBLISH') {
+        setTimeout(() => {
+          const l2 = document.createElement('div');
+          l2.className = 'log-line';
+          l2.style.color = 'var(--saffron)';
+          l2.innerHTML = `<span class="log-time">[${time}]</span> Sending handshake to Aporaksha IdP...`;
+          consoleEl.appendChild(l2);
+          consoleEl.scrollTop = consoleEl.scrollHeight;
+        }, 400);
+      }
+    }
+  </script>
+
+</body>
+</html>
