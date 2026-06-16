@@ -1072,53 +1072,23 @@
         <span style="color:#00e5ff; font-family:var(--font-mono); font-size:9px;">LIVE</span>
       </div>
     </div>
-    <div class="hud-tabs">
-      <button class="hud-tab-btn active" id="disc-btn-trending" onclick="switchDiscoveryTab('trending')">Trending</button>
-      <button class="hud-tab-btn" id="disc-btn-releases" onclick="switchDiscoveryTab('releases')">Releases</button>
-      <button class="hud-tab-btn" id="disc-btn-creators" onclick="switchDiscoveryTab('creators')">Creators</button>
-    </div>
-    <div class="hud-content">
-      <div id="disc-trending" class="hud-tab-panel active">
-        <div class="hud-card">
-          <div class="hud-card-title">1. StudyOS v1.4</div>
-          <p class="hud-card-desc">Notes engine built via LogicHub. 12k installs.</p>
-        </div>
-        <div class="hud-card">
-          <div class="hud-card-title">2. PromptAlchemy</div>
-          <p class="hud-card-desc">Advanced LLM playground. Trending up 40%.</p>
-        </div>
-        <div class="hud-card">
-          <div class="hud-card-title">3. FinanceFlow App</div>
-          <p class="hud-card-desc">Local-first budget tracker. 8k installs.</p>
-        </div>
+    <div style="padding:20px;">
+      <div style="text-align:center; padding:30px 10px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; backdrop-filter:blur(10px);">
+        <div style="font-size:40px; margin-bottom:12px;">🌌</div>
+        <h3 style="font-family:var(--font-mono); font-size:14px; color:#fff; margin-bottom:8px;">Daxini Marketplace</h3>
+        <p style="font-size:11px; color:rgba(255,255,255,0.6); line-height:1.4; margin-bottom:20px;">
+          Discover, acquire, and distribute LogicHub artifacts, verified packages, and commercial bundles.
+        </p>
+        <button class="hud-btn btn-saffron" style="width:100%; padding:12px; font-weight:bold; font-size:12px;" onclick="window.launchAppBySlug('marketplace')">
+          Launch Full Storefront ↗
+        </button>
       </div>
-      <div id="disc-releases" class="hud-tab-panel">
-        <div class="hud-card">
-          <div class="hud-card-title">Today: StudyOS Update</div>
-          <p class="hud-card-desc">v1.4 released with local graph DB.</p>
-        </div>
-        <div class="hud-card">
-          <div class="hud-card-title">Yesterday: LogicHub Export</div>
-          <p class="hud-card-desc">14 new templates published to the network.</p>
-        </div>
-      </div>
-      <div id="disc-creators" class="hud-tab-panel">
-        <div class="hud-card">
-          <div class="hud-card-title">Built by Dharam</div>
-          <p class="hud-card-desc">7 Apps · 45k Views · 12k Installs</p>
-          <a class="hud-card-link" href="#">View Analytics ↗</a>
-        </div>
+      
+      <div style="margin-top:20px; font-family:var(--font-mono); font-size:10px; color:rgba(255,255,255,0.4); text-align:center;">
+        Creator payouts process every 24h.
       </div>
     </div>
   </section>
-  <script>
-    function switchDiscoveryTab(tabId) {
-      document.querySelectorAll('#discovery-app-panel .hud-tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('#discovery-app-panel .hud-tab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('disc-btn-' + tabId).classList.add('active');
-      document.getElementById('disc-' + tabId).classList.add('active');
-    }
-  </script>
 
   <!-- WINDOW MANAGER -->
   <div id="window-manager"></div>
@@ -1538,6 +1508,17 @@
     ];
 
     const CORE_APPS = [
+      {
+        slug: 'marketplace',
+        name: 'Marketplace',
+        icon: '🌌',
+        url: '/apps/marketplace/index.html',
+        status: 'live',
+        desc: 'Discover, acquire, and distribute verified artifacts and commercial bundles.',
+        ownerType: 'mine',
+        tier: 'core',
+        tags: ['marketplace', 'store', 'apps', 'bundles', 'ecosystem']
+      },
       {
         slug: 'my-assets',
         name: 'My Assets',

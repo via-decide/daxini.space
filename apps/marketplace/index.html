@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daxini Marketplace</title>
+  <style>
+    :root {
+      --bg-dark: #050505;
+      --bg-panel: #111;
+      --bg-card: #181818;
+      --border: rgba(0, 229, 255, 0.15);
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.3);
+      --saffron: #ff9933;
+      --saffron-dim: rgba(255, 153, 51, 0.1);
+      --verified: #10b981;
+      --verified-dim: rgba(16, 185, 129, 0.1);
+      --text: #e0e0e0;
+      --text-muted: #888;
+      --font-mono: "Menlo", "Consolas", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text);
+      font-family: var(--font-sans);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: 260px;
+      border-right: 1px solid var(--border);
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .brand {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-section {
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 24px 12px;
+    }
+
+    .nav-item {
+      padding: 10px 24px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(0, 229, 255, 0.05);
+      color: var(--cyan);
+      border-right: 2px solid var(--cyan);
+    }
+
+    /* ─── STOREFRONT ─── */
+    .storefront {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .search-bar {
+      background: #000;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      width: 300px;
+      outline: none;
+    }
+    .search-bar:focus { border-color: var(--cyan); }
+
+    .grid-header {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .artifact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .card:hover {
+      border-color: var(--border);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,229,255,0.05);
+    }
+
+    .card-type-badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .badge-free { background: #222; color: #fff; border: 1px solid #444; }
+    .badge-verified { background: var(--verified-dim); color: var(--verified); border: 1px solid var(--verified); }
+    .badge-commercial { background: var(--saffron-dim); color: var(--saffron); border: 1px solid var(--saffron); }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .card-creator {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .verified-tick { color: var(--verified); font-size: 14px; }
+
+    .card-stats {
+      display: flex;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #777;
+      margin-bottom: 20px;
+    }
+    
+    .card-price-row {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 16px;
+    }
+
+    .price-tag {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .card-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--cyan);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .card-btn:hover { background: var(--cyan-glow); }
+    
+    .btn-buy { background: var(--saffron-dim); border-color: var(--saffron); color: var(--saffron); }
+    .btn-buy:hover { background: var(--saffron); color: #000; }
+
+    /* ─── PRODUCT DETAIL PAGE (PDP) OVERLAY ─── */
+    .pdp-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-dark);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+    }
+    .pdp-overlay.active { display: flex; }
+
+    .pdp-header {
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-panel);
+    }
+    
+    .btn-back {
+      background: none; border: none; color: var(--cyan);
+      font-family: var(--font-mono); font-size: 14px; cursor: pointer;
+    }
+
+    .pdp-content {
+      padding: 40px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      gap: 40px;
+    }
+
+    .pdp-main { flex: 2; }
+    .pdp-sidebar { flex: 1; background: var(--bg-panel); padding: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); height: fit-content; }
+
+    .preview-box {
+      width: 100%; height: 300px;
+      background: #000; border: 1px dashed #444; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #555; font-family: var(--font-mono); margin-bottom: 30px;
+    }
+
+    .section-title { font-size: 16px; color: #fff; margin-bottom: 16px; margin-top: 30px; border-bottom: 1px solid #222; padding-bottom: 8px; }
+    
+    .bundle-list { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+    .bundle-list li::before { content: "► "; color: var(--cyan); }
+    .bundle-list li { list-style: none; }
+
+    .buy-block { text-align: center; margin-bottom: 24px; }
+    .buy-price { font-size: 32px; color: #fff; font-weight: bold; margin-bottom: 16px; }
+    .buy-btn-lg {
+      width: 100%; padding: 16px; border-radius: 6px;
+      font-size: 16px; font-weight: bold; cursor: pointer;
+      border: none;
+    }
+    .buy-btn-lg.commercial { background: var(--saffron); color: #000; }
+    .buy-btn-lg.verified { background: var(--cyan); color: #000; }
+    .buy-btn-lg.free { background: #333; color: #fff; }
+
+    .meta-table { width: 100%; font-size: 12px; color: var(--text-muted); margin-top: 24px; border-collapse: collapse; }
+    .meta-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .meta-table td:last-child { text-align: right; color: #fff; font-family: var(--font-mono); }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      🌌 Daxini Marketplace
+    </div>
+    
+    <div class="nav-section">
+      <div class="nav-title">Discover</div>
+      <div class="nav-item active">New Releases</div>
+      <div class="nav-item">Verified Artifacts</div>
+      <div class="nav-item">Trending</div>
+      <div class="nav-item">Top Downloads</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-title">Categories</div>
+      <div class="nav-item">Business Templates</div>
+      <div class="nav-item">Internal Tools</div>
+      <div class="nav-item">CRM & Sales</div>
+      <div class="nav-item">Inventory Packs</div>
+      <div class="nav-item">Operations</div>
+      <div class="nav-item">Education</div>
+      <div class="nav-item">Industry Specific</div>
+    </div>
+  </aside>
+
+  <!-- STOREFRONT -->
+  <main class="storefront">
+    <div class="header-bar">
+      <input type="text" class="search-bar" placeholder="Search bundles, creators, logic...">
+      <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">
+        Distribute logic. Retain ownership.
+      </div>
+    </div>
+
+    <div class="grid-header">
+      🔥 Trending Artifacts & Bundles
+    </div>
+
+    <div class="artifact-grid" id="grid-container">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- PDP OVERLAY -->
+    <div class="pdp-overlay" id="pdp">
+      <div class="pdp-header">
+        <button class="btn-back" onclick="closePDP()">← Back to Store</button>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">ARTIFACT REGISTRY VIEW</div>
+      </div>
+      <div class="pdp-content">
+        <div class="pdp-main">
+          <div class="card-type-badge" id="pdp-badge" style="position:relative; display:inline-block; top:0; right:0; margin-bottom:16px;"></div>
+          <h1 id="pdp-title" style="font-size:32px; color:#fff; margin-bottom:8px;"></h1>
+          <div class="card-creator" style="font-size:14px; margin-bottom:24px;">
+            <span id="pdp-creator"></span>
+            <span class="verified-tick" id="pdp-tick" style="display:none;">✔</span>
+          </div>
+
+          <div class="preview-box">
+            [ ARCHITECTURE & SCREENSHOT PREVIEW AREA ]
+          </div>
+
+          <h3 class="section-title">Bundle Contents</h3>
+          <ul class="bundle-list" id="pdp-contents"></ul>
+
+          <h3 class="section-title">Changelog</h3>
+          <p style="font-size:14px; color:#aaa; line-height:1.6;" id="pdp-desc"></p>
+        </div>
+
+        <div class="pdp-sidebar">
+          <div class="buy-block">
+            <div class="buy-price" id="pdp-price"></div>
+            <button class="buy-btn-lg" id="pdp-action-btn">Acquire License</button>
+            <div style="font-size:10px; color:#666; margin-top:8px;">100% Secure. Added to My Assets Vault.</div>
+          </div>
+
+          <h4 style="font-size:12px; color:#fff; margin-bottom:12px; text-transform:uppercase;">Metadata</h4>
+          <table class="meta-table">
+            <tr><td>Version</td><td id="pdp-version"></td></tr>
+            <tr><td>Downloads</td><td id="pdp-downloads"></td></tr>
+            <tr><td>Rating</td><td id="pdp-rating"></td></tr>
+            <tr><td>Size</td><td id="pdp-size"></td></tr>
+            <tr><td>License</td><td id="pdp-license"></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const CATALOG = [
+      {
+        id: 'crm-pack',
+        title: 'Enterprise CRM Bundle',
+        creator: 'LogicOps Labs',
+        type: 'commercial', // free, verified, commercial
+        price: '₹999',
+        version: 'v2.3',
+        downloads: '1.2k',
+        rating: '4.9 ★',
+        size: '1.2 MB',
+        license: 'Commercial',
+        desc: 'Complete CRM architecture with lead routing, pipeline graphs, and APK export. Over 40 workflow nodes included. Updated yesterday.',
+        contents: ['Architecture Graph', 'Android APK', 'Next.js Frontend Source', 'Firebase Rules']
+      },
+      {
+        id: 'school-pack',
+        title: 'School Management System',
+        creator: 'EduLogic',
+        type: 'verified',
+        price: 'Free',
+        version: 'v1.1',
+        downloads: '4.5k',
+        rating: '4.7 ★',
+        size: '2.4 MB',
+        license: 'AGPL-3.0',
+        desc: 'Aporaksha-verified open source management tool. Includes attendance tracking, fee logic, and staff portals.',
+        contents: ['StudyOS Engine', 'SOP Documents', 'React Codebase']
+      },
+      {
+        id: 'simple-budget',
+        title: 'Simple Budget Tracker',
+        creator: 'anon_dev99',
+        type: 'free',
+        price: 'Free',
+        version: 'v1.0',
+        downloads: '842',
+        rating: '4.2 ★',
+        size: '400 KB',
+        license: 'MIT',
+        desc: 'Basic local-first budget tracking prompt app. Good starting point for personal finance forks.',
+        contents: ['Prompt Logic', 'HTML/JS Export']
+      },
+      {
+        id: 'inventory-pack',
+        title: 'Warehouse Inventory Pack',
+        creator: 'SupplyChain Pro',
+        type: 'commercial',
+        price: '₹299',
+        version: 'v4.0',
+        downloads: '3.1k',
+        rating: '4.8 ★',
+        size: '3.1 MB',
+        license: 'Commercial',
+        desc: 'Barcode scanning, stock alerts, and real-time dashboard generation logic.',
+        contents: ['APK Build', 'Backend Logic Rules', 'Analytics Dashboards']
+      }
+    ];
+
+    const grid = document.getElementById('grid-container');
+    const pdp = document.getElementById('pdp');
+
+    function renderStore() {
+      grid.innerHTML = CATALOG.map(app => {
+        let badgeHtml = '';
+        let btnHtml = '';
+        let tick = app.type !== 'free' ? '<span class="verified-tick">✔</span>' : '';
+
+        if (app.type === 'free') {
+          badgeHtml = `<div class="card-type-badge badge-free">Public</div>`;
+          btnHtml = `<button class="card-btn">Download</button>`;
+        } else if (app.type === 'verified') {
+          badgeHtml = `<div class="card-type-badge badge-verified">Verified</div>`;
+          btnHtml = `<button class="card-btn">Deploy</button>`;
+        } else {
+          badgeHtml = `<div class="card-type-badge badge-commercial">Commercial</div>`;
+          btnHtml = `<button class="card-btn btn-buy">Buy Now</button>`;
+        }
+
+        return `
+          <div class="card" onclick="openPDP('${app.id}')">
+            ${badgeHtml}
+            <div class="card-title">${app.title}</div>
+            <div class="card-creator">By ${app.creator} ${tick}</div>
+            <div class="card-stats">
+              <span>⬇ ${app.downloads}</span>
+              <span>⭐ ${app.rating}</span>
+            </div>
+            <div class="card-price-row">
+              <div class="price-tag">${app.price}</div>
+              ${btnHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openPDP(id) {
+      const app = CATALOG.find(a => a.id === id);
+      if(!app) return;
+
+      document.getElementById('pdp-title').textContent = app.title;
+      document.getElementById('pdp-creator').textContent = `By ${app.creator}`;
+      document.getElementById('pdp-tick').style.display = app.type !== 'free' ? 'inline' : 'none';
+      document.getElementById('pdp-price').textContent = app.price;
+      document.getElementById('pdp-version').textContent = app.version;
+      document.getElementById('pdp-downloads').textContent = app.downloads;
+      document.getElementById('pdp-rating').textContent = app.rating;
+      document.getElementById('pdp-size').textContent = app.size;
+      document.getElementById('pdp-license').textContent = app.license;
+      document.getElementById('pdp-desc').textContent = app.desc;
+
+      document.getElementById('pdp-contents').innerHTML = app.contents.map(c => `<li>${c}</li>`).join('');
+
+      const badge = document.getElementById('pdp-badge');
+      const btn = document.getElementById('pdp-action-btn');
+      
+      badge.className = 'card-type-badge';
+      btn.className = 'buy-btn-lg';
+
+      if (app.type === 'free') {
+        badge.classList.add('badge-free'); badge.textContent = 'Public Distribution';
+        btn.classList.add('free'); btn.textContent = 'Download ZIP';
+      } else if (app.type === 'verified') {
+        badge.classList.add('badge-verified'); badge.textContent = 'Aporaksha Verified';
+        btn.classList.add('verified'); btn.textContent = 'Add to My Assets';
+      } else {
+        badge.classList.add('badge-commercial'); badge.textContent = 'Commercial License';
+        btn.classList.add('commercial'); btn.textContent = `Acquire License - ${app.price}`;
+      }
+
+      pdp.classList.add('active');
+    }
+
+    function closePDP() {
+      pdp.classList.remove('active');
+    }
+
+    renderStore();
+
+    // Nav interactivity
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+  </script>
+</body>
+</html>
