@@ -40,6 +40,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // 3. Handle the click to prompt installation
     toast.addEventListener('click', async () => {
       if (!deferredPrompt) return;
+
+      // Analytics: app_install_click — user tapped the install banner
+      if (window.DaxiniAnalytics) {
+        DaxiniAnalytics.track(DaxiniAnalytics.EVENTS.APP_INSTALL_CLICK, {
+          metadata: { trigger: 'pwa_install_toast', url: window.location.href },
+        });
+      }
       
       // Trigger the native prompt
       deferredPrompt.prompt();

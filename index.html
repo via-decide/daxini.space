@@ -894,6 +894,17 @@
       
       <!-- TIERS TAB -->
       <div id="hud-panel-tiers" class="hud-tab-panel">
+        
+        <!-- DYNAMIC LOGICHUB TIER -->
+        <div class="hud-card" id="tier-logichub" style="border-left: 2px solid var(--z-accent); background: rgba(0, 242, 255, 0.02);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="hud-card-title" style="color:var(--z-accent);">LogicHub Builder</div>
+            <span class="tier-badge" id="tier-badge-logichub">FETCHING...</span>
+          </div>
+          <p class="hud-card-desc" id="tier-desc-logichub">Checking geographic eligibility...</p>
+          <button class="hud-btn btn-saffron" id="tier-btn-logichub" style="margin-top:4px;" onclick="window.open('https://logichub.app', '_blank')">Launch LogicHub</button>
+        </div>
+
         <div class="hud-card" style="border-left: 2px solid var(--cyan);">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <div class="hud-card-title">Visualizer SDK</div>
@@ -1069,6 +1080,36 @@
     };
 
     // Global HUD Helpers
+    window.checkDaxiniEligibility = async function() {
+      try {
+        const res = await fetch('https://logichub.app/api/eligibility');
+        if (!res.ok) return;
+        const data = await res.json();
+        const badge = document.getElementById('tier-badge-logichub');
+        const desc = document.getElementById('tier-desc-logichub');
+        const btn = document.getElementById('tier-btn-logichub');
+        
+        if (badge && desc && btn) {
+          if (data.models && data.models.includes('UPI_LIFETIME_ONLY')) {
+            badge.textContent = 'FOUNDER PASS';
+            badge.className = 'tier-badge tier-premium';
+            desc.innerHTML = '<strong>₹1717 One-Time</strong>. Full lifetime access to LogicHub Cloud, unlimited APK compilation, and Zayvora intelligence for Indian residents.';
+            btn.textContent = 'Claim Founder Pass';
+          } else {
+            badge.textContent = 'SAAS SUBSCRIPTION';
+            badge.className = 'tier-badge';
+            desc.innerHTML = '<strong>$29/mo</strong>. Global LogicHub Builder SaaS with continuous cloud compiling, deployment, and Zayvora intelligence.';
+            btn.textContent = 'Subscribe Now';
+          }
+        }
+      } catch(e) {
+        console.error('[Pricing] Eligibility fetch error:', e);
+      }
+    };
+
+    // Auto-fetch pricing tiers on load
+    window.checkDaxiniEligibility();
+
     window.switchHudTab = function(tabId) {
       document.querySelectorAll('.hud-tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.hud-tab-btn').forEach(b => b.classList.remove('active'));
@@ -2091,8 +2132,27 @@
     };
 
     /* =========================================================
-       9. BOOT SEQUENCE
+       9. BOOT SEQUENCE & SSO
        ========================================================= */
+    import('https://aporaksha.com/sdk.js').then(({ ViaAuthSDK }) => {
+      // Initialize SSO Global Identity
+      window.viaAuth = new ViaAuthSDK({ appId: 'daxini_space' });
+      window.viaAuth.handleRedirectCallback();
+
+      // Attach to the Zayvora Hardware Auth button to use Aporaksha instead
+      const authBtn = document.querySelector('.zv-auth-btn');
+      if (authBtn) {
+        authBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.viaAuth.redirectToApp('https://aporaksha.com/passport', 'login', window.location.href);
+        });
+      }
+      logDiag('SSO', 'ViaAuthSDK connected to Aporaksha.');
+    }).catch(err => {
+      console.error('Failed to load ViaAuthSDK', err);
+      logDiag('SSO_ERROR', 'Failed to connect to Aporaksha IdP.');
+    });
+
     ZAYVORA.bootstrap();
     initializeStore();
     logDiag('SYSTEM', 'Daxini Space OS v2.2.0 online. Contextual app routing armed.');

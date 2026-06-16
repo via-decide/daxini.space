@@ -1,0 +1,112 @@
+{
+  "analytics_version": "v1",
+  "platform": "daxini.space",
+  "description": "Creator & Discovery Analytics Engine — canonical event specification",
+  "firestore_collections": {
+    "analyticsEvents": {
+      "purpose": "Immutable per-occurrence event log",
+      "schema": {
+        "id":            "document ID (auto: <event>_<ts>_<rand>)",
+        "event_name":    "string — canonical event name",
+        "user_id":       "string — anonymous or authenticated user",
+        "creator_id":    "string — creator identity if applicable",
+        "app_id":        "string — app slug if applicable",
+        "session_id":    "string — stable per-tab session ID (sessionStorage)",
+        "metadata_json": "string (JSON) — arbitrary structured context",
+        "date_key":      "string — ISO date YYYY-MM-DD for range queries",
+        "created_at":    "ISO timestamp"
+      }
+    },
+    "analyticsDailyCounts": {
+      "purpose": "Mutable daily aggregates — one Firestore document per calendar day",
+      "schema": {
+        "date_key":             "document ID — YYYY-MM-DD",
+        "search_performed":     "integer (FieldValue.increment)",
+        "category_opened":      "integer (FieldValue.increment)",
+        "app_view":             "integer (FieldValue.increment)",
+        "app_install_click":    "integer (FieldValue.increment)",
+        "external_link_click":  "integer (FieldValue.increment)",
+        "creator_signup":       "integer (FieldValue.increment)",
+        "app_publish":          "integer (FieldValue.increment)",
+        "returning_creator":    "integer (FieldValue.increment)",
+        "returning_user":       "integer (FieldValue.increment)",
+        "last_updated":         "server timestamp"
+      }
+    }
+  },
+  "discovery_events": [
+    {
+      "name":    "search_performed",
+      "trigger": "User submits a search query in the platform search bar",
+      "hook":    "analytics-service.js → DaxiniAnalytics.track('search_performed')",
+      "example": { "event": "search_performed", "metadata": { "query": "local ai", "results_count": 4 } }
+    },
+    {
+      "name":    "category_opened",
+      "trigger": "User opens a namespace shard (pattern gesture on Daxini Galaxy)",
+      "hook":    "daxini-ui.js → handlePattern() → DaxiniAnalytics.track('category_opened')",
+      "example": { "event": "category_opened", "metadata": { "category": "intelligence", "seed": "1,4,7" } }
+    },
+    {
+      "name":    "app_view",
+      "trigger": "User opens any app via launchAppBySlug()",
+      "hook":    "daxini-ui.js → launchAppBySlug() → DaxiniAnalytics.track('app_view')",
+      "example": { "event": "app_view", "appId": "logichub", "metadata": { "category": "ai", "source": "direct" } }
+    },
+    {
+      "name":    "app_install_click",
+      "trigger": "User taps the 'INITIALIZE SYSTEM (INSTALL)' PWA install banner",
+      "hook":    "install-manager.js → toast click → DaxiniAnalytics.track('app_install_click')",
+      "example": { "event": "app_install_click", "metadata": { "trigger": "pwa_install_toast" } }
+    },
+    {
+      "name":    "external_link_click",
+      "trigger": "User clicks an outbound external app link",
+      "hook":    "Call DaxiniAnalytics.track('external_link_click') on outbound link handler",
+      "example": { "event": "external_link_click", "appId": "logichub", "metadata": { "url": "https://logichub.app" } }
+    }
+  ],
+  "creator_events": [
+    {
+      "name":    "creator_signup",
+      "trigger": "Creator completes registration / first auth via DaxiniPassport",
+      "hook":    "daxini-passport.js → authorize() → DaxiniAnalytics.track('creator_signup')",
+      "example": { "event": "creator_signup", "creatorId": "node_abc123" }
+    },
+    {
+      "name":    "app_publish",
+      "trigger": "Creator successfully publishes an app via LogicHub → Daxini.Space registry",
+      "hook":    "LogicHub api/publish-app.js already fires 'publish_clicked'. This event mirrors it on the Daxini.Space side.",
+      "example": { "event": "app_publish", "creatorId": "u123", "appId": "my-app" }
+    },
+    {
+      "name":    "returning_creator",
+      "trigger": "Creator's last_seen_at > 24h ago (checked via RETURNING_CREATOR_KEY in localStorage)",
+      "hook":    "analytics-service.js → DaxiniAnalytics.trackReturningCreator(creatorId)",
+      "example": { "event": "returning_creator", "creatorId": "node_abc123" }
+    }
+  ],
+  "retention_events": [
+    {
+      "name":    "returning_user",
+      "trigger": "User's last_seen_at > 24h ago (localStorage RETURNING_USER_KEY gate)",
+      "hook":    "analytics-service.js → DaxiniAnalytics.init() on page load",
+      "example": { "event": "returning_user" }
+    }
+  ],
+  "discovery_funnel": ["Visitor", "search_performed", "app_view", "app_install_click"],
+  "creator_funnel":   ["Visitor", "creator_signup", "app_publish"],
+  "conversion_metrics": {
+    "search_rate":       "search_performed / total_visitors (external metric)",
+    "view_rate":         "app_view / search_performed",
+    "install_intent":    "app_install_click / app_view",
+    "creator_conversion":"creator_signup / total_visitors",
+    "publish_conversion":"app_publish / creator_signup",
+    "user_retention":    "returning_user / total_visitors",
+    "creator_retention": "returning_creator / creator_signup"
+  },
+  "api_endpoint": {
+    "note": "Daxini.Space is client-side only — analytics are written directly from analytics-service.js via Firestore REST API, no separate backend endpoint required.",
+    "firestore_project": "logichub-app"
+  }
+}

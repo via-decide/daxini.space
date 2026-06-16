@@ -75,6 +75,7 @@
       const filtered = applyFilters(apps, state);
       filtered.forEach((app) => {
         const card = global.DaxiniMarketplaceCard.createAppCard(app, {
+          isIndia: options.isIndia,
           onLaunch: (entry) => global.DaxiniAppLauncher.launchApp(entry, options),
           onDuplicate: options.onDuplicate || (() => {}),
           onInstall: (entry) => global.DaxiniAppLauncher.installToWorkspace(entry, options)
@@ -92,6 +93,24 @@
     const container = typeof target === 'string' ? document.querySelector(target) : target;
     if (!container) throw new Error('Marketplace target not found');
     const apps = await readIndex(options.indexUrl);
+    
+    // Check Eligibility / Geofence
+    try {
+      const eligibilityUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000/api/eligibility'
+        : 'https://logichub.app/api/eligibility';
+      const res = await fetch(eligibilityUrl);
+      const data = await res.json();
+      if ((data.models || []).includes('UPI_LIFETIME_ONLY')) {
+        options.isIndia = true;
+      } else {
+        options.isIndia = false;
+      }
+    } catch(e) {
+      console.warn('Geofencing check failed, defaulting to unrestricted browsing.');
+      options.isIndia = false;
+    }
+
     renderMarketplace(container, apps, options);
     return { apps_loaded: apps.length };
   }

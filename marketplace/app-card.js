@@ -54,8 +54,17 @@ function createAppCard(app, actions = {}) {
 
   const installButton = document.createElement('button');
   installButton.type = 'button';
-  installButton.textContent = 'Install';
-  installButton.addEventListener('click', () => actions.onInstall && actions.onInstall(app));
+  if (actions.isIndia) {
+    installButton.textContent = 'Restricted (UPI Only)';
+    installButton.style.cssText = 'background: rgba(255, 0, 0, 0.1); color: #ff6b6b; border: 1px solid rgba(255, 0, 0, 0.3);';
+    installButton.addEventListener('click', () => {
+      alert('SaaS/Cloud installs are restricted in India. Please purchase a Local-First Founder Pass via UPI on LogicHub/Zayvora.');
+      window.location.href = 'https://logichub.app/pricing';
+    });
+  } else {
+    installButton.textContent = 'Install';
+    installButton.addEventListener('click', () => actions.onInstall && actions.onInstall(app));
+  }
 
   controls.append(launchButton, duplicateButton, installButton);
   card.append(title, meta, provenance, monetization, description, controls);

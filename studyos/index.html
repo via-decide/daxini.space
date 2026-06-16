@@ -9,6 +9,24 @@
 </head>
 <body>
   <div id="app-root"></div>
-  <script type="module" src="./app/main.js"></script>
+  <!-- SSO Integration -->
+  <script type="module">
+    import { ViaAuthSDK } from 'https://aporaksha.com/sdk.js';
+    window.viaAuth = new ViaAuthSDK({ appId: 'studyos' });
+    window.viaAuth.handleRedirectCallback();
+
+    const session = window.viaAuth.getSession();
+    if (!session) {
+      console.log('Redirecting to Aporaksha IdP for StudyOS...');
+      window.viaAuth.redirectToApp('https://aporaksha.com/passport', 'login', window.location.href);
+    } else {
+      console.log(`[StudyOS] Booting with Identity: ${session.userId}`);
+      // Load main app after SSO verification
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = './app/main.js';
+      document.body.appendChild(script);
+    }
+  </script>
 </body>
 </html>
