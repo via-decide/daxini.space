@@ -70,6 +70,7 @@
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script src="/_vercel/insights/script.js"></script>
+  <script src="/ecosystem-nav.js" defer></script>
 
   <style>
     /* =========================================================
@@ -379,6 +380,28 @@
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       animation: panel-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
       animation-delay: 0.15s;
+    }
+    .discovery-app-panel {
+      position: fixed;
+      top: max(env(safe-area-inset-top), 14px);
+      right: 16px;
+      left: auto;
+      width: min(380px, calc(100vw - 92px));
+      max-height: calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      z-index: 220;
+      background: var(--z-glass);
+      border: 1px solid var(--z-border);
+      border-radius: 20px;
+      padding: 0;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: panel-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.25s;
     }
     .seo-summary-panel.hidden {
       opacity: 0;
@@ -773,11 +796,93 @@
           <label>PHYSICAL PASSPORT ID</label>
           <input type="text" id="zv-nfc-input" placeholder="Enter Hardware ID..." required>
         </div>
-        <button type="submit" class="zv-auth-btn">Authorize Hardware</button>
+        <!-- NEW DIGITAL KEY FALLBACK -->
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--z-border); text-align: center;">
+          <p style="font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 12px;">Don't have a Physical Passport?</p>
+          <button type="button" class="hud-btn btn-outline" style="width: 100%; justify-content: center;" onclick="showDigitalKeyFallback()">Generate Digital Key</button>
+        </div>
         <div id="zv-auth-status" class="zv-auth-status"></div>
+      </form>
+      
+      <!-- DIGITAL KEY FORM -->
+      <form id="zv-digital-auth-form" class="zv-auth-form" style="display: none; flex-direction: column;">
+        <div class="zv-auth-group">
+          <label>EMAIL ADDRESS (OTP)</label>
+          <input type="email" id="zv-email-input" placeholder="Enter your email..." required>
+        </div>
+        <button type="submit" class="zv-auth-btn" style="background: var(--success, #10b981); color: #000;">Send Login Code</button>
+        <button type="button" class="hud-btn" style="width: 100%; justify-content: center; margin-top: 8px; border: none; font-size:11px;" onclick="hideDigitalKeyFallback()">Cancel</button>
+        <div id="zv-digital-auth-status" class="zv-auth-status"></div>
       </form>
     </div>
   </div>
+  
+  <script>
+    function showDigitalKeyFallback() {
+      document.getElementById('zv-auth-form').style.display = 'none';
+      document.getElementById('zv-digital-auth-form').style.display = 'flex';
+    }
+    function hideDigitalKeyFallback() {
+      document.getElementById('zv-auth-form').style.display = 'flex';
+      document.getElementById('zv-digital-auth-form').style.display = 'none';
+    }
+    
+    // SaaS Geofence logic for digital key
+    document.getElementById('zv-digital-auth-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const statusDiv = document.getElementById('zv-digital-auth-status');
+      statusDiv.style.color = '#fff';
+      statusDiv.innerHTML = 'Detecting region...';
+      
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        const data = await res.json();
+        const country = data.country_code || 'US';
+        const ALLOWED_COUNTRIES = ['IN', 'LU', 'JP'];
+        
+        if (country === 'IN') {
+           statusDiv.innerHTML = 'Region IN: Eligible for Local-First Pass (UPI). Code sent.';
+        } else if (ALLOWED_COUNTRIES.includes(country)) {
+           statusDiv.innerHTML = `Region ${country}: Global SaaS Subscription required. Code sent.`;
+        } else {
+           statusDiv.innerHTML = `Hardware passes are restricted in ${country}. Generating free Digital Key for web access.`;
+        }
+        statusDiv.style.color = '#10b981';
+        
+        setTimeout(() => {
+          document.getElementById('zv-auth-overlay').classList.add('hidden');
+          if(window.unlockArtifact) window.unlockArtifact(); 
+        }, 2500);
+      } catch(err) {
+        statusDiv.style.color = '#ff3366';
+        statusDiv.innerHTML = 'Authentication failed. Try again.';
+      }
+    });
+
+    // Viral "Unlock" Interception Loop
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const unlockApp = urlParams.get('unlock');
+      if (unlockApp) {
+        setTimeout(() => {
+          const overlay = document.getElementById('zv-auth-overlay');
+          const title = overlay.querySelector('.zv-auth-title');
+          const desc = overlay.querySelector('.zv-auth-desc');
+          title.innerHTML = 'Encrypted Artifact Received';
+          desc.innerHTML = `You have been invited to unlock <strong>${unlockApp.replace(/</g, "&lt;")}</strong>. To decrypt and access this artifact on the spatial OS, please authenticate your Aporaksha Identity.`;
+          overlay.classList.remove('hidden');
+          
+          window.unlockArtifact = () => {
+             // Change hero title to unlocked app to simulate addition
+             document.getElementById('room-title').innerHTML = `UNLOCKED: ${unlockApp.toUpperCase()}`;
+             document.getElementById('room-lore').innerHTML = `Successfully added ${unlockApp} to your Sovereign Pattern OS.`;
+             alert(`Artifact ${unlockApp} has been decrypted and added to your Zayvora Desktop.`);
+          };
+        }, 800);
+      }
+    });
+
+  </script>
 
   <!-- DIAGNOSTICS -->
   <div id="os-diagnostics"><div id="diag-content"></div></div>
@@ -958,6 +1063,63 @@
     </div>
   </section>
 
+  <!-- DISCOVERY APP PANEL -->
+  <section id="discovery-app-panel" class="discovery-app-panel" aria-label="Discovery Marketplace">
+    <div class="hud-header">
+      <div class="hud-header-title">🌌 Discovery Marketplace</div>
+      <div class="hud-header-status">
+        <div class="hud-header-dot" style="background:#00e5ff;"></div>
+        <span style="color:#00e5ff; font-family:var(--font-mono); font-size:9px;">LIVE</span>
+      </div>
+    </div>
+    <div class="hud-tabs">
+      <button class="hud-tab-btn active" id="disc-btn-trending" onclick="switchDiscoveryTab('trending')">Trending</button>
+      <button class="hud-tab-btn" id="disc-btn-releases" onclick="switchDiscoveryTab('releases')">Releases</button>
+      <button class="hud-tab-btn" id="disc-btn-creators" onclick="switchDiscoveryTab('creators')">Creators</button>
+    </div>
+    <div class="hud-content">
+      <div id="disc-trending" class="hud-tab-panel active">
+        <div class="hud-card">
+          <div class="hud-card-title">1. StudyOS v1.4</div>
+          <p class="hud-card-desc">Notes engine built via LogicHub. 12k installs.</p>
+        </div>
+        <div class="hud-card">
+          <div class="hud-card-title">2. PromptAlchemy</div>
+          <p class="hud-card-desc">Advanced LLM playground. Trending up 40%.</p>
+        </div>
+        <div class="hud-card">
+          <div class="hud-card-title">3. FinanceFlow App</div>
+          <p class="hud-card-desc">Local-first budget tracker. 8k installs.</p>
+        </div>
+      </div>
+      <div id="disc-releases" class="hud-tab-panel">
+        <div class="hud-card">
+          <div class="hud-card-title">Today: StudyOS Update</div>
+          <p class="hud-card-desc">v1.4 released with local graph DB.</p>
+        </div>
+        <div class="hud-card">
+          <div class="hud-card-title">Yesterday: LogicHub Export</div>
+          <p class="hud-card-desc">14 new templates published to the network.</p>
+        </div>
+      </div>
+      <div id="disc-creators" class="hud-tab-panel">
+        <div class="hud-card">
+          <div class="hud-card-title">Built by Dharam</div>
+          <p class="hud-card-desc">7 Apps · 45k Views · 12k Installs</p>
+          <a class="hud-card-link" href="#">View Analytics ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    function switchDiscoveryTab(tabId) {
+      document.querySelectorAll('#discovery-app-panel .hud-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#discovery-app-panel .hud-tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('disc-btn-' + tabId).classList.add('active');
+      document.getElementById('disc-' + tabId).classList.add('active');
+    }
+  </script>
+
   <!-- WINDOW MANAGER -->
   <div id="window-manager"></div>
 
@@ -973,9 +1135,13 @@
     <div class="room-node-app" id="node-8" tabindex="0" role="button"></div>
 
     <div id="room-center">
-      <h1 id="room-title">DAXINI.SPACE</h1>
-      <div id="room-lore">Explore a prompt app store and AI tool directory where opening one app refreshes the 8-room grid with related core apps and free-tier LogicHub community apps.</div>
-      <div class="os-badge">Prompt app store · AI tool directory · free-tier community apps</div>
+      <h1 id="room-title" style="margin-bottom:8px;">DAXINI.SPACE</h1>
+      <div id="room-lore">Publish Software. Keep Ownership. Distributed marketplace for artifacts generated via LogicHub.</div>
+      <div class="os-badge">Publish · Discover · Earn</div>
+      <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--success, #10b981); display: flex; align-items: center; justify-content:center; gap: 0.5rem; margin-top: 16px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--success, #10b981); box-shadow: 0 0 8px var(--success, #10b981);"></span>
+        <span>Next Step: Monetize</span>
+      </div>
     </div>
   </div>
 
