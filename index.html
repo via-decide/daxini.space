@@ -71,6 +71,7 @@
   </script>
   <script src="/_vercel/insights/script.js"></script>
   <script src="/ecosystem-nav.js" defer></script>
+  <script src="/pattern-engine.js" defer></script>
 
   <style>
     /* =========================================================
@@ -936,6 +937,7 @@
     
     <div class="hud-tabs">
       <button class="hud-tab-btn active" id="tab-btn-ecosystem" onclick="switchHudTab('ecosystem')">Portal</button>
+      <button class="hud-tab-btn" id="tab-btn-pattern" onclick="switchHudTab('pattern')">Pattern</button>
       <button class="hud-tab-btn" id="tab-btn-telemetry" onclick="switchHudTab('telemetry')">Diag</button>
       <button class="hud-tab-btn" id="tab-btn-tiers" onclick="switchHudTab('tiers')">Tiers</button>
       <button class="hud-tab-btn" id="tab-btn-passport" onclick="switchHudTab('passport')">Key</button>
@@ -1093,7 +1095,79 @@
         </div>
         <p style="font-size:10px;color:rgba(255,255,255,0.45);line-height:1.4;padding:4px;">
           Sovereign passports utilize cryptographic hardware IDs to verify session security and authenticate distributed consensus.
+      </div>
+
+      <!-- PATTERN ROUTING ENGINE TAB -->
+      <div id="hud-panel-pattern" class="hud-tab-panel">
+        <p style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:4px;">
+          Map drawn pattern gestures to deterministic workspace nodes, manage lineage, search sub-chains, and share tokens.
         </p>
+        <div class="hud-card" style="border-left: 2px solid var(--z-accent);">
+          <div class="hud-card-title">🔗 Active Pattern ID</div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Pattern ID</span>
+            <span id="pat-active-id" class="telemetry-val" style="color:var(--z-accent);">P_NONE</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Edge Chain</span>
+            <span id="pat-active-chain" class="telemetry-val" style="font-size: 8px;">--</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="telemetry-label">Security</span>
+            <span id="pat-active-security" class="telemetry-val">--</span>
+          </div>
+        </div>
+
+        <!-- LINEAGE GRAPH -->
+        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px;">Workspace Navigation Lineage</p>
+        <div class="hud-card" style="padding: 10px; background: rgba(0,0,0,0.4); text-align: center; border-color: var(--z-border);">
+          <div id="pat-lineage-graph" style="width: 100%; height: 110px; display: flex; align-items: center; justify-content: center;">
+            <svg id="hud-graph-view" width="100%" height="100%"></svg>
+          </div>
+        </div>
+
+        <!-- EDIT NODE DATA -->
+        <div id="pat-edit-container" class="hud-card" style="display:none; border-color: rgba(255,255,255,0.1);">
+          <div class="hud-card-title">📝 Edit Pattern Workspace</div>
+          <div class="zv-auth-group" style="margin-bottom: 6px;">
+            <label style="font-size:8px;">Workspace Name</label>
+            <input type="text" id="pat-input-name" style="padding: 6px; font-size:10px; background: rgba(0,0,0,0.5); border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
+          </div>
+          <div class="zv-auth-group" style="margin-bottom: 6px;">
+            <label style="font-size:8px;">Workspace URL</label>
+            <input type="text" id="pat-input-url" style="padding: 6px; font-size:10px; background: rgba(0,0,0,0.5); border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
+          </div>
+          <div class="zv-auth-group" style="margin-bottom: 8px;">
+            <label style="font-size:8px;">Security Scope</label>
+            <select id="pat-select-security" style="padding: 6px; font-size:10px; background: #0d0f14; border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
+              <option value="private">Private (Owner Only)</option>
+              <option value="shared">Shared (Link Holders)</option>
+              <option value="public">Public (Discoverable)</option>
+              <option value="marketplace">Marketplace (Commercial)</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="hud-btn" style="flex:1; min-height: 28px; padding: 4px;" onclick="savePatternNodeEdit()">Save Node</button>
+            <button class="hud-btn btn-outline" style="flex:1; min-height: 28px; padding: 4px;" onclick="togglePinActivePattern()">Pin / Unpin</button>
+          </div>
+        </div>
+
+        <!-- SEARCH AND RESOLVE -->
+        <div class="hud-card">
+          <div class="hud-card-title">🔍 Search & Share Link</div>
+          <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+            <input type="text" id="pat-search-input" placeholder="Search chain or daxini://p/..." style="flex:1; padding: 6px; font-size:10px; background: rgba(0,0,0,0.3); border: 1px solid var(--z-border); color:#fff; border-radius:4px;">
+            <button class="hud-btn" style="min-height: 28px; width:60px; padding: 4px;" onclick="resolvePatternSearch()">Resolve</button>
+          </div>
+          <div id="pat-search-results" style="max-height: 80px; overflow-y: auto; font-size: 9px; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px;"></div>
+          <button class="hud-btn btn-outline" style="width: 100%; min-height: 28px; padding: 4px;" onclick="copyPatternShareLink()">Copy Share Token</button>
+        </div>
+
+        <!-- MEMORY RECOMMENDATIONS -->
+        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px;">Memory Engine Logs</p>
+        <div class="failure-taxonomy-box" id="pat-memory-list" style="max-height: 150px; border-color: rgba(0, 242, 255, 0.15); display: flex; flex-direction: column; gap: 4px;">
+          <!-- Populated by script -->
+        </div>
       </div>
     </div>
   </section>
@@ -2137,6 +2211,7 @@
         applyHomeRoom();
         renderRoom();
       }
+      if (typeof renderMemoryList === 'function') renderMemoryList();
     }
 
     window.addEventListener('popstate', () => {
@@ -2236,8 +2311,7 @@
        7. OS EVENT LOOP — PATTERN → ACTION MAPPING
        ========================================================= */
     function processPattern() {
-      const seed = path.join(',');
-      if (!seed) return;
+      if (!path || path.length === 0) return;
 
       setTimeout(() => {
         if (!isTracing) {
@@ -2247,54 +2321,36 @@
         }
       }, 500);
 
-      // ── Master sigil ─────────────────────────────────────
-      if (seed === MASTER_KEY_SIGIL) {
-        document.body.classList.add('sigil-flash');
-        logDiag('MASTER_SIGIL', 'Cryptographic signature verified. Welcome, Antigravity.');
-        setTimeout(() => launchApp(1), 300);
-        return;
-      }
-
-      // ── Engine Tools Sigil ("d" shape) ───────────────────
-      if (ENGINE_TOOLS_SIGILS.includes(seed)) {
-        document.body.classList.add('sigil-flash');
-        logDiag('ENGINE_TOOLS', 'Repository sigil verified. Spawning external link.');
-        window.open("https://github.com/via-decide/decide.engine-tools.git", "_blank");
-        return;
-      }
-
-      // ── Swipe: center → any node ─────────────────────────
-      if (path.length === 2 && path[0] === 4) {
-        const target = path[1];
-        if (DAXINI_GALAXY.apps[target]) {
-          const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com') || url.includes('daxini.xyz')) window.open(url, '_blank');
-          animateFractalTransition(target, false);
-          setTimeout(() => launchApp(target), 300);
-        }
-        return;
-      }
-
-      // ── Tap center: clear screen ─────────────────────────
+      // Special Case: Clear Screen (Tap Center)
       if (path.length === 1 && path[0] === 4) {
         wm.innerHTML = '';
-        // ── Restore SEO panel on clear ──
         showSeoPanel();
         animateFractalTransition(4, true);
         logDiag('SYSTEM', 'Cleared all active viewports.');
         return;
       }
 
-      // ── Direct node tap (tap any node without center) ────
-      if (path.length === 1 && path[0] !== 4) {
-        const target = path[0];
-        if (DAXINI_GALAXY.apps[target]) {
-          const url = DAXINI_GALAXY.apps[target].url;
-          if (url.includes('github.com') || url.includes('daxini.xyz')) window.open(url, '_blank');
-          animateFractalTransition(target, false);
-          setTimeout(() => launchApp(target), 300);
+      // Normal Pattern Resolution
+      const res = window.DaxiniPatternEngine.resolvePattern(path, window.currentPatternID);
+      if (res.success && res.node) {
+        const node = res.node;
+        document.body.classList.add('sigil-flash');
+        logDiag('PATTERN_RESOLVED', `Resolved ${node.patternId} (${node.name})`);
+        
+        // Auto focus the resolved pattern in HUD and show visual graph
+        focusPatternNode(node.patternId);
+        
+        // Switch tab to show Pattern Dashboard
+        switchHudTab('pattern');
+
+        // Launch the node workspace
+        const targetPos = path[path.length - 1];
+        if (targetPos !== 4) {
+          animateFractalTransition(targetPos, false);
         }
-        return;
+        setTimeout(() => launchPatternNode(node), 300);
+      } else {
+        logDiag('PATTERN_REJECT', res.error || 'Invalid Pattern.');
       }
     }
 
@@ -2373,6 +2429,290 @@
       console.error('Failed to load ViaAuthSDK', err);
       logDiag('SSO_ERROR', 'Failed to connect to Aporaksha IdP.');
     });
+
+    // Global variable to keep track of active pattern node
+    window.currentPatternID = null;
+
+    window.savePatternNodeEdit = function() {
+      if (!window.currentPatternID) return;
+      const name = document.getElementById('pat-input-name').value;
+      const url = document.getElementById('pat-input-url').value;
+      const security = document.getElementById('pat-select-security').value;
+      
+      const node = window.DaxiniPatternEngine.updateNode(window.currentPatternID, {
+        name,
+        url,
+        status: url === 'offline' ? 'pending' : 'live',
+        security
+      });
+      if (node) {
+        logDiag('PATTERN_UPDATE', `Node ${node.patternId} updated: ${node.name}`);
+        
+        // If it maps to a default room slot app, update it dynamically in our galaxy apps mapping
+        const libIndex = APP_LIBRARY.findIndex(item => item.slug === node.slug);
+        if (libIndex >= 0) {
+          APP_LIBRARY[libIndex].name = node.name;
+          APP_LIBRARY[libIndex].url = node.url;
+          APP_LIBRARY[libIndex].status = node.status;
+        } else {
+          // It's a custom dynamic workspace node. We can insert/upsert it into the APP_LIBRARY!
+          upsertApp({
+            slug: node.slug,
+            name: node.name,
+            icon: node.icon,
+            url: node.url,
+            status: node.status,
+            ownerType: 'community',
+            tier: 'free',
+            tags: ['workspace', 'custom']
+          });
+        }
+        
+        // Re-focus and refresh
+        focusPatternNode(window.currentPatternID);
+      }
+    };
+
+    window.togglePinActivePattern = function() {
+      if (!window.currentPatternID) return;
+      const isPinned = window.DaxiniPatternEngine.togglePin(window.currentPatternID);
+      logDiag('PATTERN_PIN', `${isPinned ? 'Pinned' : 'Unpinned'} pattern: ${window.currentPatternID}`);
+      focusPatternNode(window.currentPatternID);
+    };
+
+    window.resolvePatternSearch = function() {
+      const q = document.getElementById('pat-search-input').value;
+      if (!q) return;
+      
+      const matchedNode = window.DaxiniPatternEngine.resolveShareToken(q);
+      if (matchedNode) {
+        logDiag('SEARCH_RESOLVED', `Found node: ${matchedNode.name}`);
+        focusPatternNode(matchedNode.patternId);
+        launchPatternNode(matchedNode);
+      } else {
+        // Search by partial string match
+        const results = window.DaxiniPatternEngine.searchPatterns(q);
+        const resultsContainer = document.getElementById('pat-search-results');
+        if (resultsContainer) {
+          if (results.length === 0) {
+            resultsContainer.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center;">No matching nodes found.</div>`;
+          } else {
+            resultsContainer.innerHTML = results.map(node => {
+              return `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:4px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.05); cursor:pointer;" onclick="focusPatternNode('${node.patternId}')">
+                  <span>${node.icon} ${node.name} (${node.patternId})</span>
+                  <span style="color:var(--cyan); font-size:8px;">${node.edgeChain}</span>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+      }
+    };
+
+    window.copyPatternShareLink = function() {
+      if (!window.currentPatternID) return;
+      const token = window.DaxiniPatternEngine.getShareToken(window.currentPatternID);
+      navigator.clipboard.writeText(token).then(() => {
+        logDiag('SHARE_COPY', `Copied token to clipboard: ${token}`);
+        alert(`Copied human share token to clipboard: ${token}`);
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    };
+
+    window.launchPatternNode = function(node) {
+      if (!node) return;
+      
+      const catalogApp = getAppBySlug(node.slug);
+      if (catalogApp) {
+        ZAYVORA.traceOrchestration(node.name);
+        setTimeout(() => launchAppBySlug(node.slug), 300);
+      } else {
+        ZAYVORA.traceOrchestration(node.name);
+        setTimeout(() => {
+          logDiag('ROUTER', `Booting Custom Node "${node.name}" [${node.status.toUpperCase()}] → ${node.url}`);
+          wm.innerHTML = '';
+          hideSeoPanel();
+
+          const win = document.createElement('div');
+          win.className = 'glass-window';
+          
+          let windowContent = '';
+          const metaLine = `<div style="font-size:10px; color:#6fe7f6; margin-top:6px;">CUSTOM WORKSPACE ARTIFACT NODE</div>`;
+
+          if (node.status === 'live' && node.url !== 'offline') {
+            windowContent = `
+              <iframe
+                class="window-content"
+                src="${node.url}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+                loading="lazy"
+              ></iframe>
+            `;
+          } else {
+            windowContent = `
+              <div class="offline-terminal">
+                <div class="term-icon">🔮</div>
+                <div class="term-title">CUSTOM WORKSPACE OFFLINE</div>
+                <p class="term-desc">
+                  This custom node has no live endpoint bound.<br><br>
+                  Pattern ID: <strong style="color:#fff;">${node.patternId}</strong><br>
+                  Edge Chain: <strong style="color:#fff;">${node.edgeChain}</strong><br><br>
+                  You can specify a custom workspace URL in the edit form inside the HUD panel.<br><br>
+                  ${metaLine}
+                  <span style="color:var(--saffron);">STATUS: OFFLINE WORKSPACE <span class="term-blink">_</span></span>
+                </p>
+              </div>
+            `;
+          }
+
+          win.innerHTML = `
+            <div class="window-header">
+              <span class="window-title"><div class="status-dot ${node.status === 'live' ? 'status-live' : 'status-pending'}" style="position:relative;top:0;right:0;"></div> ${node.name}</span>
+              <div class="window-controls">
+                ${node.status === 'live' ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
+                <span class="window-close" tabindex="0" role="button" aria-label="Close window" title="Close" onclick="closeActiveApp('${node.slug}', '${node.name.replace(/'/g, "&#39;")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeActiveApp('${node.slug}', '${node.name.replace(/'/g, "&#39;")}')}">✕</span>
+              </div>
+            </div>
+            ${windowContent}
+          `;
+          wm.appendChild(win);
+        }, 300);
+      }
+    };
+
+    window.focusPatternNode = function(patternId) {
+      const node = window.DaxiniPatternEngine.registry[patternId];
+      if (!node) return;
+
+      window.currentPatternID = patternId;
+
+      const patActiveId = document.getElementById('pat-active-id');
+      const patActiveChain = document.getElementById('pat-active-chain');
+      const patActiveSecurity = document.getElementById('pat-active-security');
+
+      if (patActiveId) patActiveId.textContent = node.patternId;
+      if (patActiveChain) patActiveChain.textContent = node.edgeChain;
+      if (patActiveSecurity) patActiveSecurity.textContent = node.security.toUpperCase();
+
+      const patEditContainer = document.getElementById('pat-edit-container');
+      if (patEditContainer) {
+        patEditContainer.style.display = 'block';
+        document.getElementById('pat-input-name').value = node.name;
+        document.getElementById('pat-input-url').value = node.url;
+        document.getElementById('pat-select-security').value = node.security;
+      }
+
+      renderPatternGraph(patternId);
+      renderMemoryList();
+    };
+
+    function renderMemoryList() {
+      const container = document.getElementById('pat-memory-list');
+      if (!container) return;
+
+      const { habits, pinned } = window.DaxiniPatternEngine.getRecommendations();
+
+      let html = '';
+      if (pinned.length > 0) {
+        html += `<div style="color:var(--z-accent); margin-bottom:4px; font-weight:bold; font-size: 8px;">📌 PINNED WORKSPACES</div>`;
+        html += pinned.map(node => `
+          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniPatternEngine.registry['${node.patternId}']);">
+            <span>${node.name}</span>
+            <span style="opacity:0.6; font-size:7px;">${node.patternId}</span>
+          </div>
+        `).join('');
+      }
+
+      if (habits.length > 0) {
+        html += `<div style="color:var(--cyan); margin-top:6px; margin-bottom:4px; font-weight:bold; font-size: 8px;">🕒 HABITUAL TRAVERSALS</div>`;
+        html += habits.map(node => `
+          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniPatternEngine.registry['${node.patternId}']);">
+            <span>${node.name}</span>
+            <span style="opacity:0.6; font-size:7px;">v${node.visitCount}</span>
+          </div>
+        `).join('');
+      }
+
+      if (habits.length === 0 && pinned.length === 0) {
+        html = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding:10px 0;">Draw patterns to build memory logs.</div>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function renderPatternGraph(activePatternId) {
+      const svg = document.getElementById('hud-graph-view');
+      if (!svg) return;
+
+      const lineage = window.DaxiniPatternEngine.getLineage(activePatternId);
+      if (!lineage) return;
+
+      const width = svg.clientWidth || 340;
+      const height = svg.clientHeight || 110;
+
+      const nodes = [];
+      const links = [];
+
+      const currentX = Math.round(width / 2);
+      const currentY = Math.round(height / 2);
+
+      nodes.push({ id: lineage.current.patternId, name: lineage.current.name, x: currentX, y: currentY, type: 'current', node: lineage.current });
+
+      if (lineage.parent) {
+        nodes.push({ id: lineage.parent.patternId, name: lineage.parent.name, x: currentX, y: 22, type: 'parent', node: lineage.parent });
+        links.push({ from: lineage.parent.patternId, to: lineage.current.patternId });
+      }
+
+      if (lineage.children && lineage.children.length > 0) {
+        const count = lineage.children.length;
+        lineage.children.forEach((child, i) => {
+          const childX = Math.round(width / (count + 1) * (i + 1));
+          const childY = height - 18;
+          nodes.push({ id: child.patternId, name: child.name, x: childX, y: childY, type: 'child', node: child });
+          links.push({ from: lineage.current.patternId, to: child.patternId });
+        });
+      }
+
+      let html = '';
+      
+      links.forEach(l => {
+        const fromNode = nodes.find(n => n.id === l.from);
+        const toNode = nodes.find(n => n.id === l.to);
+        if (fromNode && toNode) {
+          html += `<line x1="${fromNode.x}" y1="${fromNode.y}" x2="${toNode.x}" y2="${toNode.y}" stroke="rgba(0, 242, 255, 0.25)" stroke-width="1.5" stroke-dasharray="2 2"></line>`;
+        }
+      });
+
+      nodes.forEach(n => {
+        let fill = '#05070a';
+        let stroke = 'rgba(255, 255, 255, 0.3)';
+        let radius = 9;
+        let fontColor = '#a0a8b8';
+        let textWeight = 'normal';
+
+        if (n.type === 'current') {
+          fill = 'rgba(0, 242, 255, 0.15)';
+          stroke = 'var(--z-accent)';
+          radius = 11;
+          fontColor = '#fff';
+          textWeight = 'bold';
+        } else if (n.type === 'parent') {
+          stroke = 'var(--saffron)';
+        }
+
+        html += `
+          <g style="cursor:pointer;" onclick="focusPatternNode('${n.id}'); launchPatternNode(window.DaxiniPatternEngine.registry['${n.id}']);">
+            <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"></circle>
+            <text x="${n.x}" y="${n.y - radius - 3}" fill="${fontColor}" font-size="7" font-family="monospace" font-weight="${textWeight}" text-anchor="middle">${n.name.slice(0, 16)}</text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = html;
+    }
 
     ZAYVORA.bootstrap();
     initializeStore();

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pattern Browser</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="../../pattern-engine.js" defer></script>
+  <style>
+    :root {
+      --bg: #030508;
+      --cyan: #00e5ff;
+      --saffron: #ff671f;
+      --glass-bg: rgba(6, 9, 14, 0.85);
+      --glass-border: rgba(0, 229, 255, 0.15);
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Oxanium', sans-serif;
+      --font-body: 'Outfit', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body { background: var(--bg); color: #fff; font-family: var(--font-body); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+    
+    header {
+      padding: 16px 24px; border-bottom: 1px solid var(--glass-border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .title { font-family: var(--font-display); font-size: 18px; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; }
+    
+    main { display: flex; flex: 1; overflow: hidden; }
+    
+    .panel { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 24px; border-right: 1px solid rgba(255,255,255,0.05); }
+    .panel:last-child { border-right: none; }
+    
+    .section-title { font-size: 10px; color: rgba(255,255,255,0.5); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    
+    /* Registry List */
+    .registry-item {
+      padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02); margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .registry-item:hover { border-color: var(--cyan); background: rgba(0, 229, 255, 0.05); transform: translateX(4px); }
+    .registry-name { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; }
+    .registry-meta { font-family: var(--font-mono); font-size: 9px; color: var(--cyan); display: flex; gap: 8px; }
+    
+    /* Canvas */
+    .canvas-container {
+      flex: 1.5; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+    }
+    .canvas-hint { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
+    
+    #minimap {
+      position: relative; width: 320px; height: 320px;
+      background: rgba(3, 5, 8, 0.75); border-radius: 24px; border: 1px solid rgba(0, 242, 255, 0.16);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0, 242, 255, 0.05); touch-action: none;
+    }
+    #grid-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    #trace-line { fill: none; stroke: var(--cyan); stroke-width: 6px; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(0,242,255,0.6)); transition: stroke 0.2s, filter 0.2s; }
+    #dots-container { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr); z-index: 2; }
+    .dot-cell { display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.15); border-radius: 50%; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .dot.active { background: var(--cyan); box-shadow: 0 0 20px var(--cyan), 0 0 8px var(--cyan); transform: scale(1.8); }
+    
+    body.sigil-flash #trace-line { stroke: var(--saffron); filter: drop-shadow(0 0 20px var(--saffron)); }
+    body.sigil-flash .dot.active { background: var(--saffron); box-shadow: 0 0 20px var(--saffron); }
+
+    /* Active Details */
+    .detail-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; margin-bottom: 16px;
+    }
+    .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-family: var(--font-mono); font-size: 11px; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: rgba(255,255,255,0.5); }
+    .detail-value { font-weight: 700; color: #fff; }
+    
+    .btn {
+      width: 100%; border: none; background: var(--cyan); color: #000; padding: 12px; border-radius: 8px;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase;
+      letter-spacing: 1px; transition: all 0.2s; margin-top: 8px;
+    }
+    .btn:hover { background: #00d9ff; transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn-outline { background: transparent; border: 1px solid var(--cyan); color: var(--cyan); }
+    .btn-outline:hover { background: rgba(0,229,255,0.1); }
+    .btn-saffron { background: var(--saffron); color: #fff; border: none; }
+    .btn-saffron:hover { background: #ff5500; }
+    
+    #graph-container {
+      width: 100%; height: 200px; background: #05070a; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+    }
+
+    input, select {
+      width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+      color: #fff; font-family: var(--font-mono); font-size: 11px; margin-top: 4px;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--cyan); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title">Pattern Browser / Navigator</div>
+    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan);">Daxini Space Native App</div>
+  </header>
+
+  <main>
+    <!-- Left: Registry -->
+    <div class="panel" style="flex: 1;">
+      <div class="section-title">Address Registry</div>
+      <div style="margin-bottom: 12px;">
+        <input type="text" id="search-input" placeholder="Search patterns or apps..." oninput="renderRegistry(this.value)">
+      </div>
+      <div id="registry-list" style="overflow-y: auto;"></div>
+    </div>
+    
+    <!-- Center: Canvas -->
+    <div class="panel canvas-container" style="border-right: 1px solid rgba(255,255,255,0.05);">
+      <div class="canvas-hint">Draw Pattern to Resolve Address</div>
+      <div id="minimap">
+        <svg id="grid-svg"><polyline id="trace-line" points=""/></svg>
+        <div id="dots-container">
+          <!-- 3x3 dots -->
+          <div class="dot-cell"><div class="dot" id="dot-0"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-1"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-2"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-3"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-4" style="border:2px solid rgba(0,242,255,0.5); background:transparent;"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-5"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-6"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-7"></div></div>
+          <div class="dot-cell"><div class="dot" id="dot-8"></div></div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 40px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.4); text-align: center; max-width: 300px;">
+        Pattern traversal maps to cryptographic node hashes. <br><br>Drawing a new pattern will instantiate a new private workspace.
+      </div>
+    </div>
+    
+    <!-- Right: Details -->
+    <div class="panel" style="flex: 1;">
+      <div class="section-title">Lineage Graph</div>
+      <div id="graph-container">
+        <svg id="graph-svg" width="100%" height="100%"></svg>
+      </div>
+
+      <div class="section-title">Node Inspector</div>
+      <div id="inspector-empty" style="color: rgba(255,255,255,0.4); font-size: 11px; text-align: center; margin-top: 20px;">
+        Select or draw a pattern to inspect node.
+      </div>
+      <div id="inspector-content" style="display: none;">
+        <div class="detail-card">
+          <div class="detail-row"><span class="detail-label">Pattern ID</span><span class="detail-value" id="insp-id" style="color:var(--cyan);"></span></div>
+          <div class="detail-row"><span class="detail-label">Edge Chain</span><span class="detail-value" id="insp-chain" style="font-size: 9px;"></span></div>
+          <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="insp-status"></span></div>
+          <div class="detail-row"><span class="detail-label">Marketplace</span><span class="detail-value" id="insp-market" style="color:var(--saffron);"></span></div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 9px; color: rgba(255,255,255,0.5);">APP NAME</label>
+          <input type="text" id="insp-name">
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 9px; color: rgba(255,255,255,0.5);">LOCATION URL</label>
+          <input type="text" id="insp-url">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 9px; color: rgba(255,255,255,0.5);">SECURITY</label>
+          <select id="insp-security">
+            <option value="private">Private</option>
+            <option value="shared">Shared</option>
+            <option value="public">Public</option>
+            <option value="marketplace">Marketplace Commercial</option>
+          </select>
+        </div>
+        
+        <button class="btn" onclick="saveNode()">Save Customizations</button>
+        <button class="btn btn-outline" onclick="copyShareToken()">Copy Share Token</button>
+        <button class="btn btn-saffron" onclick="launchInOS()" style="margin-top: 24px;">🚀 Launch in Parent OS</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let activePatternId = null;
+
+    // Drawing Logic
+    const minimap = document.getElementById('minimap');
+    const svgLine = document.getElementById('trace-line');
+    let path = [];
+    let isTracing = false;
+
+    function getDotCenter(idx) {
+      const dot = document.getElementById(`dot-${idx}`);
+      const rect = dot.getBoundingClientRect();
+      const mapRect = minimap.getBoundingClientRect();
+      return {
+        x: rect.left - mapRect.left + rect.width / 2,
+        y: rect.top - mapRect.top + rect.height / 2
+      };
+    }
+
+    function drawSVG(touchX, touchY) {
+      let pts = path.map(idx => {
+        const c = getDotCenter(idx);
+        return `${c.x},${c.y}`;
+      });
+      if (isTracing && touchX !== undefined) pts.push(`${touchX},${touchY}`);
+      svgLine.setAttribute('points', pts.join(' '));
+    }
+
+    function handleTouch(e) {
+      const t = e.touches ? e.touches[0] : e;
+      const mapRect = minimap.getBoundingClientRect();
+      const x = t.clientX - mapRect.left;
+      const y = t.clientY - mapRect.top;
+
+      const col = Math.floor((x / mapRect.width) * 3);
+      const row = Math.floor((y / mapRect.height) * 3);
+
+      if (col >= 0 && col <= 2 && row >= 0 && row <= 2) {
+        const idx = row * 3 + col;
+        if (path.length === 0 || path[path.length - 1] !== idx) {
+          path.push(idx);
+          document.getElementById(`dot-${idx}`).classList.add('active');
+        }
+      }
+      drawSVG(x, y);
+    }
+
+    minimap.addEventListener('mousedown', e => { isTracing = true; path = []; document.querySelectorAll('.dot').forEach(d => d.classList.remove('active')); handleTouch(e); });
+    minimap.addEventListener('mousemove', e => { if (isTracing) handleTouch(e); });
+    window.addEventListener('mouseup', () => { if (isTracing) { isTracing = false; drawSVG(); processPattern(); } });
+    minimap.addEventListener('touchstart', e => { e.preventDefault(); isTracing = true; path = []; document.querySelectorAll('.dot').forEach(d => d.classList.remove('active')); handleTouch(e); });
+    minimap.addEventListener('touchmove', e => { e.preventDefault(); if (isTracing) handleTouch(e); });
+    minimap.addEventListener('touchend', e => { e.preventDefault(); isTracing = false; drawSVG(); processPattern(); });
+
+    function processPattern() {
+      if (!path || path.length < 2) {
+        // clear
+        svgLine.setAttribute('points', '');
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+        return;
+      }
+      
+      const res = window.DaxiniPatternEngine.resolvePattern(path, activePatternId);
+      setTimeout(() => {
+        svgLine.setAttribute('points', '');
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+        document.body.classList.remove('sigil-flash');
+      }, 400);
+
+      if (res.success && res.node) {
+        document.body.classList.add('sigil-flash');
+        inspectNode(res.node.patternId);
+        renderRegistry();
+      }
+    }
+
+    // Engine UI integration
+    function renderRegistry(query = '') {
+      const list = document.getElementById('registry-list');
+      if (!window.DaxiniPatternEngine) {
+        setTimeout(() => renderRegistry(query), 100);
+        return;
+      }
+      
+      let nodes = Object.values(window.DaxiniPatternEngine.registry);
+      
+      if (query) {
+        const q = query.toLowerCase();
+        nodes = nodes.filter(n => n.name.toLowerCase().includes(q) || n.edgeChain.includes(q) || n.patternId.toLowerCase().includes(q));
+      } else {
+        // sort by visit count and created
+        nodes.sort((a,b) => b.visitCount - a.visitCount);
+      }
+
+      list.innerHTML = nodes.map(n => `
+        <div class="registry-item" onclick="inspectNode('${n.patternId}')" style="${n.patternId === activePatternId ? 'border-color:var(--cyan); background:rgba(0,229,255,0.05);' : ''}">
+          <div class="registry-name"><span>${n.icon} ${n.name}</span> <span style="font-size:10px; color:${n.status === 'live' ? 'var(--cyan)' : 'var(--saffron)'};">${n.status.toUpperCase()}</span></div>
+          <div class="registry-meta">
+            <span>ID: ${n.patternId}</span>
+            <span>EDGES: ${n.edgeChain}</span>
+            <span style="margin-left:auto; color:rgba(255,255,255,0.5);">v${n.visitCount}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function inspectNode(patternId) {
+      if (!window.DaxiniPatternEngine) return;
+      const node = window.DaxiniPatternEngine.registry[patternId];
+      if (!node) return;
+
+      activePatternId = patternId;
+
+      document.getElementById('inspector-empty').style.display = 'none';
+      document.getElementById('inspector-content').style.display = 'block';
+
+      document.getElementById('insp-id').textContent = node.patternId;
+      document.getElementById('insp-chain').textContent = node.edgeChain;
+      document.getElementById('insp-status').textContent = node.status.toUpperCase();
+      document.getElementById('insp-market').textContent = node.marketplaceStatus.toUpperCase();
+
+      document.getElementById('insp-name').value = node.name;
+      document.getElementById('insp-url').value = node.url;
+      document.getElementById('insp-security').value = node.security || 'private';
+
+      renderGraph(patternId);
+      renderRegistry(document.getElementById('search-input').value);
+    }
+
+    function saveNode() {
+      if (!activePatternId || !window.DaxiniPatternEngine) return;
+      const name = document.getElementById('insp-name').value;
+      const url = document.getElementById('insp-url').value;
+      const security = document.getElementById('insp-security').value;
+      
+      const updated = window.DaxiniPatternEngine.updateNode(activePatternId, {
+        name, url, security, status: url === 'offline' ? 'pending' : 'live'
+      });
+      
+      if (updated) {
+        inspectNode(activePatternId);
+        // Sync with parent window if inside OS
+        if (window.parent && window.parent.focusPatternNode) {
+          window.parent.focusPatternNode(activePatternId);
+        }
+      }
+    }
+
+    function copyShareToken() {
+      if (!activePatternId || !window.DaxiniPatternEngine) return;
+      const token = window.DaxiniPatternEngine.getShareToken(activePatternId);
+      navigator.clipboard.writeText(token).then(() => alert(`Share token copied: ${token}`));
+    }
+
+    function launchInOS() {
+      if (!activePatternId || !window.DaxiniPatternEngine) return;
+      if (window.parent && window.parent.launchPatternNode) {
+        const node = window.DaxiniPatternEngine.registry[activePatternId];
+        window.parent.launchPatternNode(node);
+      } else {
+        alert("Not running inside Daxini OS context.");
+      }
+    }
+
+    function renderGraph(patternId) {
+      const svg = document.getElementById('graph-svg');
+      if (!svg || !window.DaxiniPatternEngine) return;
+
+      const lineage = window.DaxiniPatternEngine.getLineage(patternId);
+      if (!lineage) return;
+
+      const width = svg.clientWidth || 300;
+      const height = svg.clientHeight || 200;
+
+      const nodes = [];
+      const links = [];
+
+      const currentX = Math.round(width / 2);
+      const currentY = Math.round(height / 2);
+
+      nodes.push({ id: lineage.current.patternId, name: lineage.current.name, x: currentX, y: currentY, type: 'current' });
+
+      if (lineage.parent) {
+        nodes.push({ id: lineage.parent.patternId, name: lineage.parent.name, x: currentX, y: 40, type: 'parent' });
+        links.push({ from: lineage.parent.patternId, to: lineage.current.patternId });
+      }
+
+      if (lineage.children && lineage.children.length > 0) {
+        const count = lineage.children.length;
+        lineage.children.forEach((child, i) => {
+          const childX = Math.round(width / (count + 1) * (i + 1));
+          const childY = height - 40;
+          nodes.push({ id: child.patternId, name: child.name, x: childX, y: childY, type: 'child' });
+          links.push({ from: lineage.current.patternId, to: child.patternId });
+        });
+      }
+
+      let html = '';
+      links.forEach(l => {
+        const fromNode = nodes.find(n => n.id === l.from);
+        const toNode = nodes.find(n => n.id === l.to);
+        if (fromNode && toNode) {
+          html += `<line x1="${fromNode.x}" y1="${fromNode.y}" x2="${toNode.x}" y2="${toNode.y}" stroke="rgba(0, 242, 255, 0.2)" stroke-width="2" stroke-dasharray="4 4"></line>`;
+        }
+      });
+
+      nodes.forEach(n => {
+        let fill = '#05070a';
+        let stroke = 'rgba(255, 255, 255, 0.3)';
+        let radius = 12;
+        let fontColor = '#a0a8b8';
+
+        if (n.type === 'current') {
+          fill = 'rgba(0, 242, 255, 0.15)';
+          stroke = 'var(--cyan)';
+          radius = 16;
+          fontColor = '#fff';
+        } else if (n.type === 'parent') {
+          stroke = 'var(--saffron)';
+        }
+
+        html += `
+          <g style="cursor:pointer;" onclick="inspectNode('${n.id}')">
+            <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"></circle>
+            <text x="${n.x}" y="${n.y - radius - 6}" fill="${fontColor}" font-size="9" font-family="monospace" text-anchor="middle">${n.name.slice(0, 15)}</text>
+          </g>
+        `;
+      });
+
+      svg.innerHTML = html;
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => renderRegistry(), 200);
+    });
+
+  </script>
+</body>
+</html>
