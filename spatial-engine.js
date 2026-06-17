@@ -1,339 +1,339 @@
 /**
- * Copyright 2026 ViaDecide
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * spatial-engine.js — Daxini Spatial OS Engine
+ * 
+ * Replaces pattern-engine.js to implement a recursive 3D Floor & Room topology,
+ * strict Dot 5 parent anchors, and lineage state tracking.
  */
 
-/**
- * scripts/spatial-engine.js — v4 Ecosystem Master
- *
- * UPGRADE: Macro-Routing (ViaDecide Ecosystem), Master Key Sigil,
- *          and Split-Screen Micro-Tool Launching.
- */
+(function (global) {
+  'use strict';
 
-const MACRO_REGISTRY = {
-  [window.masterKeySigil]: "root",
-  "0,-1|0,0|0,1": "decision-core",      // Vertical Center
-  "-1,0|0,0|1,0": "code-nexus",         // Horizontal Center
-  "-1,-1|0,0|1,1": "orchard-engine",     // Diagonal 1
-  "1,-1|0,0|-1,1": "logic-academy",     // Diagonal 2
-  "-1,-1|0,-1|1,-1": "creator-forge",   // Top Row
-  "-1,1|0,1|1,1": "research-matrix",    // Bottom Row
-  "-1,-1|-1,0|-1,1": "utility-subsystem", // Left Col
-  "1,-1|1,0|1,1": "meta-synthesis"       // Right Col
-};
+  const STORAGE_KEYS = {
+    REGISTRY: 'daxini_spatial_registry',
+    HISTORY: 'daxini_spatial_history',
+    PINNED: 'daxini_spatial_pinned',
+    STATE: 'daxini_spatial_state'
+  };
 
-// =============================================================================
-// PROCEDURAL ROOM ENGINE — Infinite Deterministic Generation
-// =============================================================================
-class ProceduralRoomEngine {
-  constructor() {
-    this.sectors = ["Nexus", "Obsidian", "Quantum", "Aegis", "Void", "Echo", "Helios", "Apex"];
-    this.departments = ["Archives", "Engineering", "Synthetics", "Logic Core", "Terminal", "Containment", "Armory", "Hub"];
-    this.descriptors = ["Classified operations", "Automated drone bay", "Abandoned data sector", "High-security vault", "Processing relay", "Dormant server farm"];
-  }
+  const ROOT_FLOOR_ID = 'ROOT';
 
-  getRoom(seed, overrideZ = null) {
-    if (!seed || seed === '0,0' || seed === 'center' || seed === '0') {
-      return { title: 'Galaxy Center', desc: 'The main nexus.', z: overrideZ !== null ? overrideZ : 0 };
+  // Seed standard apps into the ROOT floor namespace
+  const DEFAULT_APP_PATTERNS = {
+    'ROOT:51': { slug: 'logichub', name: 'LogicHub', icon: '⚡', url: 'https://logichub.app', status: 'live' },
+    'ROOT:52': { slug: 'daxini-hq', name: 'Daxini HQ', icon: '🏢', url: 'https://daxini.xyz', status: 'live' },
+    'ROOT:53': { slug: 'prompt-alchemy', name: 'Prompt Alchemy', icon: '⚗️', url: 'https://via-decide.github.io/PromptAlchemy/', status: 'live' },
+    'ROOT:54': { slug: 'sop-builder', name: 'SOP Builder', icon: '📄', url: 'offline', status: 'pending' },
+    'ROOT:56': { slug: 'daxini-lens', name: 'Daxini Lens', icon: '🎬', url: 'https://via-decide.github.io/video-to-pdf/', status: 'live' },
+    'ROOT:57': { slug: 'via-logic', name: 'ViaLogic', icon: '🕹️', url: '/apps/vialogic/index.html', status: 'live' },
+    'ROOT:58': { slug: 'studyos', name: 'StudyOS', icon: '📚', url: 'https://github.com/via-decide/decide.engine-tools/tree/159f80de375e17c26219b5a265c4c4d4ca8bb22c/StudyOS', status: 'live' },
+    'ROOT:59': { slug: 'alchemist', name: 'Alchemist', icon: '🧪', url: '/apps/alchemist/index.html', status: 'live' },
+    'ROOT:52-25': { slug: 'marketplace', name: 'Marketplace', icon: '🌌', url: '/apps/marketplace/index.html', status: 'live' }
+  };
+
+  class DaxiniSpatialEngine {
+    constructor() {
+      this.registry = {};
+      this.history = [];
+      this.pinned = new Set();
+      
+      this.currentFloorId = ROOT_FLOOR_ID;
+      this.currentZ = 0;
+      
+      this.loadState();
     }
 
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-        hash = ((hash << 5) - hash) + seed.charCodeAt(i);
-        hash |= 0;
-    }
-    hash = Math.abs(hash);
-    
-    const sector = this.sectors[hash % this.sectors.length];
-    const dept = this.departments[(hash * 7) % this.departments.length];
-    const desc = this.descriptors[(hash * 11) % this.descriptors.length];
-
-    let z = overrideZ;
-    if (z === null) {
-      z = 0;
-      if (seed.length > 20) z = -99;
-      else if (seed.length > 14) z = -10;
-      else if (seed.length > 7) z = -1;
-    }
-
-    if (z === 0) {
-      return { title: `${sector} ${dept}`, desc: `Surface Level: ${desc}`, z };
-    } else if (z < 0) {
-      return { title: `${sector} ${dept} // Sub-Level ${Math.abs(z)}`, desc: `Deep Storage: ${desc}`, z };
-    } else {
-      return { title: `${sector} ${dept} // Tower ${z}`, desc: `Atmospheric: ${desc}`, z };
-    }
-  }
-}
-
-const RoomMatrix = new ProceduralRoomEngine();
-
-// =============================================================================
-// SPATIAL MATRIX — Warp Gate Engine
-// =============================================================================
-class SpatialMatrix {
-  constructor() {
-    this.roomName  = document.getElementById('hud-room-name');
-    this.roomDesc  = document.getElementById('hud-room-desc');
-
-    this.currentSeed = '0,0';
-    this.currentZ = 0;
-
-    this.attachEventListeners();
-    this.initGravityDrop();
-    
-    // Spawn initial OS Nexus window
-    const room = RoomMatrix.getRoom(this.currentSeed, this.currentZ);
-    window.WM.spawnWindow(room, this.currentSeed);
-    this.updateHUD(room);
-  }
-
-  attachEventListeners() {
-    window.addEventListener('os:pattern_locked', (e) => {
-      if (e.detail && e.detail.seed) this.handleWarpGate(e.detail.seed);
-    });
-
-    window.addEventListener('os:macro_nav', (e) => {
-      const fakeSeed = Object.keys(MACRO_REGISTRY).find(k => MACRO_REGISTRY[k] === e.detail.zoneId);
-      if (fakeSeed) this.handleWarpGate(fakeSeed);
-    });
-
-    window.addEventListener('os:render_node', (e) => {
-      this.renderNodeContent(e.detail.node, e.detail.seed, e.detail.z);
-    });
-  }
-
-  initGravityDrop() {
-    let touchStartY = 0;
-    document.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; });
-    document.addEventListener('touchend', (e) => {
-      const touchEndY = e.changedTouches[0].clientY;
-      const deltaY = touchEndY - touchStartY;
-
-      // Scroll Guard: Only trigger if not scrolling a window body
-      const scrollTarget = e.target.closest('.window-body');
-      const isScrollingWindow = scrollTarget && scrollTarget.scrollTop > 0;
-
-      if (deltaY > 150 && !isScrollingWindow) {
-        this.handleGravityDrop();
-      }
-    });
-  }
-
-  handleGravityDrop() {
-    // Gravity Drop: Compile session into report
-    const concludeBtn = document.getElementById('btn-conclude-session');
-    if (concludeBtn) concludeBtn.click();
-  }
-
-  updateDiagnostics(seed, routeType, action) {
-    const diag = document.getElementById('os-diagnostics');
-    if (!diag) return;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    diag.innerHTML = `
-      <div>[PWA STATUS: ${isStandalone ? 'INSTALLED' : 'BROWSER'}]</div>
-      <div>[SEED: ${seed}]</div>
-      <div>[ROUTE: ${routeType}]</div>
-      <div style="color:#fff;">[ACTION: ${action}]</div>
-      <div style="font-size:8px; color:rgba(255,255,255,0.3); margin-top:4px;">${new Date().toLocaleTimeString()}</div>
-    `;
-  }
-
-  initDiagnosticToggle() {
-    let tapCount = 0;
-    let lastTapTime = 0;
-    document.addEventListener('click', (e) => {
-      if (e.clientX < 60 && e.clientY < 60) {
-        const now = Date.now();
-        if (now - lastTapTime < 600) {
-          tapCount++;
+    loadState() {
+      try {
+        const storedRegistry = localStorage.getItem(STORAGE_KEYS.REGISTRY);
+        if (storedRegistry) {
+          this.registry = JSON.parse(storedRegistry);
         } else {
-          tapCount = 1;
+          this.initializeDefaultRegistry();
         }
-        lastTapTime = now;
-        if (tapCount >= 3) {
-          const diag = document.getElementById('os-diagnostics');
-          if (diag) diag.style.display = diag.style.display === 'none' ? 'block' : 'none';
-          tapCount = 0;
+
+        const storedHistory = localStorage.getItem(STORAGE_KEYS.HISTORY);
+        if (storedHistory) this.history = JSON.parse(storedHistory);
+
+        const storedPinned = localStorage.getItem(STORAGE_KEYS.PINNED);
+        if (storedPinned) this.pinned = new Set(JSON.parse(storedPinned));
+
+        const storedState = localStorage.getItem(STORAGE_KEYS.STATE);
+        if (storedState) {
+          const state = JSON.parse(storedState);
+          this.currentFloorId = state.currentFloorId || ROOT_FLOOR_ID;
+          this.currentZ = state.currentZ || 0;
         }
+      } catch (err) {
+        console.error('[Spatial Engine] Error loading state:', err);
+        this.initializeDefaultRegistry();
       }
-    });
-  }
+    }
 
-  async handleWarpGate(seed) {
-    this.updateDiagnostics(seed, 'INCOMING', 'Evaluating waterfall...');
+    saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.REGISTRY, JSON.stringify(this.registry));
+        localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(this.history));
+        localStorage.setItem(STORAGE_KEYS.PINNED, JSON.stringify(Array.from(this.pinned)));
+        localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify({
+          currentFloorId: this.currentFloorId,
+          currentZ: this.currentZ
+        }));
+      } catch (err) {
+        console.error('[Spatial Engine] Error saving state:', err);
+      }
+    }
 
-    // ─── STEP A: Brand Master Key (Root Access) ───
-    if (seed === window.masterKeySigil) {
-      this.updateDiagnostics(seed, 'MASTER_SIGIL', 'Unlocked Dev Console');
-      if (window.patternTracer) await window.patternTracer.triggerSigilFlash();
-
-      this.currentZ = -99;
-      this.currentSeed = seed;
-      const vaultRoom = { 
-        id: 'developer-vault',
-        name: "[∞, ∞] Dharam Daxini / classified logs", 
-        lore: "Proprietary root level access. System authorship verified.",
-        z: -99 
+    initializeDefaultRegistry() {
+      this.registry = {
+        [ROOT_FLOOR_ID]: {
+          patternId: ROOT_FLOOR_ID,
+          edgeChain: 'ROOT',
+          name: 'Workspace Base Floor',
+          icon: '🌌',
+          url: 'offline',
+          status: 'live',
+          owner: 'system',
+          createdBy: 'system',
+          createdAt: new Date().toISOString(),
+          lastAccessed: new Date().toISOString(),
+          visitCount: 1,
+          zLayer: 0,
+          parentNode: null,
+          childCount: Object.keys(DEFAULT_APP_PATTERNS).length,
+          artifacts: []
+        }
       };
 
-      const vaultWin = window.WM.spawnWindow(vaultRoom, seed);
-      const body = vaultWin.querySelector('.window-body');
-      body.innerHTML = `<iframe src="./tools/developer-vault/index.html" style="width:100%; height:100%; border:none; background:transparent;"></iframe>`;
-      
-      this.updateHUD(vaultRoom);
-      this.dispatchNodeChanged(vaultRoom);
-      return; // HARD STOP
-    }
-
-    // ─── STEP B: Deep Link App Registry (Native Hardware Apps) ───
-    const nativeApp = window.AppRegistry ? window.AppRegistry[seed] : null;
-    if (nativeApp) {
-      this.updateDiagnostics(seed, 'DEEP_LINK', `Launched: ${nativeApp}`);
-      window.location.href = nativeApp;
-      return; // HARD STOP
-    }
-
-    // ─── STEP C: Fractal Navigation (2-Dot Center Out) ───
-    if (seed === "1,1|0,0" || seed === "0,0|1,1" || seed.length === 7) { 
-      // Example 2-dot logic placeholder
-      this.updateDiagnostics(seed, 'FRACTAL_NAV', 'Executing Spatial Zoom');
-      // Execute zoom logic here...
-    }
-
-    this.currentSeed = seed;
-
-    // ─── STEP D: Macro Ecosystem Routing ───
-    const zoneId = MACRO_REGISTRY[seed];
-    const zone = zoneId === 'root' 
-      ? { id: 'root', name: "ViaDecide Root", lore: "The master control nexus for all ecosystem tools.", tools: [] }
-      : (window.ZONES ? window.ZONES.find(z => z.id === zoneId) : null);
-
-    if (zone) {
-      this.updateDiagnostics(seed, 'MACRO_ZONE', `Routing to: ${zone.name}`);
-      this.currentZ = 0;
-      const room = { title: zone.name, desc: zone.lore, z: 0, tools: zone.tools, zoneId: zone.id };
-      window.WM.spawnWindow(room, seed);
-      this.updateHUD(room);
-      this.dispatchNodeChanged(room);
-      return; // HARD STOP
-    }
-
-    // ─── STEP E: Procedural Fallback (The Uncharted Tower) ───
-    this.updateDiagnostics(seed, 'PROCEDURAL', 'Generated Uncharted Room');
-    const room = RoomMatrix.getRoom(seed);
-    this.currentZ = room.z;
-    window.WM.spawnWindow(room, seed);
-    this.updateHUD(room);
-    this.dispatchNodeChanged(room);
-  }
-
-  updateHUD(room) {
-    if (!room) return;
-    if (this.roomName) this.roomName.textContent = room.title;
-    if (this.roomDesc) this.roomDesc.textContent = room.desc;
-  }
-
-  renderNodeContent(node, seed, z) {
-    const zoneId = MACRO_REGISTRY[seed];
-    const zone = zoneId === 'root' 
-      ? { id: 'root', name: "ViaDecide Root", lore: "The master control nexus for all ecosystem tools.", tools: [] }
-      : (window.ZONES ? window.ZONES.find(z => z.id === zoneId) : null);
-
-    const room = zone ? { title: zone.name, z: 0, tools: zone.tools, zoneId: zone.id } : RoomMatrix.getRoom(seed, z);
-    if (!room) return;
-
-    let html = `<h2>${room.title}</h2>`;
-    
-    if (zoneId === 'root' && window.ZONES) {
-      html += `<div class="node-grid" style="grid-template-columns: repeat(2, 1fr);">`;
-      window.ZONES.forEach(z => {
-        html += `<button class="access-node macro-node" data-seed="macro" data-zone-id="${z.id}" style="border-color:${z.color || 'var(--matrix-green)'}">[ ${z.name.toUpperCase()} ]</button>`;
+      Object.entries(DEFAULT_APP_PATTERNS).forEach(([contextChain, data]) => {
+        const patternId = this.hashChain(contextChain);
+        this.registry[patternId] = {
+          patternId,
+          edgeChain: contextChain.split(':')[1], // Just the visual edge chain
+          contextChain: contextChain, // Full contextual path
+          name: data.name,
+          slug: data.slug,
+          icon: data.icon,
+          url: data.url,
+          status: data.status,
+          owner: 'system',
+          createdBy: 'system',
+          createdAt: new Date().toISOString(),
+          lastAccessed: new Date().toISOString(),
+          visitCount: 0,
+          zLayer: 1,
+          parentNode: ROOT_FLOOR_ID,
+          childCount: 0,
+          security: 'public',
+          marketplaceStatus: data.slug === 'marketplace' ? 'commercial' : 'none',
+          artifacts: []
+        };
       });
-      html += `</div>`;
-    } else {
-      html += `<div id="room-environment" class="node-grid">`;
-      if (room.tools && room.tools.length > 0) {
-        room.tools.forEach(tool => {
-          html += `<button class="access-node tool-node" data-zone="${room.zoneId}" data-tool="${tool.id}" title="${tool.desc}">[ ${tool.name.toUpperCase()} ]</button>`;
-        });
-      } else {
-        let hash = 0;
-        for (let i = 0; i < seed.length; i++) { hash = ((hash << 5) - hash) + seed.charCodeAt(i); hash |= 0; }
-        hash = Math.abs(hash);
-        
-        if (z <= 0) html += `<button class="access-node depth-descend" data-delta="-1">[ DECRYPT : SUB-LEVEL ${Math.abs(z - 1)} ]</button>`;
-        if (z < 0) html += `<button class="access-node depth-ascend" data-delta="1">[ AIRLOCK : RETURN TO Z-${z + 1} ]</button>`;
+      this.saveState();
+    }
 
-        const dummyCount = (hash % 3) + 1;
-        const dummyTasks = ["EXTRACT LOGS", "SYSTEM SCAN", "SYNC TERMINAL", "BYPASS PROTOCOL", "MONITOR FEED", "DIAGNOSTIC"];
-        for (let i = 0; i < dummyCount; i++) {
-            const tIndex = (hash + i * 5) % dummyTasks.length;
-            html += `<button class="access-node dummy-node">[ ${dummyTasks[tIndex]} ]</button>`;
-        }
+    hashChain(chain) {
+      let hash = 5381;
+      for (let i = 0; i < chain.length; i++) {
+        hash = ((hash << 5) + hash) + chain.charCodeAt(i);
       }
-      html += `</div>`;
+      return 'P' + Math.abs(hash).toString(36).toUpperCase();
     }
-    node.innerHTML = html;
 
-    // Attach local listeners for elevator buttons
-    node.querySelectorAll('.depth-ascend, .depth-descend').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const delta = parseInt(btn.getAttribute('data-delta'));
-        this.changeFloor(delta, node, node.closest('.glass-window').querySelector('.header-title'));
-      });
-    });
+    normalize(rawPath) {
+      if (!Array.isArray(rawPath)) {
+        if (typeof rawPath === 'string') rawPath = rawPath.split(',').map(s => parseInt(s.trim()));
+        else throw new Error('Invalid raw pattern format');
+      }
+
+      const isZeroBased = rawPath.every(v => v >= 0 && v <= 8);
+      let normalized = rawPath.map(v => isZeroBased ? v + 1 : v);
+      normalized = normalized.filter((v, i) => i === 0 || v !== normalized[i - 1]);
+      normalized = normalized.filter(v => v >= 1 && v <= 9);
+
+      if (normalized.length === 0) throw new Error('Empty pattern');
+      return normalized;
+    }
+
+    generateEdgeChain(path) {
+      if (path.length === 1) return path[0].toString();
+      const edges = [];
+      for (let i = 0; i < path.length - 1; i++) {
+        edges.push(`${path[i]}${path[i + 1]}`);
+      }
+      return edges.join('-');
+    }
+
+    returnToParent() {
+      if (this.currentFloorId === ROOT_FLOOR_ID) {
+        return { success: false, error: 'Already at root floor' };
+      }
+      
+      const currentNode = this.registry[this.currentFloorId];
+      if (currentNode && currentNode.parentNode) {
+        this.currentFloorId = currentNode.parentNode;
+        this.currentZ = Math.max(0, this.currentZ - 1);
+        this.saveState();
+        return { node: this.registry[this.currentFloorId], success: true, action: 'descend' };
+      }
+      
+      this.currentFloorId = ROOT_FLOOR_ID;
+      this.currentZ = 0;
+      this.saveState();
+      return { node: this.registry[ROOT_FLOOR_ID], success: true, action: 'descend' };
+    }
+
+    resolvePattern(rawPath) {
+      let path;
+      try {
+        path = this.normalize(rawPath);
+      } catch (err) {
+        return { error: err.message };
+      }
+
+      // Dot 5 Rule: Universal Return Anchor
+      if (path.length === 1 && path[0] === 5) {
+        return this.returnToParent();
+      }
+
+      if (path.length < 2 && path[0] !== 5) {
+        // We can allow single dot taps (e.g., tap 8 to go to marketplace)
+        // Let's assume a single dot is a valid room transition on this floor.
+      }
+
+      const chain = this.generateEdgeChain(path);
+      const contextChain = `${this.currentFloorId}:${chain}`;
+      const patternId = this.hashChain(contextChain);
+
+      const currentIdentity = localStorage.getItem('sovereign_token') ? 'owner' : 'guest';
+
+      if (!this.registry[patternId]) {
+        // Generate new recursive floor node
+        this.registry[patternId] = {
+          patternId,
+          edgeChain: chain,
+          contextChain: contextChain,
+          name: `Sector ${patternId.slice(0, 4)}`,
+          slug: `room-${patternId.toLowerCase()}`,
+          icon: '🔮',
+          url: 'offline',
+          status: 'pending',
+          owner: currentIdentity,
+          createdBy: currentIdentity,
+          createdAt: new Date().toISOString(),
+          lastAccessed: new Date().toISOString(),
+          visitCount: 0,
+          zLayer: this.currentZ + 1,
+          parentNode: this.currentFloorId,
+          childCount: 0,
+          security: 'private',
+          marketplaceStatus: 'none',
+          artifacts: []
+        };
+        
+        const parentNode = this.registry[this.currentFloorId];
+        if (parentNode) parentNode.childCount++;
+      }
+
+      const node = this.registry[patternId];
+      node.visitCount++;
+      node.lastAccessed = new Date().toISOString();
+
+      // Enter the new floor
+      this.currentFloorId = patternId;
+      this.currentZ = node.zLayer;
+
+      // Update Memory Recents
+      this.history = this.history.filter(id => id !== patternId);
+      this.history.unshift(patternId);
+      if (this.history.length > 30) this.history.pop();
+
+      this.saveState();
+      return { node, success: true, action: 'ascend' };
+    }
+
+    searchPatterns(query) {
+      if (!query) return [];
+      const q = query.trim().replace(/\s+/g, '').toLowerCase();
+      return Object.values(this.registry).filter(node => 
+        node.edgeChain.includes(q) || node.name.toLowerCase().includes(q) || node.patternId.toLowerCase().includes(q)
+      );
+    }
+
+    togglePin(patternId) {
+      if (this.pinned.has(patternId)) this.pinned.delete(patternId);
+      else this.pinned.add(patternId);
+      this.saveState();
+      return this.pinned.has(patternId);
+    }
+
+    updateNode(patternId, updates) {
+      if (this.registry[patternId]) {
+        this.registry[patternId] = { ...this.registry[patternId], ...updates };
+        this.saveState();
+        return this.registry[patternId];
+      }
+      return null;
+    }
+
+    addArtifact(patternId, artifactRef) {
+      if (this.registry[patternId]) {
+        if (!this.registry[patternId].artifacts) this.registry[patternId].artifacts = [];
+        this.registry[patternId].artifacts.push(artifactRef);
+        this.saveState();
+        return true;
+      }
+      return false;
+    }
+
+    getRecommendations() {
+      // Habitual Traversals: Nodes with high visit counts sorted by frequency
+      const habits = Object.values(this.registry)
+        .filter(n => n.visitCount > 0 && n.patternId !== ROOT_FLOOR_ID)
+        .sort((a, b) => b.visitCount - a.visitCount)
+        .slice(0, 5);
+
+      // Pinned Nodes
+      const pinnedNodes = Array.from(this.pinned)
+        .map(id => this.registry[id])
+        .filter(Boolean);
+
+      return { habits, pinned: pinnedNodes };
+    }
+
+    getLineage(patternId) {
+      const node = this.registry[patternId];
+      if (!node) return null;
+
+      const parentNode = node.parentNode ? this.registry[node.parentNode] : null;
+      const children = Object.values(this.registry).filter(n => n.parentNode === patternId);
+
+      return { current: node, parent: parentNode, children };
+    }
+
+    getShareToken(patternId) {
+      return `daxini://p/${patternId}`;
+    }
+
+    resolveShareToken(token) {
+      if (!token) return null;
+      const match = token.trim().match(/daxini:\/\/p\/([a-zA-Z0-9]+)/i);
+      const id = match ? match[1].toUpperCase() : token.trim().toUpperCase();
+      
+      const node = this.registry[id];
+      if (node) {
+        // Auto-teleport to this floor
+        this.currentFloorId = node.patternId;
+        this.currentZ = node.zLayer;
+        this.saveState();
+        return node;
+      }
+      return null;
+    }
   }
 
-  dispatchNodeChanged(room) {
-    window.dispatchEvent(new CustomEvent('os:node_changed', {
-      detail: { seed: this.currentSeed, z: this.currentZ, title: room ? room.title : 'Uncharted Sector' }
-    }));
-  }
+  global.DaxiniSpatialEngine = new DaxiniSpatialEngine();
+  
+  // Backwards compatibility alias for components not yet migrated
+  global.DaxiniPatternEngine = global.DaxiniSpatialEngine;
 
-  async changeFloor(delta, windowBody, headerTitle) {
-    const targetZ = this.currentZ + delta;
-    const room = RoomMatrix.getRoom(this.currentSeed, targetZ);
-    if (!room) return;
-
-    this.currentZ = targetZ;
-    this.updateHUD(room);
-    if (headerTitle) headerTitle.textContent = room.title.toUpperCase();
-
-    windowBody.style.transition = 'opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-    windowBody.style.opacity = '0';
-    windowBody.style.transform = `scale(${delta < 0 ? 1.2 : 0.8})`;
-
-    await new Promise(r => setTimeout(r, 400));
-    
-    this.renderNodeContent(windowBody, this.currentSeed, this.currentZ);
-
-    windowBody.style.transition = 'none';
-    windowBody.style.transform = `scale(${delta < 0 ? 0.8 : 1.2})`;
-
-    requestAnimationFrame(() => {
-      windowBody.style.transition = 'opacity 0.4s ease, transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
-      windowBody.style.opacity = '1';
-      windowBody.style.transform = `scale(1.0)`;
-    });
-
-    this.dispatchNodeChanged(room);
-    window.dispatchEvent(new CustomEvent('os:floor_changed', { detail: { floor: this.currentZ } }));
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => { 
-  window.OS = new SpatialMatrix(); 
-  window.OS.initDiagnosticToggle();
-});
+})(window);

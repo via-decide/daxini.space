@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pattern Browser</title>
+  <title>Spatial Browser</title>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="../../pattern-engine.js" defer></script>
+  <script src="../../spatial-engine.js" defer></script>
   <style>
     :root {
       --bg: #030508;
@@ -100,8 +100,11 @@
 <body>
 
   <header>
-    <div class="title">Pattern Browser / Navigator</div>
-    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan);">Daxini Space Native App</div>
+    <div class="title">Spatial Browser / Navigator</div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div id="local-z-layer" style="font-family: var(--font-mono); font-size: 12px; color: var(--saffron); font-weight: bold;">Z-LAYER 0</div>
+      <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan);">Daxini Space Native App</div>
+    </div>
   </header>
 
   <main>
@@ -244,7 +247,7 @@
         return;
       }
       
-      const res = window.DaxiniPatternEngine.resolvePattern(path, activePatternId);
+      const res = window.DaxiniSpatialEngine.resolvePattern(path, activePatternId);
       setTimeout(() => {
         svgLine.setAttribute('points', '');
         document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
@@ -261,12 +264,12 @@
     // Engine UI integration
     function renderRegistry(query = '') {
       const list = document.getElementById('registry-list');
-      if (!window.DaxiniPatternEngine) {
+      if (!window.DaxiniSpatialEngine) {
         setTimeout(() => renderRegistry(query), 100);
         return;
       }
       
-      let nodes = Object.values(window.DaxiniPatternEngine.registry);
+      let nodes = Object.values(window.DaxiniSpatialEngine.registry);
       
       if (query) {
         const q = query.toLowerCase();
@@ -289,8 +292,8 @@
     }
 
     function inspectNode(patternId) {
-      if (!window.DaxiniPatternEngine) return;
-      const node = window.DaxiniPatternEngine.registry[patternId];
+      if (!window.DaxiniSpatialEngine) return;
+      const node = window.DaxiniSpatialEngine.registry[patternId];
       if (!node) return;
 
       activePatternId = patternId;
@@ -312,12 +315,12 @@
     }
 
     function saveNode() {
-      if (!activePatternId || !window.DaxiniPatternEngine) return;
+      if (!activePatternId || !window.DaxiniSpatialEngine) return;
       const name = document.getElementById('insp-name').value;
       const url = document.getElementById('insp-url').value;
       const security = document.getElementById('insp-security').value;
       
-      const updated = window.DaxiniPatternEngine.updateNode(activePatternId, {
+      const updated = window.DaxiniSpatialEngine.updateNode(activePatternId, {
         name, url, security, status: url === 'offline' ? 'pending' : 'live'
       });
       
@@ -331,15 +334,15 @@
     }
 
     function copyShareToken() {
-      if (!activePatternId || !window.DaxiniPatternEngine) return;
-      const token = window.DaxiniPatternEngine.getShareToken(activePatternId);
+      if (!activePatternId || !window.DaxiniSpatialEngine) return;
+      const token = window.DaxiniSpatialEngine.getShareToken(activePatternId);
       navigator.clipboard.writeText(token).then(() => alert(`Share token copied: ${token}`));
     }
 
     function launchInOS() {
-      if (!activePatternId || !window.DaxiniPatternEngine) return;
+      if (!activePatternId || !window.DaxiniSpatialEngine) return;
       if (window.parent && window.parent.launchPatternNode) {
-        const node = window.DaxiniPatternEngine.registry[activePatternId];
+        const node = window.DaxiniSpatialEngine.registry[activePatternId];
         window.parent.launchPatternNode(node);
       } else {
         alert("Not running inside Daxini OS context.");
@@ -348,9 +351,9 @@
 
     function renderGraph(patternId) {
       const svg = document.getElementById('graph-svg');
-      if (!svg || !window.DaxiniPatternEngine) return;
+      if (!svg || !window.DaxiniSpatialEngine) return;
 
-      const lineage = window.DaxiniPatternEngine.getLineage(patternId);
+      const lineage = window.DaxiniSpatialEngine.getLineage(patternId);
       if (!lineage) return;
 
       const width = svg.clientWidth || 300;

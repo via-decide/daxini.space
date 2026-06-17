@@ -71,7 +71,10 @@
   </script>
   <script src="/_vercel/insights/script.js"></script>
   <script src="/ecosystem-nav.js" defer></script>
-  <script src="/pattern-engine.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="/spatial-engine.js" defer></script>
+  <script src="/pdf-pipeline.js" defer></script>
+  <script src="/discovery-engine.js" defer></script>
 
   <style>
     /* =========================================================
@@ -2321,21 +2324,12 @@
         }
       }, 500);
 
-      // Special Case: Clear Screen (Tap Center)
-      if (path.length === 1 && path[0] === 4) {
-        wm.innerHTML = '';
-        showSeoPanel();
-        animateFractalTransition(4, true);
-        logDiag('SYSTEM', 'Cleared all active viewports.');
-        return;
-      }
-
-      // Normal Pattern Resolution
-      const res = window.DaxiniPatternEngine.resolvePattern(path, window.currentPatternID);
+      // Normal Pattern Resolution via Spatial OS Engine
+      const res = window.DaxiniSpatialEngine.resolvePattern(path);
       if (res.success && res.node) {
         const node = res.node;
         document.body.classList.add('sigil-flash');
-        logDiag('PATTERN_RESOLVED', `Resolved ${node.patternId} (${node.name})`);
+        logDiag('SPATIAL_NAV', `Floor: ${window.DaxiniSpatialEngine.currentZ} | Room: ${node.name} [${res.action}]`);
         
         // Auto focus the resolved pattern in HUD and show visual graph
         focusPatternNode(node.patternId);
@@ -2348,6 +2342,16 @@
         if (targetPos !== 4) {
           animateFractalTransition(targetPos, false);
         }
+        
+        // Update Z-Layer Indicator in HUD if exists
+        const zIndicator = document.getElementById('hud-z-layer');
+        if (zIndicator) zIndicator.textContent = `Z-${window.DaxiniSpatialEngine.currentZ}`;
+
+        // Trigger PDF Snapshot of current viewport before transitioning
+        if (window.DaxiniPDFPipeline) {
+          window.DaxiniPDFPipeline.snapshotStage(document.body, node.patternId, 'Traversal');
+        }
+
         setTimeout(() => launchPatternNode(node), 300);
       } else {
         logDiag('PATTERN_REJECT', res.error || 'Invalid Pattern.');
@@ -2439,7 +2443,7 @@
       const url = document.getElementById('pat-input-url').value;
       const security = document.getElementById('pat-select-security').value;
       
-      const node = window.DaxiniPatternEngine.updateNode(window.currentPatternID, {
+      const node = window.DaxiniSpatialEngine.updateNode(window.currentPatternID, {
         name,
         url,
         status: url === 'offline' ? 'pending' : 'live',
@@ -2475,7 +2479,7 @@
 
     window.togglePinActivePattern = function() {
       if (!window.currentPatternID) return;
-      const isPinned = window.DaxiniPatternEngine.togglePin(window.currentPatternID);
+      const isPinned = window.DaxiniSpatialEngine.togglePin(window.currentPatternID);
       logDiag('PATTERN_PIN', `${isPinned ? 'Pinned' : 'Unpinned'} pattern: ${window.currentPatternID}`);
       focusPatternNode(window.currentPatternID);
     };
@@ -2484,14 +2488,14 @@
       const q = document.getElementById('pat-search-input').value;
       if (!q) return;
       
-      const matchedNode = window.DaxiniPatternEngine.resolveShareToken(q);
+      const matchedNode = window.DaxiniSpatialEngine.resolveShareToken(q);
       if (matchedNode) {
         logDiag('SEARCH_RESOLVED', `Found node: ${matchedNode.name}`);
         focusPatternNode(matchedNode.patternId);
         launchPatternNode(matchedNode);
       } else {
         // Search by partial string match
-        const results = window.DaxiniPatternEngine.searchPatterns(q);
+        const results = window.DaxiniSpatialEngine.searchPatterns(q);
         const resultsContainer = document.getElementById('pat-search-results');
         if (resultsContainer) {
           if (results.length === 0) {
@@ -2512,7 +2516,7 @@
 
     window.copyPatternShareLink = function() {
       if (!window.currentPatternID) return;
-      const token = window.DaxiniPatternEngine.getShareToken(window.currentPatternID);
+      const token = window.DaxiniSpatialEngine.getShareToken(window.currentPatternID);
       navigator.clipboard.writeText(token).then(() => {
         logDiag('SHARE_COPY', `Copied token to clipboard: ${token}`);
         alert(`Copied human share token to clipboard: ${token}`);
@@ -2584,7 +2588,7 @@
     };
 
     window.focusPatternNode = function(patternId) {
-      const node = window.DaxiniPatternEngine.registry[patternId];
+      const node = window.DaxiniSpatialEngine.registry[patternId];
       if (!node) return;
 
       window.currentPatternID = patternId;
@@ -2613,13 +2617,13 @@
       const container = document.getElementById('pat-memory-list');
       if (!container) return;
 
-      const { habits, pinned } = window.DaxiniPatternEngine.getRecommendations();
+      const { habits, pinned } = window.DaxiniSpatialEngine.getRecommendations();
 
       let html = '';
       if (pinned.length > 0) {
         html += `<div style="color:var(--z-accent); margin-bottom:4px; font-weight:bold; font-size: 8px;">📌 PINNED WORKSPACES</div>`;
         html += pinned.map(node => `
-          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniPatternEngine.registry['${node.patternId}']);">
+          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${node.patternId}']);">
             <span>${node.name}</span>
             <span style="opacity:0.6; font-size:7px;">${node.patternId}</span>
           </div>
@@ -2629,7 +2633,7 @@
       if (habits.length > 0) {
         html += `<div style="color:var(--cyan); margin-top:6px; margin-bottom:4px; font-weight:bold; font-size: 8px;">🕒 HABITUAL TRAVERSALS</div>`;
         html += habits.map(node => `
-          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniPatternEngine.registry['${node.patternId}']);">
+          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${node.patternId}']);">
             <span>${node.name}</span>
             <span style="opacity:0.6; font-size:7px;">v${node.visitCount}</span>
           </div>
@@ -2647,7 +2651,7 @@
       const svg = document.getElementById('hud-graph-view');
       if (!svg) return;
 
-      const lineage = window.DaxiniPatternEngine.getLineage(activePatternId);
+      const lineage = window.DaxiniSpatialEngine.getLineage(activePatternId);
       if (!lineage) return;
 
       const width = svg.clientWidth || 340;
@@ -2704,7 +2708,7 @@
         }
 
         html += `
-          <g style="cursor:pointer;" onclick="focusPatternNode('${n.id}'); launchPatternNode(window.DaxiniPatternEngine.registry['${n.id}']);">
+          <g style="cursor:pointer;" onclick="focusPatternNode('${n.id}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${n.id}']);">
             <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"></circle>
             <text x="${n.x}" y="${n.y - radius - 3}" fill="${fontColor}" font-size="7" font-family="monospace" font-weight="${textWeight}" text-anchor="middle">${n.name.slice(0, 16)}</text>
           </g>
