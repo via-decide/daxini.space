@@ -283,6 +283,66 @@
     .meta-table td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .meta-table td:last-child { text-align: right; color: #fff; font-family: var(--font-mono); }
 
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        height: auto;
+      }
+      .brand {
+        padding: 16px;
+      }
+      .nav-section {
+        display: flex;
+        flex-direction: row;
+        padding: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .nav-title {
+        display: none;
+      }
+      .nav-item {
+        padding: 8px 16px;
+        font-size: 13px;
+        border-right: none !important;
+        white-space: nowrap;
+      }
+      .nav-item:hover, .nav-item.active {
+        border-bottom: 2px solid var(--cyan);
+        background: none;
+      }
+      .storefront {
+        padding: 20px;
+      }
+      .header-bar {
+        flex-direction: column-reverse;
+        gap: 16px;
+        align-items: stretch;
+        margin-bottom: 20px;
+      }
+      .search-bar {
+        width: 100%;
+      }
+      .pdp-content {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+      }
+      .pdp-main {
+        order: 2;
+      }
+      .pdp-sidebar {
+        order: 1;
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -315,6 +375,10 @@
 
   <!-- STOREFRONT -->
   <main class="storefront">
+    <div class="ecosystem-callout" style="background: rgba(0, 229, 255, 0.04); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; font-family: var(--font-mono); font-size: 11px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+      <span style="color: #ccc;">🌌 Every app here was generated locally and is owned cryptographically.</span>
+      <a href="https://logichub.app/onboarding" target="_blank" style="color: var(--cyan); text-decoration: none; font-weight: bold; border-bottom: 1px dashed var(--cyan);">Build Your Own App with LogicHub &rarr;</a>
+    </div>
     <div class="header-bar">
       <input type="text" class="search-bar" placeholder="Search bundles, creators, logic...">
       <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">

@@ -1,1 +1,48 @@
 :root { --accent: #B39DDB; --bg: #090a0d; } body { background: var(--bg); color: #fff; font-family: sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; } .glass { backdrop-filter: blur(20px); border: 1px solid var(--accent); padding: 40px; border-radius: 20px; max-width: 600px; text-align: center; } h1 { color: var(--accent); font-size: 64px; } #app { position: fixed; top:0; left:0; z-index:-1; opacity:0.3; }
+
+/* --- MOBILE RESPONSIVE OVERRIDES --- */
+@media (max-width: 768px) {
+  body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    padding: 16px 0 !important;
+  }
+  h1 {
+    font-size: clamp(26px, 6vw, 44px) !important;
+    line-height: 1.1 !important;
+  }
+  .sovereign-viewport, .viewport {
+    padding: 60px 0 20px 0 !important;
+    width: 92% !important;
+  }
+  .glass {
+    padding: 20px 16px !important;
+    border-radius: 16px !important;
+    margin-bottom: 20px !important;
+  }
+  .back-link, .nav {
+    position: fixed !important;
+    top: 16px !important;
+    left: 16px !important;
+    font-size: 11px !important;
+    z-index: 10000 !important;
+  }
+  .back-link a, .nav a {
+    font-size: 11px !important;
+    padding: 6px 12px !important;
+    background: rgba(0, 229, 255, 0.15) !important;
+    border: 1px solid rgba(0, 229, 255, 0.4) !important;
+    border-radius: 99px !important;
+  }
+  .stats, .details {
+    gap: 12px !important;
+  }
+  .stat-box, .s {
+    min-width: 100px !important;
+  }
+  .bio, .bio-content {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+}

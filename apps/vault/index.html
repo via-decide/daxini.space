@@ -208,6 +208,31 @@
     .log-time { color: var(--text-muted); margin-right: 8px; }
     .log-action { color: var(--cyan); margin-right: 8px; }
 
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      header {
+        margin-bottom: 24px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      .asset-card {
+        padding: 16px;
+      }
+      .asset-actions {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 16px;
+      }
+      .btn {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+        padding: 8px;
+      }
+    }
   </style>
 </head>
 <body>

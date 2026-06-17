@@ -775,6 +775,41 @@
         scroll-behavior: auto !important;
       }
     }
+
+    @media (max-width: 768px) {
+      #room-environment {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto !important;
+        gap: 16px 12px !important;
+        padding: 80px 16px 100px 16px !important;
+        align-content: center !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-y: auto !important;
+        position: relative !important;
+      }
+      .room-node-app {
+        position: static !important;
+        width: 100% !important;
+        height: 90px !important;
+        transform: none !important;
+        margin: 0 !important;
+      }
+      #node-1, #node-7 {
+        transform: none !important;
+      }
+      #room-center {
+        grid-column: 1 / -1 !important;
+        margin-bottom: 16px !important;
+      }
+      #os-minimap {
+        display: none !important;
+      }
+      #window-manager {
+        padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 60px) !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1878,29 +1913,57 @@
 
         if (appData) {
           nodeEl.style.display = 'flex';
-          const statusClass = appData.status === 'live' ? 'status-live' : 'status-pending';
-          const tierLabel = appData.ownerType === 'community' ? 'FREE' : 'CORE';
-          nodeEl.innerHTML = `
-            <div class="status-dot ${statusClass}"></div>
-            <div class="app-icon">${appData.icon}</div>
-            <div class="app-name">${appData.name}<br><span style="font-size:8px; opacity:0.65;">${tierLabel}</span></div>
-          `;
-          nodeEl.title = `${appData.name} — ${appData.desc}`;
-          nodeEl.setAttribute('aria-label', `Launch ${appData.name}`);
-          
-          const clickHandler = () => {
-            if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) window.open(appData.url, '_blank');
-            animateFractalTransition(pos, false);
-            setTimeout(() => launchAppBySlug(appData.slug), 300);
-          };
-          
-          nodeEl.onclick = clickHandler;
-          nodeEl.onkeydown = (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              clickHandler();
-            }
-          };
+          const isActivated = localStorage.getItem('onboarding_complete') === 'true' || localStorage.getItem('aporaksha_session');
+          const isGated = !isActivated && !['logichub', 'my-assets', 'marketplace', 'daxini-hq'].includes(appData.slug);
+
+          if (isGated) {
+            nodeEl.style.opacity = '0.45';
+            nodeEl.style.filter = 'grayscale(100%)';
+            nodeEl.innerHTML = `
+              <div class="status-dot status-pending" style="background: #e11d48; box-shadow: 0 0 8px #e11d48;"></div>
+              <div class="app-icon" style="filter: blur(2px);">🔒</div>
+              <div class="app-name">${appData.name}<br><span style="font-size:8px; color:#ef4444; font-weight:bold;">LOCKED</span></div>
+            `;
+            nodeEl.title = `Unlock "${appData.name}" by building your first app in LogicHub.`;
+            nodeEl.setAttribute('aria-label', `Locked: ${appData.name}`);
+            
+            const lockHandler = () => {
+              alert(`"${appData.name}" is locked. Complete LogicHub onboarding and build your first app to unlock the full Daxini Space desktop!`);
+            };
+            nodeEl.onclick = lockHandler;
+            nodeEl.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                lockHandler();
+              }
+            };
+          } else {
+            nodeEl.style.opacity = '1';
+            nodeEl.style.filter = 'none';
+            const statusClass = appData.status === 'live' ? 'status-live' : 'status-pending';
+            const tierLabel = appData.ownerType === 'community' ? 'FREE' : 'CORE';
+            nodeEl.innerHTML = `
+              <div class="status-dot ${statusClass}"></div>
+              <div class="app-icon">${appData.icon}</div>
+              <div class="app-name">${appData.name}<br><span style="font-size:8px; opacity:0.65;">${tierLabel}</span></div>
+            `;
+            nodeEl.title = `${appData.name} — ${appData.desc}`;
+            nodeEl.setAttribute('aria-label', `Launch ${appData.name}`);
+            
+            const clickHandler = () => {
+              if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) window.open(appData.url, '_blank');
+              animateFractalTransition(pos, false);
+              setTimeout(() => launchAppBySlug(appData.slug), 300);
+            };
+            
+            nodeEl.onclick = clickHandler;
+            nodeEl.onkeydown = (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                clickHandler();
+              }
+            };
+          }
         } else {
           nodeEl.style.display = 'none';
           nodeEl.removeAttribute('aria-label');
