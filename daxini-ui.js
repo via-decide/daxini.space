@@ -123,14 +123,6 @@ const DaxiniUI = {
     const app = DaxiniRegistry.getAppBySlug(slug);
     if (!app) return;
 
-    // Analytics: app_view — every time an app page is opened
-    if (window.DaxiniAnalytics) {
-      DaxiniAnalytics.track(DaxiniAnalytics.EVENTS.APP_VIEW, {
-        appId:    slug,
-        metadata: { name: app.name, category: DaxiniUI.mapTag(app), source: options.source || 'direct' },
-      });
-    }
-
     this.state.focusSlug = slug;
     this.state.roomApps = this.pickRelatedApps(app);
     this.renderRoom();
@@ -202,13 +194,6 @@ const DaxiniUI = {
       this.state.isLoadingShard = false;
       
       if (shardApps) {
-        // Analytics: category_opened via namespace shard
-        if (window.DaxiniAnalytics) {
-          DaxiniAnalytics.track(DaxiniAnalytics.EVENTS.CATEGORY_OPENED, {
-            metadata: { category: DaxiniRegistry.NAMESPACE_MAP[seed], seed },
-          });
-        }
-
         this.state.roomApps = {};
         DaxiniRegistry.ROOM_POSITIONS.forEach((pos, i) => {
           this.state.roomApps[pos] = shardApps[i] || null;
@@ -228,7 +213,7 @@ const DaxiniUI = {
     if (path.length === 2 && path[0] === 4) {
       const target = path[1];
       if (this.state.roomApps[target]) {
-        this.launchAppBySlug(this.state.roomApps[target].slug, { source: 'pattern_swipe' });
+        this.launchAppBySlug(this.state.roomApps[target].slug);
       }
     }
   }
@@ -236,7 +221,28 @@ const DaxiniUI = {
 
 
 DaxiniUI.mapTag=a=>/study|education/i.test((a.tags||[]).join(','))?'learning':/infra|ops|workflow|company|hub/i.test((a.tags||[]).join(','))?'infra':/experiment|game|atlas/i.test((a.tags||[]).join(','))?'experiments':'ai';
-DaxiniUI.renderStart=function(f='all'){const g=document.getElementById('app-grid'); if(!g) return; g.innerHTML=DaxiniRegistry.APP_LIBRARY.filter(a=>f==='all'||DaxiniUI.mapTag(a)===f).slice(0,12).map(a=>`<article class="app-card" data-slug="${a.slug}"><b>${a.name}</b><small>${(a.desc||'').slice(0,70)}</small><span class="tag">${DaxiniUI.mapTag(a)}</span></article>`).join(''); g.querySelectorAll('.app-card').forEach(c=>c.onclick=()=>DaxiniUI.launchAppBySlug(c.dataset.slug));};
-window.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>DaxiniUI.launchAppBySlug(b.dataset.quick)); document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>DaxiniUI.renderStart(b.dataset.filter)); DaxiniUI.renderStart();});
+DaxiniUI.renderStart=function(f='all', query=''){
+  const g=document.getElementById('app-grid');
+  if(!g) return;
+  const filtered = DaxiniRegistry.APP_LIBRARY.filter(a => {
+    const matchesFilter = f==='all'||DaxiniUI.mapTag(a)===f;
+    const matchesQuery = !query || 
+      (a.name || '').toLowerCase().includes(query.toLowerCase()) || 
+      (a.desc || '').toLowerCase().includes(query.toLowerCase()) ||
+      (a.tags || []).some(t => t.toLowerCase().includes(query.toLowerCase()));
+    return matchesFilter && matchesQuery;
+  });
+  g.innerHTML=filtered.slice(0,12).map(a=>`<article class="app-card" data-slug="${a.slug}"><b>${a.name}</b><small>${(a.desc||'').slice(0,70)}</small><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;"><span class="tag">${DaxiniUI.mapTag(a)}</span>${a.builtWith === 'logichub' ? `<span class="lh-badge" style="font-size: 8px; color: #00e5ff; background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2); padding: 1px 4px; border-radius: 3px; font-family: monospace;">⚡ LogicHub</span>` : ''}</div></article>`).join('');
+  g.querySelectorAll('.app-card').forEach(c=>c.onclick=()=>DaxiniUI.launchAppBySlug(c.dataset.slug));
+};
+window.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>DaxiniUI.launchAppBySlug(b.dataset.quick));
+  document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+    b.classList.add('active');
+    DaxiniUI.renderStart(b.dataset.filter, document.getElementById('daxini-search')?.value || '');
+  });
+  DaxiniUI.renderStart();
+});
 
 document.addEventListener('DOMContentLoaded', () => DaxiniUI.init());

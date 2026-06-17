@@ -1,831 +1,120 @@
+<!-- FIXED: declutter + nav audit — see TASK_daxini_space_ui_fix.md -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Daxini.space — Prompt App Store and AI Tool Directory for LogicHub Apps</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
-  <meta name="description" content="Daxini.space is a prompt app store and AI tool directory for LogicHub apps, ViaDecide tools, and free-tier community apps. Open one app and the surrounding grid refreshes with related apps.">
-  <link rel="canonical" href="https://daxini.space/">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Daxini.space — Prompt App Store and AI Tool Directory for LogicHub Apps">
-  <meta property="og:description" content="Browse prompt apps, AI tools, and free-tier LogicHub community apps in a spatial app store that refreshes related routes around every app you open.">
-  <meta property="og:url" content="https://daxini.space/">
-  <meta property="og:site_name" content="Daxini.space">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Daxini.space — Prompt App Store and AI Tool Directory for LogicHub Apps">
-  <meta name="twitter:description" content="Spatial discovery for prompt apps, AI tools, and free-tier LogicHub community apps. Open any app to refresh related routes.">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Daxini.space",
-    "url": "https://daxini.space/",
-    "description": "Daxini.space is a prompt app store and AI tool directory for LogicHub apps, ViaDecide tools, and free-tier community apps.",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Daxini.space",
-      "url": "https://daxini.space/"
-    },
-    "mainEntity": {
-      "@type": "ItemList",
-      "itemListElement": [
-        {
-          "@type": "SoftwareApplication",
-          "position": 1,
-          "name": "LogicHub",
-          "url": "https://logichub.app/",
-          "applicationCategory": "DeveloperApplication"
-        },
-        {
-          "@type": "SoftwareApplication",
-          "position": 2,
-          "name": "Prompt Alchemy",
-          "url": "https://via-decide.github.io/PromptAlchemy/",
-          "applicationCategory": "BusinessApplication"
-        },
-        {
-          "@type": "SoftwareApplication",
-          "position": 3,
-          "name": "Daxini HQ",
-          "url": "https://daxini.xyz/",
-          "applicationCategory": "BusinessApplication"
-        }
-      ]
-    }
-  }
-  </script>
-
-  <!-- iOS PWA Hooks -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#030508">
-
-  <!-- Premium Typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script src="/_vercel/insights/script.js"></script>
-  <script src="/ecosystem-nav.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="/spatial-engine.js" defer></script>
-  <script src="/pdf-pipeline.js" defer></script>
-  <script src="/discovery-engine.js" defer></script>
-
-  <style>
-    /* =========================================================
-       CORE VARIABLES & RESET
-       ========================================================= */
-    :root {
-      --bg: #020305;
-      --cyan: #00e5ff;
-      --saffron: #ff671f;
-      --glass-bg: rgba(6, 9, 14, 0.85);
-      --glass-border: rgba(0, 229, 255, 0.15);
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-display: 'Oxanium', sans-serif;
-      --font-body: 'Outfit', sans-serif;
-      /* Zayvora Core Variables */
-      --z-accent: #00f2ff;
-      --z-saffron: #ff671f;
-      --z-glass: rgba(10, 14, 22, 0.8);
-      --z-border: rgba(0, 242, 255, 0.12);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-    body { background-color: var(--bg); color: #fff; font-family: var(--font-body); overflow: hidden; touch-action: none; }
-
-    /* =========================================================
-       DIAGNOSTICS HUD
-       ========================================================= */
-    #os-diagnostics {
-      position: fixed; top: 0; left: 0; width: 100%;
-      background: rgba(0,0,0,0.85); color: var(--cyan);
-      font-size: 10px; padding: max(env(safe-area-inset-top), 10px) 10px 10px;
-      z-index: 100000; border-bottom: 1px solid var(--cyan);
-      pointer-events: none; display: none;
-    }
-    .diag-log { margin-bottom: 4px; }
-    .diag-time { color: #555; margin-right: 8px; }
-
-    #starfield {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-      opacity: 0.65;
-    }
-
-    /* =========================================================
-       FRACTAL ROOM ENVIRONMENT (The Desktop)
-       ========================================================= */
-    #room-environment {
-      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-      z-index: 10; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-      background-image: radial-gradient(circle at 50% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
-    }
-
-    #room-center { 
-      text-align: center; pointer-events: none; z-index: 2; 
-      animation: center-load 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 0.05s;
-    }
-    @keyframes center-load {
-      from { transform: translateY(15px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    #room-title {
-      font-family: var(--font-display); font-size: 32px; font-weight: 800;
-      letter-spacing: -1px; margin-bottom: 8px; text-transform: uppercase;
-      text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-      transition: color 0.3s;
-    }
-    #room-lore { font-size: 11px; color: #888; max-width: 250px; line-height: 1.5; margin: 0 auto; }
-
-    /* OS VERSION BADGE */
-    .os-badge {
-      display: inline-block; margin-top: 12px;
-      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(0,229,255,0.4); border: 1px solid rgba(0,229,255,0.15);
-      padding: 3px 10px; border-radius: 999px;
-    }
-
-    /* APP NODES (Glowing Glass Cards) */
-    .room-node-app {
-      position: absolute; width: 90px; height: 90px;
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: 20px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 8px; cursor: pointer; pointer-events: auto;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-      animation: node-load 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    .room-node-app:hover, .room-node-app:active, .room-node-app:focus-visible {
-      border-color: var(--cyan); transform: scale(1.08) !important;
-      box-shadow: 0 0 25px rgba(0, 229, 255, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-    /* Specific overrides for centered nodes because of default translateX */
-    #node-1:hover, #node-7:hover {
-      transform: translateX(-50%) scale(1.08) !important;
-    }
-    .room-node-app:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
-    .room-node-app:active { transform: scale(0.96) !important; }
-    #node-1:active, #node-7:active { transform: translateX(-50%) scale(0.96) !important; }
-
-    @keyframes node-load {
-      from { opacity: 0; filter: blur(6px); }
-      to { opacity: 1; filter: blur(0); }
-    }
-
-    @keyframes panel-load {
-      from { transform: translateX(-30px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    @keyframes minimap-load {
-      from { transform: translateX(-50%) translateY(30px); opacity: 0; }
-      to { transform: translateX(-50%) translateY(0); opacity: 1; }
-    }
-
-    @keyframes identity-load {
-      from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
-      to { transform: translateX(-50%) translateY(0); opacity: 1; }
-    }
-
-    /* Status Indicators on Nodes */
-    .status-dot {
-      position: absolute; top: 8px; right: 8px; width: 6px; height: 6px; border-radius: 50%;
-    }
-    .status-live { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); animation: pulse-dot 2s ease infinite; }
-    .status-pending { background: var(--saffron); box-shadow: 0 0 8px var(--saffron); }
-    @keyframes pulse-dot { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-
-    .app-icon { font-size: 24px; margin-bottom: 6px; transition: transform 0.3s; }
-    .room-node-app:hover .app-icon { transform: translateY(-3px); }
-    .app-name { font-size: 9px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; }
-
-    /* Spatial Positioning — Matches 3×3 thumb matrix & Staggered delays */
-    #node-0 { top: 15%; left: 10%; animation-delay: 0.1s; }
-    #node-1 { top: 10%; left: 50%; transform: translateX(-50%); animation-delay: 0.15s; }
-    #node-2 { top: 15%; right: 10%; animation-delay: 0.2s; }
-    #node-3 { top: 40%; left: 5%; animation-delay: 0.25s; }
-    #node-5 { top: 40%; right: 5%; animation-delay: 0.3s; }
-    #node-6 { bottom: 35%; left: 10%; animation-delay: 0.35s; }
-    #node-7 { bottom: 30%; left: 50%; transform: translateX(-50%); animation-delay: 0.4s; }
-    #node-8 { bottom: 35%; right: 10%; animation-delay: 0.45s; }
-
-    /* =========================================================
-       WINDOW MANAGER (The App Viewport)
-       ========================================================= */
-    #window-manager {
-      position: fixed; inset: 0;
-      padding: max(env(safe-area-inset-top), 20px) 20px;
-      padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 260px);
-      display: flex; flex-direction: column; justify-content: flex-end; gap: 12px;
-      z-index: 50; pointer-events: none;
-    }
-
-    .glass-window {
-      pointer-events: auto; flex: 1; min-height: 0;
-      background: var(--bg); border: 1px solid var(--cyan); border-radius: 16px;
-      display: flex; flex-direction: column; overflow: hidden;
-      animation: slideUp 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,229,255,0.2);
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100px) scale(0.9); opacity: 0; }
-      to   { transform: translateY(0) scale(1); opacity: 1; }
-    }
-
-    .window-header {
-      height: 44px; border-bottom: 1px solid rgba(0,229,255,0.2);
-      background: var(--glass-bg);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
-      flex-shrink: 0;
-    }
-    .window-title {
-      font-size: 11px; color: var(--cyan); font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .window-controls { display: flex; align-items: center; gap: 10px; }
-    .window-btn {
-      color: rgba(255,255,255,0.5); font-size: 11px; cursor: pointer;
-      padding: 0 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.15s; font-family: var(--font-mono);
-      min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
-    }
-    .window-btn:hover { color: #fff; border-color: rgba(0,229,255,0.4); }
-    .window-btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-    .window-close { color: #fff; font-size: 18px; cursor: pointer; padding: 0; line-height: 1; opacity: 0.7; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; }
-    .window-close:active { opacity: 1; color: var(--saffron); }
-    .window-close:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-
-    .window-content { flex: 1; width: 100%; border: none; background: #fff; min-height: 0; }
-
-    /* Offline/External Terminal */
-    .offline-terminal {
-      flex: 1; background: #05070a; color: var(--cyan);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 20px; text-align: center;
-      background-image:
-        linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px);
-      background-size: 20px 20px;
-    }
-    .term-icon { font-size: 40px; margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--saffron)); }
-    .term-title { color: var(--saffron); letter-spacing: 2px; font-weight: 700; margin-bottom: 10px; }
-    .term-desc { font-size: 11px; color: #888; max-width: 280px; line-height: 1.6; }
-    .term-blink { animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    #os-minimap {
-      position: fixed;
-      bottom: calc(env(safe-area-inset-bottom, 10px) + 20px);
-      left: 50%; transform: translateX(-50%);
-      width: 220px; height: 220px;
-      z-index: 9999; touch-action: none;
-      background: rgba(3, 5, 8, 0.75);
-      border-radius: 24px;
-      border: 1px solid rgba(0, 242, 255, 0.16);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0, 242, 255, 0.05);
-      transition: border-color 0.3s, box-shadow 0.3s;
-      animation: minimap-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 0.5s;
-    }
-    #os-minimap:hover {
-      border-color: rgba(0, 242, 255, 0.3);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 25px rgba(0, 242, 255, 0.1);
-    }
-
-    #grid-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-    #trace-line {
-      fill: none; stroke: var(--z-accent); stroke-width: 4px;
-      stroke-linecap: round; stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(0,242,255,0.6));
-      transition: stroke 0.2s, filter 0.2s;
-    }
-
-    #dots-container {
-      position: absolute; inset: 0;
-      display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr);
-      z-index: 2;
-    }
-    .dot-cell { display: flex; align-items: center; justify-content: center; pointer-events: none; }
-    .dot {
-      width: 8px; height: 8px; background: rgba(255,255,255,0.15);
-      border-radius: 50%; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .dot.active { 
-      background: var(--z-accent); 
-      box-shadow: 0 0 18px var(--z-accent), 0 0 6px var(--z-accent); 
-      transform: scale(1.6); 
-    }
-    .dot.center-dot { 
-      width: 12px; height: 12px; 
-      border: 2px solid rgba(0, 242, 255, 0.5); 
-      background: transparent; 
-    }
-    .dot.center-dot.active {
-      background: var(--z-accent);
-      border-color: var(--z-accent);
-      box-shadow: 0 0 18px var(--z-accent);
-    }
-
-    /* Minimap hint label */
-    .minimap-hint {
-      position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
-      font-size: 9px; color: rgba(0, 242, 255, 0.4); letter-spacing: 1px;
-      text-transform: uppercase; white-space: nowrap;
-      font-family: var(--font-mono);
-      text-shadow: 0 0 5px rgba(0, 242, 255, 0.15);
-    }
-
-    /* SIGIL RECOGNITION */
-    body.sigil-flash #trace-line { stroke: var(--saffron) !important; filter: drop-shadow(0 0 15px var(--saffron)) !important; }
-    body.sigil-flash .dot.active { background: var(--saffron) !important; box-shadow: 0 0 15px var(--saffron) !important; }
-    body.sigil-flash #room-title { color: var(--saffron); }
-
-    /* =========================================================
-       APP COUNT BADGE
-       ========================================================= */
-    #app-count-badge {
-      position: fixed; top: max(env(safe-area-inset-top), 12px); right: 16px;
-      z-index: 200; font-size: 10px; letter-spacing: 1.5px;
-      color: rgba(0,229,255,0.5); font-family: var(--font-mono);
-      pointer-events: none;
-    }
-
-    /* =========================================================
-       SOVEREIGN CONTROL PANEL HUD (Side Panel)
-       ========================================================= */
-    .seo-summary-panel {
-      position: fixed;
-      top: max(env(safe-area-inset-top), 14px);
-      left: 16px;
-      width: min(380px, calc(100vw - 92px));
-      max-height: calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-      z-index: 220;
-      background: var(--z-glass);
-      border: 1px solid var(--z-border);
-      border-radius: 20px;
-      padding: 0;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      animation: panel-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 0.15s;
-    }
-    .discovery-app-panel {
-      position: fixed;
-      top: max(env(safe-area-inset-top), 14px);
-      right: 16px;
-      left: auto;
-      width: min(380px, calc(100vw - 92px));
-      max-height: calc(100vh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-      z-index: 220;
-      background: var(--z-glass);
-      border: 1px solid var(--z-border);
-      border-radius: 20px;
-      padding: 0;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      animation: panel-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 0.25s;
-    }
-    .seo-summary-panel.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-20px);
-      animation: none;
-    }
-    
-    .hud-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--z-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .hud-header-title {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: #fff;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hud-header-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9px;
-      font-family: var(--font-mono);
-      color: var(--cyan);
-    }
-    .hud-header-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan);
-      animation: pulse-dot 1.5s infinite;
-    }
-    
-    /* Tabs Navigation */
-    .hud-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--z-border);
-      background: rgba(0, 0, 0, 0.1);
-    }
-    .hud-tab-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 10px 0;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.4);
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-      outline: none;
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hud-tab-btn:hover {
-      color: rgba(255,255,255,0.85);
-      background: rgba(255,255,255,0.02);
-    }
-    .hud-tab-btn.active {
-      color: var(--z-accent);
-      border-bottom: 2px solid var(--z-accent);
-      background: rgba(0, 242, 255, 0.03);
-    }
-    
-    /* Tab Content Area */
-    .hud-content {
-      padding: 16px 18px;
-      overflow-y: auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      font-family: var(--font-body);
-    }
-    .hud-tab-panel {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .hud-tab-panel.active {
-      display: flex;
-    }
-    
-    /* Standard panel UI components */
-    .hud-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      transition: border-color 0.2s;
-    }
-    .hud-card:hover {
-      border-color: rgba(0, 229, 255, 0.15);
-    }
-    .hud-card-title {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .hud-card-desc {
-      font-size: 11px;
-      color: rgba(255,255,255,0.6);
-      line-height: 1.5;
-    }
-    .hud-card-link {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--cyan);
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(0, 229, 255, 0.3);
-      align-self: flex-start;
-      padding-bottom: 1px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .hud-card-link:hover {
-      color: #fff;
-      border-bottom-color: rgba(255,255,255,0.5);
-    }
-    
-    /* Telemetry Panel Elements */
-    .telemetry-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10px;
-      font-family: var(--font-mono);
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    }
-    .telemetry-label {
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .telemetry-val {
-      font-weight: 700;
-    }
-    .telemetry-val.status-ok { color: var(--cyan); }
-    .telemetry-val.status-warn { color: var(--saffron); }
-    .telemetry-val.status-off { color: rgba(255,255,255,0.2); }
-    
-    /* Dials & Gauges */
-    .telemetry-gauge {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 4px;
-    }
-    .telemetry-gauge-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 9px;
-      font-family: var(--font-mono);
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-    }
-    .telemetry-gauge-bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .telemetry-gauge-fill {
-      height: 100%;
-      background: var(--z-accent);
-      border-radius: 99px;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    
-    /* Failure Taxonomy list */
-    .failure-taxonomy-box {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px dashed rgba(255, 103, 31, 0.2);
-      border-radius: 10px;
-      padding: 10px;
-      max-height: 110px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--saffron);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .failure-item {
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    /* Live Log Console */
-    .hud-console {
-      background: #030508;
-      border: 1px solid var(--z-border);
-      border-radius: 10px;
-      padding: 10px;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--cyan);
-      min-height: 100px;
-      max-height: 120px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .hud-console-line {
-      line-height: 1.4;
-    }
-    
-    /* Tiers cards and comparisons */
-    .tier-badge {
-      font-size: 8px;
-      font-family: var(--font-mono);
-      background: rgba(0, 242, 255, 0.1);
-      border: 1px solid var(--z-border);
-      color: var(--z-accent);
-      padding: 2px 6px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      font-weight: 700;
-      align-self: flex-start;
-    }
-    .tier-badge.tier-premium {
-      background: rgba(255, 103, 31, 0.1);
-      border-color: rgba(255, 103, 31, 0.2);
-      color: var(--saffron);
-    }
-    
-    .hud-btn {
-      width: 100%;
-      border: none;
-      background: var(--z-accent);
-      color: #000;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: transform 0.2s, background-color 0.2s;
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hud-btn:hover {
-      background: #00d9ff;
-    }
-    .hud-btn:active {
-      transform: scale(0.98);
-    }
-    .hud-btn.btn-outline {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #fff;
-    }
-    .hud-btn.btn-outline:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.3);
-    }
-    .hud-btn.btn-saffron {
-      background: var(--saffron);
-      color: #fff;
-    }
-    .hud-btn.btn-saffron:hover {
-      background: #ff5500;
-    }
-
-    /* =========================================================
-       ZAYVORA SOVEREIGN COMPONENTS
-       ========================================================= */
-    #identity-hud {
-      position: fixed;
-      top: max(env(safe-area-inset-top), 10px);
-      left: 50%; transform: translateX(-50%);
-      width: min(600px, 90vw);
-      z-index: 10000;
-      pointer-events: none;
-      animation: identity-load 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 0.1s;
-    }
-    .identity-bar {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 20px;
-      background: rgba(0, 242, 255, 0.05);
-      border: 1px solid var(--z-border);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 999px;
-      font-size: 9px;
-      font-family: var(--font-mono);
-      letter-spacing: 0.1rem;
-      color: var(--z-accent);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      pointer-events: auto;
-    }
-    .identity-bar b { color: #fff; text-shadow: 0 0 8px var(--z-accent); }
-
-    /* AUTH OVERLAY */
-    .zv-auth-overlay {
-      position: fixed; inset: 0;
-      background: rgba(3, 5, 8, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 200000;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.5s ease;
-    }
-    .zv-auth-overlay.hidden { opacity: 0; pointer-events: none; }
-    .zv-auth-modal {
-      width: min(400px, 90vw);
-      background: #0d0f14;
-      border: 1px solid var(--z-border);
-      border-radius: 24px;
-      padding: 32px;
-      text-align: center;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-    }
-    .zv-auth-icon { font-size: 40px; margin-bottom: 16px; }
-    .zv-auth-title { font-family: var(--font-display); font-size: 20px; margin-bottom: 12px; color: #fff; }
-    .zv-auth-desc { font-size: 11px; color: #888; line-height: 1.6; margin-bottom: 24px; }
-    .zv-auth-form { display: flex; flex-direction: column; gap: 16px; }
-    .zv-auth-group { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-    .zv-auth-group label { font-size: 9px; color: var(--z-accent); letter-spacing: 1px; }
-    .zv-auth-group input {
-      width: 100%; background: #05070a; border: 1px solid var(--z-border);
-      border-radius: 8px; padding: 12px; color: #fff; font-family: var(--font-mono); font-size: 11px;
-    }
-    .zv-auth-group input:focus { outline: none; border-color: var(--z-accent); }
-    .zv-auth-btn {
-      background: var(--z-accent); color: #000; border: none; border-radius: 8px;
-      padding: 14px; font-weight: 700; font-family: var(--font-mono); font-size: 11px;
-      cursor: pointer; transition: transform 0.2s; margin-top: 10px; min-height: 44px;
-    }
-    .zv-auth-btn:active { transform: scale(0.98); }
-    .zv-auth-btn:focus-visible { outline: 2px solid var(--z-accent); outline-offset: 4px; }
-    .zv-auth-status { font-size: 10px; color: #ff3366; margin-top: 12px; min-height: 15px; }
-    
-    @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-
-    @media (max-width: 768px) {
-      #room-environment {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        grid-template-rows: auto !important;
-        gap: 16px 12px !important;
-        padding: 80px 16px 100px 16px !important;
-        align-content: center !important;
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow-y: auto !important;
-        position: relative !important;
-      }
-      .room-node-app {
-        position: static !important;
-        width: 100% !important;
-        height: 90px !important;
-        transform: none !important;
-        margin: 0 !important;
-      }
-      #node-1, #node-7 {
-        transform: none !important;
-      }
-      #room-center {
-        grid-column: 1 / -1 !important;
-        margin-bottom: 16px !important;
-      }
-      #os-minimap {
-        display: none !important;
-      }
-      #window-manager {
-        padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 60px) !important;
-      }
-    }
-  </style>
+  <title>Daxini.space — Premium Pattern OS</title>
+  <meta name="description" content="Daxini.space is a sovereign pattern-based OS for app discovery.">
+  <link rel="stylesheet" href="os-core.css">
+  <script src="/assets/js/sovereign-analytics.js" defer></script>
 </head>
 <body>
+  <!-- Daxini Ecosystem Bar -->
+  <div class="daxini-eco-bar">
+    <div class="eco-bar-container">
+      <div class="eco-bar-brand">
+        <span class="eco-bar-icon">◆</span>
+        <span class="eco-bar-title">DAXINI MESH</span>
+      </div>
+      <div class="eco-bar-links">
+        <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-bar-link eco-bar-build">
+          <span class="eco-action">Build</span>
+          <span class="eco-dest">LogicHub</span>
+        </a>
+        <a href="http://localhost:7002" data-prod="https://aporaksha.com" class="eco-bar-link eco-bar-own">
+          <span class="eco-action">Own</span>
+          <span class="eco-dest">Aporaksha</span>
+        </a>
+        <a href="http://localhost:7004" data-prod="https://daxini.space" class="eco-bar-link eco-bar-sell">
+          <span class="eco-action">Sell</span>
+          <span class="eco-dest">Daxini Space</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <style>
+    .daxini-eco-bar {
+      width: 100%;
+      background: rgba(10, 10, 15, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+    }
+    .eco-bar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .eco-bar-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .eco-bar-icon {
+      color: #ff671f;
+    }
+    .eco-bar-links {
+      display: flex;
+      gap: 12px;
+    }
+    .eco-bar-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .eco-bar-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+    .eco-bar-link .eco-action {
+      font-weight: 500;
+      opacity: 0.6;
+    }
+    .eco-bar-link .eco-dest {
+      font-weight: 700;
+    }
+    .eco-bar-build .eco-dest { color: #00e5ff; }
+    .eco-bar-own .eco-dest { color: #ff671f; }
+    .eco-bar-sell .eco-dest { color: #a78bfa; }
+    @media (max-width: 480px) {
+      .eco-bar-brand { display: none; }
+      .eco-bar-container { justify-content: center; }
+    }
+  </style>
+  <script>
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      document.querySelectorAll('.eco-bar-link').forEach(link => {
+        const prodUrl = link.getAttribute('data-prod');
+        if (prodUrl) link.setAttribute('href', prodUrl);
+      });
+    }
+  </script>
 
-  <!-- STARFIELD CANVAS -->
-  <canvas id="starfield"></canvas>
+  <!-- STARFIELD -->
+  <div id="starfield"></div>
 
   <!-- IDENTITY HUD -->
   <div id="identity-hud"></div>
 
   <!-- SOVEREIGN AUTH OVERLAY -->
-  <div id="zv-auth-overlay" class="zv-auth-overlay">
+  <div id="zv-auth-overlay" class="zv-auth-overlay hidden">
     <div class="zv-auth-modal">
       <div class="zv-auth-icon">🛡️</div>
       <h2 class="zv-auth-title">Sovereign Authorization</h2>
@@ -835,371 +124,165 @@
           <label>PHYSICAL PASSPORT ID</label>
           <input type="text" id="zv-nfc-input" placeholder="Enter Hardware ID..." required>
         </div>
-        <!-- NEW DIGITAL KEY FALLBACK -->
-        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--z-border); text-align: center;">
-          <p style="font-size: 10px; color: rgba(255,255,255,0.6); margin-bottom: 12px;">Don't have a Physical Passport?</p>
-          <button type="button" class="hud-btn btn-outline" style="width: 100%; justify-content: center;" onclick="showDigitalKeyFallback()">Generate Digital Key</button>
-        </div>
+        <button type="submit" class="zv-auth-btn">Authorize Hardware</button>
         <div id="zv-auth-status" class="zv-auth-status"></div>
-      </form>
-      
-      <!-- DIGITAL KEY FORM -->
-      <form id="zv-digital-auth-form" class="zv-auth-form" style="display: none; flex-direction: column;">
-        <div class="zv-auth-group">
-          <label>EMAIL ADDRESS (OTP)</label>
-          <input type="email" id="zv-email-input" placeholder="Enter your email..." required>
-        </div>
-        <button type="submit" class="zv-auth-btn" style="background: var(--success, #10b981); color: #000;">Send Login Code</button>
-        <button type="button" class="hud-btn" style="width: 100%; justify-content: center; margin-top: 8px; border: none; font-size:11px;" onclick="hideDigitalKeyFallback()">Cancel</button>
-        <div id="zv-digital-auth-status" class="zv-auth-status"></div>
       </form>
     </div>
   </div>
-  
-  <script>
-    function showDigitalKeyFallback() {
-      document.getElementById('zv-auth-form').style.display = 'none';
-      document.getElementById('zv-digital-auth-form').style.display = 'flex';
-    }
-    function hideDigitalKeyFallback() {
-      document.getElementById('zv-auth-form').style.display = 'flex';
-      document.getElementById('zv-digital-auth-form').style.display = 'none';
-    }
-    
-    // SaaS Geofence logic for digital key
-    document.getElementById('zv-digital-auth-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const statusDiv = document.getElementById('zv-digital-auth-status');
-      statusDiv.style.color = '#fff';
-      statusDiv.innerHTML = 'Detecting region...';
+
+
+  <section id="start-layer" class="glass-window">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" style="font-family: var(--font-mono); font-size: 0.72rem; color: #8b90a6; margin-bottom: 1rem; display: flex; gap: 6px;">
+      <a href="https://daxini.xyz" data-prod="https://daxini.xyz" class="eco-footer-link" style="color: #ff671f; text-decoration: none;">Home</a>
+      <span>&gt;</span>
+      <span class="active" style="color: #fff;">Marketplace</span>
+    </div>
+
+    <header class="daxini-header">
+      <div class="daxini-title-row">
+        <h1 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 0.5rem; background: linear-gradient(135deg, #ffffff 0%, #ff671f 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Product Marketplace</h1>
+        <p style="color: #8b90a6; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 600px;">
+          Browse, purchase, and deploy decentralized apps, tools, experiments, and local workspaces inside the sovereign Daxini ecosystem.
+        </p>
+      </div>
       
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        const country = data.country_code || 'US';
-        const ALLOWED_COUNTRIES = ['IN', 'LU', 'JP'];
-        
-        if (country === 'IN') {
-           statusDiv.innerHTML = 'Region IN: Eligible for Local-First Pass (UPI). Code sent.';
-        } else if (ALLOWED_COUNTRIES.includes(country)) {
-           statusDiv.innerHTML = `Region ${country}: Global SaaS Subscription required. Code sent.`;
-        } else {
-           statusDiv.innerHTML = `Hardware passes are restricted in ${country}. Generating free Digital Key for web access.`;
+      <!-- Hierarchy-based Navigation Bar -->
+      <nav class="daxini-hierarchy-nav" style="display:flex; gap:16px; margin-bottom:1.5rem; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px; font-weight: 600; font-family: system-ui, -apple-system, sans-serif;">
+        <a href="#" style="color:#ff671f; border-bottom: 2px solid #ff671f; padding-bottom: 8px; text-decoration: none;">Marketplace</a>
+        <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-footer-link" style="color:#8b90a6; text-decoration:none;">Workspace</a>
+        <a href="#app-grid" style="color:#8b90a6; text-decoration:none;">Apps</a>
+        <a href="http://localhost:7005/articles" data-prod="https://viadecide.com/articles" class="eco-footer-link" style="color:#8b90a6; text-decoration:none;">Journal</a>
+      </nav>
+      
+      <!-- Unified Search Bar -->
+      <div class="search-wrap" style="margin-bottom: 1.5rem; position: relative;">
+        <input type="search" id="daxini-search" placeholder="Search apps, tools, and experiments..." style="width:100%; max-width: 400px; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem; outline: none; transition: border-color 0.2s;" oninput="DaxiniUI.renderStart(document.querySelector('.filter-row button.active')?.dataset.filter || 'all', this.value)">
+      </div>
+      
+      <div class="filter-row">
+        <button data-filter="all" class="active">all</button>
+        <button data-filter="ai">apps</button>
+        <button data-filter="learning">tools</button>
+        <button data-filter="infra">workspace</button>
+        <button data-filter="experiments">experiments</button>
+      </div>
+    </header>
+
+    <div id="app-grid" role="navigation" aria-label="Daxini app launcher" style="margin-top: 1.5rem;"></div>
+
+    <!-- Daxini Ecosystem Unified Footer -->
+    <footer class="daxini-unified-footer">
+      <div class="footer-container">
+        <div class="footer-columns">
+          <div class="footer-col brand-col">
+            <div class="footer-logo">◆ DAXINI</div>
+            <p class="footer-desc">Sovereign, local-first computing mesh and decentralized product space.</p>
+          </div>
+          <div class="footer-col links-col">
+            <h5>Ecosystem Mesh</h5>
+            <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-footer-link">Build (LogicHub)</a>
+            <a href="http://localhost:7002" data-prod="https://aporaksha.com" class="eco-footer-link">Own (Aporaksha)</a>
+            <a href="http://localhost:7004" data-prod="https://daxini.space" class="eco-footer-link">Sell (Daxini Space)</a>
+          </div>
+          <div class="footer-col links-col">
+            <h5>Resources</h5>
+            <a href="http://localhost:7002/passport" data-prod="https://aporaksha.com/passport" class="eco-footer-link">Publish / Passport</a>
+            <a href="http://localhost:7005/articles" data-prod="https://viadecide.com/articles" class="eco-footer-link">Journal</a>
+            <a href="http://localhost:7001/pages/pricing.html" data-prod="https://logichub.app/pages/pricing.html" class="eco-footer-link">Pricing</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 Dharam Daxini. All rights reserved. Sovereign Local-First AI Mesh.</span>
+          <span>Designed for Complete local autonomy. Hashing logs daily.</span>
+        </div>
+      </div>
+    </footer>
+    <style>
+      .daxini-unified-footer {
+        margin-top: 4rem;
+        padding: 3rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(10, 11, 15, 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        color: #8b90a6;
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 0.8rem;
+      }
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+      .footer-columns {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr;
+        gap: 2rem;
+        text-align: left;
+      }
+      .footer-col h5 {
+        color: #fff;
+        font-size: 0.85rem;
+        margin: 0 0 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .footer-col p {
+        line-height: 1.6;
+        max-width: 300px;
+        margin: 0.5rem 0 0;
+      }
+      .footer-logo {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: #fff;
+        letter-spacing: -0.5px;
+      }
+      .footer-col a {
+        display: block;
+        color: #8b90a6;
+        text-decoration: none;
+        margin-bottom: 0.6rem;
+        transition: color 0.2s;
+      }
+      .footer-col a:hover {
+        color: #fff;
+      }
+      .footer-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        padding-top: 1.5rem;
+        font-size: 0.75rem;
+      }
+      @media (max-width: 768px) {
+        .footer-columns {
+          grid-template-columns: 1fr;
+          text-align: center;
         }
-        statusDiv.style.color = '#10b981';
-        
-        setTimeout(() => {
-          document.getElementById('zv-auth-overlay').classList.add('hidden');
-          if(window.unlockArtifact) window.unlockArtifact(); 
-        }, 2500);
-      } catch(err) {
-        statusDiv.style.color = '#ff3366';
-        statusDiv.innerHTML = 'Authentication failed. Try again.';
+        .footer-col p {
+          margin: 0.5rem auto 0;
+        }
+        .footer-bottom {
+          justify-content: center;
+          text-align: center;
+        }
       }
-    });
-
-    // Viral "Unlock" Interception Loop
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const unlockApp = urlParams.get('unlock');
-      if (unlockApp) {
-        setTimeout(() => {
-          const overlay = document.getElementById('zv-auth-overlay');
-          const title = overlay.querySelector('.zv-auth-title');
-          const desc = overlay.querySelector('.zv-auth-desc');
-          title.innerHTML = 'Encrypted Artifact Received';
-          desc.innerHTML = `You have been invited to unlock <strong>${unlockApp.replace(/</g, "&lt;")}</strong>. To decrypt and access this artifact on the spatial OS, please authenticate your Aporaksha Identity.`;
-          overlay.classList.remove('hidden');
-          
-          window.unlockArtifact = () => {
-             // Change hero title to unlocked app to simulate addition
-             document.getElementById('room-title').innerHTML = `UNLOCKED: ${unlockApp.toUpperCase()}`;
-             document.getElementById('room-lore').innerHTML = `Successfully added ${unlockApp} to your Sovereign Pattern OS.`;
-             alert(`Artifact ${unlockApp} has been decrypted and added to your Zayvora Desktop.`);
-          };
-        }, 800);
+    </style>
+    <script>
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        document.querySelectorAll('.eco-footer-link').forEach(link => {
+          const prodUrl = link.getAttribute('data-prod');
+          if (prodUrl) link.setAttribute('href', prodUrl);
+        });
       }
-    });
-
-  </script>
-
-  <!-- DIAGNOSTICS -->
-  <div id="os-diagnostics"><div id="diag-content"></div></div>
-
-  <!-- APP COUNT -->
-  <div id="app-count-badge"></div>
-
-  <section class="seo-summary-panel" aria-label="Zayvora Sovereign Control Console">
-    <div class="hud-header">
-      <div class="hud-header-title">🛡️ Zayvora Substrate HUD</div>
-      <div class="hud-header-status">
-        <div class="hud-header-dot"></div>
-        <span id="hud-status-text">GUEST_MODE</span>
-      </div>
-    </div>
-    
-    <div class="hud-tabs">
-      <button class="hud-tab-btn active" id="tab-btn-ecosystem" onclick="switchHudTab('ecosystem')">Portal</button>
-      <button class="hud-tab-btn" id="tab-btn-pattern" onclick="switchHudTab('pattern')">Pattern</button>
-      <button class="hud-tab-btn" id="tab-btn-telemetry" onclick="switchHudTab('telemetry')">Diag</button>
-      <button class="hud-tab-btn" id="tab-btn-tiers" onclick="switchHudTab('tiers')">Tiers</button>
-      <button class="hud-tab-btn" id="tab-btn-passport" onclick="switchHudTab('passport')">Key</button>
-    </div>
-    
-    <div class="hud-content">
-      <!-- ECOSYSTEM TAB -->
-      <div id="hud-panel-ecosystem" class="hud-tab-panel active">
-        <p style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:4px;">
-          Discover LogicHub apps, ViaDecide tools, and free-tier community apps in a spatial app store. Open any app to refresh adjacent routes.
-        </p>
-        
-        <div class="hud-card">
-          <div class="hud-card-title">⚡ LogicHub</div>
-          <p class="hud-card-desc">No-code AI app builder, workflow developer, and rapid prototype generation tool.</p>
-          <a class="hud-card-link" href="https://logichub.app/" target="_blank">Build on LogicHub ↗</a>
-        </div>
-        
-        <div class="hud-card">
-          <div class="hud-card-title">⚗️ Prompt Alchemy</div>
-          <p class="hud-card-desc">High-precision prompt optimization and improvement playground.</p>
-          <a class="hud-card-link" href="https://via-decide.github.io/PromptAlchemy/" target="_blank">Launch Workspace ↗</a>
-        </div>
-        
-        <div class="hud-card">
-          <div class="hud-card-title">📚 Books & publications</div>
-          <p class="hud-card-desc">Read manuals, study guides, and the sovereign engineering handbook.</p>
-          <a class="hud-card-link" href="/books">Explore Publications Index ↗</a>
-        </div>
-      </div>
-      
-      <!-- TELEMETRY TAB -->
-      <div id="hud-panel-telemetry" class="hud-tab-panel">
-        <div class="telemetry-row">
-          <span class="telemetry-label">Antigravity Beast-Mode</span>
-          <span id="tel-beast-mode" class="telemetry-val status-off" style="cursor:pointer;" onclick="toggleBeastMode()">OFF (CLICK TO TOGGLE)</span>
-        </div>
-        <div class="telemetry-row">
-          <span class="telemetry-label">Synthesis Pipeline</span>
-          <span id="tel-pipeline" class="telemetry-val status-ok">IDLE</span>
-        </div>
-        <div class="telemetry-row">
-          <span class="telemetry-label">Context Fetcher</span>
-          <span id="tel-fetcher" class="telemetry-val status-ok">IDLE</span>
-        </div>
-        <div class="telemetry-row">
-          <span class="telemetry-label">PR Controller</span>
-          <span id="tel-pr" class="telemetry-val status-off">CLOSED</span>
-        </div>
-        <div class="telemetry-row">
-          <span class="telemetry-label">Intent Deconstruct</span>
-          <span id="tel-planning" class="telemetry-val status-ok">ACTIVE</span>
-        </div>
-        
-        <!-- Live Gauges -->
-        <div class="telemetry-gauge">
-          <div class="telemetry-gauge-header">
-            <span>AI Risk Assessment</span>
-            <span id="gauge-risk-val">0.14</span>
-          </div>
-          <div class="telemetry-gauge-bar">
-            <div id="gauge-risk-fill" class="telemetry-gauge-fill" style="width: 14%; background: var(--cyan);"></div>
-          </div>
-        </div>
-        
-        <div class="telemetry-gauge">
-          <div class="telemetry-gauge-header">
-            <span>CPU Scheduling Utilization</span>
-            <span id="gauge-cpu-val">34%</span>
-          </div>
-          <div class="telemetry-gauge-bar">
-            <div id="gauge-cpu-fill" class="telemetry-gauge-fill" style="width: 34%;"></div>
-          </div>
-        </div>
-        
-        <!-- Failure Taxonomy -->
-        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;margin-top:6px;font-weight:700;">Zayvora Failure Modes</p>
-        <div class="failure-taxonomy-box">
-          <div class="failure-item"><span>F001: SENSOR_DRIFT</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F002: POLICY_RULE_CHANGED</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F003: HASH_CHAIN_BREAK</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F004: DUPLICATE_EXECUTION</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F005: MQTT_DELIVERY_FAIL</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F006: RELAY_NON_RESPONSE</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F007: CLOCK_DESYNC</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F008: PARTIAL_EXECUTION</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F009: AUTHORITY_LOSS</span><span style="opacity:0.6;">NOMINAL</span></div>
-          <div class="failure-item"><span>F010: ORPHANED_EVENT</span><span style="opacity:0.6;">NOMINAL</span></div>
-        </div>
-        
-        <!-- Live trace logs -->
-        <div id="hud-live-console" class="hud-console">
-          <div class="hud-console-line" style="color:rgba(255,255,255,0.4);">Initializing Zayvora OS Observer...</div>
-        </div>
-      </div>
-      
-      <!-- TIERS TAB -->
-      <div id="hud-panel-tiers" class="hud-tab-panel">
-        
-        <!-- DYNAMIC LOGICHUB TIER -->
-        <div class="hud-card" id="tier-logichub" style="border-left: 2px solid var(--z-accent); background: rgba(0, 242, 255, 0.02);">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="hud-card-title" style="color:var(--z-accent);">LogicHub Builder</div>
-            <span class="tier-badge" id="tier-badge-logichub">FETCHING...</span>
-          </div>
-          <p class="hud-card-desc" id="tier-desc-logichub">Checking geographic eligibility...</p>
-          <button class="hud-btn btn-saffron" id="tier-btn-logichub" style="margin-top:4px;" onclick="window.open('https://logichub.app', '_blank')">Launch LogicHub</button>
-        </div>
-
-        <div class="hud-card" style="border-left: 2px solid var(--cyan);">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="hud-card-title">Visualizer SDK</div>
-            <span class="tier-badge">Tier 1</span>
-          </div>
-          <p class="hud-card-desc">Free download visualizer, basic templates, and RP2040 edge firmware configurations.</p>
-          <button class="hud-btn btn-outline" style="margin-top:4px;" onclick="logDiag('DOWNLOAD', 'Visualizer SDK download queued')">Download Free SDK</button>
-        </div>
-        
-        <div class="hud-card" style="border-left: 2px solid var(--saffron); background: rgba(255,103,31,0.02);">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="hud-card-title" style="color:var(--saffron);">Workspace SSD</div>
-            <span class="tier-badge tier-premium">Tier 2</span>
-          </div>
-          <p class="hud-card-desc"><strong>$400 + $200/yr</strong>. NVMe SSD loaded with immutable toolchains, local Zayvora intelligence model, and encrypted sandbox env. Saves $6,000+/year/dev.</p>
-          <button class="hud-btn btn-saffron" style="margin-top:4px;" onclick="window.open('https://aporaksha.com', '_blank')">Order Workspace SSD</button>
-        </div>
-        
-        <div class="hud-card" style="border-left: 2px solid #fff;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div class="hud-card-title">Hardware Lab Node</div>
-            <span class="tier-badge">Tier 3</span>
-          </div>
-          <p class="hud-card-desc"><strong>$5k - $20k</strong>. Enclosure with JTAG/SWD, logic analyzer, SDR, SWD probe bridges, and capture/replay framework.</p>
-          <button class="hud-btn btn-outline" style="margin-top:4px;" onclick="window.open('https://hanuman.solutions', '_blank')">Inquire Lab Node</button>
-        </div>
-      </div>
-      
-      <!-- PASSPORT TAB -->
-      <div id="hud-panel-passport" class="hud-tab-panel">
-        <div class="hud-card">
-          <div class="hud-card-title">Sovereign Profile</div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Status</span>
-            <span id="pass-status" class="telemetry-val">UNAUTHORIZED</span>
-          </div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Credential Node</span>
-            <span id="pass-node" class="telemetry-val">GUEST_NODE</span>
-          </div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Skill Index</span>
-            <span id="pass-skill" class="telemetry-val">--</span>
-          </div>
-          <button class="hud-btn btn-outline" style="margin-top:8px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">Authenticate Passport</button>
-        </div>
-        <p style="font-size:10px;color:rgba(255,255,255,0.45);line-height:1.4;padding:4px;">
-          Sovereign passports utilize cryptographic hardware IDs to verify session security and authenticate distributed consensus.
-      </div>
-
-      <!-- PATTERN ROUTING ENGINE TAB -->
-      <div id="hud-panel-pattern" class="hud-tab-panel">
-        <p style="font-size:11px;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:4px;">
-          Map drawn pattern gestures to deterministic workspace nodes, manage lineage, search sub-chains, and share tokens.
-        </p>
-        <div class="hud-card" style="border-left: 2px solid var(--z-accent);">
-          <div class="hud-card-title">🔗 Active Pattern ID</div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Pattern ID</span>
-            <span id="pat-active-id" class="telemetry-val" style="color:var(--z-accent);">P_NONE</span>
-          </div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Edge Chain</span>
-            <span id="pat-active-chain" class="telemetry-val" style="font-size: 8px;">--</span>
-          </div>
-          <div class="telemetry-row">
-            <span class="telemetry-label">Security</span>
-            <span id="pat-active-security" class="telemetry-val">--</span>
-          </div>
-        </div>
-
-        <!-- LINEAGE GRAPH -->
-        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px;">Workspace Navigation Lineage</p>
-        <div class="hud-card" style="padding: 10px; background: rgba(0,0,0,0.4); text-align: center; border-color: var(--z-border);">
-          <div id="pat-lineage-graph" style="width: 100%; height: 110px; display: flex; align-items: center; justify-content: center;">
-            <svg id="hud-graph-view" width="100%" height="100%"></svg>
-          </div>
-        </div>
-
-        <!-- EDIT NODE DATA -->
-        <div id="pat-edit-container" class="hud-card" style="display:none; border-color: rgba(255,255,255,0.1);">
-          <div class="hud-card-title">📝 Edit Pattern Workspace</div>
-          <div class="zv-auth-group" style="margin-bottom: 6px;">
-            <label style="font-size:8px;">Workspace Name</label>
-            <input type="text" id="pat-input-name" style="padding: 6px; font-size:10px; background: rgba(0,0,0,0.5); border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
-          </div>
-          <div class="zv-auth-group" style="margin-bottom: 6px;">
-            <label style="font-size:8px;">Workspace URL</label>
-            <input type="text" id="pat-input-url" style="padding: 6px; font-size:10px; background: rgba(0,0,0,0.5); border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
-          </div>
-          <div class="zv-auth-group" style="margin-bottom: 8px;">
-            <label style="font-size:8px;">Security Scope</label>
-            <select id="pat-select-security" style="padding: 6px; font-size:10px; background: #0d0f14; border: 1px solid var(--z-border); color:#fff; border-radius:4px; width:100%;">
-              <option value="private">Private (Owner Only)</option>
-              <option value="shared">Shared (Link Holders)</option>
-              <option value="public">Public (Discoverable)</option>
-              <option value="marketplace">Marketplace (Commercial)</option>
-            </select>
-          </div>
-          <div style="display: flex; gap: 6px;">
-            <button class="hud-btn" style="flex:1; min-height: 28px; padding: 4px;" onclick="savePatternNodeEdit()">Save Node</button>
-            <button class="hud-btn btn-outline" style="flex:1; min-height: 28px; padding: 4px;" onclick="togglePinActivePattern()">Pin / Unpin</button>
-          </div>
-        </div>
-
-        <!-- SEARCH AND RESOLVE -->
-        <div class="hud-card">
-          <div class="hud-card-title">🔍 Search & Share Link</div>
-          <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-            <input type="text" id="pat-search-input" placeholder="Search chain or daxini://p/..." style="flex:1; padding: 6px; font-size:10px; background: rgba(0,0,0,0.3); border: 1px solid var(--z-border); color:#fff; border-radius:4px;">
-            <button class="hud-btn" style="min-height: 28px; width:60px; padding: 4px;" onclick="resolvePatternSearch()">Resolve</button>
-          </div>
-          <div id="pat-search-results" style="max-height: 80px; overflow-y: auto; font-size: 9px; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px;"></div>
-          <button class="hud-btn btn-outline" style="width: 100%; min-height: 28px; padding: 4px;" onclick="copyPatternShareLink()">Copy Share Token</button>
-        </div>
-
-        <!-- MEMORY RECOMMENDATIONS -->
-        <p style="font-size:9px;color:rgba(255,103,31,0.6);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:4px;">Memory Engine Logs</p>
-        <div class="failure-taxonomy-box" id="pat-memory-list" style="max-height: 150px; border-color: rgba(0, 242, 255, 0.15); display: flex; flex-direction: column; gap: 4px;">
-          <!-- Populated by script -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DISCOVERY APP PANEL -->
-  <section id="discovery-app-panel" class="discovery-app-panel" aria-label="Discovery Marketplace">
-    <div class="hud-header">
-      <div class="hud-header-title">🌌 Discovery Marketplace</div>
-      <div class="hud-header-status">
-        <div class="hud-header-dot" style="background:#00e5ff;"></div>
-        <span style="color:#00e5ff; font-family:var(--font-mono); font-size:9px;">LIVE</span>
-      </div>
-    </div>
-    <div style="padding:20px;">
-      <div style="text-align:center; padding:30px 10px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:8px; backdrop-filter:blur(10px);">
-        <div style="font-size:40px; margin-bottom:12px;">🌌</div>
-        <h3 style="font-family:var(--font-mono); font-size:14px; color:#fff; margin-bottom:8px;">Daxini Marketplace</h3>
-        <p style="font-size:11px; color:rgba(255,255,255,0.6); line-height:1.4; margin-bottom:20px;">
-          Discover, acquire, and distribute LogicHub artifacts, verified packages, and commercial bundles.
-        </p>
-        <button class="hud-btn btn-saffron" style="width:100%; padding:12px; font-weight:bold; font-size:12px;" onclick="window.launchAppBySlug('marketplace')">
-          Launch Full Storefront ↗
-        </button>
-      </div>
-      
-      <div style="margin-top:20px; font-family:var(--font-mono); font-size:10px; color:rgba(255,255,255,0.4); text-align:center;">
-        Creator payouts process every 24h.
-      </div>
-    </div>
+    </script>
   </section>
 
   <!-- WINDOW MANAGER -->
@@ -1207,1524 +290,107 @@
 
   <!-- FRACTAL DESKTOP -->
   <div id="room-environment">
-    <div class="room-node-app" id="node-0" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-1" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-2" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-3" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-5" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-6" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-7" tabindex="0" role="button"></div>
-    <div class="room-node-app" id="node-8" tabindex="0" role="button"></div>
+    <div class="room-node-app" id="node-0"></div>
+    <div class="room-node-app" id="node-1"></div>
+    <div class="room-node-app" id="node-2"></div>
+    <div class="room-node-app" id="node-3"></div>
+    <div class="room-node-app" id="node-5"></div>
+    <div class="room-node-app" id="node-6"></div>
+    <div class="room-node-app" id="node-7"></div>
+    <div class="room-node-app" id="node-8"></div>
 
     <div id="room-center">
-      <h1 id="room-title" style="margin-bottom:8px;">DAXINI.SPACE</h1>
-      <div id="room-lore">Publish Software. Keep Ownership. Distributed marketplace for artifacts generated via LogicHub.</div>
-      <div class="os-badge">Publish · Discover · Earn</div>
-      <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--success, #10b981); display: flex; align-items: center; justify-content:center; gap: 0.5rem; margin-top: 16px;">
-        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--success, #10b981); box-shadow: 0 0 8px var(--success, #10b981);"></span>
-        <span>Next Step: Monetize</span>
-      </div>
+      <h1 id="room-title">DAXINI.SPACE</h1>
     </div>
   </div>
 
   <!-- THUMB ZONE MATRIX -->
   <div id="os-minimap">
     <svg id="grid-svg"><polyline id="trace-line" points=""/></svg>
+    <div id="os-action-hint"></div>
     <div id="dots-container">
-      <div class="dot-cell"><div class="dot" id="dot-0"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-1"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-2"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-3"></div></div>
-      <div class="dot-cell"><div class="dot center-dot" id="dot-4"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-5"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-6"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-7"></div></div>
-      <div class="dot-cell"><div class="dot" id="dot-8"></div></div>
+      <div class="dot-cell" data-idx="0"><div class="dot" id="dot-0"></div></div>
+      <div class="dot-cell" data-idx="1"><div class="dot" id="dot-1"></div></div>
+      <div class="dot-cell" data-idx="2"><div class="dot" id="dot-2"></div></div>
+      <div class="dot-cell" data-idx="3"><div class="dot" id="dot-3"></div></div>
+      <div class="dot-cell" data-idx="4"><div class="dot center-dot" id="dot-4"></div></div>
+      <div class="dot-cell" data-idx="5"><div class="dot" id="dot-5"></div></div>
+      <div class="dot-cell" data-idx="6"><div class="dot" id="dot-6"></div></div>
+      <div class="dot-cell" data-idx="7"><div class="dot" id="dot-7"></div></div>
+      <div class="dot-cell" data-idx="8"><div class="dot" id="dot-8"></div></div>
     </div>
-    <div class="minimap-hint">swipe to launch</div>
+    <div class="minimap-hint">swipe or tap to launch</div>
   </div>
 
+
+  <style>
+    body { background: #0a0a0a; }
+    #start-layer h1 { margin: 0 0 12px; font-size: clamp(1rem, 2.4vw, 1.35rem); line-height: 1.3; color: #ff671f; }
+    #app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+    #app-grid .app-card { cursor: pointer; border: 1px solid rgba(255,103,31,.4); border-radius: 10px; padding: 10px; background: rgba(255,255,255,.02); }
+    #app-grid .app-card b { display:block; color:#fff; font-size:.95rem; }
+    #app-grid .app-card small { display:block; color:#b8b8b8; margin-top:4px; }
+    #app-grid .app-card .tag { color:#ff671f; font-size:.75rem; }
+    #app-grid .app-card.coming-soon { opacity: .45; cursor: default; border-style: dashed; }
+    #app-grid .app-card.coming-soon::after { content: ' [soon]'; color: #ff671f; }
+  </style>
+
   <script>
-    /* =========================================================
-       0. ZAYVORA SOVEREIGN INTEGRATION
-       ========================================================= */
-    const ZAYVORA = {
-        TOKEN_KEY: 'sovereign_token',
-        STAGES: [
-            'Analyzing Pattern Context',
-            'Verifying Integrity Chain',
-            'Allocating Local Resources',
-            'Establishing Peer Consensus',
-            'Mounting Sovereign Instance'
-        ],
-
-        async bootstrap() {
-            const token = localStorage.getItem(this.TOKEN_KEY);
-            const HUD = document.getElementById('identity-hud');
-            const overlay = document.getElementById('zv-auth-overlay');
-            
-            const passStatus = document.getElementById('pass-status');
-            const passNode = document.getElementById('pass-node');
-            const passSkill = document.getElementById('pass-skill');
-            const hudStatusText = document.getElementById('hud-status-text');
-
-            if (!token) {
-                overlay.classList.add('hidden'); // Ensure hidden by default for guests
-                HUD.innerHTML = `
-                    <div class="identity-bar">
-                        <span>IDENTITY: <b>GUEST_NODE</b></span>
-                        <span>SKILLHEX: <b>--</b></span>
-                        <span style="cursor:pointer; color:#fff; border:1px solid var(--z-accent); padding:0 8px; border-radius:4px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">AUTHORIZE PASSPORT</span>
-                    </div>
-                `;
-                if (passStatus) passStatus.textContent = 'UNAUTHORIZED';
-                if (passNode) passNode.textContent = 'GUEST_NODE';
-                if (passSkill) passSkill.textContent = '--';
-                if (hudStatusText) hudStatusText.textContent = 'GUEST_MODE';
-                logDiag('SYSTEM', 'Operating in Public Guest Mode.');
-                return;
-            }
-
-            overlay.classList.add('hidden');
-            const nodeName = `VERIFIED_NODE_${token.substring(5,11).toUpperCase()}`;
-            HUD.innerHTML = `
-                <div class="identity-bar">
-                    <span>IDENTITY: <b>${nodeName}</b></span>
-                    <span>SKILLHEX: <b>850</b></span>
-                    <span>STATUS: <b>AUTHORIZED</b></span>
-                </div>
-            `;
-            if (passStatus) passStatus.textContent = 'AUTHORIZED';
-            if (passNode) passNode.textContent = nodeName;
-            if (passSkill) passSkill.textContent = '850';
-            if (hudStatusText) hudStatusText.textContent = 'SECURE_NODE';
-            logDiag('IDENTITY', 'Sovereign session established via hardware ID.');
-        },
-
-        async authorize(passportId) {
-            const status = document.getElementById('zv-auth-status');
-            status.textContent = 'Verifying Hardware...';
-            
-            // Simulate cryptographic verification
-            await new Promise(r => setTimeout(r, 800));
-            
-            localStorage.setItem(this.TOKEN_KEY, `node_${passportId}_${Math.random().toString(36).substr(2,9)}`);
-            this.bootstrap();
-            logDiag('AUTH', `Hardware authorized: ${passportId}`);
-        },
-
-        traceOrchestration(appName) {
-            let delay = 0;
-            this.STAGES.forEach((stage, i) => {
-                setTimeout(() => {
-                    logDiag('ORCHESTRATE', `${stage}...`);
-                    if (i === this.STAGES.length - 1) {
-                        logDiag('READY', `${appName} mounted in sovereign viewport.`);
-                    }
-                }, delay);
-                delay += 150 + Math.random() * 200;
-            });
-        }
-    };
-
-    // Global HUD Helpers
-    window.checkDaxiniEligibility = async function() {
-      try {
-        const res = await fetch('https://logichub.app/api/eligibility');
-        if (!res.ok) return;
-        const data = await res.json();
-        const badge = document.getElementById('tier-badge-logichub');
-        const desc = document.getElementById('tier-desc-logichub');
-        const btn = document.getElementById('tier-btn-logichub');
-        
-        if (badge && desc && btn) {
-          if (data.models && data.models.includes('UPI_LIFETIME_ONLY')) {
-            badge.textContent = 'FOUNDER PASS';
-            badge.className = 'tier-badge tier-premium';
-            desc.innerHTML = '<strong>₹1717 One-Time</strong>. Full lifetime access to LogicHub Cloud, unlimited APK compilation, and Zayvora intelligence for Indian residents.';
-            btn.textContent = 'Claim Founder Pass';
+    document.addEventListener('DOMContentLoaded', () => {
+      const installTileAudit = () => {
+        const tiles = document.querySelectorAll('#app-grid .app-card');
+        tiles.forEach(tile => {
+          const slug = tile.dataset.slug;
+          const app = window.DaxiniRegistry && window.DaxiniRegistry.getAppBySlug ? window.DaxiniRegistry.getAppBySlug(slug) : null;
+          const isLive = !!(app && app.url && app.url !== 'offline' && app.status !== 'pending');
+          const tagline = tile.querySelector('small');
+          if (tagline) tagline.textContent = (tagline.textContent || '').split(/\s+/).slice(0, 5).join(' ');
+          tile.tabIndex = 0;
+          tile.setAttribute('role', 'button');
+          if (!isLive) {
+            tile.classList.add('coming-soon');
+            tile.onclick = null;
+            tile.removeAttribute('onclick');
+            tile.setAttribute('aria-disabled', 'true');
+            tile.addEventListener('click', (e) => e.preventDefault());
+            tile.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
           } else {
-            badge.textContent = 'SAAS SUBSCRIPTION';
-            badge.className = 'tier-badge';
-            desc.innerHTML = '<strong>$29/mo</strong>. Global LogicHub Builder SaaS with continuous cloud compiling, deployment, and Zayvora intelligence.';
-            btn.textContent = 'Subscribe Now';
+            tile.setAttribute('aria-disabled', 'false');
+            tile.addEventListener('keydown', (e) => { if (e.key === 'Enter') tile.click(); });
           }
-        }
-      } catch(e) {
-        console.error('[Pricing] Eligibility fetch error:', e);
-      }
-    };
-
-    // Auto-fetch pricing tiers on load
-    window.checkDaxiniEligibility();
-
-    window.switchHudTab = function(tabId) {
-      document.querySelectorAll('.hud-tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.hud-tab-btn').forEach(b => b.classList.remove('active'));
-      
-      const targetPanel = document.getElementById(`hud-panel-${tabId}`);
-      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (targetPanel) targetPanel.classList.add('active');
-      if (targetBtn) targetBtn.classList.add('active');
-      logDiag('UI_TAB', `Switched HUD view to: ${tabId.toUpperCase()}`);
-    };
-
-    window.toggleBeastMode = function() {
-      const el = document.getElementById('tel-beast-mode');
-      if (!el) return;
-      const isOff = el.classList.contains('status-off');
-      if (isOff) {
-        el.textContent = 'ACTIVE (CLICK TO TOGGLE)';
-        el.className = 'telemetry-val status-ok';
-        document.body.classList.add('beast-mode-active');
-        logDiag('SYS_BEAST', 'Antigravity Beast-Mode override initiated.');
-        appendConsoleLine('BEAST_MODE ACTIVATED - Resource priority escalated.', 'var(--cyan)');
-      } else {
-        el.textContent = 'OFF (CLICK TO TOGGLE)';
-        el.className = 'telemetry-val status-off';
-        document.body.classList.remove('beast-mode-active');
-        logDiag('SYS_BEAST', 'Beast-Mode override terminated.');
-        appendConsoleLine('BEAST_MODE DEACTIVATED - Rescheduling tasks.', 'rgba(255,255,255,0.4)');
-      }
-    };
-
-    // Dynamic console trace logging
-    const consoleLogs = [
-      'EVENT TRUTH verified -> hash chain ok.',
-      'Analyzing causal lineage pathways...',
-      'Enforcing CAN-bus safety policies.',
-      'Replaying trace step 1024 to verify consistency...',
-      'Distributed coordination consensus: 9/9 nodes.',
-      'Checking sanity_check guardrail... PASS.',
-      'Risk assessment completed: 0.14.',
-      'F001: SENSOR_DRIFT checks passed.',
-      'F003: HASH_CHAIN_BREAK checks passed.',
-      'F007: CLOCK_DESYNC checks passed.',
-      'Policy semantics validated.',
-      'Mounting local NVMe Workspace env...'
-    ];
-
-    function appendConsoleLine(text, color = 'var(--cyan)') {
-      const consoleEl = document.getElementById('hud-live-console');
-      if (!consoleEl) return;
-      const line = document.createElement('div');
-      line.className = 'hud-console-line';
-      line.style.color = color;
-      line.textContent = `> ${text}`;
-      consoleEl.appendChild(line);
-      consoleEl.scrollTop = consoleEl.scrollHeight;
-      if (consoleEl.children.length > 25) consoleEl.children[0].remove();
-    }
-
-    // Telemetry simulator routine
-    setInterval(() => {
-      // Gauge 1: Risk Assessment
-      const riskVal = (0.10 + Math.random() * 0.15).toFixed(2);
-      const riskFill = document.getElementById('gauge-risk-fill');
-      const riskText = document.getElementById('gauge-risk-val');
-      if (riskFill) riskFill.style.width = `${riskVal * 100}%`;
-      if (riskText) riskText.textContent = riskVal;
-
-      // Gauge 2: CPU utilization
-      const cpuVal = Math.floor(25 + Math.random() * 20);
-      const cpuFill = document.getElementById('gauge-cpu-fill');
-      const cpuText = document.getElementById('gauge-cpu-val');
-      if (cpuFill) cpuFill.style.width = `${cpuVal}%`;
-      if (cpuText) cpuText.textContent = `${cpuVal}%`;
-
-      // Pipeline & Fetcher state fluctuation
-      const pipelineVal = document.getElementById('tel-pipeline');
-      const fetcherVal = document.getElementById('tel-fetcher');
-      if (pipelineVal && Math.random() > 0.7) {
-        const states = ['IDLE', 'RUNNING', 'PAUSED'];
-        const state = states[Math.floor(Math.random() * states.length)];
-        pipelineVal.textContent = state;
-        pipelineVal.className = `telemetry-val ${state === 'RUNNING' ? 'status-ok' : (state === 'PAUSED' ? 'status-warn' : 'status-off')}`;
-        appendConsoleLine(`Pipeline state shifted: ${state}`, state === 'RUNNING' ? 'var(--cyan)' : 'var(--saffron)');
-      }
-      if (fetcherVal && Math.random() > 0.8) {
-        const isFetching = Math.random() > 0.5;
-        fetcherVal.textContent = isFetching ? 'FETCHING' : 'IDLE';
-        fetcherVal.className = `telemetry-val ${isFetching ? 'status-ok' : 'status-off'}`;
-        if (isFetching) appendConsoleLine('Context Fetcher: reading local repo workspace structure.', 'var(--cyan)');
-      }
-
-      // Live console update
-      if (Math.random() > 0.5) {
-        const logLine = consoleLogs[Math.floor(Math.random() * consoleLogs.length)];
-        appendConsoleLine(logLine, 'rgba(255,255,255,0.65)');
-      }
-    }, 2500);
-
-    document.getElementById('zv-auth-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const input = document.getElementById('zv-nfc-input').value;
-        if (input) ZAYVORA.authorize(input);
-    });
-
-    /* =========================================================
-       1. STARFIELD GENERATOR
-       ========================================================= */
-    /* =========================================================
-       1. INTERACTIVE DISTRIBUTED COORDINATION CANVAS
-       ========================================================= */
-    (function() {
-      const canvas = document.getElementById('starfield');
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      const particleCount = 60;
-      const connectionDist = 110;
-      let width = canvas.width = window.innerWidth;
-      let height = canvas.height = window.innerHeight;
-      
-      let mouse = { x: null, y: null, active: false };
-
-      class Particle {
-        constructor() {
-          this.x = Math.random() * width;
-          this.y = Math.random() * height;
-          this.vx = (Math.random() - 0.5) * 0.4;
-          this.vy = (Math.random() - 0.5) * 0.4;
-          this.radius = Math.random() * 1.5 + 0.5;
-        }
-        update() {
-          this.x += this.vx;
-          this.y += this.vy;
-          if (this.x < 0 || this.x > width) this.vx = -this.vx;
-          if (this.y < 0 || this.y > height) this.vy = -this.vy;
-
-          if (mouse.active) {
-            const dx = this.x - mouse.x;
-            const dy = this.y - mouse.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 150) {
-              const force = (150 - dist) / 1500;
-              this.x += (dx / dist) * force * 15;
-              this.y += (dy / dist) * force * 15;
-            }
-          }
-        }
-        draw() {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
-          ctx.fill();
-        }
-      }
-
-      function init() {
-        particles = [];
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
-      }
-
-      function animate() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
-          p.update();
-          p.draw();
         });
+      };
+      installTileAudit();
+      const grid = document.getElementById('app-grid');
+      if (grid) new MutationObserver(installTileAudit).observe(grid, { childList: true });
+    });
+  </script>
+  <!-- MODULAR CORE -->
+  <script src="daxini-registry.js"></script>
+  <script src="daxini-passport.js"></script>
+  <script src="pattern-tracer.js"></script>
+  <script src="os-shell.js"></script>
+  <script src="daxini-ui.js"></script>
 
-        // Draw connections
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const p1 = particles[i];
-            const p2 = particles[j];
-            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-            if (dist < connectionDist) {
-              const alpha = (1 - (dist / connectionDist)) * 0.12;
-              ctx.beginPath();
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
-              ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(animate);
+  <script>
+    // Starfield initializer (one-off)
+    (function() {
+      const sf = document.getElementById('starfield');
+      for (let i = 0; i < 60; i++) {
+        const star = document.createElement('div');
+        star.style.cssText = `position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; top:${Math.random()*100}%; left:${Math.random()*100}%; opacity:${Math.random()};`;
+        sf.appendChild(star);
       }
-
-      window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        init();
-      });
-
-      // Mouse interactive logic
-      window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        mouse.active = true;
-      });
-      window.addEventListener('mouseleave', () => {
-        mouse.active = false;
-      });
-      window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          mouse.x = e.touches[0].clientX;
-          mouse.y = e.touches[0].clientY;
-          mouse.active = true;
-        }
-      });
-      window.addEventListener('touchend', () => {
-        mouse.active = false;
-      });
-
-      init();
-      animate();
     })();
 
-    /* =========================================================
-       2. DIAGNOSTICS ENGINE
-       ========================================================= */
-    const diagEl   = document.getElementById('os-diagnostics');
-    const diagContent = document.getElementById('diag-content');
-    let tapCount = 0;
-
-    document.body.addEventListener('touchstart', (e) => {
-      if (e.touches[0].clientX < 60 && e.touches[0].clientY < 60) {
-        tapCount++;
-        if (tapCount === 3) {
-          diagEl.style.display = diagEl.style.display === 'none' ? 'block' : 'none';
-          tapCount = 0;
-        }
-        setTimeout(() => tapCount = 0, 1500);
-      }
-    });
-
-    function logDiag(type, msg) {
-      const now = new Date().toLocaleTimeString([], { hour12: false });
-      const entry = document.createElement('div');
-      entry.className = 'diag-log';
-      entry.innerHTML = `<span class="diag-time">[${now}]</span> <strong>[${type}]</strong> ${msg}`;
-      diagContent.prepend(entry);
-      if (diagContent.children.length > 10) diagContent.lastChild.remove();
-      console.log(`[DAXINI OS] ${type}: ${msg}`);
-    }
-
-    /* =========================================================
-       3. THE DAXINI MICRO-FRONTEND REGISTRY
-       ========================================================= */
-    const ROOM_POSITIONS = [0, 1, 2, 3, 5, 6, 7, 8];
-    const DEFAULT_ROOM_SLUGS = [
-      'logichub',
-      'daxini-hq',
-      'prompt-alchemy',
-      'sop-builder',
-      'daxini-lens',
-      'via-logic',
-      'studyos',
-      'alchemist'
-    ];
-
-    const CORE_APPS = [
-      {
-        slug: 'marketplace',
-        name: 'Marketplace',
-        icon: '🌌',
-        url: '/apps/marketplace/index.html',
-        status: 'live',
-        desc: 'Discover, acquire, and distribute verified artifacts and commercial bundles.',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['marketplace', 'store', 'apps', 'bundles', 'ecosystem']
-      },
-      {
-        slug: 'my-assets',
-        name: 'My Assets',
-        icon: '💼',
-        url: '/apps/vault/index.html',
-        status: 'live',
-        desc: 'Your owned bundles and artifacts. Fork, upgrade, and publish.',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['vault', 'assets', 'bundle', 'ownership', 'ecosystem']
-      },
-      {
-        slug: 'logichub',
-        name: 'LogicHub',
-        icon: '⚡',
-        url: 'https://logichub.app',
-        status: 'live',
-        desc: 'AI app builder for non-technical users who want prompt apps, workflow tools, and APK-ready prototypes',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['builder', 'app', 'workflow', 'logic', 'apk']
-      },
-      {
-        slug: 'daxini-hq',
-        name: 'Daxini HQ',
-        icon: '🏢',
-        url: 'https://daxini.xyz',
-        status: 'live',
-        desc: 'Holding company and ecosystem index',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['company', 'hub', 'ecosystem']
-      },
-      {
-        slug: 'prompt-alchemy',
-        name: 'Prompt Alchemy',
-        icon: '⚗️',
-        url: 'https://via-decide.github.io/PromptAlchemy/',
-        status: 'live',
-        desc: 'Prompt generation and prompt improvement studio',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['prompt', 'writing', 'llm', 'text', 'creator']
-      },
-      {
-        slug: 'sop-builder',
-        name: 'SOP Builder',
-        icon: '📄',
-        url: 'offline',
-        status: 'pending',
-        desc: 'Standard operating procedure builder',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['document', 'ops', 'workflow', 'business']
-      },
-      {
-        slug: 'daxini-lens',
-        name: 'Daxini Lens',
-        icon: '🎬',
-        url: 'https://via-decide.github.io/video-to-pdf/',
-        status: 'live',
-        desc: 'Turn screen recordings into PDF guides',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['video', 'documentation', 'guide', 'export']
-      },
-      {
-        slug: 'via-logic',
-        name: 'ViaLogic',
-        icon: '🕹️',
-        url: '/apps/vialogic/index.html',
-        status: 'live',
-        desc: 'Cosmic Knowledge Atlas and Global Map Engine for exploring interconnected logical nodes.',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['game', 'logic', 'mapping', 'atlas']
-      },
-      {
-        slug: 'alchemist',
-        name: 'Alchemist',
-        icon: '🧪',
-        url: '/apps/alchemist/index.html',
-        status: 'live',
-        desc: 'Physics-based Kinetic UI for exploring chemical reasoning and technical SOPs.',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['chemistry', 'education', 'logic', 'kinetic']
-      },
-      {
-        slug: 'studyos',
-        name: 'StudyOS',
-        icon: '📚',
-        url: 'https://github.com/via-decide/decide.engine-tools/tree/159f80de375e17c26219b5a265c4c4d4ca8bb22c/StudyOS',
-        status: 'live',
-        desc: 'Modular study engine for exams',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['study', 'learning', 'exam', 'education']
-      },
-      {
-        slug: 'zayvora-chat',
-        name: 'Zayvora Chat',
-        icon: '💬',
-        url: '/apps/zayvora-chat/index.html',
-        status: 'live',
-        desc: 'Database-less chat experiment using the LLM conversation thread itself as a temporary message bus.',
-        ownerType: 'mine',
-        tier: 'experimental',
-        tags: ['chat', 'llm', 'experiment', 'bus']
-      },
-      {
-        slug: 'mars-sim',
-        name: 'Mars Sim',
-        icon: '🚀',
-        url: 'offline',
-        status: 'pending',
-        desc: 'Simulation engine in queue',
-        ownerType: 'mine',
-        tier: 'core',
-        tags: ['simulation', 'space', 'game']
-      }
-    ];
-
-    const DAXINI_GALAXY = {
-      name: 'Daxini Space',
-      lore: 'The master application registry.',
-      apps: {},
-      centerApp: null
-    };
-
-    const STORE_STATE = {
-      focusSlug: null,
-      roomApps: {},
-      communityLoaded: false
-    };
-
-    let APP_LIBRARY = [...CORE_APPS];
-
-    const MASTER_KEY_SIGIL = "1,4,7,6,3,4,5,2,5,8";
-    const ENGINE_TOOLS_SIGILS = [
-      "1,4,3,6,7,8",
-      "1,4,3,6,7,4",
-      "1,4,7,6,3,4",
-      "1,4,3,6,7,4,7,8",
-      "1,4,7,6,3,4,7,8"
-    ];
-
-    function normalizeTag(value) {
-      return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    }
-
-    function sanitizePublicId(value) {
-      const candidate = String(value || '').trim();
-      return /^[a-zA-Z0-9_-]+$/.test(candidate) ? candidate : '';
-    }
-
-    function dedupeTags(tags) {
-      return [...new Set((tags || []).map(normalizeTag).filter(Boolean))];
-    }
-
-    function createSlug(value) {
-      return normalizeTag(value) || `app-${Math.random().toString(36).slice(2, 8)}`;
-    }
-
-    function createAppRecord(app = {}) {
-      const slug = createSlug(app.slug || app.name || 'community-app');
-      return {
-        slug,
-        name: app.name || slug.replace(/-/g, ' '),
-        icon: app.icon || '✨',
-        url: app.url || `/apps/${slug}/index.html`,
-        status: app.status || 'live',
-        desc: app.desc || 'Community-made app published from LogicHub',
-        ownerType: app.ownerType || 'community',
-        tier: app.tier || 'free',
-        tags: dedupeTags(app.tags || ['general']),
-        source: app.source || (app.ownerType === 'mine' ? 'via-decide' : 'logichub'),
-        createdAt: app.createdAt || new Date().toISOString()
-      };
-    }
-
-    function upsertApp(app) {
-      const record = createAppRecord(app);
-      const existingIndex = APP_LIBRARY.findIndex(item => item.slug === record.slug);
-      if (existingIndex >= 0) APP_LIBRARY[existingIndex] = { ...APP_LIBRARY[existingIndex], ...record };
-      else APP_LIBRARY.push(record);
-      return record;
-    }
-
-    function getAppBySlug(slug) {
-      return APP_LIBRARY.find(app => app.slug === slug) || null;
-    }
-
-    function getRouteSlug() {
-      const url = new URL(window.location.href);
-      return normalizeTag(url.searchParams.get('app') || '');
-    }
-
-    function syncRoute(slug, replace = false) {
-      const url = new URL(window.location.href);
-      if (slug) url.searchParams.set('app', slug);
-      else url.searchParams.delete('app');
-      const method = replace ? 'replaceState' : 'pushState';
-      window.history[method]({ app: slug || null }, '', url.toString());
-    }
-
-    function computeTagOverlap(a = [], b = []) {
-      const bSet = new Set(b);
-      return a.filter(tag => bSet.has(tag)).length;
-    }
-
-    function relatedScore(candidate, focusApp) {
-      if (!candidate || !focusApp || candidate.slug === focusApp.slug) return -1;
-      let score = 0;
-      const overlap = computeTagOverlap(candidate.tags, focusApp.tags);
-      score += overlap * 12;
-      if (candidate.status === 'live') score += 4;
-      if (candidate.ownerType !== focusApp.ownerType) score += 3;
-      else score += 1;
-      if (candidate.tier === 'free') score += 2;
-      if (focusApp.tags.includes('prompt') && candidate.tags.includes('prompt')) score += 8;
-      if (focusApp.tags.includes('workflow') && candidate.tags.includes('workflow')) score += 6;
-      if (focusApp.tags.includes('study') && candidate.tags.includes('study')) score += 6;
-      return score;
-    }
-
-    function pickRoomApps(focusApp) {
-      const scored = APP_LIBRARY
-        .filter(app => app.slug !== focusApp.slug)
-        .map(app => ({ app, score: relatedScore(app, focusApp) }))
-        .sort((a, b) => b.score - a.score || a.app.name.localeCompare(b.app.name));
-
-      const mine = scored.filter(item => item.app.ownerType === 'mine');
-      const community = scored.filter(item => item.app.ownerType === 'community');
-      const chosen = [];
-      const chosenSlugs = new Set();
-
-      function takeFrom(pool, count) {
-        for (const item of pool) {
-          if (chosen.length >= 8 || count <= 0) break;
-          if (chosenSlugs.has(item.app.slug)) continue;
-          chosen.push(item.app);
-          chosenSlugs.add(item.app.slug);
-          count -= 1;
-        }
-      }
-
-      takeFrom(mine, 4);
-      takeFrom(community, 4);
-      takeFrom(scored, 8 - chosen.length);
-
-      const roomApps = {};
-      ROOM_POSITIONS.forEach((pos, index) => {
-        roomApps[pos] = chosen[index] || null;
-      });
-      return roomApps;
-    }
-
-    function applyHomeRoom() {
-      const roomApps = {};
-      DEFAULT_ROOM_SLUGS.forEach((slug, index) => {
-        roomApps[ROOM_POSITIONS[index]] = getAppBySlug(slug);
-      });
-      STORE_STATE.focusSlug = null;
-      STORE_STATE.roomApps = roomApps;
-      DAXINI_GALAXY.name = 'Daxini Space';
-      DAXINI_GALAXY.lore = 'Open any app to turn the 8-room grid into a related-app route across prompt apps, ViaDecide tools, and free-tier LogicHub community apps.';
-      DAXINI_GALAXY.apps = roomApps;
-      DAXINI_GALAXY.centerApp = null;
-    }
-
-    function focusApp(slug, options = {}) {
-      const target = getAppBySlug(slug);
-      if (!target) {
-        applyHomeRoom();
-        renderRoom();
-        if (options.syncRoute !== false) syncRoute('', options.replaceRoute === true);
-        return null;
-      }
-      STORE_STATE.focusSlug = target.slug;
-      STORE_STATE.roomApps = pickRoomApps(target);
-      DAXINI_GALAXY.name = `${target.name} Hub`;
-      DAXINI_GALAXY.lore = `${target.desc} Around it: related prompt apps, AI tools, and free-tier LogicHub community apps.`;
-      DAXINI_GALAXY.apps = STORE_STATE.roomApps;
-      DAXINI_GALAXY.centerApp = target;
-      if (options.syncRoute !== false) syncRoute(target.slug, options.replaceRoute === true);
-      renderRoom();
-      return target;
-    }
-
-
-    async function loadCommunityApps() {
-      if (STORE_STATE.communityLoaded) return;
-      STORE_STATE.communityLoaded = true;
-      try {
-        // Pass the currently focused app so LogicHub can weight related apps
-        const lastOpened = STORE_STATE.focusSlug ? `?last_opened_app=${encodeURIComponent(STORE_STATE.focusSlug)}` : '';
-        const response = await fetch(`https://logichub.app/api/public-feed${lastOpened}`, { cache: 'no-store' });
-        if (!response.ok) throw new Error(`Public feed ${response.status}`);
-        const payload = await response.json();
-        // LogicHub returns { apps: [], grid: [], count, empty } OR a plain array
-        const feedApps = Array.isArray(payload) ? payload : (payload.apps || payload.grid || []);
-        feedApps.forEach(app => {
-          // LogicHub field names: app_id, app_name, launch_url, description, icon, category
-          const safeId = sanitizePublicId(app.app_id || app.id);
-          if (!safeId) return;
-          upsertApp({
-            slug:      app.app_id   || app.slug  || safeId,
-            name:      app.app_name || app.name  || app.title || `Tool ${safeId}`,
-            icon:      app.icon     || app.emoji || '🧩',
-            url:       `/play?id=${encodeURIComponent(safeId)}`,
-            status:    app.status === 'pending' ? 'pending' : 'live',
-            desc:      app.description || app.desc || 'Community app from LogicHub',
-            ownerType: app.ownerType || 'community',
-            tier:      app.tier      || 'free',
-            source:    'logichub',
-            tags:      app.tags      || [app.category || 'community', 'tool']
-          });
-        });
-        logDiag('REGISTRY', `Loaded ${feedApps.length} LogicHub feed apps.`);
-      } catch (error) {
-        logDiag('REGISTRY', 'Public feed unavailable. Falling back to local registry.');
-        try {
-          const fallbackResponse = await fetch('./apps/registry.json', { cache: 'no-store' });
-          if (!fallbackResponse.ok) throw new Error(`Registry ${fallbackResponse.status}`);
-          const fallbackPayload = await fallbackResponse.json();
-          const registryApps = Array.isArray(fallbackPayload) ? fallbackPayload : (fallbackPayload.apps || []);
-          registryApps.forEach(app => upsertApp({
-            ...app,
-            ownerType: app.ownerType || 'community',
-            tier: app.tier || 'free',
-            source: app.source || 'logichub',
-            url: app.url || `/apps/${createSlug(app.slug || app.name)}/index.html`
-          }));
-          logDiag('REGISTRY', `Loaded ${registryApps.length} local registry entries.`);
-        } catch (fallbackError) {
-          logDiag('REGISTRY', 'No community registry found yet. Core catalog only.');
-        }
-      }
-    }
-
-    function renderRoom() {
-      const centerApp = DAXINI_GALAXY.centerApp;
-      document.getElementById('room-title').textContent = centerApp ? `${centerApp.icon} ${centerApp.name}` : DAXINI_GALAXY.name;
-      document.getElementById('room-lore').textContent = centerApp
-        ? `${centerApp.desc}. Related grid refreshes around this app so users can keep exploring.`
-        : DAXINI_GALAXY.lore;
-
-      const liveCount = APP_LIBRARY.filter(a => a.status === 'live').length;
-      const communityCount = APP_LIBRARY.filter(a => a.ownerType === 'community').length;
-      document.getElementById('app-count-badge').textContent = `${liveCount} LIVE · ${APP_LIBRARY.length} TOTAL · ${communityCount} COMMUNITY`;
-
-      ROOM_POSITIONS.forEach(pos => {
-        const nodeEl = document.getElementById(`node-${pos}`);
-        const appData = DAXINI_GALAXY.apps[pos];
-        if (!nodeEl) return;
-
-        if (appData) {
-          nodeEl.style.display = 'flex';
-          const isActivated = localStorage.getItem('onboarding_complete') === 'true' || localStorage.getItem('aporaksha_session');
-          const isGated = !isActivated && !['logichub', 'my-assets', 'marketplace', 'daxini-hq'].includes(appData.slug);
-
-          if (isGated) {
-            nodeEl.style.opacity = '0.45';
-            nodeEl.style.filter = 'grayscale(100%)';
-            nodeEl.innerHTML = `
-              <div class="status-dot status-pending" style="background: #e11d48; box-shadow: 0 0 8px #e11d48;"></div>
-              <div class="app-icon" style="filter: blur(2px);">🔒</div>
-              <div class="app-name">${appData.name}<br><span style="font-size:8px; color:#ef4444; font-weight:bold;">LOCKED</span></div>
-            `;
-            nodeEl.title = `Unlock "${appData.name}" by building your first app in LogicHub.`;
-            nodeEl.setAttribute('aria-label', `Locked: ${appData.name}`);
-            
-            const lockHandler = () => {
-              alert(`"${appData.name}" is locked. Complete LogicHub onboarding and build your first app to unlock the full Daxini Space desktop!`);
-            };
-            nodeEl.onclick = lockHandler;
-            nodeEl.onkeydown = (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                lockHandler();
-              }
-            };
-          } else {
-            nodeEl.style.opacity = '1';
-            nodeEl.style.filter = 'none';
-            const statusClass = appData.status === 'live' ? 'status-live' : 'status-pending';
-            const tierLabel = appData.ownerType === 'community' ? 'FREE' : 'CORE';
-            nodeEl.innerHTML = `
-              <div class="status-dot ${statusClass}"></div>
-              <div class="app-icon">${appData.icon}</div>
-              <div class="app-name">${appData.name}<br><span style="font-size:8px; opacity:0.65;">${tierLabel}</span></div>
-            `;
-            nodeEl.title = `${appData.name} — ${appData.desc}`;
-            nodeEl.setAttribute('aria-label', `Launch ${appData.name}`);
-            
-            const clickHandler = () => {
-              if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) window.open(appData.url, '_blank');
-              animateFractalTransition(pos, false);
-              setTimeout(() => launchAppBySlug(appData.slug), 300);
-            };
-            
-            nodeEl.onclick = clickHandler;
-            nodeEl.onkeydown = (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                clickHandler();
-              }
-            };
-          }
+    // Helper to route logs to spatial-engine's diagnostics
+    window.logDiag = function(action, message) {
+        if (window.OS && window.OS.updateDiagnostics) {
+            window.OS.updateDiagnostics('ZAYVORA', action, message);
         } else {
-          nodeEl.style.display = 'none';
-          nodeEl.removeAttribute('aria-label');
-          nodeEl.onclick = null;
-          nodeEl.onkeydown = null;
+            console.log(`[${action}] ${message}`);
         }
-      });
-    }
-
-    function animateFractalTransition(targetPos, isRecall) {
-      const room = document.getElementById('room-environment');
-      const origins = {
-        0: 'top left', 1: 'top center', 2: 'top right',
-        3: 'center left', 5: 'center right',
-        6: 'bottom left', 7: 'bottom center', 8: 'bottom right'
-      };
-      room.style.transformOrigin = isRecall ? 'center center' : (origins[targetPos] || 'center');
-      room.style.transform = isRecall ? 'scale(0.5)' : 'scale(2.5)';
-      room.style.opacity = '0';
-
-      setTimeout(() => {
-        renderRoom();
-        room.style.transition = 'none';
-        room.style.transform = isRecall ? 'scale(2.5)' : 'scale(0.5)';
-        void room.offsetWidth;
-        room.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s';
-        room.style.transform = 'scale(1)';
-        room.style.opacity = '1';
-      }, 300);
-    }
-
-    /* =========================================================
-       SEO PANEL HELPERS
-       ========================================================= */
-    function hideSeoPanel() {
-      document.querySelector('.seo-summary-panel')?.classList.add('hidden');
-    }
-    function showSeoPanel() {
-      document.querySelector('.seo-summary-panel')?.classList.remove('hidden');
-    }
-
-    /* =========================================================
-       5. SMART IFRAME ROUTER
-       ========================================================= */
-    const wm = document.getElementById('window-manager');
-
-    function launchApp(index) {
-      const appData = DAXINI_GALAXY.apps[index];
-      if (!appData) return;
-      
-      // ── Zayvora: Trace Orchestration ──
-      ZAYVORA.traceOrchestration(appData.name);
-      
-      return launchAppBySlug(appData.slug, { autoOpen: false });
-    }
-
-    function launchAppBySlug(slug, options = {}) {
-      const appData = focusApp(slug, { syncRoute: options.syncRoute !== false, replaceRoute: options.replaceRoute === true });
-      if (!appData) return;
-
-      logDiag('ROUTER', `Booting "${appData.name}" [${appData.status.toUpperCase()}] → ${appData.url}`);
-      wm.innerHTML = '';
-
-      // ── Hide the SEO panel so it doesn't block the iframe ──
-      hideSeoPanel();
-
-      const win = document.createElement('div');
-      win.className = 'glass-window';
-
-      let windowContent = '';
-      let statusIndicator = '';
-      const metaLine = `<div style="font-size:10px; color:#6fe7f6; margin-top:6px;">${appData.ownerType === 'community' ? 'FREE-TIER COMMUNITY APP' : 'VIADECIDE CORE APP'}</div>`;
-
-      if (appData.status === 'live' && appData.url !== 'offline') {
-        if (appData.url.includes('github.com') || appData.url.includes('daxini.xyz')) {
-          if (options.autoOpen !== false) {
-            try {
-              window.open(appData.url, '_blank');
-            } catch (e) {
-              console.warn('Popup blocker prevented auto-open:', e);
-            }
-          }
-          statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
-          const isGithub = appData.url.includes('github.com');
-          const typeLabel = isGithub ? 'GitHub source repository' : 'external corporate site';
-          windowContent = `
-            <div class="offline-terminal">
-              <div class="term-icon">🔗</div>
-              <div class="term-title">EXTERNAL THREAD SPAWNED</div>
-              <p class="term-desc">
-                <strong style="color:#fff;">${appData.name}</strong> is an ${typeLabel}.<br><br>
-                Security protocols prevent UI embedding. The application has been opened securely in a new browser tab.<br><br>
-                If the page did not open automatically (blocked by popup blocker), click the link below to open it:<br>
-                <a href="${appData.url}" target="_blank" style="color:var(--cyan); text-decoration:underline; font-weight:bold; display:inline-block; margin-top:8px;">Open ${appData.name} manually ↗</a><br><br>
-                ${metaLine}
-                <span style="color:var(--cyan); display:block; margin-top:10px;">STATUS: ACTIVE IN NEW TAB <span class="term-blink">_</span></span>
-              </p>
-            </div>
-          `;
-        } else {
-          statusIndicator = `<div class="status-dot status-live" style="position:relative;top:0;right:0;"></div>`;
-          windowContent = `
-            <iframe
-              class="window-content"
-              src="${appData.url}"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
-              loading="lazy"
-            ></iframe>
-          `;
-        }
-      } else {
-        statusIndicator = `<div class="status-dot status-pending" style="position:relative;top:0;right:0;"></div>`;
-        windowContent = `
-          <div class="offline-terminal">
-            <div class="term-icon">⚙️</div>
-            <div class="term-title">MODULE OFFLINE</div>
-            <p class="term-desc">
-              HTTP 404 intercepted. System proxy active.<br><br>
-              <strong style="color:#fff;">${appData.name}</strong>
-              ${appData.desc ? `<br><span style="color:#666; font-size:10px;">${appData.desc}</span>` : ''}
-              ${metaLine}
-              <br><br>
-              This route stays alive so the room can keep suggesting the next best apps around it.<br><br>
-              <span style="color:var(--saffron);">STATUS: PENDING MIGRATION <span class="term-blink">_</span></span>
-            </p>
-          </div>
-        `;
-      }
-
-      win.innerHTML = `
-        <div class="window-header">
-          <span class="window-title">${statusIndicator} ${appData.name}</span>
-          <div class="window-controls">
-            ${appData.status === 'live' && !appData.url.includes('github.com') && !appData.url.includes('daxini.xyz') ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
-            <span class="window-close" tabindex="0" role="button" aria-label="Close window" title="Close" onclick="closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeActiveApp('${appData.slug}', '${appData.name.replace(/'/g, "&#39;")}')}">✕</span>
-          </div>
-        </div>
-        ${windowContent}
-      `;
-
-      wm.appendChild(win);
-      return appData;
-    }
-
-    function closeActiveApp(slug, name) {
-      const activeWindow = document.querySelector('.glass-window');
-      if (activeWindow) activeWindow.remove();
-      applyHomeRoom();
-      renderRoom();
-      syncRoute('', false);
-      // ── Restore SEO panel when app is closed ──
-      showSeoPanel();
-      logDiag('TERMINATE', `Closed ${name || slug}`);
-    }
-
-    window.closeActiveApp = closeActiveApp;
-    window.reloadFrame = function(btn) {
-      const iframe = btn.closest('.glass-window').querySelector('iframe');
-      if (iframe) iframe.src = iframe.src;
     };
-
-    async function initializeStore() {
-      CORE_APPS.forEach(app => upsertApp(app));
-      await loadCommunityApps();
-      const routeSlug = getRouteSlug();
-      if (routeSlug && getAppBySlug(routeSlug)) {
-        focusApp(routeSlug, { syncRoute: false, replaceRoute: true });
-        launchAppBySlug(routeSlug, { syncRoute: false, replaceRoute: true });
-      } else {
-        applyHomeRoom();
-        renderRoom();
-      }
-      if (typeof renderMemoryList === 'function') renderMemoryList();
-    }
-
-    window.addEventListener('popstate', () => {
-      const routeSlug = getRouteSlug();
-      if (routeSlug && getAppBySlug(routeSlug)) {
-        focusApp(routeSlug, { syncRoute: false });
-        launchAppBySlug(routeSlug, { syncRoute: false });
-      } else {
-        wm.innerHTML = '';
-        applyHomeRoom();
-        renderRoom();
-        // ── Restore SEO panel on browser back to home ──
-        showSeoPanel();
-      }
-    });
-
-    /* =========================================================
-       6. MATRIX GESTURE ENGINE
-       ========================================================= */
-    const minimap   = document.getElementById('os-minimap');
-    const svgLine   = document.getElementById('trace-line');
-    let path        = [];
-    let isTracing   = false;
-
-    function getDotCenter(idx) {
-      const dot     = document.getElementById(`dot-${idx}`);
-      const rect    = dot.getBoundingClientRect();
-      const mapRect = minimap.getBoundingClientRect();
-      return {
-        x: rect.left - mapRect.left + rect.width  / 2,
-        y: rect.top  - mapRect.top  + rect.height / 2
-      };
-    }
-
-    function drawSVG(touchX, touchY) {
-      let pts = path.map(idx => {
-        const c = getDotCenter(idx);
-        return `${c.x},${c.y}`;
-      });
-      if (isTracing && touchX !== undefined) pts.push(`${touchX},${touchY}`);
-      svgLine.setAttribute('points', pts.join(' '));
-    }
-
-    function handleTouch(e) {
-      const t       = e.touches ? e.touches[0] : e;
-      const mapRect = minimap.getBoundingClientRect();
-      const x       = t.clientX - mapRect.left;
-      const y       = t.clientY - mapRect.top;
-
-      const col = Math.floor((x / mapRect.width)  * 3);
-      const row = Math.floor((y / mapRect.height) * 3);
-
-      if (col >= 0 && col <= 2 && row >= 0 && row <= 2) {
-        const idx = row * 3 + col;
-        if (path.length === 0 || path[path.length - 1] !== idx) {
-          path.push(idx);
-          document.getElementById(`dot-${idx}`).classList.add('active');
-          if (navigator.vibrate) navigator.vibrate(15);
-        }
-      }
-      drawSVG(x, y);
-    }
-
-    minimap.addEventListener('touchstart', e => {
-      e.preventDefault();
-      isTracing = true; path = [];
-      document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-      handleTouch(e);
-    });
-    minimap.addEventListener('touchmove', e => {
-      e.preventDefault();
-      if (isTracing) handleTouch(e);
-    });
-    minimap.addEventListener('touchend', e => {
-      e.preventDefault();
-      isTracing = false; drawSVG();
-      processPattern();
-    });
-
-    let isMouseDown = false;
-    minimap.addEventListener('mousedown', e => {
-      isMouseDown = true; isTracing = true; path = [];
-      document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-      handleTouch(e);
-    });
-    minimap.addEventListener('mousemove', e => {
-      if (isMouseDown && isTracing) handleTouch(e);
-    });
-    window.addEventListener('mouseup', () => {
-      if (isMouseDown) {
-        isMouseDown = false; isTracing = false; drawSVG();
-        processPattern();
-      }
-    });
-
-    /* =========================================================
-       7. OS EVENT LOOP — PATTERN → ACTION MAPPING
-       ========================================================= */
-    function processPattern() {
-      if (!path || path.length === 0) return;
-
-      setTimeout(() => {
-        if (!isTracing) {
-          svgLine.setAttribute('points', '');
-          document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-          document.body.classList.remove('sigil-flash');
-        }
-      }, 500);
-
-      // Normal Pattern Resolution via Spatial OS Engine
-      const res = window.DaxiniSpatialEngine.resolvePattern(path);
-      if (res.success && res.node) {
-        const node = res.node;
-        document.body.classList.add('sigil-flash');
-        logDiag('SPATIAL_NAV', `Floor: ${window.DaxiniSpatialEngine.currentZ} | Room: ${node.name} [${res.action}]`);
-        
-        // Auto focus the resolved pattern in HUD and show visual graph
-        focusPatternNode(node.patternId);
-        
-        // Switch tab to show Pattern Dashboard
-        switchHudTab('pattern');
-
-        // Launch the node workspace
-        const targetPos = path[path.length - 1];
-        if (targetPos !== 4) {
-          animateFractalTransition(targetPos, false);
-        }
-        
-        // Update Z-Layer Indicator in HUD if exists
-        const zIndicator = document.getElementById('hud-z-layer');
-        if (zIndicator) zIndicator.textContent = `Z-${window.DaxiniSpatialEngine.currentZ}`;
-
-        // Trigger PDF Snapshot of current viewport before transitioning
-        if (window.DaxiniPDFPipeline) {
-          window.DaxiniPDFPipeline.snapshotStage(document.body, node.patternId, 'Traversal');
-        }
-
-        setTimeout(() => launchPatternNode(node), 300);
-      } else {
-        logDiag('PATTERN_REJECT', res.error || 'Invalid Pattern.');
-      }
-    }
-
-    /* =========================================================
-       8. LOGICHUB BRIDGE — postMessage listener
-       Handles messages from embedded logichub.app iframes.
-       ========================================================= */
-    const LOGICHUB_ORIGIN = 'https://logichub.app';
-
-    window.addEventListener('message', function(event) {
-      // Only trust logichub.app
-      if (event.origin !== LOGICHUB_ORIGIN) return;
-
-      const { type, data, requestId } = event.data || {};
-
-      switch (type) {
-        case 'ZAYVORA_READY':
-          logDiag('BRIDGE', `LogicHub iframe ready — app: ${data?.title || 'unknown'}`);
-          // Mark the active window as bridged
-          const activeWin = document.querySelector('.glass-window');
-          if (activeWin) activeWin.dataset.bridged = 'true';
-          break;
-
-        case 'ZAYVORA_RESULT':
-          logDiag('BRIDGE', `LogicHub result [req:${requestId}] received.`);
-          // Dispatch a custom event so other parts of the page can react
-          window.dispatchEvent(new CustomEvent('logichub:result', { detail: { requestId, data } }));
-          break;
-
-        case 'ZAYVORA_META':
-          logDiag('BRIDGE', `LogicHub meta — ${data?.title} at ${data?.url}`);
-          break;
-
-        case 'ZAYVORA_ERROR':
-          logDiag('BRIDGE', `LogicHub error [req:${requestId}]: ${data?.error}`);
-          break;
-
-        default:
-          break;
-      }
-    });
-
-    /**
-     * Send a command to the currently active embedded logichub.app iframe.
-     * Usage: daxini_sendToApp('ZAYVORA_EXECUTE', { prompt: 'hello' })
-     */
-    window.daxini_sendToApp = function(type, payload) {
-      const iframe = document.querySelector('.glass-window[data-bridged="true"] iframe');
-      if (!iframe || !iframe.contentWindow) {
-        logDiag('BRIDGE', 'No active bridged iframe found.');
-        return;
-      }
-      const requestId = `daxini_${Date.now()}`;
-      iframe.contentWindow.postMessage({ type, payload, requestId }, LOGICHUB_ORIGIN);
-      return requestId;
-    };
-
-    /* =========================================================
-       9. BOOT SEQUENCE & SSO
-       ========================================================= */
-    import('https://aporaksha.com/sdk.js').then(({ ViaAuthSDK }) => {
-      // Initialize SSO Global Identity
-      window.viaAuth = new ViaAuthSDK({ appId: 'daxini_space' });
-      window.viaAuth.handleRedirectCallback();
-
-      // Attach to the Zayvora Hardware Auth button to use Aporaksha instead
-      const authBtn = document.querySelector('.zv-auth-btn');
-      if (authBtn) {
-        authBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.viaAuth.redirectToApp('https://aporaksha.com/passport', 'login', window.location.href);
-        });
-      }
-      logDiag('SSO', 'ViaAuthSDK connected to Aporaksha.');
-    }).catch(err => {
-      console.error('Failed to load ViaAuthSDK', err);
-      logDiag('SSO_ERROR', 'Failed to connect to Aporaksha IdP.');
-    });
-
-    // Global variable to keep track of active pattern node
-    window.currentPatternID = null;
-
-    window.savePatternNodeEdit = function() {
-      if (!window.currentPatternID) return;
-      const name = document.getElementById('pat-input-name').value;
-      const url = document.getElementById('pat-input-url').value;
-      const security = document.getElementById('pat-select-security').value;
-      
-      const node = window.DaxiniSpatialEngine.updateNode(window.currentPatternID, {
-        name,
-        url,
-        status: url === 'offline' ? 'pending' : 'live',
-        security
-      });
-      if (node) {
-        logDiag('PATTERN_UPDATE', `Node ${node.patternId} updated: ${node.name}`);
-        
-        // If it maps to a default room slot app, update it dynamically in our galaxy apps mapping
-        const libIndex = APP_LIBRARY.findIndex(item => item.slug === node.slug);
-        if (libIndex >= 0) {
-          APP_LIBRARY[libIndex].name = node.name;
-          APP_LIBRARY[libIndex].url = node.url;
-          APP_LIBRARY[libIndex].status = node.status;
-        } else {
-          // It's a custom dynamic workspace node. We can insert/upsert it into the APP_LIBRARY!
-          upsertApp({
-            slug: node.slug,
-            name: node.name,
-            icon: node.icon,
-            url: node.url,
-            status: node.status,
-            ownerType: 'community',
-            tier: 'free',
-            tags: ['workspace', 'custom']
-          });
-        }
-        
-        // Re-focus and refresh
-        focusPatternNode(window.currentPatternID);
-      }
-    };
-
-    window.togglePinActivePattern = function() {
-      if (!window.currentPatternID) return;
-      const isPinned = window.DaxiniSpatialEngine.togglePin(window.currentPatternID);
-      logDiag('PATTERN_PIN', `${isPinned ? 'Pinned' : 'Unpinned'} pattern: ${window.currentPatternID}`);
-      focusPatternNode(window.currentPatternID);
-    };
-
-    window.resolvePatternSearch = function() {
-      const q = document.getElementById('pat-search-input').value;
-      if (!q) return;
-      
-      const matchedNode = window.DaxiniSpatialEngine.resolveShareToken(q);
-      if (matchedNode) {
-        logDiag('SEARCH_RESOLVED', `Found node: ${matchedNode.name}`);
-        focusPatternNode(matchedNode.patternId);
-        launchPatternNode(matchedNode);
-      } else {
-        // Search by partial string match
-        const results = window.DaxiniSpatialEngine.searchPatterns(q);
-        const resultsContainer = document.getElementById('pat-search-results');
-        if (resultsContainer) {
-          if (results.length === 0) {
-            resultsContainer.innerHTML = `<div style="color:rgba(255,255,255,0.4); text-align:center;">No matching nodes found.</div>`;
-          } else {
-            resultsContainer.innerHTML = results.map(node => {
-              return `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:4px 6px; border-radius:4px; border:1px solid rgba(255,255,255,0.05); cursor:pointer;" onclick="focusPatternNode('${node.patternId}')">
-                  <span>${node.icon} ${node.name} (${node.patternId})</span>
-                  <span style="color:var(--cyan); font-size:8px;">${node.edgeChain}</span>
-                </div>
-              `;
-            }).join('');
-          }
-        }
-      }
-    };
-
-    window.copyPatternShareLink = function() {
-      if (!window.currentPatternID) return;
-      const token = window.DaxiniSpatialEngine.getShareToken(window.currentPatternID);
-      navigator.clipboard.writeText(token).then(() => {
-        logDiag('SHARE_COPY', `Copied token to clipboard: ${token}`);
-        alert(`Copied human share token to clipboard: ${token}`);
-      }).catch(err => {
-        console.error('Could not copy text: ', err);
-      });
-    };
-
-    window.launchPatternNode = function(node) {
-      if (!node) return;
-      
-      const catalogApp = getAppBySlug(node.slug);
-      if (catalogApp) {
-        ZAYVORA.traceOrchestration(node.name);
-        setTimeout(() => launchAppBySlug(node.slug), 300);
-      } else {
-        ZAYVORA.traceOrchestration(node.name);
-        setTimeout(() => {
-          logDiag('ROUTER', `Booting Custom Node "${node.name}" [${node.status.toUpperCase()}] → ${node.url}`);
-          wm.innerHTML = '';
-          hideSeoPanel();
-
-          const win = document.createElement('div');
-          win.className = 'glass-window';
-          
-          let windowContent = '';
-          const metaLine = `<div style="font-size:10px; color:#6fe7f6; margin-top:6px;">CUSTOM WORKSPACE ARTIFACT NODE</div>`;
-
-          if (node.status === 'live' && node.url !== 'offline') {
-            windowContent = `
-              <iframe
-                class="window-content"
-                src="${node.url}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
-                loading="lazy"
-              ></iframe>
-            `;
-          } else {
-            windowContent = `
-              <div class="offline-terminal">
-                <div class="term-icon">🔮</div>
-                <div class="term-title">CUSTOM WORKSPACE OFFLINE</div>
-                <p class="term-desc">
-                  This custom node has no live endpoint bound.<br><br>
-                  Pattern ID: <strong style="color:#fff;">${node.patternId}</strong><br>
-                  Edge Chain: <strong style="color:#fff;">${node.edgeChain}</strong><br><br>
-                  You can specify a custom workspace URL in the edit form inside the HUD panel.<br><br>
-                  ${metaLine}
-                  <span style="color:var(--saffron);">STATUS: OFFLINE WORKSPACE <span class="term-blink">_</span></span>
-                </p>
-              </div>
-            `;
-          }
-
-          win.innerHTML = `
-            <div class="window-header">
-              <span class="window-title"><div class="status-dot ${node.status === 'live' ? 'status-live' : 'status-pending'}" style="position:relative;top:0;right:0;"></div> ${node.name}</span>
-              <div class="window-controls">
-                ${node.status === 'live' ? `<span class="window-btn" tabindex="0" role="button" aria-label="Reload app" onclick="reloadFrame(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();reloadFrame(this);}" title="Reload">↺</span>` : ''}
-                <span class="window-close" tabindex="0" role="button" aria-label="Close window" title="Close" onclick="closeActiveApp('${node.slug}', '${node.name.replace(/'/g, "&#39;")}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeActiveApp('${node.slug}', '${node.name.replace(/'/g, "&#39;")}')}">✕</span>
-              </div>
-            </div>
-            ${windowContent}
-          `;
-          wm.appendChild(win);
-        }, 300);
-      }
-    };
-
-    window.focusPatternNode = function(patternId) {
-      const node = window.DaxiniSpatialEngine.registry[patternId];
-      if (!node) return;
-
-      window.currentPatternID = patternId;
-
-      const patActiveId = document.getElementById('pat-active-id');
-      const patActiveChain = document.getElementById('pat-active-chain');
-      const patActiveSecurity = document.getElementById('pat-active-security');
-
-      if (patActiveId) patActiveId.textContent = node.patternId;
-      if (patActiveChain) patActiveChain.textContent = node.edgeChain;
-      if (patActiveSecurity) patActiveSecurity.textContent = node.security.toUpperCase();
-
-      const patEditContainer = document.getElementById('pat-edit-container');
-      if (patEditContainer) {
-        patEditContainer.style.display = 'block';
-        document.getElementById('pat-input-name').value = node.name;
-        document.getElementById('pat-input-url').value = node.url;
-        document.getElementById('pat-select-security').value = node.security;
-      }
-
-      renderPatternGraph(patternId);
-      renderMemoryList();
-    };
-
-    function renderMemoryList() {
-      const container = document.getElementById('pat-memory-list');
-      if (!container) return;
-
-      const { habits, pinned } = window.DaxiniSpatialEngine.getRecommendations();
-
-      let html = '';
-      if (pinned.length > 0) {
-        html += `<div style="color:var(--z-accent); margin-bottom:4px; font-weight:bold; font-size: 8px;">📌 PINNED WORKSPACES</div>`;
-        html += pinned.map(node => `
-          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${node.patternId}']);">
-            <span>${node.name}</span>
-            <span style="opacity:0.6; font-size:7px;">${node.patternId}</span>
-          </div>
-        `).join('');
-      }
-
-      if (habits.length > 0) {
-        html += `<div style="color:var(--cyan); margin-top:6px; margin-bottom:4px; font-weight:bold; font-size: 8px;">🕒 HABITUAL TRAVERSALS</div>`;
-        html += habits.map(node => `
-          <div class="failure-item" style="cursor:pointer; padding:2px 0;" onclick="focusPatternNode('${node.patternId}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${node.patternId}']);">
-            <span>${node.name}</span>
-            <span style="opacity:0.6; font-size:7px;">v${node.visitCount}</span>
-          </div>
-        `).join('');
-      }
-
-      if (habits.length === 0 && pinned.length === 0) {
-        html = `<div style="color:rgba(255,255,255,0.4); text-align:center; padding:10px 0;">Draw patterns to build memory logs.</div>`;
-      }
-
-      container.innerHTML = html;
-    }
-
-    function renderPatternGraph(activePatternId) {
-      const svg = document.getElementById('hud-graph-view');
-      if (!svg) return;
-
-      const lineage = window.DaxiniSpatialEngine.getLineage(activePatternId);
-      if (!lineage) return;
-
-      const width = svg.clientWidth || 340;
-      const height = svg.clientHeight || 110;
-
-      const nodes = [];
-      const links = [];
-
-      const currentX = Math.round(width / 2);
-      const currentY = Math.round(height / 2);
-
-      nodes.push({ id: lineage.current.patternId, name: lineage.current.name, x: currentX, y: currentY, type: 'current', node: lineage.current });
-
-      if (lineage.parent) {
-        nodes.push({ id: lineage.parent.patternId, name: lineage.parent.name, x: currentX, y: 22, type: 'parent', node: lineage.parent });
-        links.push({ from: lineage.parent.patternId, to: lineage.current.patternId });
-      }
-
-      if (lineage.children && lineage.children.length > 0) {
-        const count = lineage.children.length;
-        lineage.children.forEach((child, i) => {
-          const childX = Math.round(width / (count + 1) * (i + 1));
-          const childY = height - 18;
-          nodes.push({ id: child.patternId, name: child.name, x: childX, y: childY, type: 'child', node: child });
-          links.push({ from: lineage.current.patternId, to: child.patternId });
-        });
-      }
-
-      let html = '';
-      
-      links.forEach(l => {
-        const fromNode = nodes.find(n => n.id === l.from);
-        const toNode = nodes.find(n => n.id === l.to);
-        if (fromNode && toNode) {
-          html += `<line x1="${fromNode.x}" y1="${fromNode.y}" x2="${toNode.x}" y2="${toNode.y}" stroke="rgba(0, 242, 255, 0.25)" stroke-width="1.5" stroke-dasharray="2 2"></line>`;
-        }
-      });
-
-      nodes.forEach(n => {
-        let fill = '#05070a';
-        let stroke = 'rgba(255, 255, 255, 0.3)';
-        let radius = 9;
-        let fontColor = '#a0a8b8';
-        let textWeight = 'normal';
-
-        if (n.type === 'current') {
-          fill = 'rgba(0, 242, 255, 0.15)';
-          stroke = 'var(--z-accent)';
-          radius = 11;
-          fontColor = '#fff';
-          textWeight = 'bold';
-        } else if (n.type === 'parent') {
-          stroke = 'var(--saffron)';
-        }
-
-        html += `
-          <g style="cursor:pointer;" onclick="focusPatternNode('${n.id}'); launchPatternNode(window.DaxiniSpatialEngine.registry['${n.id}']);">
-            <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"></circle>
-            <text x="${n.x}" y="${n.y - radius - 3}" fill="${fontColor}" font-size="7" font-family="monospace" font-weight="${textWeight}" text-anchor="middle">${n.name.slice(0, 16)}</text>
-          </g>
-        `;
-      });
-
-      svg.innerHTML = html;
-    }
-
-    ZAYVORA.bootstrap();
-    initializeStore();
-    logDiag('SYSTEM', 'Daxini Space OS v2.2.0 online. Contextual app routing armed.');
-    logDiag('BRIDGE', 'LogicHub bridge active. Listening for iframe messages from logichub.app.');
-    logDiag('ROUTE', 'Open any app to refresh the 8-room grid with related core and free-tier apps.');
-    logDiag('NEW', 'Store routes now carry the focused app in the URL for direct linking.');
-
   </script>
 </body>
 </html>
