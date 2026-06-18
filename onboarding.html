@@ -748,12 +748,7 @@
         function goToLogicHub() {
             trackTelemetry('ds_onboarding_completed', { skipped: false, action: 'build_app' });
             localStorage.setItem('ds_onboarding_complete', 'true');
-            const host = window.location.hostname;
-            if (host === 'localhost' || host === '127.0.0.1') {
-                window.location.href = 'http://localhost:7001/forge';
-            } else {
-                window.location.href = 'https://logichub.app/forge';
-            }
+            window.location.href = 'https://logichub.app/forge';
         }
 
         // --- Swipe Gestures ---
