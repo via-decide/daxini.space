@@ -29,10 +29,10 @@ const DaxiniPassport = {
       if (overlay) overlay.classList.add('hidden');
       if (HUD) {
         HUD.innerHTML = `
-          <div class="identity-bar">
-            <span>IDENTITY: <b>GUEST_NODE</b></span>
-            <span>SKILLHEX: <b>--</b></span>
-            <span style="cursor:pointer; color:#fff; border:1px solid var(--z-accent); padding:0 8px; border-radius:4px;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">AUTHORIZE PASSPORT</span>
+          <div class="identity-bar" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; line-height:1.4;">
+            <span style="white-space:nowrap;">IDENTITY: <b>GUEST_NODE</b></span>
+            <span style="white-space:nowrap;">SKILLHEX: <b>--</b></span>
+            <span style="cursor:pointer; color:#fff; border:1px solid var(--z-accent, #00e5ff); padding:2px 8px; border-radius:4px; white-space:nowrap;" onclick="document.getElementById('zv-auth-overlay').classList.remove('hidden')">AUTHORIZE PASSPORT</span>
           </div>
         `;
       }
@@ -42,10 +42,10 @@ const DaxiniPassport = {
     if (overlay) overlay.classList.add('hidden');
     if (HUD) {
       HUD.innerHTML = `
-        <div class="identity-bar">
-          <span>IDENTITY: <b>VERIFIED_NODE_${token.substring(0,6).toUpperCase()}</b></span>
-          <span>SKILLHEX: <b>850</b></span>
-          <span>STATUS: <b>AUTHORIZED</b></span>
+        <div class="identity-bar" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; line-height:1.4;">
+          <span style="white-space:nowrap;">IDENTITY: <b>VERIFIED_NODE_${token.substring(0,6).toUpperCase()}</b></span>
+          <span style="white-space:nowrap;">SKILLHEX: <b>850</b></span>
+          <span style="white-space:nowrap;">STATUS: <b>AUTHORIZED</b></span>
         </div>
       `;
     }

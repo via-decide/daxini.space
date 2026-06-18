@@ -249,11 +249,18 @@
 
 @media (max-width: 768px) {
   .eco-global-header {
-    padding: 0 16px;
-    font-size: 12px;
+    padding: 0 8px;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: nowrap;
   }
   .eco-header-links {
-    display: none !important;
+    display: flex;
+    gap: 12px;
+    margin-left: 8px;
+  }
+  .eco-header-link {
+    padding: 4px 8px;
   }
   .eco-progress-bar {
     flex-wrap: wrap;
