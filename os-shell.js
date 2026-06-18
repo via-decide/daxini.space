@@ -8,6 +8,8 @@ class OSShell {
   constructor() {
     this.initStatusBar();
     this.attachEvents();
+    // Run once on load to ensure UI starts in correct state
+    setTimeout(() => this.checkHomeState(), 100);
   }
 
   initStatusBar() {
@@ -229,11 +231,11 @@ class OSShell {
     const minimap = document.getElementById('os-minimap');
     if (!wm || !minimap) return;
 
-    const hasWindows = wm.children.length > 0;
-    if (!hasWindows) {
-      minimap.style.bottom = '50%';
-      minimap.style.transform = 'translate(-50%, 50%) scale(1.2)';
+    // Keep minimap at the bottom, don't put it in the center where it blocks the app grid.
+    if (wm.innerHTML.trim() === '') {
+      minimap.style.display = 'none'; // Hide when on home dashboard
     } else {
+      minimap.style.display = '';
       minimap.style.bottom = 'calc(env(safe-area-inset-bottom, 20px) + 40px)';
       minimap.style.transform = 'translateX(-50%) scale(1)';
     }
