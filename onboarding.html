@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daxini Space - Onboarding</title>
+    <script src="/assets/js/sovereign-analytics.js" defer></script>
+    <style>
+        :root {
+            --bg-primary: #030508;
+            --bg-secondary: #0a0c10;
+            --bg-tertiary: #12161f;
+            --text-primary: #ffffff;
+            --text-secondary: #8b90a0;
+            --accent: #ff671f; /* Daxini Space Saffron */
+            --accent-glow: rgba(255, 103, 31, 0.3);
+            --accent-light: #ff8c52;
+            --border: #222222;
+            --success: #2ecc71;
+            --success-glow: rgba(46, 204, 113, 0.2);
+            --sheet-bg: #0d0f14;
+            --ui-light: #ffffff;
+            --ui-gray: #f3f4f6;
+            --ui-dark: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--accent-light);
+            outline-offset: 2px;
+        }
+
+        /* --- LAYOUT & NAVIGATION --- */
+        .onboarding-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: max(env(safe-area-inset-top, 20px), 2rem) 1.5rem max(env(safe-area-inset-bottom, 20px), 5rem);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.98);
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        .skip-btn {
+            position: absolute;
+            top: max(env(safe-area-inset-top, 16px), 1.5rem);
+            right: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: none;
+            border: none;
+            z-index: 10;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .skip-btn:active { color: var(--text-primary); }
+
+        .progress-dots {
+            position: absolute;
+            bottom: max(env(safe-area-inset-bottom, 16px), 2rem);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 24px;
+            background: var(--accent);
+        }
+
+        /* --- TYPOGRAPHY & BUTTONS --- */
+        h1 {
+            font-size: clamp(1.8rem, 7vw, 2.3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            line-height: 1.15;
+            background: linear-gradient(180deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.sub {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            max-width: 320px;
+            line-height: 1.45;
+        }
+
+        .cta-btn {
+            width: 100%;
+            max-width: 340px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .cta-btn:active { transform: scale(0.98); background: var(--bg-secondary); }
+
+        .cta-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        .cta-btn.primary:active {
+            background: #e05310;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .cta-btn.secondary-link {
+            background: transparent;
+            border: none;
+            color: var(--accent-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            height: auto;
+            margin-top: 12px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* --- VISUAL CONTAINERS --- */
+        .visual-container {
+            width: 100%;
+            max-width: 340px;
+            height: 240px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background: radial-gradient(circle at center, rgba(255,103,31,0.04) 0%, transparent 70%);
+        }
+
+        /* --- SCREEN 1 VISUAL: APP GRID TILES --- */
+        .s1-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .s1-tile {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: translateZ(-100px) rotateX(20deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        .s1-tile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 103, 31, 0.1);
+            border: 1px solid rgba(255, 103, 31, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+
+        .s1-tile-label {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+        }
+        .s1-tile-label.short { width: 60%; }
+
+        /* Screen 1 Animation */
+        .screen[data-index="0"].active .s1-tile:nth-child(1) { animation: tileIn 0.5s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen[data-index="0"].active .s1-tile:nth-child(2) { animation: tileIn 0.5s 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen[data-index="0"].active .s1-tile:nth-child(3) { animation: tileIn 0.5s 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen[data-index="0"].active .s1-tile:nth-child(4) { animation: tileIn 0.5s 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen[data-index="0"].active .s1-tile:nth-child(5) { animation: tileIn 0.5s 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .screen[data-index="0"].active .s1-tile:nth-child(6) { animation: tileIn 0.5s 0.95s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        @keyframes tileIn {
+            0% { opacity: 0; transform: translateZ(-100px) rotateX(20deg); }
+            100% { opacity: 1; transform: translateZ(0) rotateX(0); }
+        }
+
+        /* --- SCREEN 2 VISUAL: PUBLISHING PROCESS --- */
+        .s2-visual-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .s2-node {
+            width: 90px;
+            height: 90px;
+            border-radius: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .s2-node.logichub {
+            border-color: #00e5ff;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.05), rgba(10, 12, 16, 0.5));
+        }
+
+        .s2-node.daxini {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(255, 103, 31, 0.05), rgba(10, 12, 16, 0.5));
+        }
+
+        .s2-node-icon {
+            font-size: 1.5rem;
+        }
+
+        .s2-node-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .s2-node.logichub .s2-node-label { color: #00e5ff; }
+        .s2-node.daxini .s2-node-label { color: var(--accent); }
+
+        .s2-arrow {
+            position: relative;
+            width: 60px;
+            height: 2px;
+            background: var(--border);
+            opacity: 0;
+        }
+
+        .s2-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid var(--border);
+            border-right: 2px solid var(--border);
+            transform: rotate(45deg);
+        }
+
+        .s2-arrow-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #00e5ff, var(--accent));
+        }
+
+        .s2-arrow-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid var(--accent);
+            border-right: 2px solid var(--accent);
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+
+        /* Screen 2 Animations */
+        .screen[data-index="1"].active .logichub { animation: nodeIn 0.5s 0.2s forwards; }
+        .screen[data-index="1"].active .s2-arrow { animation: arrowFadeIn 0.3s 0.6s forwards; }
+        .screen[data-index="1"].active .s2-arrow-fill { animation: arrowFlow 0.8s 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .screen[data-index="1"].active .s2-arrow-fill::after { animation: arrowTipFade 0.1s 1.5s forwards; }
+        .screen[data-index="1"].active .daxini { animation: nodeIn 0.5s 1.5s forwards; }
+
+        @keyframes nodeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes arrowFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes arrowFlow {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @keyframes arrowTipFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* --- SCREEN 3 VISUAL: OWNERSHIP --- */
+        .s3-visual {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .s3-tree {
+            position: absolute;
+            left: 10px;
+            width: 170px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: #d1d5db;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .s3-tree-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .s3-tree-item.indent { padding-left: 14px; }
+        .s3-tree-item.indent-2 { padding-left: 28px; }
+        
+        .s3-tree-item svg {
+            width: 12px; height: 12px;
+        }
+        .s3-tree-item.folder svg { fill: #f59e0b; }
+        .s3-tree-item.file svg { fill: var(--text-secondary); }
+
+        .s3-badge-container {
+            position: absolute;
+            right: 15px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 103, 31, 0.1) 0%, transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .s3-own-badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #030508;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 12px 18px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px var(--accent-glow);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: badgePulse 2s infinite alternate;
+        }
+
+        /* Screen 3 Animations */
+        .screen[data-index="2"].active .s3-tree { animation: slideInLeft 0.5s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .screen[data-index="2"].active .s3-badge-container { animation: slideInRight 0.5s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes badgePulse {
+            0% { transform: scale(1); box-shadow: 0 10px 25px var(--accent-glow); }
+            100% { transform: scale(1.04); box-shadow: 0 15px 35px var(--accent-glow); }
+        }
+
+        /* --- SCREEN 4 VISUAL: BEACON / ACTIVATION --- */
+        .s4-visual {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .s4-beacon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px var(--accent-glow);
+            z-index: 5;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .s4-beacon svg {
+            width: 32px;
+            height: 32px;
+            color: #030508;
+        }
+
+        .s4-ring {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Screen 4 Animations */
+        .screen[data-index="3"].active .s4-ring:nth-child(1) { animation: ripple 2s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
+        .screen[data-index="3"].active .s4-ring:nth-child(2) { animation: ripple 2s 0.6s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
+        .screen[data-index="3"].active .s4-ring:nth-child(3) { animation: ripple 2s 1.2s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <button class="skip-btn" onclick="enterMarketplace(true)">Skip</button>
+
+    <div class="onboarding-container">
+        
+        <!-- SCREEN 1: HOOK -->
+        <div class="screen active" data-index="0">
+            <div class="visual-container">
+                <div class="s1-grid">
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">📝</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">🎨</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">📊</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">💡</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">🎵</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                    <div class="s1-tile">
+                        <div class="s1-tile-icon">🎮</div>
+                        <div class="s1-tile-label"></div>
+                        <div class="s1-tile-label short"></div>
+                    </div>
+                </div>
+            </div>
+            <h1>Discover Apps<br>Built To Be Owned</h1>
+            <p class="sub">Browse, install, and remix decentralized apps built by independent creators.</p>
+            <button class="cta-btn" onclick="nextScreen()">Continue</button>
+        </div>
+
+        <!-- SCREEN 2: PUBLISHING -->
+        <div class="screen" data-index="1">
+            <div class="visual-container">
+                <div class="s2-visual-container">
+                    <div class="s2-node logichub">
+                        <span class="s2-node-icon">🛠️</span>
+                        <span class="s2-node-label">LogicHub</span>
+                    </div>
+                    <div class="s2-arrow">
+                        <div class="s2-arrow-fill"></div>
+                    </div>
+                    <div class="s2-node daxini">
+                        <span class="s2-node-icon">🚀</span>
+                        <span class="s2-node-label">Daxini</span>
+                    </div>
+                </div>
+            </div>
+            <h1>From Builder<br>To Marketplace</h1>
+            <p class="sub">Every app published from LogicHub lands here — with source code, APK, and install links.</p>
+            <button class="cta-btn" onclick="nextScreen()">Continue</button>
+        </div>
+
+        <!-- SCREEN 3: OWNERSHIP -->
+        <div class="screen" data-index="2">
+            <div class="visual-container">
+                <div class="s3-visual">
+                    <div class="s3-tree">
+                        <div class="s3-tree-item folder">
+                            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>app/</span>
+                        </div>
+                        <div class="s3-tree-item folder indent">
+                            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>src/</span>
+                        </div>
+                        <div class="s3-tree-item file indent-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                            <span>index.html</span>
+                        </div>
+                        <div class="s3-tree-item file indent-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path></svg>
+                            <span>main.js</span>
+                        </div>
+                    </div>
+                    <div class="s3-badge-container">
+                        <div class="s3-own-badge">100% Yours</div>
+                    </div>
+                </div>
+            </div>
+            <h1>Install. Remix.<br>Redistribute.</h1>
+            <p class="sub">Every listing includes source code. Fork it, improve it, and republish it forever.</p>
+            <button class="cta-btn" onclick="nextScreen()">Continue</button>
+        </div>
+
+        <!-- SCREEN 4: ACTIVATION -->
+        <div class="screen" data-index="3">
+            <div class="visual-container">
+                <div class="s4-visual">
+                    <div class="s4-ring"></div>
+                    <div class="s4-ring"></div>
+                    <div class="s4-ring"></div>
+                    <div class="s4-beacon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            <path d="M2 12h20"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <h1>Enter the<br>Marketplace</h1>
+            <p class="sub">Start browsing creator apps, or build your own app to publish.</p>
+            
+            <button class="cta-btn primary" onclick="enterMarketplace(false)">Browse Marketplace</button>
+            <button class="cta-btn secondary-link" onclick="goToLogicHub()">Build an App →</button>
+        </div>
+
+    </div>
+
+    <!-- PROGRESS INDICATOR -->
+    <div class="progress-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <script>
+        // Check local storage bypass
+        if (localStorage.getItem('ds_onboarding_complete') === 'true') {
+            window.location.replace('/');
+        }
+
+        // Setup identifiers
+        let userId = 'anon_ds_guest';
+        try {
+            let savedUser = JSON.parse(localStorage.getItem('lh_aporaksha_user') || '{}');
+            if (savedUser && savedUser.uid) {
+                userId = savedUser.uid;
+            } else {
+                let anonId = localStorage.getItem('lh_anonymous_id');
+                if (anonId) userId = anonId;
+            }
+        } catch (_) {}
+
+        let sessionId = 'ds_session_guest';
+        try {
+            let sessId = sessionStorage.getItem('ds_session_id');
+            if (!sessId) {
+                sessId = 'ds_sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
+                sessionStorage.setItem('ds_session_id', sessId);
+            }
+            sessionId = sessId;
+        } catch (_) {}
+
+        // Resolve backend URL based on env
+        function getBackendUrl() {
+            const host = window.location.hostname;
+            if (host === 'localhost' || host === '127.0.0.1') {
+                return 'http://localhost:7001/api/analytics-event';
+            }
+            return 'https://logichub.app/api/analytics-event';
+        }
+
+        async function trackTelemetry(eventName, metadata = {}) {
+            try {
+                const payload = {
+                    event: eventName,
+                    userId: userId,
+                    sessionId: sessionId,
+                    metadata: metadata
+                };
+                await fetch(getBackendUrl(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    keepalive: true
+                });
+            } catch (err) {
+                console.error('[Telemetry] Failed to track event:', eventName, err);
+            }
+        }
+
+        // Emit onboarding started event
+        trackTelemetry('ds_onboarding_started');
+
+        let currentScreen = 0;
+        const screens = document.querySelectorAll('.screen');
+        const dots = document.querySelectorAll('.dot');
+        const totalScreens = screens.length;
+
+        function updateUI() {
+            screens.forEach((s, idx) => {
+                s.classList.toggle('active', idx === currentScreen);
+            });
+            dots.forEach((d, idx) => {
+                d.classList.toggle('active', idx === currentScreen);
+            });
+
+            // Re-trigger animations by forcing reflow
+            const current = screens[currentScreen];
+            current.classList.remove('active');
+            void current.offsetWidth; 
+            current.classList.add('active');
+
+            // Track screen view
+            trackTelemetry('ds_screen_' + currentScreen + '_viewed');
+        }
+
+        function nextScreen() {
+            if (currentScreen < totalScreens - 1) {
+                currentScreen++;
+                updateUI();
+            }
+        }
+
+        function prevScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                updateUI();
+            }
+        }
+
+        function enterMarketplace(skipped = false) {
+            trackTelemetry('ds_onboarding_completed', { skipped: skipped });
+            localStorage.setItem('ds_onboarding_complete', 'true');
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.replace('/');
+            }, 300);
+        }
+
+        function goToLogicHub() {
+            trackTelemetry('ds_onboarding_completed', { skipped: false, action: 'build_app' });
+            localStorage.setItem('ds_onboarding_complete', 'true');
+            const host = window.location.hostname;
+            if (host === 'localhost' || host === '127.0.0.1') {
+                window.location.href = 'http://localhost:7001/forge';
+            } else {
+                window.location.href = 'https://logichub.app/forge';
+            }
+        }
+
+        // --- Swipe Gestures ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const threshold = 50;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > threshold) {
+                if (diff > 0) nextScreen(); // Swipe Left
+                else prevScreen();          // Swipe Right
+            }
+        }
+
+        // Initialize first render
+        updateUI();
+    </script>
+</body>
+</html>
