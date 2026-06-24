@@ -4,3 +4,6 @@ http://:domain/*  https://:domain/:splat  301
 
 # Root security.txt → .well-known canonical
 /security.txt  /.well-known/security.txt  301
+
+# Onboarding route
+/onboarding  /onboarding.html  200

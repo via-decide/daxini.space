@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    // First-visit onboarding redirect (skip if deep-linked via ?app=)
+    if (localStorage.getItem('daxini_onboarding_complete') !== 'true' && !new URLSearchParams(window.location.search).has('app')) {
+      window.location.href = '/onboarding';
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Daxini.space — Spatial OS</title>
