@@ -1,396 +1,1283 @@
-<!-- FIXED: declutter + nav audit — see TASK_daxini_space_ui_fix.md -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Daxini.space — Premium Pattern OS</title>
-  <meta name="description" content="Daxini.space is a sovereign pattern-based OS for app discovery.">
-  <link rel="stylesheet" href="os-core.css">
-  <script src="/assets/js/sovereign-analytics.js" defer></script>
-</head>
-<body>
-  <!-- Daxini Ecosystem Bar -->
-  <div class="daxini-eco-bar">
-    <div class="eco-bar-container">
-      <div class="eco-bar-brand">
-        <span class="eco-bar-icon">◆</span>
-        <span class="eco-bar-title">DAXINI MESH</span>
-      </div>
-      <div class="eco-bar-links">
-        <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-bar-link eco-bar-build">
-          <span class="eco-action">Build</span>
-          <span class="eco-dest">LogicHub</span>
-        </a>
-        <a href="http://localhost:7002" data-prod="https://aporaksha.com" class="eco-bar-link eco-bar-own">
-          <span class="eco-action">Own</span>
-          <span class="eco-dest">Aporaksha</span>
-        </a>
-        <a href="http://localhost:7004" data-prod="https://daxini.space" class="eco-bar-link eco-bar-sell">
-          <span class="eco-action">Sell</span>
-          <span class="eco-dest">Daxini Space</span>
-        </a>
-      </div>
-    </div>
-  </div>
+  <title>Daxini.space — Spatial OS</title>
+  <meta name="description" content="Daxini.space is a sovereign spatial operating system. Navigate a fractal 3x3 matrix to discover apps, tools, and suspended compute states.">
+  <link rel="icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    .daxini-eco-bar {
+    /* ══════════════════════════════════════════════════════════
+       SPATIAL OS — CORE DESIGN SYSTEM
+       ══════════════════════════════════════════════════════════ */
+    :root {
+      --bg-void: #050508;
+      --bg-panel: rgba(8, 10, 14, 0.85);
+      --border-dim: rgba(255, 255, 255, 0.06);
+      --border-active: rgba(0, 255, 204, 0.35);
+      --text-primary: #e5e8f0;
+      --text-dim: #5a5e72;
+      --text-muted: #3a3d4e;
+      --accent-cyan: #00ffcc;
+      --accent-emerald: #00ff96;
+      --accent-saffron: #ff671f;
+      --accent-amber: #ffcc00;
+      --accent-red: #ff5a46;
+      --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', monospace;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Scanline Overlay ── */
+    .scanline-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.04;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 204, 0.15) 2px,
+        rgba(0, 255, 204, 0.15) 4px
+      );
+    }
+
+    /* ── Radial Glow Background ── */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 25% 20%, rgba(0, 255, 204, 0.04), transparent),
+        radial-gradient(ellipse 500px 500px at 75% 80%, rgba(255, 103, 31, 0.03), transparent);
+      animation: glow-drift 25s infinite alternate ease-in-out;
+    }
+    @keyframes glow-drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(2%, -2%) scale(1.05); }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ECO BAR (Top Navigation)
+       ══════════════════════════════════════════════════════════ */
+    .eco-bar {
       width: 100%;
-      background: rgba(10, 10, 15, 0.7);
+      background: rgba(8, 10, 14, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 0.75rem;
-      position: sticky;
-      top: 0;
-      z-index: 9999;
+      border-bottom: 1px solid var(--border-dim);
+      font-size: 0.7rem;
+      z-index: 50;
+      flex-shrink: 0;
     }
-    .eco-bar-container {
-      max-width: 1200px;
+    .eco-bar-inner {
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 8px 16px;
+      padding: 6px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .eco-bar-brand {
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 800; letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.85);
+      font-family: var(--font-display);
+    }
+    .eco-bar-brand .diamond { color: var(--accent-saffron); }
+    .eco-bar-links { display: flex; gap: 10px; }
+    .eco-bar-links a {
+      display: flex; align-items: center; gap: 4px;
+      text-decoration: none; padding: 3px 8px;
+      border-radius: 4px; transition: all 0.2s;
+      color: rgba(255,255,255,0.55); font-family: var(--font-body);
+    }
+    .eco-bar-links a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .eco-bar-links a .label { font-weight: 500; opacity: 0.6; }
+    .eco-bar-links a .dest { font-weight: 700; }
+    .eco-bar-links a.build .dest { color: #00e5ff; }
+    .eco-bar-links a.own .dest { color: var(--accent-saffron); }
+    .eco-bar-links a.sell .dest { color: #a78bfa; }
+
+    /* ══════════════════════════════════════════════════════════
+       MAIN SPATIAL OS LAYOUT
+       ══════════════════════════════════════════════════════════ */
+    .spatial-os {
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: rgba(255, 255, 255, 0.9);
+      flex-direction: column;
+      padding: 12px 16px 8px;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      min-height: 0;
     }
-    .eco-bar-icon {
-      color: #ff671f;
-    }
-    .eco-bar-links {
+
+    /* ── HUD Header ── */
+    .hud-header {
       display: flex;
-      gap: 12px;
-    }
-    .eco-bar-link {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      text-decoration: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: background 0.2s, color 0.2s;
-      color: rgba(255, 255, 255, 0.65);
-    }
-    .eco-bar-link:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-    }
-    .eco-bar-link .eco-action {
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 10px;
+      color: var(--accent-emerald);
+      letter-spacing: 1.5px;
       font-weight: 500;
-      opacity: 0.6;
+      flex-shrink: 0;
+      margin-bottom: 8px;
     }
-    .eco-bar-link .eco-dest {
+    .hud-panel {
+      background: rgba(5, 8, 12, 0.8);
+      border: 1px solid rgba(0, 255, 150, 0.08);
+      border-radius: 6px;
+      padding: 10px 14px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .hud-panel .hud-label {
+      font-family: var(--font-display);
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-bottom: 2px;
+    }
+    .hud-panel .hud-line { line-height: 1.6; }
+    .hud-panel .hud-line.cyan { color: #00e5ff; }
+    .hud-panel .hud-line.dim { color: var(--text-dim); }
+    .hud-panel .hud-line.active { color: var(--accent-cyan); font-weight: 700; }
+    .hud-right { text-align: right; align-items: flex-end; }
+    .hud-status-row { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulse-glow 2s infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ── Matrix Viewport (center) ── */
+    .matrix-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 0;
+    }
+
+    /* ── Limit Warning Overlay ── */
+    .limit-warning {
+      position: absolute;
+      inset: 0;
+      background: rgba(120, 20, 10, 0.35);
+      border: 1px solid rgba(255, 90, 70, 0.6);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      animation: limit-pulse 0.8s ease-in-out;
+      pointer-events: none;
+    }
+    .limit-warning h3 {
+      color: var(--accent-red);
+      font-weight: 700;
+      letter-spacing: 3px;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .limit-warning p {
+      color: rgba(255, 110, 90, 0.8);
+      font-size: 10px;
+      text-align: center;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+    @keyframes limit-pulse {
+      0% { opacity: 0; transform: scale(0.95); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
+    /* ── 3x3 Matrix Grid ── */
+    .matrix-grid-wrapper {
+      width: min(480px, calc(100vw - 40px));
+      height: min(480px, calc(100vh - 260px));
+      aspect-ratio: 1;
+      position: relative;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(5, 8, 12, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .matrix-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 6px;
+      transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    /* Transition Animations */
+    .matrix-grid.zoom-in {
+      animation: matrixZoomIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+    .matrix-grid.zoom-out {
+      animation: matrixZoomOut 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+    .matrix-grid.slide {
+      animation: matrixSlide 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    }
+    @keyframes matrixZoomIn {
+      0% { transform: scale(0.65); opacity: 0.1; filter: blur(8px); }
+      100% { transform: scale(1); opacity: 1; filter: blur(0); }
+    }
+    @keyframes matrixZoomOut {
+      0% { transform: scale(1.5); opacity: 0.1; filter: blur(12px); }
+      100% { transform: scale(1); opacity: 1; filter: blur(0); }
+    }
+    @keyframes matrixSlide {
+      0% { transform: translateX(8px); opacity: 0.3; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ── Individual Grid Nodes ── */
+    .node {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      background: rgba(12, 14, 20, 0.3);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .node:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(20, 22, 30, 0.5);
+    }
+    .node.center-node {
+      border-color: rgba(0, 255, 204, 0.2);
+      background: rgba(0, 40, 35, 0.15);
+    }
+    .node.center-node:hover {
+      border-color: rgba(0, 255, 204, 0.4);
+      background: rgba(0, 50, 40, 0.25);
+    }
+    .node.active-glow {
+      box-shadow: inset 0 0 18px rgba(0, 255, 204, 0.2), 0 0 12px rgba(0, 255, 204, 0.15);
+      border-color: var(--accent-cyan) !important;
+    }
+
+    .node-key {
+      position: absolute;
+      top: 4px; right: 8px;
+      font-size: 8px;
+      color: var(--text-muted);
       font-weight: 700;
     }
-    .eco-bar-build .eco-dest { color: #00e5ff; }
-    .eco-bar-own .eco-dest { color: #ff671f; }
-    .eco-bar-sell .eco-dest { color: #a78bfa; }
-    @media (max-width: 480px) {
+
+    .node-title {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .node.center-node .node-title { color: var(--accent-cyan); }
+
+    .node-lift {
+      font-size: 9px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .node-lift.up { color: var(--accent-cyan); }
+    .node-lift.down { color: var(--accent-amber); }
+
+    .node-desc {
+      font-size: 7px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .node-id {
+      font-size: 7px;
+      color: var(--text-muted);
+    }
+    .node-status {
+      font-size: 7px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--accent-amber);
+    }
+    .node.center-node .node-status { color: var(--accent-cyan); }
+
+    /* ── Macro Trace SVG Line ── */
+    .trace-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .trace-polyline {
+      stroke-dasharray: 800;
+      stroke-dashoffset: 800;
+      animation: traceDraw 0.6s ease-in-out forwards;
+    }
+    @keyframes traceDraw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ── Active App Overlay ── */
+    .app-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 4, 8, 0.97);
+      z-index: 40;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      animation: overlayFadeIn 0.3s ease-out;
+    }
+    @keyframes overlayFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .app-overlay-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .app-overlay-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+    }
+    .app-overlay-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 2px;
+    }
+    .app-overlay-dismiss {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .app-overlay-dismiss:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .app-overlay-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-dim);
+      overflow: hidden;
+    }
+    .app-overlay-body .state-line { color: #fff; font-weight: 700; }
+    .app-runtime-box {
+      border: 1px solid rgba(0, 255, 204, 0.12);
+      background: rgba(0, 40, 35, 0.15);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 9px;
+      color: var(--accent-cyan);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .app-runtime-box .runtime-title { font-weight: 700; font-size: 10px; }
+    .app-runtime-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 255, 204, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .app-runtime-bar-fill {
+      height: 100%;
+      width: 66%;
+      background: var(--accent-cyan);
+      border-radius: 2px;
+      animation: pulse-bar 2s ease-in-out infinite;
+    }
+    @keyframes pulse-bar {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .app-overlay-footer {
+      font-size: 9px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* ── Launch Bar (iframe container) ── */
+    .launch-bar {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(2, 3, 6, 0.98);
+      display: flex;
+      flex-direction: column;
+    }
+    .launch-bar.hidden { display: none; }
+    .launch-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: rgba(8, 10, 14, 0.95);
+      border-bottom: 1px solid var(--border-dim);
+      font-size: 11px;
+    }
+    .launch-bar-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: #fff;
+    }
+    .launch-bar-close {
+      background: rgba(255, 90, 70, 0.12);
+      border: 1px solid rgba(255, 90, 70, 0.3);
+      color: var(--accent-red);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .launch-bar-close:hover {
+      background: rgba(255, 90, 70, 0.22);
+      box-shadow: 0 0 16px rgba(255, 90, 70, 0.2);
+    }
+    .launch-bar iframe {
+      flex: 1;
+      border: none;
+      background: #fff;
+      width: 100%;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       CONSOLE TERMINAL (Bottom)
+       ══════════════════════════════════════════════════════════ */
+    .console-terminal {
+      height: 20vh;
+      min-height: 90px;
+      max-height: 160px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      margin-top: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .console-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8px;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .console-header .stdout-label { color: var(--accent-cyan); }
+    .console-body {
+      flex: 1;
+      overflow-y: auto;
+      font-size: 10px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      scrollbar-width: none;
+    }
+    .console-body::-webkit-scrollbar { display: none; }
+    .console-body .log-line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      animation: logSlideIn 0.25s ease-out;
+    }
+    @keyframes logSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .cursor-blink::after {
+      content: '▋';
+      color: var(--accent-emerald);
+      animation: blink 1.2s step-start infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Home Button (bottom center) ── */
+    .home-button {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 16px) + 16px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8, 10, 14, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 8px 20px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      cursor: pointer;
+      z-index: 60;
+      transition: all 0.25s;
+      text-transform: uppercase;
+    }
+    .home-button:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
       .eco-bar-brand { display: none; }
-      .eco-bar-container { justify-content: center; }
+      .eco-bar-inner { justify-content: center; }
+      .hud-header { font-size: 9px; }
+      .hud-panel { padding: 8px 10px; }
+      .matrix-grid-wrapper {
+        width: calc(100vw - 24px);
+        height: calc(100vw - 24px);
+        max-height: calc(100vh - 240px);
+      }
+      .node { padding: 6px 8px; }
+      .node-title { font-size: 8px; }
+      .node-desc { display: none; }
+      .console-terminal { height: 15vh; min-height: 70px; }
     }
   </style>
-  <script>
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      document.querySelectorAll('.eco-bar-link').forEach(link => {
-        const prodUrl = link.getAttribute('data-prod');
-        if (prodUrl) link.setAttribute('href', prodUrl);
-      });
-    }
-  </script>
+</head>
+<body>
+  <!-- Scanline & Glow -->
+  <div class="scanline-overlay"></div>
+  <div class="bg-glow"></div>
 
-  <!-- STARFIELD -->
-  <div id="starfield"></div>
+  <!-- Ecosystem Bar -->
+  <nav class="eco-bar">
+    <div class="eco-bar-inner">
+      <div class="eco-bar-brand">
+        <span class="diamond">◆</span>
+        <span>DAXINI MESH</span>
+      </div>
+      <div class="eco-bar-links">
+        <a href="https://logichub.app" class="build">
+          <span class="label">Build</span>
+          <span class="dest">LogicHub</span>
+        </a>
+        <a href="https://aporaksha.com" class="own">
+          <span class="label">Own</span>
+          <span class="dest">Aporaksha</span>
+        </a>
+        <a href="https://daxini.space" class="sell">
+          <span class="label">Discover</span>
+          <span class="dest">Space</span>
+        </a>
+      </div>
+    </div>
+  </nav>
 
-  <!-- IDENTITY HUD -->
-  <div id="identity-hud"></div>
-
-  <!-- SOVEREIGN AUTH OVERLAY -->
-  <div id="zv-auth-overlay" class="zv-auth-overlay hidden">
-    <div class="zv-auth-modal">
-      <div class="zv-auth-icon">🛡️</div>
-      <h2 class="zv-auth-title">Sovereign Authorization</h2>
-      <p class="zv-auth-desc">Access to the Daxini Pattern OS requires a verified Sovereign Passport. Please enter your hardware ID to authorize this session.</p>
-      <form id="zv-auth-form" class="zv-auth-form">
-        <div class="zv-auth-group">
-          <label>PHYSICAL PASSPORT ID</label>
-          <input type="text" id="zv-nfc-input" placeholder="Enter Hardware ID..." required>
+  <!-- Spatial OS Shell -->
+  <div class="spatial-os" id="spatial-os">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-panel">
+        <div class="hud-label">Spatial Coordinate Telemetry</div>
+        <div class="hud-line" id="hud-elevation">[ELEVATION: +0]</div>
+        <div class="hud-line" id="hud-depth">[DEPTH: 0/4]</div>
+        <div class="hud-line active" id="hud-anchor">[ANCHOR: ACTIVE]</div>
+      </div>
+      <div class="hud-panel hud-right">
+        <div class="hud-label">System Diagnostics</div>
+        <div class="hud-line cyan" style="font-weight:700;">DAXINI.SPACE OPERATOR</div>
+        <div class="hud-line">CPU CORRIDOR: LOCKED</div>
+        <div class="hud-status-row">
+          <span class="pulse-dot"></span>
+          <span>SECURE LINK ACTIVE</span>
         </div>
-        <button type="submit" class="zv-auth-btn">Authorize Hardware</button>
-        <div id="zv-auth-status" class="zv-auth-status"></div>
-      </form>
-    </div>
-  </div>
-
-
-  <section id="start-layer" class="glass-window">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb" style="font-family: var(--font-mono); font-size: 0.72rem; color: #8b90a6; margin-bottom: 1rem; display: flex; gap: 6px;">
-      <a href="https://daxini.xyz" data-prod="https://daxini.xyz" class="eco-footer-link" style="color: #ff671f; text-decoration: none;">Home</a>
-      <span>&gt;</span>
-      <span class="active" style="color: #fff;">Marketplace</span>
-    </div>
-
-    <header class="daxini-header">
-      <div class="daxini-title-row">
-        <h1 style="font-family: var(--font-serif); font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 0.5rem; background: linear-gradient(135deg, #ffffff 0%, #ff671f 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Product Marketplace</h1>
-        <p style="color: #8b90a6; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 600px;">
-          Browse, purchase, and deploy decentralized apps, tools, experiments, and local workspaces inside the sovereign Daxini ecosystem.
-        </p>
-      </div>
-      
-      <!-- Hierarchy-based Navigation Bar -->
-      <nav class="daxini-hierarchy-nav" style="display:flex; gap:16px; margin-bottom:1.5rem; font-size:0.9rem; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px; font-weight: 600; font-family: system-ui, -apple-system, sans-serif;">
-        <a href="#" style="color:#ff671f; border-bottom: 2px solid #ff671f; padding-bottom: 8px; text-decoration: none;">Marketplace</a>
-        <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-footer-link" style="color:#8b90a6; text-decoration:none;">Workspace</a>
-        <a href="#app-grid" style="color:#8b90a6; text-decoration:none;">Apps</a>
-        <a href="http://localhost:7005/articles" data-prod="https://viadecide.com/articles" class="eco-footer-link" style="color:#8b90a6; text-decoration:none;">Journal</a>
-      </nav>
-      
-      <!-- Unified Search Bar -->
-      <div class="search-wrap" style="margin-bottom: 1.5rem; position: relative;">
-        <input type="search" id="daxini-search" placeholder="Search apps, tools, and experiments..." style="width:100%; max-width: 400px; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem; outline: none; transition: border-color 0.2s;" oninput="DaxiniUI.renderStart(document.querySelector('.filter-row button.active')?.dataset.filter || 'all', this.value)">
-      </div>
-      
-      <div class="filter-row">
-        <button data-filter="all" class="active">all</button>
-        <button data-filter="ai">apps</button>
-        <button data-filter="learning">tools</button>
-        <button data-filter="infra">workspace</button>
-        <button data-filter="experiments">experiments</button>
       </div>
     </header>
 
-    <div id="app-grid" role="navigation" aria-label="Daxini app launcher" style="margin-top: 1.5rem;"></div>
+    <!-- Matrix Viewport -->
+    <div class="matrix-viewport" id="matrix-viewport">
+      <!-- Limit Warning (hidden by default) -->
+      <div class="limit-warning" id="limit-warning" style="display:none;">
+        <h3>4-STEP PATH LIMIT REACHED</h3>
+        <p>[WARNING: MAXIMUM HIERARCHICAL RESOLUTION CAP REACHED. PRESS ESC OR TAP CENTER NODE TO RETURN HOME.]</p>
+      </div>
 
-    <!-- Daxini Ecosystem Unified Footer -->
-    <footer class="daxini-unified-footer">
-      <div class="footer-container">
-        <div class="footer-columns">
-          <div class="footer-col brand-col">
-            <div class="footer-logo">◆ DAXINI</div>
-            <p class="footer-desc">Sovereign, local-first computing mesh and decentralized product space.</p>
-          </div>
-          <div class="footer-col links-col">
-            <h5>Ecosystem Mesh</h5>
-            <a href="http://localhost:7001" data-prod="https://logichub.app" class="eco-footer-link">Build (LogicHub)</a>
-            <a href="http://localhost:7002" data-prod="https://aporaksha.com" class="eco-footer-link">Own (Aporaksha)</a>
-            <a href="http://localhost:7004" data-prod="https://daxini.space" class="eco-footer-link">Sell (Daxini Space)</a>
-          </div>
-          <div class="footer-col links-col">
-            <h5>Resources</h5>
-            <a href="http://localhost:7002/passport" data-prod="https://aporaksha.com/passport" class="eco-footer-link">Publish / Passport</a>
-            <a href="http://localhost:7005/articles" data-prod="https://viadecide.com/articles" class="eco-footer-link">Journal</a>
-            <a href="http://localhost:7001/pages/pricing.html" data-prod="https://logichub.app/pages/pricing.html" class="eco-footer-link">Pricing</a>
-          </div>
+      <!-- 3x3 Grid -->
+      <div class="matrix-grid-wrapper">
+        <!-- Trace SVG (for macro patterns) -->
+        <svg class="trace-svg" id="trace-svg">
+          <polyline id="trace-polyline" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+        </svg>
+
+        <div class="matrix-grid" id="matrix-grid">
+          <!-- Nodes 1-9 rendered by JS -->
         </div>
-        <div class="footer-bottom">
-          <span>© 2026 Dharam Daxini. All rights reserved. Sovereign Local-First AI Mesh.</span>
-          <span>Designed for Complete local autonomy. Hashing logs daily.</span>
+
+        <!-- Active App Overlay (hidden by default) -->
+        <div class="app-overlay" id="app-overlay" style="display:none;">
+          <div class="app-overlay-header">
+            <div>
+              <div class="app-overlay-label">[ACTIVE SHARD CONTAINER]</div>
+              <div class="app-overlay-name" id="app-overlay-name">—</div>
+            </div>
+            <button class="app-overlay-dismiss" id="app-overlay-dismiss">DISMISS [ESC]</button>
+          </div>
+          <div class="app-overlay-body" id="app-overlay-body">
+            <p class="state-line">[STATE RESUMED]</p>
+            <p>• Loading suspended reasoning loop...</p>
+            <p>• Memory state verified: SHA-256 integrity OK</p>
+            <p>• Syncing credit balance ledger...</p>
+          </div>
+          <div class="app-overlay-footer">
+            <span>NAMESPACE: via-decide/daxini.space</span>
+            <span>STATUS: STANDBY</span>
+          </div>
         </div>
       </div>
-    </footer>
-    <style>
-      .daxini-unified-footer {
-        margin-top: 4rem;
-        padding: 3rem 1.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(10, 11, 15, 0.8);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        color: #8b90a6;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 0.8rem;
-      }
-      .footer-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 2.5rem;
-      }
-      .footer-columns {
-        display: grid;
-        grid-template-columns: 1.5fr 1fr 1fr;
-        gap: 2rem;
-        text-align: left;
-      }
-      .footer-col h5 {
-        color: #fff;
-        font-size: 0.85rem;
-        margin: 0 0 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-      .footer-col p {
-        line-height: 1.6;
-        max-width: 300px;
-        margin: 0.5rem 0 0;
-      }
-      .footer-logo {
-        font-weight: 800;
-        font-size: 1.1rem;
-        color: #fff;
-        letter-spacing: -0.5px;
-      }
-      .footer-col a {
-        display: block;
-        color: #8b90a6;
-        text-decoration: none;
-        margin-bottom: 0.6rem;
-        transition: color 0.2s;
-      }
-      .footer-col a:hover {
-        color: #fff;
-      }
-      .footer-bottom {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.03);
-        padding-top: 1.5rem;
-        font-size: 0.75rem;
-      }
-      @media (max-width: 768px) {
-        .footer-columns {
-          grid-template-columns: 1fr;
-          text-align: center;
-        }
-        .footer-col p {
-          margin: 0.5rem auto 0;
-        }
-        .footer-bottom {
-          justify-content: center;
-          text-align: center;
-        }
-      }
-    </style>
-    <script>
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        document.querySelectorAll('.eco-footer-link').forEach(link => {
-          const prodUrl = link.getAttribute('data-prod');
-          if (prodUrl) link.setAttribute('href', prodUrl);
-        });
-      }
-    </script>
-  </section>
+    </div>
 
-  <!-- WINDOW MANAGER -->
-  <div id="window-manager"></div>
-
-  <!-- FRACTAL DESKTOP -->
-  <div id="room-environment">
-    <div class="room-node-app" id="node-0"></div>
-    <div class="room-node-app" id="node-1"></div>
-    <div class="room-node-app" id="node-2"></div>
-    <div class="room-node-app" id="node-3"></div>
-    <div class="room-node-app" id="node-5"></div>
-    <div class="room-node-app" id="node-6"></div>
-    <div class="room-node-app" id="node-7"></div>
-    <div class="room-node-app" id="node-8"></div>
-
-    <div id="room-center">
-      <h1 id="room-title">DAXINI.SPACE</h1>
+    <!-- Console Terminal -->
+    <div class="console-terminal">
+      <div class="console-header">
+        <span class="stdout-label">SYS_LOG FEED_STDOUT</span>
+        <span id="console-path">CURRENT PATH: [5]</span>
+      </div>
+      <div class="console-body" id="console-body">
+        <!-- Logs rendered by JS -->
+        <div class="cursor-blink"></div>
+      </div>
     </div>
   </div>
 
-  <!-- THUMB ZONE MATRIX -->
-  <div id="os-minimap">
-    <svg id="grid-svg"><polyline id="trace-line" points=""/></svg>
-    <div id="os-action-hint"></div>
-    <div id="dots-container">
-      <div class="dot-cell" data-idx="0"><div class="dot" id="dot-0"></div></div>
-      <div class="dot-cell" data-idx="1"><div class="dot" id="dot-1"></div></div>
-      <div class="dot-cell" data-idx="2"><div class="dot" id="dot-2"></div></div>
-      <div class="dot-cell" data-idx="3"><div class="dot" id="dot-3"></div></div>
-      <div class="dot-cell" data-idx="4"><div class="dot center-dot" id="dot-4"></div></div>
-      <div class="dot-cell" data-idx="5"><div class="dot" id="dot-5"></div></div>
-      <div class="dot-cell" data-idx="6"><div class="dot" id="dot-6"></div></div>
-      <div class="dot-cell" data-idx="7"><div class="dot" id="dot-7"></div></div>
-      <div class="dot-cell" data-idx="8"><div class="dot" id="dot-8"></div></div>
+  <!-- Home Button -->
+  <button class="home-button" id="home-button" title="Press ESC or click to reset to Home Anchor">⌂ HOME [ESC]</button>
+
+  <!-- Launch Bar (Full-screen iframe for live apps) -->
+  <div class="launch-bar hidden" id="launch-bar">
+    <div class="launch-bar-header">
+      <span class="launch-bar-title" id="launch-bar-title">—</span>
+      <button class="launch-bar-close" id="launch-bar-close">✕ Close</button>
     </div>
-    <div class="minimap-hint">swipe or tap to launch</div>
+    <iframe id="launch-bar-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
   </div>
 
-
-  <style>
-    body { background: #0a0a0a; }
-    #start-layer h1 { margin: 0 0 12px; font-size: clamp(1rem, 2.4vw, 1.35rem); line-height: 1.3; color: #ff671f; }
-    #app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-    #app-grid .app-card { cursor: pointer; border: 1px solid rgba(255,103,31,.4); border-radius: 10px; padding: 10px; background: rgba(255,255,255,.02); }
-    #app-grid .app-card b { display:block; color:#fff; font-size:.95rem; }
-    #app-grid .app-card small { display:block; color:#b8b8b8; margin-top:4px; }
-    #app-grid .app-card .tag { color:#ff671f; font-size:.75rem; }
-    #app-grid .app-card.coming-soon { opacity: .45; cursor: default; border-style: dashed; }
-    #app-grid .app-card.coming-soon::after { content: ' [soon]'; color: #ff671f; }
-  </style>
-
+  <!-- ══════════════════════════════════════════════════════════
+       SPATIAL OS ENGINE (Vanilla JS)
+       ══════════════════════════════════════════════════════════ -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const installTileAudit = () => {
-        const tiles = document.querySelectorAll('#app-grid .app-card');
-        tiles.forEach(tile => {
-          const slug = tile.dataset.slug;
-          const app = window.DaxiniRegistry && window.DaxiniRegistry.getAppBySlug ? window.DaxiniRegistry.getAppBySlug(slug) : null;
-          const isLive = !!(app && app.url && app.url !== 'offline' && app.status !== 'pending');
-          const tagline = tile.querySelector('small');
-          if (tagline) tagline.textContent = (tagline.textContent || '').split(/\s+/).slice(0, 5).join(' ');
-          tile.tabIndex = 0;
-          tile.setAttribute('role', 'button');
-          if (!isLive) {
-            tile.classList.add('coming-soon');
-            tile.onclick = null;
-            tile.removeAttribute('onclick');
-            tile.setAttribute('aria-disabled', 'true');
-            tile.addEventListener('click', (e) => e.preventDefault());
-            tile.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
-          } else {
-            tile.setAttribute('aria-disabled', 'false');
-            tile.addEventListener('keydown', (e) => { if (e.key === 'Enter') tile.click(); });
-          }
-        });
+  (function() {
+    'use strict';
+
+    // ── Constants ──
+    const SECTORS = ["Orion", "Titan", "Kepler", "Hyperion", "Vela", "Sirius", "Vega", "Rigel", "Polaris"];
+    const FUNCTIONS = ["Vault", "Logic Reactor", "System Gateway", "Synaptic Relay", "Archive", "Spectrum Console", "Telemetry Deck", "Core Processor", "Data Node"];
+    const MAX_DEPTH = 4;
+
+    // Macro pattern → app name map
+    const MACRO_APPS = {
+      'UP,RIGHT,DOWN': { name: 'Zayvora Engine', slug: 'logichub', color: 'cyan' },
+      'LEFT,UP,RIGHT': { name: 'Decision Core', slug: 'daxini-hq', color: 'amber' },
+      'DOWN,LEFT,UP': { name: 'Code Nexus', slug: 'alchemist', color: 'zinc' }
+    };
+
+    // App registry (loaded from daxini-registry.js if available, fallback here)
+    const CORE_APPS = [
+      { slug: 'logichub', name: 'LogicHub', icon: '⚡', url: 'https://logichub.app', status: 'live', desc: 'AI app builder' },
+      { slug: 'daxini-hq', name: 'Daxini HQ', icon: '🏢', url: 'https://daxini.xyz', status: 'live', desc: 'Ecosystem index' },
+      { slug: 'prompt-alchemy', name: 'Prompt Alchemy', icon: '⚗️', url: 'https://via-decide.github.io/PromptAlchemy/', status: 'live', desc: 'Prompt studio' },
+      { slug: 'sop-builder', name: 'SOP Builder', icon: '📄', url: 'offline', status: 'pending', desc: 'SOP document builder' },
+      { slug: 'daxini-lens', name: 'Daxini Lens', icon: '🎬', url: 'https://via-decide.github.io/video-to-pdf/', status: 'live', desc: 'Video to PDF guides' },
+      { slug: 'via-logic', name: 'ViaLogic', icon: '🕹️', url: '/apps/vialogic/index.html', status: 'live', desc: 'Knowledge Atlas' },
+      { slug: 'studyos', name: 'StudyOS', icon: '📚', url: 'https://github.com/via-decide/decide.engine-tools/tree/main/StudyOS', status: 'live', desc: 'Exam study engine' },
+      { slug: 'alchemist', name: 'Alchemist', icon: '🧪', url: '/apps/alchemist/index.html', status: 'live', desc: 'Kinetic UI explorer' },
+      { slug: 'zayvora-chat', name: 'Zayvora Chat', icon: '💬', url: '/apps/zayvora-chat/index.html', status: 'live', desc: 'Sovereign chat bus' }
+    ];
+
+    function getApp(slug) {
+      if (window.DaxiniRegistry && window.DaxiniRegistry.getAppBySlug) {
+        return window.DaxiniRegistry.getAppBySlug(slug) || CORE_APPS.find(a => a.slug === slug);
+      }
+      return CORE_APPS.find(a => a.slug === slug);
+    }
+
+    // ── State ──
+    let path = ['5']; // Hierarchical address. ['5'] = home.
+    let transitionState = 'idle';
+    let activeApp = null;
+    let keyHistory = [];
+    let tracePath = [];
+    let debounceTimer = null;
+    let limitWarningTimer = null;
+    const logs = [
+      '[BOOT] INITIALIZING SPATIAL OS MATRIX V4.2...',
+      '[BOOT] DECOUPLING LEGACY DESKTOP METAPHOR CORRIDORS...',
+      '[BOOT] DETECTING CORE GRAVITY MATRIX ANCHOR...',
+      '[BOOT] READY FOR KEYBOARD PATH SELECTIONS'
+    ];
+
+    // ── DOM References ──
+    const gridEl = document.getElementById('matrix-grid');
+    const consoleBody = document.getElementById('console-body');
+    const consolePath = document.getElementById('console-path');
+    const hudElevation = document.getElementById('hud-elevation');
+    const hudDepth = document.getElementById('hud-depth');
+    const hudAnchor = document.getElementById('hud-anchor');
+    const limitWarningEl = document.getElementById('limit-warning');
+    const appOverlay = document.getElementById('app-overlay');
+    const appOverlayName = document.getElementById('app-overlay-name');
+    const appOverlayBody = document.getElementById('app-overlay-body');
+    const appOverlayDismiss = document.getElementById('app-overlay-dismiss');
+    const traceSvg = document.getElementById('trace-svg');
+    const tracePolyline = document.getElementById('trace-polyline');
+    const homeButton = document.getElementById('home-button');
+    const launchBar = document.getElementById('launch-bar');
+    const launchBarTitle = document.getElementById('launch-bar-title');
+    const launchBarClose = document.getElementById('launch-bar-close');
+    const launchBarIframe = document.getElementById('launch-bar-iframe');
+
+    // ── Helpers ──
+    function addLog(msg) {
+      const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+      logs.push(`[${ts}] ${msg}`);
+      if (logs.length > 40) logs.splice(0, logs.length - 40);
+      renderConsole();
+    }
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+
+    function getDepth() { return path.length - 1; }
+    function getZElevation() {
+      return path.slice(1).reduce((acc, n) => {
+        if (n === '2') return acc + 1;
+        if (n === '8') return acc - 1;
+        return acc;
+      }, 0);
+    }
+
+    function getRoomData(nodeIndex) {
+      const currentAddress = [...path, nodeIndex.toString()];
+      const pathString = currentAddress.join(',');
+      const hash = hashString(pathString);
+
+      const sector = SECTORS[hash % SECTORS.length];
+      const func = FUNCTIONS[(hash + 3) % FUNCTIONS.length];
+
+      if (nodeIndex === 5) {
+        const isHome = path.length === 1 && path[0] === '5';
+        return {
+          title: isHome ? 'Home Anchor' : `ANCHOR [${path.join('➔')}]`,
+          id: isHome ? '0x000-CORE' : `0x${hash.toString(16).toUpperCase().substring(0, 3)}`,
+          desc: isHome ? 'System Core Gravitational Center' : `Local Sub-Anchor. Address: ${pathString}`,
+          status: isHome ? 'ANCHOR ACTIVE' : 'LOCAL NEST RESUMED'
+        };
+      }
+
+      return {
+        title: `${sector} ${func}`,
+        id: `0x${hash.toString(16).toUpperCase().substring(0, 3)}`,
+        desc: `ADDRESS: ${pathString} | Z: ${getZElevation()}`,
+        status: 'SUSPENDED STATE'
       };
-      installTileAudit();
-      const grid = document.getElementById('app-grid');
-      if (grid) new MutationObserver(installTileAudit).observe(grid, { childList: true });
+    }
+
+    // ── Rendering ──
+    function renderGrid() {
+      gridEl.innerHTML = '';
+      for (let nodeIdx = 1; nodeIdx <= 9; nodeIdx++) {
+        const room = getRoomData(nodeIdx);
+        const isCenter = nodeIdx === 5;
+        const isUp = nodeIdx === 2;
+        const isDown = nodeIdx === 8;
+
+        const node = document.createElement('div');
+        node.className = `node${isCenter ? ' center-node' : ''}`;
+        node.dataset.nodeIdx = nodeIdx;
+
+        node.innerHTML = `
+          <div class="node-key">[${nodeIdx}]</div>
+          <div>
+            <div class="node-title">${room.title.toUpperCase()}</div>
+            ${isUp ? '<div class="node-lift up">▲ [LIFT UP]</div>' : ''}
+            ${isDown ? '<div class="node-lift down">▼ [LIFT DOWN]</div>' : ''}
+            <div class="node-desc">${room.desc}</div>
+          </div>
+          <div class="node-footer">
+            <span class="node-id">ID: ${room.id}</span>
+            <span class="node-status">${room.status}</span>
+          </div>
+        `;
+
+        node.addEventListener('click', () => handleNodeClick(nodeIdx));
+        gridEl.appendChild(node);
+      }
+    }
+
+    function renderHUD() {
+      const depth = getDepth();
+      const z = getZElevation();
+      hudElevation.textContent = `[ELEVATION: ${z >= 0 ? '+' + z : z}]`;
+      hudDepth.textContent = `[DEPTH: ${depth}/${MAX_DEPTH}]`;
+      hudAnchor.textContent = `[ANCHOR: ${depth === 0 ? 'ACTIVE' : 'OFFLINE'}]`;
+      hudAnchor.className = `hud-line ${depth === 0 ? 'active' : 'dim'}`;
+      consolePath.textContent = `CURRENT PATH: [${path.join(' ➔ ')}]`;
+    }
+
+    function renderConsole() {
+      const cursor = consoleBody.querySelector('.cursor-blink');
+      // Remove all log lines but keep cursor
+      consoleBody.querySelectorAll('.log-line').forEach(el => el.remove());
+      
+      const fragment = document.createDocumentFragment();
+      logs.forEach(log => {
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        div.textContent = log;
+        fragment.appendChild(div);
+      });
+      consoleBody.insertBefore(fragment, cursor);
+      
+      // Auto-scroll
+      cursor.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function applyTransition(type) {
+      gridEl.classList.remove('zoom-in', 'zoom-out', 'slide');
+      void gridEl.offsetWidth; // Force reflow
+      gridEl.classList.add(type);
+      setTimeout(() => gridEl.classList.remove(type), 500);
+    }
+
+    function showLimitWarning() {
+      limitWarningEl.style.display = 'flex';
+      clearTimeout(limitWarningTimer);
+      limitWarningTimer = setTimeout(() => {
+        limitWarningEl.style.display = 'none';
+      }, 1000);
+    }
+
+    // ── Navigation ──
+    function navigateTo(targetNode) {
+      if (activeApp) return;
+
+      // Depth check
+      if (path.length >= MAX_DEPTH + 1) {
+        showLimitWarning();
+        addLog(`[WARN] STATE OVERFLOW: Exceeded max ${MAX_DEPTH} steps from Home Anchor. Path locked.`);
+        return;
+      }
+
+      // Transition type
+      if (targetNode === '2') {
+        applyTransition('zoom-in');
+      } else if (targetNode === '8') {
+        applyTransition('zoom-out');
+      } else {
+        applyTransition('slide');
+      }
+
+      path = [...path, targetNode];
+      addLog(`[NAV] VECTOR TRANSLATION: Moved to sector [${path.join(' ➔ ')}]`);
+      renderGrid();
+      renderHUD();
+    }
+
+    function resetToHome() {
+      applyTransition('zoom-out');
+      path = ['5'];
+      activeApp = null;
+      tracePath = [];
+      keyHistory = [];
+      appOverlay.style.display = 'none';
+      addLog('[NAV] GRAV-ANCHOR RESET: Core status fully collapsed back to [5].');
+      renderGrid();
+      renderHUD();
+
+      // Close launch bar if open
+      launchBar.classList.add('hidden');
+      launchBarIframe.src = 'about:blank';
+    }
+
+    function handleNodeClick(nodeIndex) {
+      if (activeApp) return;
+
+      if (nodeIndex === 5) {
+        resetToHome();
+      } else {
+        // Simulate key press for the node
+        processNavigation(nodeIndex.toString());
+      }
+    }
+
+    function processNavigation(key) {
+      const directionMap = {
+        '1': 'UP-LEFT', '2': 'UP', '3': 'UP-RIGHT',
+        '4': 'LEFT', '6': 'RIGHT',
+        '7': 'DOWN-LEFT', '8': 'DOWN', '9': 'DOWN-RIGHT'
+      };
+      const direction = directionMap[key];
+      if (!direction) return;
+
+      navigateTo(key);
+
+      // Macro pattern buffer
+      if (debounceTimer) clearTimeout(debounceTimer);
+      const cardinalDir = { '2': 'UP', '4': 'LEFT', '6': 'RIGHT', '8': 'DOWN' }[key];
+      if (cardinalDir) {
+        keyHistory = [...keyHistory, cardinalDir].slice(-3);
+
+        const sequence = keyHistory.join(',');
+        if (MACRO_APPS[sequence]) {
+          const macroApp = MACRO_APPS[sequence];
+          tracePath = [...keyHistory];
+          addLog(`[SYSTEM] LOCKING INTERCEPT: Pattern Match [${keyHistory.join(' ➔ ')}]. Building signal trace...`);
+          renderTraceLine();
+
+          setTimeout(() => {
+            showAppOverlay(macroApp);
+            addLog(`[STATE RESUMED] Suspended session loaded: ${macroApp.name}`);
+            tracePath = [];
+            keyHistory = [];
+            tracePolyline.setAttribute('points', '');
+          }, 800);
+        }
+      }
+
+      debounceTimer = setTimeout(() => { keyHistory = []; }, 1200);
+    }
+
+    // ── Macro Trace Line ──
+    function renderTraceLine() {
+      const coordMap = {
+        'UP': '50,16', 'DOWN': '50,84', 'LEFT': '16,50', 'RIGHT': '84,50', 'CENTER': '50,50'
+      };
+      const wrapper = document.querySelector('.matrix-grid-wrapper');
+      if (!wrapper) return;
+      const w = wrapper.clientWidth;
+      const h = wrapper.clientHeight;
+
+      const points = tracePath.map(dir => {
+        const [px, py] = (coordMap[dir] || '50,50').split(',').map(Number);
+        return `${(px / 100) * w},${(py / 100) * h}`;
+      }).join(' ');
+
+      tracePolyline.setAttribute('points', points);
+      // Re-trigger animation
+      tracePolyline.classList.remove('trace-polyline');
+      void tracePolyline.offsetWidth;
+      tracePolyline.classList.add('trace-polyline');
+    }
+
+    // ── App Overlay ──
+    function showAppOverlay(macroApp) {
+      activeApp = macroApp;
+      appOverlayName.textContent = macroApp.name;
+
+      // Build runtime content based on app
+      let runtimeHTML = '';
+      if (macroApp.slug === 'logichub') {
+        runtimeHTML = `
+          <div class="app-runtime-box">
+            <div class="runtime-title">ZAYVORA REASONING ENGINE V3</div>
+            <div>Input Query: [WAITING ON OPERATOR COMMAND]</div>
+            <div class="app-runtime-bar"><div class="app-runtime-bar-fill"></div></div>
+          </div>
+        `;
+      } else if (macroApp.slug === 'daxini-hq') {
+        runtimeHTML = `
+          <div class="app-runtime-box" style="border-color: rgba(255,204,0,0.15); color: #ffcc00;">
+            <div class="runtime-title">VIA DECISION CORE MATRIX</div>
+            <div>Calculated Decision Branches: [STANDBY]</div>
+            <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-top:6px;">
+              ${[1,2,3,4,5].map(i => `<div style="background:rgba(255,204,0,0.15); border:1px solid rgba(255,204,0,0.3); height:20px; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700;">#${i}</div>`).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        runtimeHTML = `
+          <div class="app-runtime-box" style="border-color: rgba(255,255,255,0.08); color: var(--text-dim);">
+            <div class="runtime-title" style="color:#fff;">CODE NEXUS REPOSITORY FEED</div>
+            <div style="color:var(--text-muted);">src/core/system/deploymentEngine.js - L128</div>
+            <div style="color:var(--accent-emerald); font-size:8px;">Commit: [SOVEREIGN CODEBASE DIRECT INJECTION OK]</div>
+          </div>
+        `;
+      }
+
+      appOverlayBody.innerHTML = `
+        <p class="state-line">[STATE RESUMED]</p>
+        <p>• Loading suspended reasoning loop...</p>
+        <p>• Memory state verified: SHA-256 integrity OK</p>
+        <p>• Syncing credit balance ledger...</p>
+        ${runtimeHTML}
+      `;
+
+      appOverlay.style.display = 'flex';
+    }
+
+    function dismissAppOverlay() {
+      activeApp = null;
+      appOverlay.style.display = 'none';
+      addLog('[SYSTEM] APPLICATION DISMISSED. Returning to Spatial grid view.');
+    }
+
+    // ── Launch Live App ──
+    function launchLiveApp(slug) {
+      const app = getApp(slug);
+      if (!app || !app.url || app.url === 'offline') {
+        addLog(`[ERROR] App "${slug}" is OFFLINE or not found.`);
+        return;
+      }
+      launchBarTitle.textContent = app.name;
+      launchBarIframe.src = app.url;
+      launchBar.classList.remove('hidden');
+      addLog(`[LAUNCH] Opening live app: ${app.name} → ${app.url}`);
+    }
+
+    // ── Keyboard Handler ──
+    function handleKeyDown(e) {
+      const key = e.key;
+
+      // ESC / 5 / Clear → Reset to Home
+      if (key === 'Escape' || key === '5' || key === 'Clear') {
+        e.preventDefault();
+        if (activeApp) {
+          dismissAppOverlay();
+        } else {
+          resetToHome();
+        }
+        return;
+      }
+
+      if (activeApp) return;
+
+      // Enter → Launch live app of the current room's center anchor
+      if (key === 'Enter') {
+        e.preventDefault();
+        // Launch the app currently at Node 5 (center) based on the path depth
+        const depth = getDepth();
+        if (depth === 0) {
+          addLog('[INFO] You are at the Home Anchor. Navigate to a sector first.');
+        } else {
+          // Determine app from last path node
+          const lastNode = path[path.length - 1];
+          const appIndex = parseInt(lastNode) - 1;
+          if (appIndex >= 0 && appIndex < CORE_APPS.length) {
+            const app = CORE_APPS[appIndex];
+            if (app.status === 'live' && app.url !== 'offline') {
+              launchLiveApp(app.slug);
+            } else {
+              addLog(`[WARN] App at node ${lastNode} is in SUSPENDED state.`);
+            }
+          }
+        }
+        return;
+      }
+
+      let targetKey = '';
+      // Map keyboard to numpad layout: 1-2-3, 4-5-6, 7-8-9
+      if (key === 'ArrowUp' || key === '2' || key === 'w' || key === 'W') {
+        e.preventDefault(); targetKey = '2';
+      } else if (key === 'ArrowDown' || key === '8' || key === 's' || key === 'S') {
+        e.preventDefault(); targetKey = '8';
+      } else if (key === 'ArrowLeft' || key === '4' || key === 'a' || key === 'A') {
+        e.preventDefault(); targetKey = '4';
+      } else if (key === 'ArrowRight' || key === '6' || key === 'd' || key === 'D') {
+        e.preventDefault(); targetKey = '6';
+      } else if (['1', '3', '7', '9'].includes(key)) {
+        e.preventDefault(); targetKey = key;
+      }
+
+      if (targetKey) {
+        processNavigation(targetKey);
+      }
+    }
+
+    // ── Double-tap center node to launch app ──
+    let lastCenterTap = 0;
+    function handleCenterDoubleTap() {
+      const now = Date.now();
+      if (now - lastCenterTap < 400) {
+        // Double tap → show app launcher
+        const room = getRoomData(5);
+        addLog(`[SYSTEM] Double-tap detected on ${room.title}. Scanning for launchable payloads...`);
+
+        // Map the last navigated node to an app
+        if (path.length > 1) {
+          const lastNode = path[path.length - 1];
+          const appIndex = parseInt(lastNode) - 1;
+          if (appIndex >= 0 && appIndex < CORE_APPS.length) {
+            launchLiveApp(CORE_APPS[appIndex].slug);
+          }
+        }
+      }
+      lastCenterTap = now;
+    }
+
+    // ── Event Listeners ──
+    window.addEventListener('keydown', handleKeyDown);
+    appOverlayDismiss.addEventListener('click', dismissAppOverlay);
+    homeButton.addEventListener('click', resetToHome);
+    launchBarClose.addEventListener('click', () => {
+      launchBar.classList.add('hidden');
+      launchBarIframe.src = 'about:blank';
+      addLog('[SYSTEM] Live app closed. Returning to Spatial grid.');
     });
+
+    // Touch / swipe support for mobile
+    let touchStartX = 0, touchStartY = 0;
+    gridEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    gridEl.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      const threshold = 40;
+
+      if (absDx < threshold && absDy < threshold) return; // Too short, ignore
+
+      if (absDx > absDy) {
+        // Horizontal swipe
+        processNavigation(dx > 0 ? '6' : '4');
+      } else {
+        // Vertical swipe
+        processNavigation(dy > 0 ? '8' : '2');
+      }
+    }, { passive: true });
+
+    // ── URL Route Handling ──
+    function handleRoute() {
+      const url = new URL(window.location.href);
+      const appSlug = url.searchParams.get('app');
+      if (appSlug) {
+        const app = getApp(appSlug);
+        if (app && app.url && app.url !== 'offline') {
+          launchLiveApp(appSlug);
+        }
+      }
+    }
+
+    // ── Initialize ──
+    renderGrid();
+    renderHUD();
+    renderConsole();
+    handleRoute();
+
+    addLog('[SPATIAL] Engine initialized. Use arrow keys, WASD, or numpad 1-9 to navigate.');
+    addLog('[SPATIAL] Press ESC or tap center node [5] to return to Home Anchor.');
+    renderConsole();
+
+  })();
   </script>
-  <!-- MODULAR CORE -->
+
+  <!-- External scripts (order matters) -->
   <script src="daxini-registry.js"></script>
   <script src="daxini-passport.js"></script>
   <script src="pattern-tracer.js"></script>
-  <script src="os-shell.js"></script>
-  <script src="daxini-ui.js"></script>
-
-  <script>
-    // Starfield initializer (one-off)
-    (function() {
-      const sf = document.getElementById('starfield');
-      for (let i = 0; i < 60; i++) {
-        const star = document.createElement('div');
-        star.style.cssText = `position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; top:${Math.random()*100}%; left:${Math.random()*100}%; opacity:${Math.random()};`;
-        sf.appendChild(star);
-      }
-    })();
-
-    // Helper to route logs to spatial-engine's diagnostics
-    window.logDiag = function(action, message) {
-        if (window.OS && window.OS.updateDiagnostics) {
-            window.OS.updateDiagnostics('ZAYVORA', action, message);
-        } else {
-            console.log(`[${action}] ${message}`);
-        }
-    };
-  </script>
+  <script src="/assets/js/sovereign-analytics.js" defer></script>
 </body>
 </html>
