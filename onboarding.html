@@ -1,780 +1,904 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daxini Space - Onboarding</title>
-    <script src="/assets/js/sovereign-analytics.js" defer></script>
-    <style>
-        :root {
-            --bg-primary: #030508;
-            --bg-secondary: #0a0c10;
-            --bg-tertiary: #12161f;
-            --text-primary: #ffffff;
-            --text-secondary: #8b90a0;
-            --accent: #ff671f; /* Daxini Space Saffron */
-            --accent-glow: rgba(255, 103, 31, 0.3);
-            --accent-light: #ff8c52;
-            --border: #222222;
-            --success: #2ecc71;
-            --success-glow: rgba(46, 204, 113, 0.2);
-            --sheet-bg: #0d0f14;
-            --ui-light: #ffffff;
-            --ui-gray: #f3f4f6;
-            --ui-dark: #1e293b;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Daxini.space — Welcome to Spatial OS</title>
+  <meta name="description" content="Learn how to navigate the Daxini Spatial OS — a fractal 3x3 matrix you traverse with keyboard, touch, or numpad.">
+  <link rel="icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050508;
+      --bg-card: #0c0e14;
+      --bg-elevated: #141620;
+      --text-primary: #ffffff;
+      --text-secondary: #6b7094;
+      --accent: #00ffcc;
+      --accent-glow: rgba(0, 255, 204, 0.25);
+      --accent-dim: rgba(0, 255, 204, 0.08);
+      --saffron: #ff671f;
+      --saffron-glow: rgba(255, 103, 31, 0.25);
+      --amber: #ffcc00;
+      --red: #ff5a46;
+      --border: #1a1d2e;
+      --border-dim: rgba(255,255,255,0.06);
+      --font-mono: 'Fira Code', monospace;
+      --font-display: 'Space Grotesk', sans-serif;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            height: 100dvh;
-            width: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
+    body {
+      font-family: var(--font-display);
+      background: var(--bg);
+      color: var(--text-primary);
+      height: 100dvh;
+      width: 100vw;
+      overflow: hidden;
+      position: fixed;
+    }
 
-        button:focus-visible {
-            outline: 2px solid var(--accent-light);
-            outline-offset: 2px;
-        }
+    /* ── Layout ── */
+    .onboarding { width: 100%; height: 100%; position: relative; }
 
-        /* --- LAYOUT & NAVIGATION --- */
-        .onboarding-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: max(env(safe-area-inset-top, 20px), 2rem) 1.5rem max(env(safe-area-inset-bottom, 20px), 5rem);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+      transform: scale(0.97);
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
 
-        .screen {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: max(env(safe-area-inset-top, 20px), 2rem) 1.5rem max(env(safe-area-inset-bottom, 20px), 5rem);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: scale(0.98);
-        }
+    /* ── Skip ── */
+    .skip-btn {
+      position: absolute;
+      top: max(env(safe-area-inset-top, 16px), 1.5rem);
+      right: 1.5rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      z-index: 50;
+      cursor: pointer;
+      transition: color 0.2s;
+      letter-spacing: 0.5px;
+    }
+    .skip-btn:hover, .skip-btn:active { color: var(--accent); }
 
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-        }
+    /* ── Progress Dots ── */
+    .progress-dots {
+      position: absolute;
+      bottom: max(env(safe-area-inset-bottom, 16px), 2rem);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 50;
+    }
+    .pdot {
+      width: 6px; height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      transition: all 0.3s ease;
+    }
+    .pdot.active {
+      width: 28px;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
 
-        .skip-btn {
-            position: absolute;
-            top: max(env(safe-area-inset-top, 16px), 1.5rem);
-            right: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            background: none;
-            border: none;
-            z-index: 10;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
+    /* ── Typography ── */
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 8vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.6rem;
+      text-align: center;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #fff 0%, #7a7e96 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 320px;
+      line-height: 1.5;
+    }
 
-        .skip-btn:active { color: var(--text-primary); }
+    /* ── CTA Button ── */
+    .cta {
+      width: 100%;
+      max-width: 340px;
+      height: 54px;
+      border-radius: 14px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.3px;
+    }
+    .cta:active { transform: scale(0.98); background: var(--bg-card); }
+    .cta.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #050508;
+      font-weight: 700;
+      box-shadow: 0 8px 28px var(--accent-glow);
+    }
+    .cta.primary:active {
+      background: #00e0b5;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
 
-        .progress-dots {
-            position: absolute;
-            bottom: max(env(safe-area-inset-bottom, 16px), 2rem);
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
+    /* ── Visual Container ── */
+    .visual {
+      width: 100%;
+      max-width: 360px;
+      height: 260px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
 
-        .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--border);
-            transition: all 0.3s ease;
-        }
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 1 — "Navigate Space, Not Windows"
+       ══════════════════════════════════════════════════════════ */
+    .s1-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 6px;
+      width: 220px;
+      height: 220px;
+    }
+    .s1-cell {
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      background: rgba(10, 12, 18, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      opacity: 0;
+      transition: all 0.4s;
+    }
+    .s1-cell.center {
+      border-color: rgba(0, 255, 204, 0.3);
+      background: rgba(0, 40, 35, 0.25);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 12px;
+    }
+    /* Staggered cell entrance */
+    .screen[data-i="0"].active .s1-cell:nth-child(1) { animation: cellFadeIn 0.35s 0.1s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(2) { animation: cellFadeIn 0.35s 0.18s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(3) { animation: cellFadeIn 0.35s 0.26s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(4) { animation: cellFadeIn 0.35s 0.34s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(5) { animation: cellFadeIn 0.35s 0.42s var(--ease-out) forwards, centerPulse 2.5s 1s infinite alternate; }
+    .screen[data-i="0"].active .s1-cell:nth-child(6) { animation: cellFadeIn 0.35s 0.50s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(7) { animation: cellFadeIn 0.35s 0.58s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(8) { animation: cellFadeIn 0.35s 0.66s var(--ease-out) forwards; }
+    .screen[data-i="0"].active .s1-cell:nth-child(9) { animation: cellFadeIn 0.35s 0.74s var(--ease-out) forwards; }
 
-        .dot.active {
-            width: 24px;
-            background: var(--accent);
-        }
+    @keyframes cellFadeIn {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes centerPulse {
+      0% { box-shadow: 0 0 12px rgba(0,255,204,0.15); border-color: rgba(0,255,204,0.3); }
+      100% { box-shadow: 0 0 30px rgba(0,255,204,0.35); border-color: rgba(0,255,204,0.6); }
+    }
 
-        /* --- TYPOGRAPHY & BUTTONS --- */
-        h1 {
-            font-size: clamp(1.8rem, 7vw, 2.3rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            line-height: 1.15;
-            background: linear-gradient(180deg, #fff 0%, #a0a0a0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    /* Scanline over the grid */
+    .s1-scanline {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: 8px;
+      opacity: 0.06;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,204,0.2) 2px, rgba(0,255,204,0.2) 4px);
+    }
 
-        p.sub {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 2rem;
-            max-width: 320px;
-            line-height: 1.45;
-        }
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 2 — "9 Keys. Infinite Depth."
+       ══════════════════════════════════════════════════════════ */
+    .s2-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 6px;
+      width: 200px;
+      height: 200px;
+      position: relative;
+    }
+    .s2-cell {
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      background: rgba(10, 12, 18, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-secondary);
+      position: relative;
+      transition: all 0.3s;
+    }
+    .s2-cell.center { border-color: rgba(0,255,204,0.3); color: var(--accent); }
 
-        .cta-btn {
-            width: 100%;
-            max-width: 340px;
-            height: 56px;
-            border-radius: 16px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
+    /* Animated cursor dot */
+    .s2-cursor {
+      position: absolute;
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 16px var(--accent-glow), 0 0 40px rgba(0,255,204,0.15);
+      z-index: 20;
+      opacity: 0;
+    }
+    .screen[data-i="1"].active .s2-cursor {
+      animation: cursorTravel 4s 0.5s var(--ease-out) infinite;
+    }
+    @keyframes cursorTravel {
+      0%   { opacity: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+      15%  { opacity: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+      30%  { opacity: 1; top: 12%; left: 50%; transform: translate(-50%,-50%); }
+      45%  { opacity: 1; top: 12%; left: 50%; transform: translate(-50%,-50%); }
+      60%  { opacity: 1; top: 12%; left: 88%; transform: translate(-50%,-50%); }
+      75%  { opacity: 1; top: 12%; left: 88%; transform: translate(-50%,-50%); }
+      85%  { opacity: 0.4; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+      100% { opacity: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    }
 
-        .cta-btn:active { transform: scale(0.98); background: var(--bg-secondary); }
+    /* Trace line */
+    .s2-trace-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .s2-trace-line {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+    }
+    .screen[data-i="1"].active .s2-trace-line {
+      animation: drawTrace 4s 0.5s linear infinite;
+    }
+    @keyframes drawTrace {
+      0%   { stroke-dashoffset: 400; opacity: 0; }
+      15%  { stroke-dashoffset: 400; opacity: 1; }
+      60%  { stroke-dashoffset: 0; opacity: 1; }
+      80%  { stroke-dashoffset: 0; opacity: 0.3; }
+      100% { stroke-dashoffset: 400; opacity: 0; }
+    }
 
-        .cta-btn.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            box-shadow: 0 8px 24px var(--accent-glow);
-        }
+    /* HUD tick */
+    .s2-hud {
+      position: absolute;
+      top: -8px;
+      right: -40px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      background: rgba(5, 8, 12, 0.85);
+      border: 1px solid rgba(0,255,204,0.12);
+      border-radius: 4px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      opacity: 0;
+    }
+    .screen[data-i="1"].active .s2-hud {
+      animation: hudFadeIn 0.4s 1s var(--ease-out) forwards;
+    }
+    @keyframes hudFadeIn {
+      0% { opacity: 0; transform: translateX(10px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
 
-        .cta-btn.primary:active {
-            background: #e05310;
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 3 — "Floors, Not Folders."
+       ══════════════════════════════════════════════════════════ */
+    .s3-floors {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .s3-floor {
+      width: 200px;
+      height: 52px;
+      border: 1px solid var(--border-dim);
+      border-radius: 8px;
+      background: rgba(10, 12, 18, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-secondary);
+      position: relative;
+      transition: all 0.3s;
+    }
+    .s3-floor.current {
+      border-color: rgba(0, 255, 204, 0.4);
+      background: rgba(0, 40, 35, 0.2);
+      color: var(--accent);
+      box-shadow: 0 0 20px rgba(0,255,204,0.1);
+    }
+    .s3-z-label {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .s3-floor-label { opacity: 0.6; }
 
-        .cta-btn.secondary-link {
-            background: transparent;
-            border: none;
-            color: var(--accent-light);
-            font-size: 0.95rem;
-            font-weight: 500;
-            height: auto;
-            margin-top: 12px;
-            cursor: pointer;
-            text-decoration: underline;
-        }
+    /* Connector lines */
+    .s3-connector {
+      width: 2px;
+      height: 16px;
+      background: rgba(255,255,255,0.08);
+      position: relative;
+    }
 
-        /* --- VISUAL CONTAINERS --- */
-        .visual-container {
-            width: 100%;
-            max-width: 340px;
-            height: 240px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2rem;
-            background: radial-gradient(circle at center, rgba(255,103,31,0.04) 0%, transparent 70%);
-        }
+    /* Lift arrows */
+    .s3-lift-up, .s3-lift-down {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: absolute;
+    }
+    .s3-lift-up {
+      top: -2px; right: -80px;
+      color: var(--accent);
+    }
+    .s3-lift-down {
+      bottom: -2px; right: -80px;
+      color: var(--amber);
+    }
 
-        /* --- SCREEN 1 VISUAL: APP GRID TILES --- */
-        .s1-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 100%;
-            padding: 20px;
-            perspective: 1000px;
-        }
+    /* Animated elevator dot */
+    .s3-elevator {
+      position: absolute;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--accent-glow);
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+    .screen[data-i="2"].active .s3-elevator {
+      animation: elevatorRide 3s 0.6s ease-in-out infinite;
+    }
+    @keyframes elevatorRide {
+      0%   { top: 65%; opacity: 1; }
+      25%  { top: 35%; opacity: 1; }
+      40%  { top: 5%; opacity: 1; }
+      55%  { top: 5%; opacity: 0.6; }
+      70%  { top: 35%; opacity: 1; }
+      85%  { top: 65%; opacity: 1; }
+      100% { top: 65%; opacity: 1; }
+    }
 
-        .s1-tile {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            opacity: 0;
-            transform: translateZ(-100px) rotateX(20deg);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
+    /* Animate current floor highlight */
+    .screen[data-i="2"].active .s3-floor.current {
+      animation: floorPulse 3s 0.6s ease-in-out infinite;
+    }
+    @keyframes floorPulse {
+      0%   { box-shadow: 0 0 20px rgba(0,255,204,0.1); }
+      40%  { box-shadow: 0 0 30px rgba(0,255,204,0.25); }
+      100% { box-shadow: 0 0 20px rgba(0,255,204,0.1); }
+    }
 
-        .s1-tile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(255, 103, 31, 0.1);
-            border: 1px solid rgba(255, 103, 31, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            color: var(--accent);
-        }
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 4 — "Patterns Unlock Apps."
+       ══════════════════════════════════════════════════════════ */
+    .s4-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .s1-tile-label {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 3px;
-        }
-        .s1-tile-label.short { width: 60%; }
+    /* Direction arrows */
+    .s4-arrow {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      opacity: 0;
+    }
+    .s4-arrow.up    { top: 30px; left: 50%; transform: translateX(-50%); color: var(--accent); }
+    .s4-arrow.right { top: 50%; right: 30px; transform: translateY(-50%); color: var(--accent); }
+    .s4-arrow.down  { bottom: 30px; left: 50%; transform: translateX(-50%); color: var(--amber); }
 
-        /* Screen 1 Animation */
-        .screen[data-index="0"].active .s1-tile:nth-child(1) { animation: tileIn 0.5s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .screen[data-index="0"].active .s1-tile:nth-child(2) { animation: tileIn 0.5s 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .screen[data-index="0"].active .s1-tile:nth-child(3) { animation: tileIn 0.5s 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .screen[data-index="0"].active .s1-tile:nth-child(4) { animation: tileIn 0.5s 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .screen[data-index="0"].active .s1-tile:nth-child(5) { animation: tileIn 0.5s 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .screen[data-index="0"].active .s1-tile:nth-child(6) { animation: tileIn 0.5s 0.95s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .screen[data-i="3"].active .s4-arrow.up    { animation: arrowAppear 0.4s 0.3s var(--ease-out) forwards; }
+    .screen[data-i="3"].active .s4-arrow.right { animation: arrowAppear 0.4s 0.8s var(--ease-out) forwards; }
+    .screen[data-i="3"].active .s4-arrow.down  { animation: arrowAppear 0.4s 1.3s var(--ease-out) forwards; }
 
-        @keyframes tileIn {
-            0% { opacity: 0; transform: translateZ(-100px) rotateX(20deg); }
-            100% { opacity: 1; transform: translateZ(0) rotateX(0); }
-        }
+    @keyframes arrowAppear {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
 
-        /* --- SCREEN 2 VISUAL: PUBLISHING PROCESS --- */
-        .s2-visual-container {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-            justify-content: center;
-        }
+    /* Trace line connecting the pattern */
+    .s4-trace-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .s4-trace-path {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+    }
+    .screen[data-i="3"].active .s4-trace-path {
+      animation: drawMacroTrace 1.5s 0.3s ease-in-out forwards;
+    }
+    @keyframes drawMacroTrace {
+      100% { stroke-dashoffset: 0; }
+    }
 
-        .s2-node {
-            width: 90px;
-            height: 90px;
-            border-radius: 16px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: scale(0.9);
-        }
+    /* App shard that materializes */
+    .s4-shard {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: var(--bg-elevated);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+    .s4-shard-icon { font-size: 18px; }
+    .screen[data-i="3"].active .s4-shard {
+      animation: shardBurst 0.6s 2s var(--ease-out) forwards;
+    }
+    @keyframes shardBurst {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
 
-        .s2-node.logichub {
-            border-color: #00e5ff;
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.05), rgba(10, 12, 16, 0.5));
-        }
+    /* Pattern label */
+    .s4-pattern-label {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      opacity: 0;
+      white-space: nowrap;
+    }
+    .screen[data-i="3"].active .s4-pattern-label {
+      animation: labelFade 0.4s 2.2s var(--ease-out) forwards;
+    }
+    @keyframes labelFade {
+      0% { opacity: 0; } 100% { opacity: 0.7; }
+    }
 
-        .s2-node.daxini {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(255, 103, 31, 0.05), rgba(10, 12, 16, 0.5));
-        }
+    /* ══════════════════════════════════════════════════════════
+       SLIDE 5 — "Your OS Awaits."
+       ══════════════════════════════════════════════════════════ */
+    .s5-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      width: 240px;
+      height: 240px;
+      perspective: 600px;
+    }
+    .s5-cell {
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      background: rgba(10, 12, 18, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-family: var(--font-mono);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .s5-cell .cell-icon { font-size: 16px; }
+    .s5-cell .cell-name {
+      font-size: 7px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .s5-cell.center-cell {
+      border-color: rgba(0,255,204,0.4);
+      background: rgba(0, 40, 35, 0.25);
+    }
+    .s5-cell.center-cell .cell-name { color: var(--accent); font-weight: 700; }
 
-        .s2-node-icon {
-            font-size: 1.5rem;
-        }
+    .screen[data-i="4"].active .s5-grid {
+      animation: gridPerspective 1.5s 0.2s var(--ease-out) forwards;
+    }
+    .screen[data-i="4"].active .s5-cell:nth-child(1) { animation: cellZoomIn 0.4s 0.2s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(2) { animation: cellZoomIn 0.4s 0.28s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(3) { animation: cellZoomIn 0.4s 0.36s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(4) { animation: cellZoomIn 0.4s 0.44s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(5) { animation: cellZoomIn 0.4s 0.52s var(--ease-out) forwards, centerPulse 2.5s 1.2s infinite alternate; }
+    .screen[data-i="4"].active .s5-cell:nth-child(6) { animation: cellZoomIn 0.4s 0.60s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(7) { animation: cellZoomIn 0.4s 0.68s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(8) { animation: cellZoomIn 0.4s 0.76s var(--ease-out) forwards; }
+    .screen[data-i="4"].active .s5-cell:nth-child(9) { animation: cellZoomIn 0.4s 0.84s var(--ease-out) forwards; }
 
-        .s2-node-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-        .s2-node.logichub .s2-node-label { color: #00e5ff; }
-        .s2-node.daxini .s2-node-label { color: var(--accent); }
+    @keyframes gridPerspective {
+      0% { transform: rotateX(15deg) scale(0.85); }
+      100% { transform: rotateX(0deg) scale(1); }
+    }
+    @keyframes cellZoomIn {
+      0% { opacity: 0; transform: scale(0.5) translateZ(-30px); }
+      100% { opacity: 1; transform: scale(1) translateZ(0); }
+    }
 
-        .s2-arrow {
-            position: relative;
-            width: 60px;
-            height: 2px;
-            background: var(--border);
-            opacity: 0;
-        }
+    /* Console cursor at bottom of visual */
+    .s5-console {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+    }
+    .s5-console .blink-cursor {
+      display: inline-block;
+      width: 6px; height: 12px;
+      background: var(--accent);
+      animation: blinkC 1.2s step-start infinite;
+    }
+    .screen[data-i="4"].active .s5-console {
+      animation: labelFade 0.4s 1.2s var(--ease-out) forwards;
+    }
+    @keyframes blinkC { 50% { opacity: 0; } }
 
-        .s2-arrow::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: -4px;
-            width: 10px;
-            height: 10px;
-            border-top: 2px solid var(--border);
-            border-right: 2px solid var(--border);
-            transform: rotate(45deg);
-        }
+    /* Scanline sweep for Slide 5 */
+    .s5-sweep {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,255,204,0.06) 50%, transparent 100%);
+      background-size: 100% 40px;
+      opacity: 0;
+    }
+    .screen[data-i="4"].active .s5-sweep {
+      opacity: 1;
+      animation: sweepDown 4s 1s linear infinite;
+    }
+    @keyframes sweepDown {
+      0% { background-position: 0 -40px; }
+      100% { background-position: 0 260px; }
+    }
 
-        .s2-arrow-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, #00e5ff, var(--accent));
-        }
-
-        .s2-arrow-fill::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: -4px;
-            width: 10px;
-            height: 10px;
-            border-top: 2px solid var(--accent);
-            border-right: 2px solid var(--accent);
-            transform: rotate(45deg);
-            opacity: 0;
-        }
-
-        /* Screen 2 Animations */
-        .screen[data-index="1"].active .logichub { animation: nodeIn 0.5s 0.2s forwards; }
-        .screen[data-index="1"].active .s2-arrow { animation: arrowFadeIn 0.3s 0.6s forwards; }
-        .screen[data-index="1"].active .s2-arrow-fill { animation: arrowFlow 0.8s 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .screen[data-index="1"].active .s2-arrow-fill::after { animation: arrowTipFade 0.1s 1.5s forwards; }
-        .screen[data-index="1"].active .daxini { animation: nodeIn 0.5s 1.5s forwards; }
-
-        @keyframes nodeIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes arrowFadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes arrowFlow {
-            0% { width: 0; }
-            100% { width: 100%; }
-        }
-
-        @keyframes arrowTipFade {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* --- SCREEN 3 VISUAL: OWNERSHIP --- */
-        .s3-visual {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .s3-tree {
-            position: absolute;
-            left: 10px;
-            width: 170px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #d1d5db;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .s3-tree-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-        .s3-tree-item.indent { padding-left: 14px; }
-        .s3-tree-item.indent-2 { padding-left: 28px; }
-        
-        .s3-tree-item svg {
-            width: 12px; height: 12px;
-        }
-        .s3-tree-item.folder svg { fill: #f59e0b; }
-        .s3-tree-item.file svg { fill: var(--text-secondary); }
-
-        .s3-badge-container {
-            position: absolute;
-            right: 15px;
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 103, 31, 0.1) 0%, transparent 70%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        .s3-own-badge {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            color: #030508;
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            padding: 12px 18px;
-            border-radius: 30px;
-            box-shadow: 0 10px 25px var(--accent-glow);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: badgePulse 2s infinite alternate;
-        }
-
-        /* Screen 3 Animations */
-        .screen[data-index="2"].active .s3-tree { animation: slideInLeft 0.5s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .screen[data-index="2"].active .s3-badge-container { animation: slideInRight 0.5s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-        @keyframes slideInLeft {
-            0% { opacity: 0; transform: translateX(-20px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInRight {
-            0% { opacity: 0; transform: translateX(20px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes badgePulse {
-            0% { transform: scale(1); box-shadow: 0 10px 25px var(--accent-glow); }
-            100% { transform: scale(1.04); box-shadow: 0 15px 35px var(--accent-glow); }
-        }
-
-        /* --- SCREEN 4 VISUAL: BEACON / ACTIVATION --- */
-        .s4-visual {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .s4-beacon {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px var(--accent-glow);
-            z-index: 5;
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .s4-beacon svg {
-            width: 32px;
-            height: 32px;
-            color: #030508;
-        }
-
-        .s4-ring {
-            position: absolute;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-            opacity: 0;
-            z-index: 1;
-        }
-
-        /* Screen 4 Animations */
-        .screen[data-index="3"].active .s4-ring:nth-child(1) { animation: ripple 2s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
-        .screen[data-index="3"].active .s4-ring:nth-child(2) { animation: ripple 2s 0.6s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
-        .screen[data-index="3"].active .s4-ring:nth-child(3) { animation: ripple 2s 1.2s infinite cubic-bezier(0.1, 0.8, 0.3, 1); }
-
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.4); opacity: 0; }
-        }
-
-    </style>
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      .s1-grid { width: 180px; height: 180px; }
+      .s2-grid { width: 160px; height: 160px; }
+      .s3-floor { width: 170px; }
+      .s4-container { width: 200px; height: 200px; }
+      .s5-grid { width: 200px; height: 200px; }
+      .visual { height: 220px; }
+      .s2-hud { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-    <button class="skip-btn" onclick="enterMarketplace(true)">Skip</button>
+  <button class="skip-btn" onclick="enterOS(true)">Skip →</button>
 
-    <div class="onboarding-container">
-        
-        <!-- SCREEN 1: HOOK -->
-        <div class="screen active" data-index="0">
-            <div class="visual-container">
-                <div class="s1-grid">
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">📝</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">🎨</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">📊</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">💡</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">🎵</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                    <div class="s1-tile">
-                        <div class="s1-tile-icon">🎮</div>
-                        <div class="s1-tile-label"></div>
-                        <div class="s1-tile-label short"></div>
-                    </div>
-                </div>
-            </div>
-            <h1>Discover Apps<br>Built To Be Owned</h1>
-            <p class="sub">Browse, install, and remix decentralized apps built by independent creators.</p>
-            <button class="cta-btn" onclick="nextScreen()">Continue</button>
+  <div class="onboarding">
+
+    <!-- ═══ SLIDE 1: THE HOOK ═══ -->
+    <div class="screen active" data-i="0">
+      <div class="visual">
+        <div class="s1-grid">
+          <div class="s1-cell">[1]</div>
+          <div class="s1-cell">▲ UP</div>
+          <div class="s1-cell">[3]</div>
+          <div class="s1-cell">◄</div>
+          <div class="s1-cell center">⌂ [5]</div>
+          <div class="s1-cell">►</div>
+          <div class="s1-cell">[7]</div>
+          <div class="s1-cell">▼ DN</div>
+          <div class="s1-cell">[9]</div>
         </div>
-
-        <!-- SCREEN 2: PUBLISHING -->
-        <div class="screen" data-index="1">
-            <div class="visual-container">
-                <div class="s2-visual-container">
-                    <div class="s2-node logichub">
-                        <span class="s2-node-icon">🛠️</span>
-                        <span class="s2-node-label">LogicHub</span>
-                    </div>
-                    <div class="s2-arrow">
-                        <div class="s2-arrow-fill"></div>
-                    </div>
-                    <div class="s2-node daxini">
-                        <span class="s2-node-icon">🚀</span>
-                        <span class="s2-node-label">Daxini</span>
-                    </div>
-                </div>
-            </div>
-            <h1>From Builder<br>To Marketplace</h1>
-            <p class="sub">Every app published from LogicHub lands here — with source code, APK, and install links.</p>
-            <button class="cta-btn" onclick="nextScreen()">Continue</button>
-        </div>
-
-        <!-- SCREEN 3: OWNERSHIP -->
-        <div class="screen" data-index="2">
-            <div class="visual-container">
-                <div class="s3-visual">
-                    <div class="s3-tree">
-                        <div class="s3-tree-item folder">
-                            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            <span>app/</span>
-                        </div>
-                        <div class="s3-tree-item folder indent">
-                            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                            <span>src/</span>
-                        </div>
-                        <div class="s3-tree-item file indent-2">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                            <span>index.html</span>
-                        </div>
-                        <div class="s3-tree-item file indent-2">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path></svg>
-                            <span>main.js</span>
-                        </div>
-                    </div>
-                    <div class="s3-badge-container">
-                        <div class="s3-own-badge">100% Yours</div>
-                    </div>
-                </div>
-            </div>
-            <h1>Install. Remix.<br>Redistribute.</h1>
-            <p class="sub">Every listing includes source code. Fork it, improve it, and republish it forever.</p>
-            <button class="cta-btn" onclick="nextScreen()">Continue</button>
-        </div>
-
-        <!-- SCREEN 4: ACTIVATION -->
-        <div class="screen" data-index="3">
-            <div class="visual-container">
-                <div class="s4-visual">
-                    <div class="s4-ring"></div>
-                    <div class="s4-ring"></div>
-                    <div class="s4-ring"></div>
-                    <div class="s4-beacon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                            <path d="M2 12h20"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <h1>Enter the<br>Marketplace</h1>
-            <p class="sub">Start browsing creator apps, or build your own app to publish.</p>
-            
-            <button class="cta-btn primary" onclick="enterMarketplace(false)">Browse Marketplace</button>
-            <button class="cta-btn secondary-link" onclick="goToLogicHub()">Build an App →</button>
-        </div>
-
+        <div class="s1-scanline"></div>
+      </div>
+      <h1>Navigate Space,<br>Not Windows.</h1>
+      <p class="sub">A spatial operating system. No desktop. No menus. Just a fractal grid you traverse with your keyboard.</p>
+      <button class="cta" onclick="goTo(1)">Continue</button>
     </div>
 
-    <!-- PROGRESS INDICATOR -->
-    <div class="progress-dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+    <!-- ═══ SLIDE 2: THE GRID ═══ -->
+    <div class="screen" data-i="1">
+      <div class="visual">
+        <div class="s2-grid">
+          <div class="s2-cell">[1]</div>
+          <div class="s2-cell">[2]</div>
+          <div class="s2-cell">[3]</div>
+          <div class="s2-cell">[4]</div>
+          <div class="s2-cell center">[5]</div>
+          <div class="s2-cell">[6]</div>
+          <div class="s2-cell">[7]</div>
+          <div class="s2-cell">[8]</div>
+          <div class="s2-cell">[9]</div>
+          <!-- Animated cursor -->
+          <div class="s2-cursor"></div>
+          <!-- Trace line: center → 2 → 6 -->
+          <svg class="s2-trace-svg" viewBox="0 0 200 200">
+            <polyline class="s2-trace-line" fill="none" stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              points="100,100 100,33 167,33"/>
+          </svg>
+          <!-- HUD -->
+          <div class="s2-hud">
+            <span>DEPTH: 2/4</span>
+            <span>ELEV: +1</span>
+          </div>
+        </div>
+      </div>
+      <h1>9 Keys.<br>Infinite Depth.</h1>
+      <p class="sub">Use arrow keys, WASD, or numpad 1–9 to move through sectors. Each room contains a new grid inside it.</p>
+      <button class="cta" onclick="goTo(2)">Continue</button>
     </div>
 
-    <script>
-        // Check local storage bypass
-        if (localStorage.getItem('ds_onboarding_complete') === 'true') {
-            window.location.replace('/');
+    <!-- ═══ SLIDE 3: THE ELEVATORS ═══ -->
+    <div class="screen" data-i="2">
+      <div class="visual">
+        <div class="s3-floors">
+          <div class="s3-floor">
+            <span class="s3-z-label">Z: +1</span>
+            <span class="s3-floor-label">UPPER FLOOR</span>
+            <span class="s3-lift-up" style="top: 8px;">▲ [2] LIFT UP</span>
+          </div>
+          <div class="s3-connector"></div>
+          <div class="s3-floor current">
+            <span class="s3-z-label">Z: 0</span>
+            <span class="s3-floor-label">CURRENT FLOOR</span>
+          </div>
+          <div class="s3-connector"></div>
+          <div class="s3-floor">
+            <span class="s3-z-label">Z: −1</span>
+            <span class="s3-floor-label">LOWER FLOOR</span>
+            <span class="s3-lift-down" style="bottom: 8px;">▼ [8] LIFT DOWN</span>
+          </div>
+          <!-- Elevator dot -->
+          <div class="s3-elevator"></div>
+        </div>
+      </div>
+      <h1>Floors, Not<br>Folders.</h1>
+      <p class="sub">Node 2 lifts you up. Node 8 takes you down. Navigate 3D space with just two keys.</p>
+      <button class="cta" onclick="goTo(3)">Continue</button>
+    </div>
+
+    <!-- ═══ SLIDE 4: THE MACROS ═══ -->
+    <div class="screen" data-i="3">
+      <div class="visual">
+        <div class="s4-container">
+          <!-- Direction arrows -->
+          <div class="s4-arrow up">▲</div>
+          <div class="s4-arrow right">►</div>
+          <div class="s4-arrow down">▼</div>
+
+          <!-- Golden trace line: UP → RIGHT → DOWN -->
+          <svg class="s4-trace-svg" viewBox="0 0 240 240">
+            <polyline class="s4-trace-path" fill="none" stroke="#ffcc00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+              points="120,40 200,120 120,200"/>
+          </svg>
+
+          <!-- App shard -->
+          <div class="s4-shard">
+            <span class="s4-shard-icon">⚡</span>
+            <span>ZAYVORA ENGINE</span>
+          </div>
+
+          <!-- Pattern label -->
+          <div class="s4-pattern-label">PATTERN: ▲ ► ▼</div>
+        </div>
+      </div>
+      <h1>Patterns<br>Unlock Apps.</h1>
+      <p class="sub">Specific key sequences activate suspended app shards. Discover hidden tools by drawing patterns.</p>
+      <button class="cta" onclick="goTo(4)">Continue</button>
+    </div>
+
+    <!-- ═══ SLIDE 5: FINAL CTA ═══ -->
+    <div class="screen" data-i="4">
+      <div class="visual">
+        <div class="s5-grid">
+          <div class="s5-cell"><span class="cell-icon">⚗️</span><span class="cell-name">Prompt<br>Alchemy</span></div>
+          <div class="s5-cell"><span class="cell-icon">▲</span><span class="cell-name">Lift Up</span></div>
+          <div class="s5-cell"><span class="cell-icon">🎬</span><span class="cell-name">Daxini<br>Lens</span></div>
+          <div class="s5-cell"><span class="cell-icon">📄</span><span class="cell-name">SOP<br>Builder</span></div>
+          <div class="s5-cell center-cell"><span class="cell-icon">⌂</span><span class="cell-name">Home<br>Anchor</span></div>
+          <div class="s5-cell"><span class="cell-icon">🕹️</span><span class="cell-name">Via<br>Logic</span></div>
+          <div class="s5-cell"><span class="cell-icon">📚</span><span class="cell-name">Study<br>OS</span></div>
+          <div class="s5-cell"><span class="cell-icon">▼</span><span class="cell-name">Lift Down</span></div>
+          <div class="s5-cell"><span class="cell-icon">🧪</span><span class="cell-name">Alche-<br>mist</span></div>
+        </div>
+        <div class="s5-sweep"></div>
+        <div class="s5-console">
+          <span>SYS_LOG ▸ READY</span>
+          <span class="blink-cursor"></span>
+        </div>
+      </div>
+      <h1>Your OS<br>Awaits.</h1>
+      <p class="sub">Press ESC anytime to return home. The grid remembers your path.</p>
+      <button class="cta primary" onclick="enterOS(false)">Enter Spatial OS</button>
+    </div>
+
+  </div>
+
+  <!-- Progress Dots -->
+  <div class="progress-dots">
+    <div class="pdot active"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+  </div>
+
+  <script>
+    // ── Bypass if already onboarded ──
+    if (localStorage.getItem('daxini_onboarding_complete') === 'true') {
+      window.location.href = '/';
+    }
+
+    // ── Telemetry ──
+    let userId = 'anon_guest';
+    try {
+      const saved = JSON.parse(localStorage.getItem('lh_aporaksha_user') || '{}');
+      if (saved && saved.uid) { userId = saved.uid; }
+      else {
+        let anonId = localStorage.getItem('daxini_anon_id');
+        if (!anonId) {
+          anonId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
+          localStorage.setItem('daxini_anon_id', anonId);
         }
+        userId = anonId;
+      }
+    } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
 
-        // Setup identifiers
-        let userId = 'anon_ds_guest';
-        try {
-            let savedUser = JSON.parse(localStorage.getItem('lh_aporaksha_user') || '{}');
-            if (savedUser && savedUser.uid) {
-                userId = savedUser.uid;
-            } else {
-                let anonId = localStorage.getItem('lh_anonymous_id');
-                if (anonId) userId = anonId;
-            }
-        } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
+    function track(event, meta = {}) {
+      try {
+        fetch('/api/analytics-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event, userId, metadata: meta }),
+          keepalive: true
+        }).catch(() => {});
+      } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
+    }
+    track('onboarding_started');
 
-        let sessionId = 'ds_session_guest';
-        try {
-            let sessId = sessionStorage.getItem('ds_session_id');
-            if (!sessId) {
-                sessId = 'ds_sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
-                sessionStorage.setItem('ds_session_id', sessId);
-            }
-            sessionId = sessId;
-        } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
+    // ── State ──
+    let current = 0;
+    const screens = document.querySelectorAll('.screen');
+    const dots = document.querySelectorAll('.pdot');
+    const total = screens.length;
 
-        // Resolve backend URL based on env
-        function getBackendUrl() {
-            const host = window.location.hostname;
-            if (host === 'localhost' || host === '127.0.0.1') {
-                return 'http://localhost:7001/api/analytics-event';
-            }
-            return 'https://logichub.app/api/analytics-event';
+    function updateUI() {
+      screens.forEach((s, i) => {
+        s.classList.toggle('active', i === current);
+        // Force animation re-trigger
+        if (i === current) {
+          s.classList.remove('active');
+          void s.offsetWidth;
+          s.classList.add('active');
         }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      track('screen_' + current + '_viewed');
+    }
 
-        async function trackTelemetry(eventName, metadata = {}) {
-            try {
-                const payload = {
-                    event: eventName,
-                    userId: userId,
-                    sessionId: sessionId,
-                    metadata: metadata
-                };
-                await fetch(getBackendUrl(), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    keepalive: true
-                });
-            } catch (err) {
-                console.error('[Telemetry] Failed to track event:', eventName, err);
-            }
-        }
-
-        // Emit onboarding started event
-        trackTelemetry('ds_onboarding_started');
-
-        let currentScreen = 0;
-        const screens = document.querySelectorAll('.screen');
-        const dots = document.querySelectorAll('.dot');
-        const totalScreens = screens.length;
-
-        function updateUI() {
-            screens.forEach((s, idx) => {
-                s.classList.toggle('active', idx === currentScreen);
-            });
-            dots.forEach((d, idx) => {
-                d.classList.toggle('active', idx === currentScreen);
-            });
-
-            // Re-trigger animations by forcing reflow
-            const current = screens[currentScreen];
-            current.classList.remove('active');
-            void current.offsetWidth; 
-            current.classList.add('active');
-
-            // Track screen view
-            trackTelemetry('ds_screen_' + currentScreen + '_viewed');
-        }
-
-        function nextScreen() {
-            if (currentScreen < totalScreens - 1) {
-                currentScreen++;
-                updateUI();
-            }
-        }
-
-        function prevScreen() {
-            if (currentScreen > 0) {
-                currentScreen--;
-                updateUI();
-            }
-        }
-
-        function enterMarketplace(skipped = false) {
-            trackTelemetry('ds_onboarding_completed', { skipped: skipped });
-            localStorage.setItem('ds_onboarding_complete', 'true');
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                window.location.replace('/');
-            }, 300);
-        }
-
-        function goToLogicHub() {
-            trackTelemetry('ds_onboarding_completed', { skipped: false, action: 'build_app' });
-            localStorage.setItem('ds_onboarding_complete', 'true');
-            window.location.href = 'https://logichub.app/forge';
-        }
-
-        // --- Swipe Gestures ---
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const threshold = 50;
-
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
-
-        function handleSwipe() {
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > threshold) {
-                if (diff > 0) nextScreen(); // Swipe Left
-                else prevScreen();          // Swipe Right
-            }
-        }
-
-        // Initialize first render
+    function goTo(idx) {
+      if (idx >= 0 && idx < total) {
+        current = idx;
         updateUI();
-    </script>
+      }
+    }
+
+    function enterOS(skipped) {
+      track('onboarding_completed', { skipped });
+      localStorage.setItem('daxini_onboarding_complete', 'true');
+      document.body.style.transition = 'opacity 0.3s';
+      document.body.style.opacity = '0';
+      setTimeout(() => { window.location.href = '/'; }, 300);
+    }
+
+    // ── Swipe Gestures ──
+    let tx = 0;
+    document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const diff = tx - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0 && current < total - 1) goTo(current + 1);
+        else if (diff < 0 && current > 0) goTo(current - 1);
+      }
+    }, { passive: true });
+
+    // ── Keyboard (Arrow keys) ──
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (current < total - 1) goTo(current + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (current > 0) goTo(current - 1);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (current === total - 1) enterOS(false);
+        else goTo(current + 1);
+      } else if (e.key === 'Escape') {
+        enterOS(true);
+      }
+    });
+
+    updateUI();
+  </script>
+  <script src="/assets/js/sovereign-analytics.js" defer></script>
 </body>
 </html>
