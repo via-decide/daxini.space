@@ -5938,7 +5938,7 @@ let Q_START_TIME = 0;
 let SESSION_LOG = []; 
 
 // --- BACKEND ---
-let USER_MOBILE = localStorage.getItem("USER_MOBILE") || null;
+let USER_MOBILE = localStorage.getItem("USER_MOBILE") || "GUEST";
 let CURRENT_SES_ID = null;
 let CREDITS = parseInt(localStorage.getItem("USER_CREDITS") || "10");
 let VAULT = [];
@@ -6111,7 +6111,31 @@ function card(text, labels, cb, allowSensors = true) {
 
 function begin(){
  const tiltLabel = SENSORS_ENABLED ? "SENSORS ACTIVE" : "ENABLE TILT";
- card(`DATA LOADED\n${RAW_DATA.length} UNITS`,{up:"START QUIZ", down:tiltLabel, left:"VAULT", right:"RELOAD"}, dir=>{
+ const html = `<div class="landing-hero" style="font-family:var(--font-code);font-size:0.95rem;color:var(--gold);letter-spacing:2px;margin-bottom:12px;">ALCHEMIST ENGINE v1.1</div>
+<div style="font-family:var(--font-serif);font-size:1.6rem;font-weight:600;margin-bottom:15px;color:#fff;">Build Portable Knowledge Assets</div>
+
+<div class="explanation-strip" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;width:100%;margin-bottom:20px;text-align:left;">
+  <div class="exp-step" style="border:1px solid #222;background:#0d0d0d;padding:10px;border-radius:6px;font-size:0.75rem;font-family:var(--font-code);">
+    <span style="color:var(--gold);display:block;margin-bottom:2px;font-weight:bold;">01 / QUESTIONS</span>
+    <span style="color:#aaa;">Test knowledge with physics-driven cards.</span>
+  </div>
+  <div class="exp-step" style="border:1px solid #222;background:#0d0d0d;padding:10px;border-radius:6px;font-size:0.75rem;font-family:var(--font-code);">
+    <span style="color:var(--gold);display:block;margin-bottom:2px;font-weight:bold;">02 / CONCEPTS</span>
+    <span style="color:#aaa;">Extract core concepts automatically.</span>
+  </div>
+  <div class="exp-step" style="border:1px solid #222;background:#0d0d0d;padding:10px;border-radius:6px;font-size:0.75rem;font-family:var(--font-code);">
+    <span style="color:var(--gold);display:block;margin-bottom:2px;font-weight:bold;">03 / REASONING</span>
+    <span style="color:#aaa;">Synthesize structural domain maps.</span>
+  </div>
+  <div class="exp-step" style="border:1px solid #222;background:#0d0d0d;padding:10px;border-radius:6px;font-size:0.75rem;font-family:var(--font-code);">
+    <span style="color:var(--gold);display:block;margin-bottom:2px;font-weight:bold;">04 / OWNERSHIP</span>
+    <span style="color:#aaa;">Export portable .zay knowledge vaults.</span>
+  </div>
+</div>
+<div style="font-family:var(--font-code);font-size:0.75rem;color:#666;border-top:1px dashed #222;padding-top:10px;width:100%;">
+  DATABASE READY: \${RAW_DATA.length} UNITS
+</div>`;
+ card(html,{up:"START SESSION", down:tiltLabel, left:"VAULT", right:"RELOAD"}, dir=>{
   if(dir==="UP") setPick(); 
   if(dir==="DOWN") requestSensorAccess(); 
   if(dir==="LEFT") checkLoginForVault();
@@ -6132,12 +6156,15 @@ function requestSensorAccess() {
 }
 
 function checkLoginForVault(){
-    if(USER_MOBILE && USER_MOBILE.length > 5){ openVault(0); return; }
-    const mob = prompt("SECURE VAULT ACCESS\n\nEnter your Registered Mobile Number to unlock:");
+    if(USER_MOBILE && USER_MOBILE !== "GUEST" && USER_MOBILE.length > 5){ openVault(0); return; }
+    const mob = prompt("SECURE VAULT ACCESS\n\nEnter your Registered Mobile Number to unlock (or leave blank to Continue as Guest):");
     if(mob && mob.length >= 10){
         localStorage.setItem("USER_MOBILE", mob); USER_MOBILE = mob;
-        log(`LOGIN SUCCESS: ${mob}`, "active"); openVault(0);
-    } else { log("ACCESS DENIED", "danger"); begin(); }
+        log(`LOGIN SUCCESS: \${mob}`, "active"); openVault(0);
+    } else {
+        USER_MOBILE = "GUEST";
+        log("GUEST VAULT ACCESS", "active"); openVault(0);
+    }
 }
 
 function openVault(index){
@@ -6220,7 +6247,12 @@ function review(){
  if(!WRONG.length){ report(); return; } 
  const d=WRONG[0]; 
  log("REVIEW MODE", "primary");
- card(`REVIEW NOTE\n\n${d.logic || "Review the core principles."}`,{up:"RETRY", down:"SKIP"},dir=>{
+ card(`<div style="font-size:0.9rem; text-align:left; font-family:var(--font-sans); width:100%;">
+    <div style="font-family:var(--font-code); color:var(--gold); font-size:0.75rem; margin-bottom:10px; text-transform:uppercase;">[Review Note]</div>
+    <div style="margin-bottom:15px; font-family:var(--font-serif); font-size:1.15rem; line-height:1.4; color:var(--text-white);"><strong>Q:</strong> ${d.q}</div>
+    <div style="margin-bottom:15px; color:var(--green); font-weight:500;"><strong>Correct Answer:</strong> ${d.u}</div>
+    <div style="color:var(--text-grey); font-size:0.85rem; line-height:1.5;"><strong>Insight:</strong> ${d.logic || "Review the core principles."}</div>
+ </div>`,{up:"RETRY", down:"SKIP"},dir=>{
     if(dir==="UP"){ WRONG.shift(); POOL.unshift(d); } else { WRONG.shift(); }
     nextQ();
  });
@@ -6229,7 +6261,7 @@ function review(){
 function report(){
  if(!CURRENT_SES_ID) generateSessionID();
  const percent = Math.round((XP / SESSION_ALL.length) * 100) || 0;
- card(`SUMMARY\n\n${XP} / ${SESSION_ALL.length} Correct\n(${percent}%)`,{down:"DOWNLOAD PDF", up:"RESTART", left:"MENU"},dir=>{
+ card(`SUMMARY\n\n\${XP} / \${SESSION_ALL.length} Correct\n(\${percent}%)`,{down:"DOWNLOAD PDF", up:"RESTART", left:"MENU"},dir=>{
     if(dir==="DOWN") handleDownloadRequest();
     if(dir==="UP") startQuiz(); 
     if(dir==="LEFT") begin();
@@ -6237,25 +6269,569 @@ function report(){
 }
 
 function handleDownloadRequest(){
-    if(!USER_MOBILE){
-        const text = `REGISTERING ACCOUNT.\nLINK MY ID: ${CURRENT_SES_ID}`;
-        const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
-        card(`ACCOUNT REQUIRED\n\nTo save this PDF, you must link your device.\n\nID: ${CURRENT_SES_ID}`,
-            { up: "LINK VIA WHATSAPP", down: "I HAVE LINKED" },
-            (dir) => {
-                if(dir === "UP") { window.open(url, '_blank'); }
-                if(dir === "DOWN") {
-                    const mob = prompt("ENTER REGISTERED MOBILE:");
-                    if(mob && mob.length >= 10) {
-                        localStorage.setItem("USER_MOBILE", mob); USER_MOBILE = mob;
-                        log("IDENTITY LINKED", "active"); report();
-                    } else { log("INVALID INPUT", "normal"); handleDownloadRequest(); }
-                }
-            }, false
-        );
-        return;
+    openAssetSummaryScreen();
+}
+
+function getRelationshipsCount(sessionQuestions) {
+    let links = new Set();
+    sessionQuestions.forEach(q => {
+        if (q.tags) {
+            const matches = q.tags.match(/LINK:([a-zA-Z0-9_]+)/g);
+            if (matches) {
+                matches.forEach(m => {
+                    const linkedId = m.split(":")[1];
+                    const pair = [q.id, linkedId].sort().join("<->");
+                    links.add(pair);
+                });
+            }
+        }
+    });
+    return links.size;
+}
+
+const hasValidTrap = q => q.trap && !/unavailable|not identified|trap/i.test(q.trap);
+
+function getConceptSummaryString(uniqueQuestions) {
+    const concepts = getSplitConcepts(uniqueQuestions);
+    let summaryStr = "";
+    concepts.forEach((c, idx) => {
+        const related = uniqueQuestions.filter(q => q.hint && q.hint.toLowerCase().includes(c.toLowerCase()));
+        const score = related.filter(r => !WRONG.includes(r)).length;
+        const accuracy = Math.round((score / related.length) * 100) || 0;
+        summaryStr += `${idx+1}. ${c}\n`;
+        summaryStr += `   - Associated Topics: ${related.map(r => r.hint).filter((v, i, self) => self.indexOf(v) === i).join(", ") || c}\n`;
+        summaryStr += `   - Mastery Performance: ${related.length} questions attempted, accuracy ${accuracy}%\n`;
+    });
+    return summaryStr;
+}
+
+function getReflectionSummaryString(uniqueQuestions) {
+    const accuracy = Math.round((XP / SESSION_ALL.length) * 100) || 0;
+    let reflectionStr = `Cognitive State: `;
+    if (accuracy >= 80) {
+        reflectionStr += `Strong conceptual mastery. High compatibility with advanced problem-solving layers.\n`;
+    } else if (accuracy >= 50) {
+        reflectionStr += `Developing understanding. Some misconceptions identified in specific domains.\n`;
+    } else {
+        reflectionStr += `High entropy detected. Structured review and concept-focused repetition recommended.\n`;
     }
-    exportSessionPDF();
+    reflectionStr += `- Overall Accuracy: ${accuracy}% (\${XP} correct out of \${SESSION_ALL.length} items)\n`;
+    if (WRONG.length > 0) {
+        reflectionStr += `- Areas for Intervention: Key errors detected in domains: \${[...new Set(WRONG.map(w => w.dom))].join(", ") || "None"}.\n`;
+        reflectionStr += `- Identified Misconceptions:\n`;
+        WRONG.forEach(w => {
+            if (hasValidTrap(w)) {
+                reflectionStr += `  * On \${w.hint}: \${w.trap}\n`;
+            }
+        });
+    } else {
+        reflectionStr += `- Areas for Intervention: No critical errors or misconceptions identified in this session.\n`;
+    }
+    return reflectionStr;
+}
+
+function showNotification(msg, isSuccess = true) {
+    let toast = document.getElementById("alchemist-toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "alchemist-toast";
+        toast.style.cssText = "position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100000; padding: 12px 24px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #fff; transition: opacity 0.3s, transform 0.3s; opacity: 0; pointer-events: none; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.5);";
+        document.body.appendChild(toast);
+    }
+    toast.innerText = msg;
+    toast.style.background = isSuccess ? "var(--green)" : "var(--red)";
+    toast.style.borderColor = isSuccess ? "#27ae60" : "#c0392b";
+    toast.style.border = "1px solid";
+    toast.style.opacity = "1";
+    toast.style.transform = "translateX(-50%) translateY(-10px)";
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(-50%) translateY(0)";
+    }, 3000);
+}
+
+function openAssetSummaryScreen() {
+    let overlay = document.getElementById("asset-summary-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "asset-summary-overlay";
+        overlay.style.cssText = "display: none; position: fixed; inset: 0; z-index: 10000; background: #09090b; color: #f4f4f5; overflow-y: auto; font-family: 'Inter', sans-serif; padding: 20px;";
+        overlay.innerHTML = `
+<div class="summary-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #27272a; padding-bottom: 20px; margin-bottom: 30px;">
+      <h2 style="font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; color: #fbbf24; text-transform: uppercase; margin: 0; letter-spacing: 2px; font-weight: bold;">
+        🧪 Alchemist Export Engine
+      </h2>
+      <button onclick="closeAssetSummaryScreen()" style="background: transparent; border: 1px solid #27272a; color: #a1a1aa; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+        CLOSE
+      </button>
+    </div>
+
+    <!-- Callout Explanation -->
+    <div style="margin-bottom: 30px; border-left: 4px solid #fbbf24; background: rgba(251, 191, 36, 0.05); padding: 15px 20px; border-radius: 0 8px 8px 0; font-family: 'Crimson Text', serif; font-size: 1.25rem; font-style: italic; color: #fbbf24;">
+      "A ZAY Asset stores knowledge, not just information."
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 45px;">
+      <!-- Asset Card -->
+      <div class="printbydd-card" style="background: #121214; border: 1px solid #27272a; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; background: linear-gradient(135deg, #fbbf24 10%, transparent 10%); width: 80px; height: 80px; pointer-events: none;"></div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">
+          Personal Knowledge Asset
+        </div>
+        <h1 style="font-family: 'Crimson Text', serif; font-size: 2.2rem; font-weight: 700; color: #fff; margin: 0 0 20px 0; line-height: 1.2;">
+          <span id="summary-asset-title">Organic Chemistry Foundations</span>
+        </h1>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px; border-top: 1px solid #27272a; border-bottom: 1px solid #27272a; padding: 20px 0; margin-bottom: 20px;">
+          <div>
+            <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 5px;">Concepts</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #fff;" id="summary-concept-count">0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 5px;">Questions</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #fff;" id="summary-question-count">0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 5px;">Domains</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #fff;" id="summary-domain-count">0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 5px;">Relationships</div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #fff;" id="summary-relationship-count">0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 5px;">Created</div>
+            <div style="font-size: 1rem; font-weight: 500; color: #e4e4e7;" id="summary-creation-date">June 2026</div>
+          </div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #4ade80;">
+          ✓ OWNED BY YOU · PORTABLE · UPGRADEABLE
+        </div>
+      </div>
+
+      <!-- Ownership Details Panel -->
+      <div style="background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 25px;">
+        <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #fff; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px; font-weight: bold;">
+          Asset Ownership Registry
+        </h3>
+        <p style="font-size: 0.85rem; color: #a1a1aa; line-height: 1.6; margin: 0 0 15px 0;">
+          This bundle contains your cognitive footprint from session <strong style="color: #fbbf24;" id="summary-session-id">SES_XXXXX</strong>.
+          Unlike traditional static files, this asset records your learning performance, semantic relationships, and structured takeaways, keeping them future-compatible with all Zayvora runtime layers.
+        </p>
+        <div style="font-size: 0.8rem; color: #e4e4e7; line-height: 1.8;">
+          <div>• <strong>Asset Type:</strong> Personal Knowledge Asset</div>
+          <div>• <strong>Future Compatibility:</strong> Zayvora Core v2, decide.engine, KUP Lab</div>
+          <div>• <strong>Source Session:</strong> <span id="summary-source-session">-</span></div>
+          <div>• <strong>Relationship Clusters:</strong> Hierarchical Concept Graph Enabled</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export v2 Section -->
+    <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fbbf24; text-transform: uppercase; margin: 0 0 25px 0; letter-spacing: 1.5px; border-bottom: 1px solid #27272a; padding-bottom: 10px; font-weight: bold;">
+      Choose what you want to do with your knowledge
+    </h3>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 45px;">
+      <!-- PDF -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #121214; border: 1px solid #27272a; border-radius: 8px; padding: 20px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='#fbbf24';" onmouseout="this.style.borderColor='#27272a';">
+        <div>
+          <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">PDF <span style="font-size: 0.75rem; color: #71717a; font-weight: normal; margin-left: 10px; font-family: 'JetBrains Mono', monospace;">Read</span></div>
+          <div style="font-size: 0.8rem; color: #a1a1aa;">Best for revision, printing, sharing with teachers, and offline study.</div>
+        </div>
+        <button onclick="triggerExport('pdf')" style="background: #18181b; border: 1px solid #27272a; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 10px 20px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#fbbf24'; this.style.color='#000'; this.style.borderColor='#fbbf24';" onmouseout="this.style.background='#18181b'; this.style.color='#fff'; this.style.borderColor='#27272a';">
+          Export PDF
+        </button>
+      </div>
+
+      <!-- EPUB -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #121214; border: 1px solid #27272a; border-radius: 8px; padding: 20px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='#fbbf24';" onmouseout="this.style.borderColor='#27272a';">
+        <div>
+          <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">EPUB <span style="font-size: 0.75rem; color: #71717a; font-weight: normal; margin-left: 10px; font-family: 'JetBrains Mono', monospace;">Publish</span></div>
+          <div style="font-size: 0.8rem; color: #a1a1aa;">Turn your learning session into a digital book compatible with e-readers and publishing workflows.</div>
+        </div>
+        <button onclick="triggerExport('epub')" style="background: #18181b; border: 1px solid #27272a; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 10px 20px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#fbbf24'; this.style.color='#000'; this.style.borderColor='#fbbf24';" onmouseout="this.style.background='#18181b'; this.style.color='#fff'; this.style.borderColor='#27272a';">
+          Export EPUB
+        </button>
+      </div>
+
+      <!-- HTML -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #121214; border: 1px solid #27272a; border-radius: 8px; padding: 20px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='#fbbf24';" onmouseout="this.style.borderColor='#27272a';">
+        <div>
+          <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">HTML <span style="font-size: 0.75rem; color: #71717a; font-weight: normal; margin-left: 10px; font-family: 'JetBrains Mono', monospace;">Share</span></div>
+          <div style="font-size: 0.8rem; color: #a1a1aa;">Create a web-ready version that can be hosted, embedded, archived, or shared online.</div>
+        </div>
+        <button onclick="triggerExport('html')" style="background: #18181b; border: 1px solid #27272a; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 10px 20px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#fbbf24'; this.style.color='#000'; this.style.borderColor='#fbbf24';" onmouseout="this.style.background='#18181b'; this.style.color='#fff'; this.style.borderColor='#27272a';">
+          Export HTML
+        </button>
+      </div>
+
+      <!-- TXT -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #121214; border: 1px solid #27272a; border-radius: 8px; padding: 20px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='#fbbf24';" onmouseout="this.style.borderColor='#27272a';">
+        <div>
+          <div style="font-weight: 700; color: #fff; margin-bottom: 4px;">TXT <span style="font-size: 0.75rem; color: #71717a; font-weight: normal; margin-left: 10px; font-family: 'JetBrains Mono', monospace;">Read</span></div>
+          <div style="font-size: 0.8rem; color: #a1a1aa;">Plain text format, best for local notes, quick copy-pasting, and raw archiving.</div>
+        </div>
+        <button onclick="triggerExport('txt')" style="background: #18181b; border: 1px solid #27272a; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 10px 20px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#fbbf24'; this.style.color='#000'; this.style.borderColor='#fbbf24';" onmouseout="this.style.background='#18181b'; this.style.color='#fff'; this.style.borderColor='#27272a';">
+          Export TXT
+        </button>
+      </div>
+
+      <!-- ZAY ASSET -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #121214; border: 1px solid #fbbf24; border-radius: 8px; padding: 20px; box-shadow: 0 0 15px rgba(251,191,36,0.1);">
+        <div>
+          <div style="font-weight: 700; color: #fbbf24; margin-bottom: 4px;">ZAY ASSET <span style="font-size: 0.75rem; color: #a1a1aa; font-weight: normal; margin-left: 10px; font-family: 'JetBrains Mono', monospace;">Own</span></div>
+          <div style="font-size: 0.8rem; color: #e4e4e7; margin-bottom: 6px; font-weight: 500;">A portable knowledge asset containing concepts, reasoning, learning history, and future-compatible layers.</div>
+          <div style="font-size: 0.75rem; color: #a1a1aa; font-style: italic;">This is the native format of the Zayvora ecosystem.</div>
+        </div>
+        <button onclick="triggerExport('zay')" style="background: #fbbf24; border: 1px solid #fbbf24; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; padding: 12px 24px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: 900; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+          Create ZAY Asset
+        </button>
+      </div>
+    </div>
+
+    <!-- What is a ZAY Asset -->
+    <div style="background: #121214; border: 1px solid #27272a; border-radius: 12px; padding: 30px; margin-bottom: 40px; font-size: 0.9rem; line-height: 1.6;">
+      <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px; font-weight: bold;">
+        What is a ZAY Asset?
+      </h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div style="border-right: 1px solid #27272a; padding-right: 20px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; margin-bottom: 5px;">A Document</div>
+          <p style="margin: 0; color: #71717a; font-size: 0.85rem;">Stores flat information. Documents can be read, but they remain isolated blocks of static text.</p>
+        </div>
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #fbbf24; text-transform: uppercase; margin-bottom: 5px;">A ZAY Asset</div>
+          <p style="margin: 0; color: #e4e4e7; font-size: 0.85rem;">Stores structured knowledge. ZAY Assets can be searched, connected, upgraded, analysed, visualised, and reused across the Zayvora ecosystem.</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <button onclick="viewAssetDetails()" style="background: #1c1c1f; border: 1px solid #27272a; color: #fbbf24; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.borderColor='#fbbf24';" onmouseout="this.style.borderColor='#27272a';">View Asset Details</button>
+        <button onclick="triggerExport('zay')" style="background: #1c1c1f; border: 1px solid #27272a; color: #4ade80; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.borderColor='#4ade80';" onmouseout="this.style.borderColor='#27272a';">Export Asset</button>
+        <button onclick="openInAssetViewer()" style="background: #1c1c1f; border: 1px solid #27272a; color: #3b82f6; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6';" onmouseout="this.style.borderColor='#27272a';">Open in Asset Viewer</button>
+      </div>
+    </div>
+</div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const concepts = getSplitConcepts(unique);
+    const domains = [...new Set(unique.map(q => q.dom))];
+    const creationDate = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const relationships = getRelationshipsCount(unique);
+
+    document.getElementById("summary-asset-title").innerText = `${ACTIVE_SET || "General"} Knowledge Matrix`;
+    document.getElementById("summary-concept-count").innerText = concepts.length;
+    document.getElementById("summary-question-count").innerText = unique.length;
+    document.getElementById("summary-domain-count").innerText = domains.length;
+    document.getElementById("summary-relationship-count").innerText = relationships;
+    document.getElementById("summary-creation-date").innerText = creationDate;
+    document.getElementById("summary-session-id").innerText = CURRENT_SES_ID;
+    document.getElementById("summary-source-session").innerText = CURRENT_SES_ID;
+
+    overlay.style.display = "block";
+}
+
+function closeAssetSummaryScreen() {
+    const overlay = document.getElementById("asset-summary-overlay");
+    if (overlay) overlay.style.display = "none";
+    setTimeout(begin, 100);
+}
+
+async function triggerExport(format) {
+    log(`EXPORTING ${format.toUpperCase()}...`, "active");
+    try {
+        if (format === 'pdf') {
+            exportSessionPDF();
+        } else if (format === 'zay') {
+            exportSessionZAY();
+        } else if (format === 'epub') {
+            await exportSessionEPUB();
+        } else if (format === 'html') {
+            exportSessionHTML();
+        } else if (format === 'txt') {
+            exportSessionTXT();
+        }
+        showNotification(`${format.toUpperCase()} Export Successful!`, true);
+        log(`${format.toUpperCase()} EXPORTED`, "primary");
+    } catch (err) {
+        console.error(err);
+        showNotification(`${format.toUpperCase()} Export Failed.`, false);
+        log(`${format.toUpperCase()} EXPORT FAILED`, "danger");
+    }
+}
+
+function viewAssetDetails() {
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const concepts = getSplitConcepts(unique);
+    alert(`ASSET COMPOSITION:\n\nConcepts Extracted:\n\${concepts.map((c, i) => \`- \${c}\`).join('\n')}\n\nOwnership Verified: Yes\nTelemetry Status: Active`);
+}
+
+function openInAssetViewer() {
+    const url = `/.zay/index.html?file=/epubs/volume_1_local_first.zay`;
+    window.open(url, '_blank');
+}
+
+function jaccardDistance(str1, str2) {
+    const words1 = new Set(str1.toLowerCase().split(/\s+/));
+    const words2 = new Set(str2.toLowerCase().split(/\s+/));
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const union = new Set([...words1, ...words2]);
+    if (union.size === 0) return 1;
+    return 1 - (intersection.size / union.size);
+}
+
+function getSplitConcepts(sessionQuestions) {
+    let rawConcepts = [];
+    const stopWords = new Set(["the", "for", "and", "with", "its", "new", "all", "any", "out", "of", "in", "by", "to"]);
+    sessionQuestions.forEach(q => {
+        if (q.hint) {
+            const parts = q.hint.split(/,|\b&\b|\band\b|;|\/|\+|\bof\b|\bfor\b|\bin\b|\bby\b|\bwith\b|\bto\b/gi);
+            parts.forEach(part => {
+                const trimmed = part.trim();
+                if (trimmed && trimmed.length > 2 && !stopWords.has(trimmed.toLowerCase())) {
+                    rawConcepts.push(trimmed);
+                }
+            });
+        }
+    });
+    
+    let uniqueConcepts = [];
+    rawConcepts.forEach(concept => {
+        let isUnique = true;
+        for (let existing of uniqueConcepts) {
+            const dist = jaccardDistance(concept, existing);
+            if (dist < 0.3) {
+                isUnique = false;
+                break;
+            }
+        }
+        if (isUnique) {
+            uniqueConcepts.push(concept);
+        }
+    });
+    
+    return uniqueConcepts;
+}
+
+function exportSessionHTML() {
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const cleanHTML = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
+    const concepts = getSplitConcepts(unique);
+    const conceptSumStr = getConceptSummaryString(unique).replace(/\n/g, "<br>");
+    const reflectionSumStr = getReflectionSummaryString(unique).replace(/\n/g, "<br>");
+    
+    let htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alchemist Session \${CURRENT_SES_ID}</title>
+  <style>
+    body { background: #09090b; color: #f4f4f5; font-family: sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+    h1 { color: #fbbf24; border-bottom: 1px solid #27272a; padding-bottom: 20px; }
+    .q-card { background: #121214; border: 1px solid #27272a; border-radius: 8px; padding: 25px; margin-bottom: 20px; }
+    .q-meta { font-family: monospace; font-size: 0.8rem; color: #a1a1aa; margin-bottom: 10px; }
+    .q-text { font-size: 1.1rem; margin-bottom: 15px; font-weight: 500; }
+    .q-answer { color: #4ade80; font-weight: 600; margin-bottom: 10px; }
+    .q-logic { font-style: italic; color: #a1a1aa; font-size: 0.9rem; }
+    .q-trap { color: #f87171; font-size: 0.9rem; margin-top: 10px; }
+    .summary-section { background: #1e1b4b; border: 1px solid #3730a3; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+  <h1>Alchemist Session Summary - \${CURRENT_SES_ID}</h1>
+  <p>Exported on: \${new Date().toLocaleDateString()}</p>
+  <hr style="border-color: #27272a; margin-bottom: 30px;"/>
+  
+  <div class="summary-section">
+    <h2 style="color: #fbbf24; margin-top:0;">Cognitive Reflection</h2>
+    <p style="line-height:1.6; font-family:monospace; font-size:0.9rem;">\${reflectionSumStr}</p>
+  </div>
+  
+  <div class="summary-section" style="background:#064e3b; border-color:#065f46;">
+    <h2 style="color: #34d399; margin-top:0;">Concept Mastery</h2>
+    <p style="line-height:1.6; font-family:monospace; font-size:0.9rem;">\${conceptSumStr}</p>
+  </div>
+
+  <h2>Session Q&A Trace</h2>
+  \${unique.map((q, idx) => \`
+    <div class="q-card">
+      <div class="q-meta">\${q.id} // \${q.dom}</div>
+      <div class="q-text"><strong>Q\${idx+1}:</strong> \${cleanHTML(q.q)}</div>
+      <div class="q-answer">Correct Answer: \${cleanHTML(q.u)}</div>
+      <div class="q-logic"><strong>Logic:</strong> \${cleanHTML(q.logic || "-")}</div>
+      \${hasValidTrap(q) ? \\`<div class="q-trap"><strong>Common Misconception:</strong> \\${cleanHTML(q.trap)}</div>\\` : ""}
+    </div>
+  \`).join("")}
+</body>
+</html>\`;
+    
+    const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = \`ALCHEMIST_\${CURRENT_SES_ID}.html\`;
+    a.click();
+}
+
+function exportSessionZAY() {
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const cleanHTML = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
+    const concepts = getSplitConcepts(unique);
+    const conceptSumStr = getConceptSummaryString(unique);
+    const reflectionSumStr = getReflectionSummaryString(unique);
+    
+    const docMd = \`# Alchemist Session \${CURRENT_SES_ID}
+    
+## Metadata
+- **Asset Type:** Personal Knowledge Asset
+- **Source Session:** \${CURRENT_SES_ID}
+- **Author:** \${USER_MOBILE || "GUEST"}
+- **Creation Date:** \${new Date().toLocaleDateString()}
+- **Unique Concepts:** \${concepts.length}
+- **Total Questions:** \${unique.length}
+- **Domains Covered:** \${[...new Set(unique.map(q => q.dom))].join(", ")}
+- **Future Compatibility:** Zayvora Core v2, decide.engine, KUP Lab
+
+---
+
+## Cognitive Performance Reflection
+\${reflectionSumStr}
+
+---
+
+## Concept Mastery Summary
+\${conceptSumStr}
+
+---
+
+## Session Q&A Trace
+\${unique.map((q, idx) => \`
+### Question \${idx+1}: \${cleanHTML(q.q)}
+- **Correct Answer:** \${cleanHTML(q.u)}
+- **Logic / Insight:** \${cleanHTML(q.logic || "-")}
+\${hasValidTrap(q) ? \`- **Common Misconception:** \${cleanHTML(q.trap)}\` : ""}
+\`).join("\\n")}
+\`;
+
+    const zayBundle = {
+        type: "zayvora_bundle",
+        version: "1.0",
+        metadata: {
+            title: \`Alchemist Session \${CURRENT_SES_ID}\`,
+            author: USER_MOBILE || "GUEST",
+            date: new Date().toLocaleDateString(),
+            zay_version: "1.0"
+        },
+        documents: [
+            {
+                path: "content/session.md",
+                content: docMd
+            }
+        ]
+    };
+    
+    const blob = new Blob([JSON.stringify(zayBundle, null, 2)], { type: "application/json;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = \`ALCHEMIST_\${CURRENT_SES_ID}.zay\`;
+    a.click();
+}
+
+async function exportSessionEPUB() {
+    if (!window.JSZip) {
+        await new Promise(r => {
+            const s = document.createElement('script');
+            s.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+            s.onload = r;
+            document.head.appendChild(s);
+        });
+    }
+    const cleanHTML = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
+    const zip = new JSZip();
+    zip.file("mimetype", "application/epub+zip");
+    
+    const containerXml = \`<?xml version="1.0" encoding="UTF-8" ?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>\`;
+    zip.folder("META-INF").file("container.xml", containerXml);
+    
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const conceptSumStr = getConceptSummaryString(unique).replace(/\\n/g, "<br>");
+    const reflectionSumStr = getReflectionSummaryString(unique).replace(/\\n/g, "<br>");
+
+    let contentHtml = \`<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>Alchemist Session Book</title>
+  <style>
+    body { font-family: serif; margin: 2em; line-height: 1.5; }
+    h1 { text-align: center; }
+    .question-block { margin-bottom: 2em; border-bottom: 1px solid #ccc; padding-bottom: 1em; }
+    .meta { font-family: sans-serif; font-size: 0.8em; color: #555; }
+    .answer { font-weight: bold; margin-top: 0.5em; }
+    .logic { font-style: italic; color: #333; margin-top: 0.5em; }
+    .summary-box { background: #f3f4f6; border-left: 4px solid #d97706; padding: 15px; margin-bottom: 20px; font-family: monospace; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>Alchemist Session Book</h1>
+  <p>Session ID: \${CURRENT_SES_ID}</p>
+  <hr/>
+  
+  <h2>Cognitive Performance Reflection</h2>
+  <div class="summary-box">
+    \${reflectionSumStr}
+  </div>
+
+  <h2>Concept Mastery Summary</h2>
+  <div class="summary-box" style="border-left-color: #059669;">
+    \${conceptSumStr}
+  </div>
+
+  <h2>Session Q&A Trace</h2>\`;
+    
+    unique.forEach((q, idx) => {
+        contentHtml += \`
+    <div class="question-block">
+      <div class="meta">\${q.id} // \${q.dom}</div>
+      <p><strong>Q\${idx+1}:</strong> \${cleanHTML(q.q)}</p>
+      <p class="answer">Correct Answer: \${cleanHTML(q.u)}</p>
+      <p class="logic">Logic: \${cleanHTML(q.logic || "-")}</p>
+      \${hasValidTrap(q) ? \\`<p class="misconception">Common Misconception: \${cleanHTML(q.trap)}</p>\\` : ""}
+    </div>\`;
+    });
+    contentHtml += \`\\n</body>\\n</html>\`;
+    
+    zip.folder("OEBPS").file("content.xhtml", contentHtml);
+    
+    const opfXml = \`<?xml version="1.0" encoding="UTF-8" ?>
+<package version="3.0" unique-identifier="pub-id" xmlns="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="pub-id">urn:uuid:\${CURRENT_SES_ID}</dc:identifier>
+    <dc:title>Alchemist Session Book</dc:title>
+    <dc:language>en</dc:language>
+    <dc:meta property="dcterms:modified">\${new Date().toISOString().split('.')[0]}Z</dc:meta>
+  </metadata>
+  <manifest>
+    <item id="content" href="content.xhtml" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="content"/>
+  </spine>
+</package>\`;
+    zip.folder("OEBPS").file("content.opf", opfXml);
+    
+    const blob = await zip.generateAsync({type:"blob"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = \`ALCHEMIST_\${CURRENT_SES_ID}.epub\`;
+    a.click();
 }
 
 function exportSessionPDF(data=null, id=null){
@@ -6276,28 +6852,94 @@ function exportSessionPDF(data=null, id=null){
  let y=20; const ML=15; const W=180;
 
  doc.setFont("times","bold"); doc.setFontSize(16);
- doc.text(`VIA.STACK // ${renderID}`,105,y,{align:"center"});
- doc.setFontSize(10); doc.text(`USER: ${USER_MOBILE || "GUEST"}`, 105, y+5, {align:"center"});
+ doc.text(\`VIA.STACK // \&nbsp;\${renderID}\`.replace(/\&nbsp;/g, " "),105,y,{align:"center"});
+ doc.setFontSize(10); doc.text(\`USER: \${USER_MOBILE || "GUEST"}\`, 105, y+5, {align:"center"});
  doc.line(ML,y+8,195,y+8); y+=15;
+
+ doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.text("COGNITIVE PERFORMANCE REFLECTION", ML, y); y+=8;
+ doc.setFont("times","normal"); doc.setFontSize(10);
+ const reflectionLines = doc.splitTextToSize(getReflectionSummaryString(unique), W);
+ doc.text(reflectionLines, ML, y); y+=(reflectionLines.length*5)+10;
+
+ if (y > 240) { doc.addPage(); y = 20; }
+ doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.text("CONCEPT MASTERY SUMMARY", ML, y); y+=8;
+ doc.setFont("times","normal"); doc.setFontSize(10);
+ const conceptLines = doc.splitTextToSize(getConceptSummaryString(unique), W);
+ doc.text(conceptLines, ML, y); y+=(conceptLines.length*5)+10;
+
+ doc.addPage(); y=20;
+ doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.text("SESSION Q&A TRACE", ML, y); y+=10;
 
  unique.forEach((d,i)=>{
   if(y>240){doc.addPage();y=20;}
   doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(100);
-  doc.text(`${d.id} // ${d.dom||"GEN"}`,ML,y); y+=5;
+  doc.text(\`\${d.id} // \${d.dom||"GEN"}\`,ML,y); y+=5;
   doc.setFont("times","bold"); doc.setFontSize(12); doc.setTextColor(0);
   const qLines = doc.splitTextToSize(cleanPDF(d.q),W); doc.text(qLines,ML,y); y+=(qLines.length*5)+3;
   
   doc.setFont("helvetica","bold"); doc.setFontSize(7); doc.setTextColor(150); doc.text("ANSWER & LOGIC",ML,y); y+=4;
   doc.setFont("times","normal"); doc.setFontSize(10); doc.setTextColor(0);
-  doc.text(`CORRECT: ${cleanPDF(d.u)}`, ML, y); y+=5; // d.u holds correct answer
-  const logT=doc.splitTextToSize(`LOGIC: ${cleanPDF(d.logic||"-")}`,W); doc.text(logT,ML,y); y+=(logT.length*5)+5;
+  doc.text(\`Correct Answer: \${cleanPDF(d.u)}\`, ML, y); y+=5;
+  const logT=doc.splitTextToSize(\`LOGIC: \${cleanPDF(d.logic||"-")}\`,W); doc.text(logT,ML,y); y+=(logT.length*5)+2;
+  
+  if (hasValidTrap(d)) {
+    const misT=doc.splitTextToSize(\`Common Misconception: \${cleanPDF(d.trap)}\`,W); doc.text(misT,ML,y); y+=(misT.length*5)+5;
+  }
   
   doc.setDrawColor(200); doc.setLineWidth(0.1); doc.line(ML,y,195,y); y+=5;
  });
 
- doc.save(`ALCHEMIST_${renderID}.pdf`);
+ doc.save(\`ALCHEMIST_\${renderID}.pdf\`);
  if(!data) sendTelemetry(); 
- setTimeout(begin,500);
+}
+
+function exportSessionTXT() {
+    const unique = SESSION_ALL.filter((q,i,self)=>i===self.findIndex(t=>(t.id===q.id)));
+    const cleanHTML = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
+    const concepts = getSplitConcepts(unique);
+    const conceptSumStr = getConceptSummaryString(unique);
+    const reflectionSumStr = getReflectionSummaryString(unique);
+    
+    let txtContent = \`ALCHEMIST KNOWLEDGE BOOK SUMMARY\n\`;
+    txtContent += \`=================================\n\n\`;
+    txtContent += \`METADATA:\n\`;
+    txtContent += \`- Session ID: \${CURRENT_SES_ID}\n\`;
+    txtContent += \`- Creation Date: \${new Date().toLocaleDateString()}\n\`;
+    txtContent += \`- Total Questions: \${unique.length}\n\`;
+    txtContent += \`- Unique Concepts: \${concepts.length}\n\`;
+    txtContent += \`- Domains Covered: \${[...new Set(unique.map(q => q.dom))].join(", ")}\n\n\`;
+    
+    txtContent += \`CONCEPTS:\n\`;
+    txtContent += \`---------\n\`;
+    concepts.forEach((c, i) => {
+        txtContent += \`\${i+1}. \${c}\n\`;
+    });
+    txtContent += \`\n\`;
+
+    txtContent += \`CONCEPT SUMMARIES:\n\`;
+    txtContent += \`------------------\n\`;
+    txtContent += conceptSumStr + \`\n\`;
+
+    txtContent += \`REFLECTION SUMMARY:\n\`;
+    txtContent += \`-------------------\n\`;
+    txtContent += reflectionSumStr + \`\n\`;
+    
+    txtContent += \`SESSION Q&A TRACE:\n\`;
+    txtContent += \`------------------\n\`;
+    unique.forEach((q, idx) => {
+        txtContent += \`\n[Q\${idx+1}] \${cleanHTML(q.q)}\n\`;
+        txtContent += \`- Correct Answer: \${cleanHTML(q.u)}\n\`;
+        txtContent += \`- Logic: \${cleanHTML(q.logic || "-")}\n\`;
+        if (hasValidTrap(q)) {
+            txtContent += \`- Common Misconception: \${cleanHTML(q.trap)}\n\`;
+        }
+    });
+    
+    const blob = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = \`ALCHEMIST_\${CURRENT_SES_ID}.txt\`;
+    a.click();
 }
 
 function sendTelemetry(sid) {
@@ -6314,32 +6956,14 @@ function sendTelemetry(sid) {
 
 function generateSessionID() {
     const hash = Math.random().toString(36).substring(2, 7).toUpperCase();
-    CURRENT_SES_ID = `SES_${hash}`;
+    CURRENT_SES_ID = \`SES_\${hash}\`;
     localStorage.setItem("LAST_SES_ID", CURRENT_SES_ID);
 }
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
 const cleanPDF = t => String(t||"").replace(/<[^>]*>/g, "").replace(/&Delta;/g, "Δ");
 
-// ✅ FIXED MAPPING LOGIC
-async function verifyAlchemistAccess() {
-  const host = window.location.hostname;
-  if (host.includes("daxini.space") || host === "localhost" || host === "127.0.0.1" || localStorage.getItem("sovereign_token")) {
-    return true;
-  }
-  const token = new URLSearchParams(window.location.search).get("token");
-  if (!token) return false;
-  try {
-    const response = await fetch(`/api/verify-subscription?token=${encodeURIComponent(token)}&product=alchemist`);
-    if (!response.ok) return false; const result = await response.json(); return result.valid === true;
-  } catch (_) { return false; }
-}
 async function init() {
-  if (!(await verifyAlchemistAccess())) {
-    UI.stack.innerHTML = '<div class="card"><div class="card-q" style="font-family:var(--font-code);color:var(--red);">Access Denied</div></div>';
-    log("ACCESS DENIED", "danger");
-    return;
-  }
   log("SYSTEM BOOT", "active");
   RAW_DATA = INJECTED_DATA.map(d => ({
     id: d.Question_ID,
@@ -6349,16 +6973,16 @@ async function init() {
     u: d.Correct_Answer,      
     l: d.Distractor_1,
     r: d.Distractor_2,
-    correct: "UP",            
     logic: d.Explanation_Short || d.Explanation_Long,
     hint: d.Topic_Label,
-    trap: d.Trap_Explanation
+    trap: d.Trap_Explanation,
+    tags: d.Tags || ""
   })).filter(d => d.id); 
 
-  log(`STATIC DATA LOADED (${RAW_DATA.length})`, "active");
+  log(\`STATIC DATA LOADED (\${RAW_DATA.length})\`, "active");
   begin();
 }
-init();
+
 </script>
 
 <div id="mini-alchemist" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:9999;background:#111;border:1px solid #333;padding:8px;border-radius:8px;display:grid;gap:6px;">
@@ -6372,6 +6996,7 @@ const transform=input=>String(input||'').split('.').map(s=>s.trim()).filter(Bool
 document.getElementById('run').addEventListener('click',()=>{
   document.getElementById('output').textContent=transform(document.getElementById('input').value);
 });
+init();
 </script>
 </body>
     </html>

@@ -656,7 +656,7 @@
                 let anonId = localStorage.getItem('lh_anonymous_id');
                 if (anonId) userId = anonId;
             }
-        } catch (_) {}
+        } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
 
         let sessionId = 'ds_session_guest';
         try {
@@ -666,7 +666,7 @@
                 sessionStorage.setItem('ds_session_id', sessId);
             }
             sessionId = sessId;
-        } catch (_) {}
+        } catch (_) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', _); else console.warn('[SILENT CATCH]', _); } catch(__e) {} }
 
         // Resolve backend URL based on env
         function getBackendUrl() {

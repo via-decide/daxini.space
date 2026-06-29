@@ -1494,7 +1494,7 @@
                 if (c && c.publicKey) {
                   preview = await cryptoUtils.decryptMessage(lastMsg.encryptedPayload, this.myIdentity.privateKey, c.publicKey); 
                 }
-              } catch(e){}
+              } catch (e) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', e); else console.warn('[SILENT CATCH]', e); } catch(__e) {} }
           }
 
           const timeStr = new Date(lastMsg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});

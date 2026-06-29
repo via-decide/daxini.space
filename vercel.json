@@ -1,6 +1,11 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/zay", "destination": "/apps/zay-viewer/", "permanent": true },
+    { "source": "/chat", "destination": "/apps/zayvora-chat/", "permanent": true },
+    { "source": "/app/:slug", "destination": "/?app=:slug", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -23,6 +28,6 @@
   ],
   "rewrites": [
     { "source": "/alchemist/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/alchemist/index.html" },
-    { "source": "/((?!alchemist/|assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
+    { "source": "/((?!alchemist/|books|onboarding|contact|privacy|terms|refunds|play|passport|apps/|assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
   ]
 }
