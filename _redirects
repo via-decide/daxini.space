@@ -1,6 +1,10 @@
-
-# Force HTTPS (Pages only serves HTTPS, but belt-and-suspenders)
-http://:domain/*  https://:domain/:splat  301
-
 # Root security.txt → .well-known canonical
 /security.txt  /.well-known/security.txt  301
+
+# Dynamic Shortcuts for Apps
+/zay    /apps/zay-viewer/       301
+/chat   /apps/zayvora-chat/     301
+/app/*  /?app=:splat            301
+
+# SPA Fallback routing (Must be last)
+/*      /index.html             200
