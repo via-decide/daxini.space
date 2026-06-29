@@ -1,9 +1,6 @@
 # Root security.txt → .well-known canonical
 /security.txt  /.well-known/security.txt  301
 
-# Onboarding route
-/onboarding  /onboarding.html  200
-
 # Dynamic Shortcuts for Apps
 /zay    /apps/zay-viewer/       301
 /chat   /apps/zayvora-chat/     301
