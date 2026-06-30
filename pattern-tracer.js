@@ -7,6 +7,7 @@
 class PatternTracer {
   constructor() {
     this.minimap = document.getElementById('os-minimap');
+    if (!this.minimap) return;
     this.svgLine = document.getElementById('trace-line');
     this.actionHint = document.getElementById('os-action-hint');
     this.dots = document.querySelectorAll('.dot');
