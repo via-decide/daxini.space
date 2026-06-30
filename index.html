@@ -750,6 +750,26 @@
     </div>
   </div>
 
+  <!-- THUMB ZONE MATRIX -->
+  <div id="os-minimap" class="idle">
+    <svg id="grid-svg">
+      <polyline id="trace-line" fill="none" stroke="#ffcc00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+    </svg>
+    <div id="os-action-hint"></div>
+    <div id="dots-container">
+      <div class="dot-cell" data-idx="0"><div class="dot" id="dot-0"></div></div>
+      <div class="dot-cell" data-idx="1"><div class="dot" id="dot-1"></div></div>
+      <div class="dot-cell" data-idx="2"><div class="dot" id="dot-2"></div></div>
+      <div class="dot-cell" data-idx="3"><div class="dot" id="dot-3"></div></div>
+      <div class="dot-cell" data-idx="4"><div class="dot center-dot" id="dot-4"></div></div>
+      <div class="dot-cell" data-idx="5"><div class="dot" id="dot-5"></div></div>
+      <div class="dot-cell" data-idx="6"><div class="dot" id="dot-6"></div></div>
+      <div class="dot-cell" data-idx="7"><div class="dot" id="dot-7"></div></div>
+      <div class="dot-cell" data-idx="8"><div class="dot" id="dot-8"></div></div>
+    </div>
+    <div class="minimap-hint">swipe or tap to launch</div>
+  </div>
+
   <!-- Home Button -->
   <button class="home-button" id="home-button" title="Press ESC or click to reset to Home Anchor">⌂ HOME [ESC]</button>
 
@@ -981,6 +1001,20 @@
     function navigateTo(targetNode) {
       if (activeApp) return;
 
+      // Zoom out/backtrack logic
+      if (targetNode === '8') {
+        if (path.length > 1) {
+          applyTransition('zoom-out');
+          path.pop();
+          addLog(`[NAV] VECTOR TRANSLATION: Lifted down to sector [${path.join(' ➔ ')}]`);
+          renderGrid();
+          renderHUD();
+        } else {
+          showLimitWarning();
+        }
+        return;
+      }
+
       // Depth check
       if (path.length >= MAX_DEPTH + 1) {
         showLimitWarning();
@@ -991,8 +1025,6 @@
       // Transition type
       if (targetNode === '2') {
         applyTransition('zoom-in');
-      } else if (targetNode === '8') {
-        applyTransition('zoom-out');
       } else {
         applyTransition('slide');
       }
