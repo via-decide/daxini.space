@@ -4,7 +4,10 @@
  * Manages the Daxini Galaxy, app library, and related-app discovery.
  */
 
-const ROOM_POSITIONS = [0, 1, 2, 3, 5, 6, 7, 8];
+(function (global) {
+  'use strict';
+
+  const ROOM_POSITIONS = [0, 1, 2, 3, 5, 6, 7, 8];
 const DEFAULT_ROOM_SLUGS = [
   'logichub',
   'daxini-hq',
@@ -176,13 +179,14 @@ async function fetchShard(seed) {
   return null;
 }
 
-window.DaxiniRegistry = {
-  APP_LIBRARY,
-  CORE_APPS,
-  ROOM_POSITIONS,
-  DEFAULT_ROOM_SLUGS,
-  NAMESPACE_MAP,
-  upsertApp,
-  getAppBySlug,
-  fetchShard
-};
+  global.DaxiniRegistry = {
+    APP_LIBRARY,
+    CORE_APPS,
+    ROOM_POSITIONS,
+    DEFAULT_ROOM_SLUGS,
+    NAMESPACE_MAP,
+    upsertApp,
+    getAppBySlug,
+    fetchShard
+  };
+})(window);
