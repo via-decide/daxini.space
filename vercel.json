@@ -28,6 +28,6 @@
   ],
   "rewrites": [
     { "source": "/alchemist/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/alchemist/index.html" },
-    { "source": "/((?!alchemist/|books|onboarding|contact|privacy|terms|refunds|play|passport|apps/|assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|alchemist/|books|onboarding|contact|privacy|terms|refunds|play|passport|apps/|assets/|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
   ]
 }
