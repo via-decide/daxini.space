@@ -899,6 +899,232 @@
       }, 0);
     }
 
+    // ── Contextual Mapping (StudyOS Architecture) ──
+    const PREF_NODES = {
+      '1': { // News
+        devops: [
+          { title: 'Lobsters', url: 'https://lobste.rs/', icon: '🦞', desc: 'Tech Community' },
+          { title: 'HckrNews', url: 'https://hckrnews.com/', icon: '📰', desc: 'HN Viewer' }
+        ],
+        ai: [
+          { title: 'AI News', url: 'https://www.artificialintelligence-news.com/', icon: '🤖', desc: 'AI Industry Updates' },
+          { title: 'InfoQ AI', url: 'https://www.infoq.com/ai-ml-data-eng/', icon: '🧠', desc: 'AI Engineering' }
+        ],
+        webdev: [
+          { title: 'Smashing Mag', url: 'https://www.smashingmagazine.com/', icon: '💎', desc: 'Web Design' },
+          { title: 'CSS-Tricks', url: 'https://css-tricks.com/', icon: '🎨', desc: 'CSS Tips' }
+        ],
+        finance: [
+          { title: 'Yahoo Finance', url: 'https://finance.yahoo.com/', icon: '📈', desc: 'Market Data' },
+          { title: 'TradingView', url: 'https://www.tradingview.com/', icon: '📊', desc: 'Charts' }
+        ],
+        gamedev: [
+          { title: 'GameDev.net', url: 'https://www.gamedev.net/', icon: '🎮', desc: 'Dev Community' },
+          { title: '80 Level', url: 'https://80.lv/', icon: '✨', desc: 'Game Art' }
+        ],
+        design: [
+          { title: 'Awwwards', url: 'https://www.awwwards.com/', icon: '🏆', desc: 'Design Awards' },
+          { title: 'Dribbble', url: 'https://dribbble.com/', icon: '🏀', desc: 'Inspiration' }
+        ],
+        science: [
+          { title: 'ScienceDaily', url: 'https://www.sciencedaily.com/', icon: '🔬', desc: 'Science News' },
+          { title: 'Phys.org', url: 'https://phys.org/', icon: '⚛️', desc: 'Physics News' }
+        ],
+        cyber: [
+          { title: 'The Hacker News', url: 'https://thehackernews.com/', icon: '🛡️', desc: 'Cybersecurity' },
+          { title: 'Dark Reading', url: 'https://www.darkreading.com/', icon: '🦇', desc: 'InfoSec News' }
+        ]
+      },
+      '6': { // Lab
+        devops: [
+          { title: 'Docker Hub', url: 'https://hub.docker.com/', icon: '🐳', desc: 'Containers' },
+          { title: 'GitHub Actions', url: 'https://github.com/features/actions', icon: '⚡', desc: 'CI/CD' }
+        ],
+        ai: [
+          { title: 'LocalAI', url: 'https://localai.io/', icon: '🤖', desc: 'Local API' },
+          { title: 'Flowise', url: 'https://flowiseai.com/', icon: '🕸️', desc: 'LLM Builder' },
+          { title: 'Gradio', url: 'https://gradio.app/', icon: '📻', desc: 'ML Interfaces' }
+        ],
+        webdev: [
+          { title: 'CodePen', url: 'https://codepen.io/', icon: '✒️', desc: 'Frontend Lab' },
+          { title: 'JSFiddle', url: 'https://jsfiddle.net/', icon: '🎻', desc: 'Code Playground' }
+        ],
+        finance: [
+          { title: 'OpenBB', url: 'https://openbb.co/', icon: '🐂', desc: 'Investment Lab' },
+          { title: 'Finnhub', url: 'https://finnhub.io/', icon: '📊', desc: 'Financial API' }
+        ],
+        gamedev: [
+          { title: 'PlayCanvas', url: 'https://playcanvas.com/', icon: '🎮', desc: 'Web3D Engine' },
+          { title: 'Godot Editor', url: 'https://godotengine.org/', icon: '🤖', desc: 'Open Engine' }
+        ],
+        design: [
+          { title: 'Spline', url: 'https://spline.design/', icon: '🧊', desc: '3D Design' },
+          { title: 'Figma', url: 'https://www.figma.com/', icon: '🎨', desc: 'UI Design' }
+        ],
+        science: [
+          { title: 'Wolfram Alpha', url: 'https://www.wolframalpha.com/', icon: '∑', desc: 'Compute Engine' },
+          { title: 'Jupyter', url: 'https://jupyter.org/', icon: '🪐', desc: 'Notebooks' }
+        ],
+        cyber: [
+          { title: 'CyberChef', url: 'https://gchq.github.io/CyberChef/', icon: '🔪', desc: 'Cyber Swiss Army' },
+          { title: 'VirusTotal', url: 'https://www.virustotal.com/', icon: '🦠', desc: 'Malware Lab' }
+        ]
+      },
+      '7': { // DB
+        devops: [
+          { title: 'DB-Engines', url: 'https://db-engines.com/en/', icon: '🗄️', desc: 'Rankings' },
+          { title: 'Redis', url: 'https://redis.io/', icon: '⚡', desc: 'In-Memory Store' }
+        ],
+        ai: [
+          { title: 'HuggingFace', url: 'https://huggingface.co/datasets', icon: '🤗', desc: 'AI Datasets' },
+          { title: 'Kaggle', url: 'https://www.kaggle.com/datasets', icon: '📊', desc: 'ML Data' }
+        ],
+        webdev: [
+          { title: 'Supabase', url: 'https://supabase.com/', icon: '🔥', desc: 'Firebase Alt' },
+          { title: 'Prisma', url: 'https://www.prisma.io/', icon: '◬', desc: 'TypeScript ORM' }
+        ],
+        finance: [
+          { title: 'World Bank Data', url: 'https://data.worldbank.org/', icon: '🌍', desc: 'Global Economy' },
+          { title: 'FRED', url: 'https://fred.stlouisfed.org/', icon: '📈', desc: 'Econ Data' }
+        ],
+        gamedev: [
+          { title: 'IGDB', url: 'https://www.igdb.com/', icon: '👾', desc: 'Game Database' },
+          { title: 'SteamDB', url: 'https://steamdb.info/', icon: '🚂', desc: 'Steam Stats' }
+        ],
+        design: [
+          { title: 'Unsplash', url: 'https://unsplash.com/', icon: '📷', desc: 'Photo Database' },
+          { title: 'Google Fonts', url: 'https://fonts.google.com/', icon: '🔤', desc: 'Font DB' }
+        ],
+        science: [
+          { title: 'Our World In Data', url: 'https://ourworldindata.org/', icon: '🌍', desc: 'Global Data' },
+          { title: 'NASA Data', url: 'https://data.nasa.gov/', icon: '🚀', desc: 'Space Data' }
+        ],
+        cyber: [
+          { title: 'Exploit-DB', url: 'https://www.exploit-db.com/', icon: '💥', desc: 'Exploits' },
+          { title: 'CVE', url: 'https://cve.mitre.org/', icon: '🔍', desc: 'Vulnerabilities' }
+        ]
+      },
+      '8': { // KB
+        devops: [
+          { title: 'Linux Journey', url: 'https://linuxjourney.com/', icon: '🐧', desc: 'Linux Docs' },
+          { title: 'ReadTheDocs', url: 'https://readthedocs.org/', icon: '📚', desc: 'OS Docs' }
+        ],
+        ai: [
+          { title: 'PyTorch Docs', url: 'https://pytorch.org/docs/stable/index.html', icon: '🔥', desc: 'Deep Learning' },
+          { title: 'TensorFlow', url: 'https://www.tensorflow.org/api_docs', icon: '🧠', desc: 'ML Docs' }
+        ],
+        webdev: [
+          { title: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/', icon: '🦊', desc: 'Web Tech' },
+          { title: 'React Docs', url: 'https://react.dev/', icon: '⚛️', desc: 'React Library' }
+        ],
+        finance: [
+          { title: 'Investopedia', url: 'https://www.investopedia.com/', icon: '📖', desc: 'Finance Terms' },
+          { title: 'SEC EDGAR', url: 'https://www.sec.gov/edgar.shtml', icon: '🏛️', desc: 'Filings' }
+        ],
+        gamedev: [
+          { title: 'Godot Docs', url: 'https://docs.godotengine.org/', icon: '🤖', desc: 'Engine Docs' },
+          { title: 'Game Programming Patterns', url: 'https://gameprogrammingpatterns.com/', icon: '📘', desc: 'Design Patterns' }
+        ],
+        design: [
+          { title: 'Material Design', url: 'https://m3.material.io/', icon: '📱', desc: 'UI Guidelines' },
+          { title: 'Apple HIG', url: 'https://developer.apple.com/design/human-interface-guidelines/', icon: '🍎', desc: 'OS Guidelines' }
+        ],
+        science: [
+          { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page', icon: '📖', desc: 'Free Encyclopedia' },
+          { title: 'Nature', url: 'https://www.nature.com/', icon: '🌿', desc: 'Science Journal' }
+        ],
+        cyber: [
+          { title: 'OWASP', url: 'https://owasp.org/', icon: '🛡️', desc: 'Security KB' },
+          { title: 'MITRE ATT&CK', url: 'https://attack.mitre.org/', icon: '⚔️', desc: 'Threat KB' }
+        ]
+      },
+      '9': { // Audit
+        devops: [
+          { title: 'Netdata', url: 'https://netdata.cloud/', icon: '📈', desc: 'Real-time Monitoring' },
+          { title: 'Grafana', url: 'https://grafana.com/', icon: '📊', desc: 'Dashboard Engine' }
+        ],
+        ai: [
+          { title: 'Weights & Biases', url: 'https://wandb.ai/', icon: '⚖️', desc: 'ML Ops' },
+          { title: 'MLflow', url: 'https://mlflow.org/', icon: '📉', desc: 'Lifecycle Logs' }
+        ],
+        webdev: [
+          { title: 'Sentry', url: 'https://sentry.io/', icon: '🚨', desc: 'Error Tracking' },
+          { title: 'PostHog', url: 'https://posthog.com/', icon: '🦔', desc: 'Product Analytics' }
+        ],
+        finance: [
+          { title: 'CoinMarketCap', url: 'https://coinmarketcap.com/', icon: '🪙', desc: 'Crypto Audit' },
+          { title: 'Etherscan', url: 'https://etherscan.io/', icon: '🔗', desc: 'Chain Logs' }
+        ],
+        gamedev: [
+          { title: 'Steamworks', url: 'https://partner.steamgames.com/', icon: '🚂', desc: 'Game Analytics' },
+          { title: 'Unity Analytics', url: 'https://unity.com/solutions/analytics', icon: '📊', desc: 'Player Logs' }
+        ],
+        design: [
+          { title: 'Hotjar', url: 'https://www.hotjar.com/', icon: '🔥', desc: 'Heatmaps' },
+          { title: 'Lighthouse', url: 'https://developer.chrome.com/docs/lighthouse/overview/', icon: '💡', desc: 'UX Audit' }
+        ],
+        science: [
+          { title: 'Google Scholar', url: 'https://scholar.google.com/', icon: '🎓', desc: 'Citation Logs' },
+          { title: 'ORCID', url: 'https://orcid.org/', icon: '🆔', desc: 'Researcher ID' }
+        ],
+        cyber: [
+          { title: 'Shodan', url: 'https://www.shodan.io/', icon: '👁️', desc: 'IoT Search' },
+          { title: 'Censys', url: 'https://censys.io/', icon: '🔎', desc: 'Attack Surface' }
+        ]
+      }
+    };
+
+    function getDynamicNodes(domainId) {
+      let prefs = [];
+      try {
+        prefs = JSON.parse(localStorage.getItem('daxini_preferences') || '[]');
+      } catch(e){}
+      
+      const allCategories = ['devops', 'ai', 'webdev', 'finance', 'gamedev', 'design', 'science', 'cyber'];
+      if (!prefs || prefs.length === 0) {
+        prefs = allCategories; // fallback to all
+      }
+      
+      const domainMap = PREF_NODES[domainId];
+      if (!domainMap) return null;
+      
+      let gathered = [];
+      // Interleave items from selected preferences
+      let index = 0;
+      let added = true;
+      while (gathered.length < 8 && added) {
+        added = false;
+        for (const p of prefs) {
+          if (domainMap[p] && domainMap[p][index]) {
+            gathered.push(domainMap[p][index]);
+            added = true;
+            if (gathered.length === 8) break;
+          }
+        }
+        index++;
+      }
+      
+      // If we still need more, fallback to other categories not selected
+      if (gathered.length < 8) {
+        let unselected = allCategories.filter(c => !prefs.includes(c));
+        let index2 = 0;
+        let added2 = true;
+        while (gathered.length < 8 && added2) {
+          added2 = false;
+          for (const p of unselected) {
+            if (domainMap[p] && domainMap[p][index2]) {
+              gathered.push(domainMap[p][index2]);
+              added2 = true;
+              if (gathered.length === 8) break;
+            }
+          }
+          index2++;
+        }
+      }
+      
+      return gathered;
+    }
+
     function getRoomData(nodeIndex) {
       const currentAddress = [...path, nodeIndex.toString()];
       const pathString = currentAddress.join(',');
@@ -1003,138 +1229,25 @@
             };
           }
         }
-        // Domain 1: News / Feed
-        if (domainNode === '1') {
-          const newsMap = {
-            1: { title: 'Lobsters', url: 'https://lobste.rs/', icon: '🦞', desc: 'Tech Community' },
-            2: { title: 'HckrNews', url: 'https://hckrnews.com/', icon: '📰', desc: 'HN Viewer' },
-            3: { title: 'The Hacker News', url: 'https://thehackernews.com/', icon: '🛡️', desc: 'Cybersecurity' },
-            4: { title: 'HN Search', url: 'https://hn.algolia.com/', icon: '🔍', desc: 'Algolia HN' },
-            6: { title: 'InfoQ', url: 'https://www.infoq.com/', icon: '💡', desc: 'Software News' },
-            7: { title: 'Slashdot', url: 'https://slashdot.org/', icon: '💻', desc: 'News for Nerds' },
-            8: { title: 'TechCrunch', url: 'https://techcrunch.com/', icon: '📱', desc: 'Startup News' },
-            9: { title: 'Ars Technica', url: 'https://arstechnica.com/', icon: '🚀', desc: 'IT News' }
-          };
-          const news = newsMap[nodeIndex];
-          if (news) {
-            return {
-              title: news.title,
-              id: `0xNEWS-${nodeIndex}`,
-              desc: news.desc,
-              status: 'EXTERNAL',
-              icon: news.icon,
-              isApp: true,
-              isLaunchable: true,
-              appSlug: news.url
-            };
-          }
-        }
-
-        // Domain 6: Lab / AI Agents
-        if (domainNode === '6') {
-          const aiMap = {
-            1: { title: 'LocalAI', url: 'https://localai.io/', icon: '🤖', desc: 'Local AI API' },
-            2: { title: 'Gradio', url: 'https://gradio.app/', icon: '📻', desc: 'ML Interfaces' },
-            3: { title: 'Llama.cpp', url: 'https://github.com/ggerganov/llama.cpp', icon: '🦙', desc: 'C++ LLM Port' },
-            4: { title: 'vLLM', url: 'https://vllm.ai/', icon: '⚡', desc: 'High-Throughput LLM' },
-            6: { title: 'LM Studio', url: 'https://lmstudio.ai/', icon: '💻', desc: 'Local LLM UI' },
-            7: { title: 'GPT4All', url: 'https://gpt4all.io/', icon: '🌍', desc: 'Open Source LLMs' },
-            8: { title: 'Flowise', url: 'https://flowiseai.com/', icon: '🕸️', desc: 'LLM Builder' },
-            9: { title: 'LangFlow', url: 'https://www.langflow.org/', icon: '⛓️', desc: 'LangChain UI' }
-          };
-          const ai = aiMap[nodeIndex];
-          if (ai) {
-            return {
-              title: ai.title,
-              id: `0xAI-${nodeIndex}`,
-              desc: ai.desc,
-              status: 'EXTERNAL',
-              icon: ai.icon,
-              isApp: true,
-              isLaunchable: true,
-              appSlug: ai.url
-            };
-          }
-        }
-
-        // Domain 7: Databases
-        if (domainNode === '7') {
-          const dbMap = {
-            1: { title: 'Our World In Data', url: 'https://ourworldindata.org/', icon: '🌍', desc: 'Global Data' },
-            2: { title: 'DB-Engines', url: 'https://db-engines.com/en/', icon: '🗄️', desc: 'DB Rankings' },
-            3: { title: 'PostgreSQL', url: 'https://www.postgresql.org/', icon: '🐘', desc: 'Relational DB' },
-            4: { title: 'MongoDB', url: 'https://www.mongodb.com/', icon: '🍃', desc: 'NoSQL DB' },
-            6: { title: 'Redis', url: 'https://redis.io/', icon: '⚡', desc: 'In-Memory Store' },
-            7: { title: 'Supabase', url: 'https://supabase.com/', icon: '🔥', desc: 'Firebase Alt' },
-            8: { title: 'Prisma', url: 'https://www.prisma.io/', icon: '◬', desc: 'Next-gen ORM' },
-            9: { title: 'Drizzle', url: 'https://orm.drizzle.team/', icon: '🌧️', desc: 'TypeScript ORM' }
-          };
-          const db = dbMap[nodeIndex];
-          if (db) {
-            return {
-              title: db.title,
-              id: `0xDB-${nodeIndex}`,
-              desc: db.desc,
-              status: 'EXTERNAL',
-              icon: db.icon,
-              isApp: true,
-              isLaunchable: true,
-              appSlug: db.url
-            };
-          }
-        }
-
-        // Domain 8: Knowledge Base
-        if (domainNode === '8') {
-          const kbMap = {
-            1: { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page', icon: '📖', desc: 'Free Encyclopedia' },
-            2: { title: 'Python Docs', url: 'https://docs.python.org/3/', icon: '🐍', desc: 'Python Official' },
-            3: { title: 'React Docs', url: 'https://react.dev/', icon: '⚛️', desc: 'React Library' },
-            4: { title: 'ReadTheDocs', url: 'https://readthedocs.org/', icon: '📚', desc: 'Open Source Docs' },
-            6: { title: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/', icon: '🦊', desc: 'Web Tech' },
-            7: { title: 'Vue Docs', url: 'https://vuejs.org/', icon: '🟩', desc: 'Vue.js Framework' },
-            8: { title: 'Next.js', url: 'https://nextjs.org/', icon: '▲', desc: 'React Framework' },
-            9: { title: 'Tailwind CSS', url: 'https://tailwindcss.com/', icon: '💨', desc: 'Utility CSS' }
-          };
-          const kb = kbMap[nodeIndex];
-          if (kb) {
-            return {
-              title: kb.title,
-              id: `0xKB-${nodeIndex}`,
-              desc: kb.desc,
-              status: 'EXTERNAL',
-              icon: kb.icon,
-              isApp: true,
-              isLaunchable: true,
-              appSlug: kb.url
-            };
-          }
-        }
-
-        // Domain 9: Audit Logs / Monitoring
-        if (domainNode === '9') {
-          const auditMap = {
-            1: { title: 'Netdata', url: 'https://netdata.cloud/', icon: '📈', desc: 'Real-time Monitoring' },
-            2: { title: 'Grafana', url: 'https://grafana.com/', icon: '📊', desc: 'Dashboard Engine' },
-            3: { title: 'PostHog', url: 'https://posthog.com/', icon: '🦔', desc: 'Product Analytics' },
-            4: { title: 'Sentry', url: 'https://sentry.io/', icon: '🚨', desc: 'Error Tracking' },
-            6: { title: 'Datadog', url: 'https://www.datadoghq.com/', icon: '🐶', desc: 'Cloud Monitoring' },
-            7: { title: 'Uptime Kuma', url: 'https://github.com/louislam/uptime-kuma', icon: '⏱️', desc: 'Status Tool' },
-            8: { title: 'Prometheus', url: 'https://prometheus.io/', icon: '🔥', desc: 'Metrics DB' },
-            9: { title: 'Logstash', url: 'https://www.elastic.co/logstash', icon: '🪵', desc: 'Log Pipeline' }
-          };
-          const audit = auditMap[nodeIndex];
-          if (audit) {
-            return {
-              title: audit.title,
-              id: `0xLOG-${nodeIndex}`,
-              desc: audit.desc,
-              status: 'EXTERNAL',
-              icon: audit.icon,
-              isApp: true,
-              isLaunchable: true,
-              appSlug: audit.url
-            };
+        // Domains 1, 6, 7, 8, 9 (Dynamic Contextual Nodes)
+        if (['1', '6', '7', '8', '9'].includes(domainNode)) {
+          const dynamicNodes = getDynamicNodes(domainNode);
+          if (dynamicNodes) {
+            // Map the 8 nodes to positions: 1, 2, 3, 4, 6, 7, 8, 9
+            const posMap = { 1:0, 2:1, 3:2, 4:3, 6:4, 7:5, 8:6, 9:7 };
+            const nodeData = dynamicNodes[posMap[nodeIndex]];
+            if (nodeData) {
+              return {
+                title: nodeData.title,
+                id: `0xDYN-${domainNode}-${nodeIndex}`,
+                desc: nodeData.desc,
+                status: 'EXTERNAL',
+                icon: nodeData.icon,
+                isApp: true,
+                isLaunchable: true,
+                appSlug: nodeData.url
+              };
+            }
           }
         }
         
