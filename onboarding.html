@@ -170,6 +170,108 @@
     }
 
     /* ══════════════════════════════════════════════════════════
+       PREFERENCE GRID (SLIDE 6)
+       ══════════════════════════════════════════════════════════ */
+    .pref-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 2rem;
+    }
+    .pref-card {
+      background: rgba(20, 22, 32, 0.7);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-out);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .pref-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .pref-card:hover {
+      background: rgba(30, 32, 45, 0.8);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+    .pref-card:hover::before { opacity: 1; }
+    .pref-card:active { transform: translateY(0); }
+    
+    .pref-card.selected {
+      background: rgba(0, 255, 204, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .pref-card.selected .pref-icon {
+      transform: scale(1.1);
+    }
+    .pref-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pref-label {
+      font-family: var(--font-body, var(--font-display));
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .pref-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pref-check::after {
+      content: '';
+      width: 4px;
+      height: 8px;
+      border: solid #000;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+    .pref-card.selected .pref-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .pref-counter {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: -10px;
+      margin-bottom: 20px;
+      height: 20px;
+    }
+    .cta:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(1);
+    }
+
+    /* ══════════════════════════════════════════════════════════
        SLIDE 1 — "Navigate Space, Not Windows"
        ══════════════════════════════════════════════════════════ */
     .s1-grid {
@@ -787,7 +889,59 @@
       </div>
       <h1>Your OS<br>Awaits.</h1>
       <p class="sub">Press ESC anytime to return home. The grid remembers your path.</p>
-      <button class="cta primary" onclick="enterOS(false)">Enter Spatial OS</button>
+      <button class="cta primary" onclick="goTo(5)">Next</button>
+    </div>
+
+    <!-- ═══ SLIDE 6: PREFERENCES ═══ -->
+    <div class="screen" id="screen-preferences" data-i="5">
+      <div class="visual" style="height: auto;">
+        <div class="pref-grid">
+          <div class="pref-card" onclick="togglePref(this, 'devops')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">💻</div>
+            <div class="pref-label">Open Source & DevOps</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'ai')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🤖</div>
+            <div class="pref-label">Artificial Intelligence</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'webdev')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🌐</div>
+            <div class="pref-label">Web Development</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'finance')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">📈</div>
+            <div class="pref-label">Finance & Analytics</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'gamedev')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🎮</div>
+            <div class="pref-label">Game Development</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'design')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🎨</div>
+            <div class="pref-label">Design & UI/UX</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'science')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🔬</div>
+            <div class="pref-label">Science & Research</div>
+          </div>
+          <div class="pref-card" onclick="togglePref(this, 'cyber')">
+            <div class="pref-check"></div>
+            <div class="pref-icon">🛡️</div>
+            <div class="pref-label">Cybersecurity</div>
+          </div>
+        </div>
+      </div>
+      <h1>Personalize OS</h1>
+      <p class="sub">Select 2 or more interests to build your spatial ecosystem map.</p>
+      <div class="pref-counter" id="pref-counter">0/2 Selected</div>
+      <button class="cta primary" id="btn-init-os" onclick="enterOS(false)" disabled>Initialize OS</button>
     </div>
 
   </div>
@@ -795,6 +949,7 @@
   <!-- Progress Dots -->
   <div class="progress-dots">
     <div class="pdot active"></div>
+    <div class="pdot"></div>
     <div class="pdot"></div>
     <div class="pdot"></div>
     <div class="pdot"></div>
@@ -860,10 +1015,39 @@
         updateUI();
       }
     }
+    // ── Preference Logic ──
+    let selectedPreferences = [];
+    
+    function togglePref(element, prefId) {
+      const idx = selectedPreferences.indexOf(prefId);
+      if (idx === -1) {
+        selectedPreferences.push(prefId);
+        element.classList.add('selected');
+      } else {
+        selectedPreferences.splice(idx, 1);
+        element.classList.remove('selected');
+      }
+      
+      const counter = document.getElementById('pref-counter');
+      const btn = document.getElementById('btn-init-os');
+      
+      counter.innerText = `${selectedPreferences.length}/2 Selected`;
+      
+      if (selectedPreferences.length >= 2) {
+        btn.disabled = false;
+        counter.style.color = 'var(--accent)';
+      } else {
+        btn.disabled = true;
+        counter.style.color = 'var(--text-secondary)';
+      }
+    }
 
     function enterOS(skipped) {
-      track('onboarding_completed', { skipped });
+      track('onboarding_completed', { skipped, preferences: selectedPreferences });
       localStorage.setItem('daxini_onboarding_complete', 'true');
+      if (!skipped) {
+        localStorage.setItem('daxini_preferences', JSON.stringify(selectedPreferences));
+      }
       document.body.style.transition = 'opacity 0.3s';
       document.body.style.opacity = '0';
       setTimeout(() => { window.location.href = '/'; }, 300);

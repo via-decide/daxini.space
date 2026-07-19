@@ -6,5 +6,9 @@
 /chat   /apps/zayvora-chat/     301
 /app/*  /?app=:splat            301
 
+# Onboarding redirects
+/onboarding    /onboarding.html    302
+/onboarding/   /onboarding.html    302
+
 # SPA Fallback routing (Must be last)
 /*      /index.html             200
