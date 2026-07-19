@@ -1495,10 +1495,10 @@
                   title: endpoint.title,
                   id: `0xEP-${domainNode}-${categoryKey.toUpperCase()}-${nodeIndex}`,
                   desc: endpoint.desc,
-                  status: 'LIVE',
+                  status: 'ZOOM',
                   icon: endpoint.icon,
                   isApp: true,
-                  isLaunchable: true,
+                  isLaunchable: false,
                   appSlug: endpoint.url
                 };
               }
@@ -1601,6 +1601,55 @@
             isApp: true,
             isFile: arch.icon === '📄'
           };
+        }
+      }
+
+      // LEVEL 3: Dynamic Domain Endpoints -> Blogs & Wikis (Path length 4)
+      if (path.length === 4 && ['1', '6', '7', '8', '9'].includes(path[1])) {
+        const domainNode = path[1];
+        const catNode = path[2];
+        const endpointNode = path[3];
+        
+        const sortedCategories = getSortedCategories();
+        const posMap = { 1:0, 2:1, 3:2, 4:3, 6:4, 7:5, 8:6, 9:7 };
+        const categoryKey = sortedCategories[posMap[catNode]];
+        if (categoryKey) {
+          const domainMap = PREF_NODES[domainNode];
+          if (domainMap && domainMap[categoryKey]) {
+            const endpoint = domainMap[categoryKey][posMap[endpointNode]];
+            if (endpoint) {
+              const query = encodeURIComponent(endpoint.title);
+              const infoUrl = `/apps/info.html?title=${encodeURIComponent(endpoint.title)}&url=${encodeURIComponent(endpoint.url)}&desc=${encodeURIComponent(endpoint.desc)}&icon=${encodeURIComponent(endpoint.icon)}&domain=${encodeURIComponent(domainNode)}`;
+              
+              const resources = {
+                1: { title: 'Wikipedia Article', url: `https://en.wikipedia.org/wiki/Special:Search?search=${query}`, icon: '📖', desc: `Lookup ${endpoint.title} on Wikipedia` },
+                2: { title: 'Hacker News Search', url: `https://hn.algolia.com/?q=${query}`, icon: '🔍', desc: `Search HN threads for ${endpoint.title}` },
+                3: { title: 'Lobsters Discussions', url: `https://lobste.rs/search?q=${query}&what=stories`, icon: '🦞', desc: `Search Lobsters for ${endpoint.title}` },
+                4: { title: 'ReadTheDocs', url: `https://readthedocs.org/search/?q=${query}`, icon: '📚', desc: `Search documentation for ${endpoint.title}` },
+                6: { title: 'Visit Website', url: infoUrl, icon: '🚀', desc: `Launch official website via local proxy` },
+                7: { title: 'GitHub Search', url: `https://github.com/search?q=${query}`, icon: '🐙', desc: `Find repositories for ${endpoint.title}`, noIframe: true },
+                8: { title: 'Google Scholar', url: `https://scholar.google.com/scholar?q=${query}`, icon: '🎓', desc: `Academic citations for ${endpoint.title}`, noIframe: true },
+                9: { title: 'Node Info Sheet', url: infoUrl, icon: '📝', desc: `View localized system data sheet` }
+              };
+              
+              const res = resources[nodeIndex];
+              if (res) {
+                return {
+                  title: res.title,
+                  id: `0xRES-${domainNode}-${nodeIndex}`,
+                  desc: res.desc,
+                  status: 'RESOURCE',
+                  icon: res.icon,
+                  isApp: true,
+                  isLaunchable: !res.noIframe,
+                  isExternalWeb: !!res.noIframe,
+                  noIframe: !!res.noIframe,
+                  appSlug: res.url,
+                  url: res.url
+                };
+              }
+            }
+          }
         }
       }
 

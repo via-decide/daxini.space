@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecosystem Node Info</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #1f2833;
+      --accent: #45f3ff;
+      --text: #c5c6c7;
+      --text-bright: #ffffff;
+      --border: rgba(69, 243, 255, 0.15);
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(69, 243, 255, 0.03) 0%, transparent 70%);
+      top: -50%;
+      left: -50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card {
+      background: rgba(31, 40, 51, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      z-index: 1;
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 10px rgba(69, 243, 255, 0.3));
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-bright);
+      margin: 0 0 12px 0;
+      letter-spacing: -0.5px;
+    }
+    .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 32px 0;
+      color: var(--text);
+      font-weight: 300;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--bg);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 16px 32px;
+      border-radius: 30px;
+      font-size: 15px;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 20px rgba(69, 243, 255, 0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(69, 243, 255, 0.4);
+      background: #ffffff;
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon" id="node-icon">🌐</div>
+    <h1 id="node-title">Ecosystem Node</h1>
+    <div class="meta" id="node-meta">External Reference</div>
+    <p id="node-desc">This website blocks embedding within frames. Click below to open it securely in a new browser tab.</p>
+    <a href="#" class="btn" id="node-link" target="_blank">Launch Resource</a>
+    <div class="footer">Daxini Spatial Registry Service</div>
+  </div>
+
+  <script>
+    // Parse query params
+    const params = new URLSearchParams(window.location.search);
+    const title = params.get('title');
+    const url = params.get('url');
+    const desc = params.get('desc');
+    const icon = params.get('icon');
+    const domain = params.get('domain') || '';
+
+    if (title) document.getElementById('node-title').textContent = title;
+    if (desc) document.getElementById('node-desc').textContent = desc;
+    if (icon) document.getElementById('node-icon').textContent = icon;
+    if (domain) document.getElementById('node-meta').textContent = `${domain} Reference`;
+    
+    if (url) {
+      const link = document.getElementById('node-link');
+      link.href = url;
+      // Add domain label to button
+      try {
+        const parsedUrl = new URL(url);
+        link.textContent = `Visit ${parsedUrl.hostname}`;
+      } catch(e) {
+        link.textContent = `Launch Resource`;
+      }
+    }
+  </script>
+</body>
+</html>
