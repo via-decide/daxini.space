@@ -803,6 +803,61 @@
        SPATIAL OS ENGINE (Vanilla JS)
        ══════════════════════════════════════════════════════════ -->
   <script>
+  // ── VIA Sovereign OS Telemetry/Trace Engine ──
+  class ViaTraceEngine {
+    constructor() {
+      this.traces = [];
+      this.userSignals = [];
+      this.sessionId = this.generateSessionId();
+      this.startTime = Date.now();
+      
+      setInterval(() => this.flush(), 10000);
+      window.addEventListener('beforeunload', () => this.flush());
+      console.log('[VIA Trace Engine] Initialized. Session:', this.sessionId);
+    }
+    
+    generateSessionId() {
+      return 'sess_' + Math.random().toString(36).substring(2, 15);
+    }
+    
+    log(action, data = {}) {
+      this.traces.push({
+        action,
+        data,
+        timestamp: Date.now(),
+        timeSinceStart: Date.now() - this.startTime,
+        type: 'legacy_loose'
+      });
+      if (this.traces.length > 25) this.flush();
+    }
+    
+    recordSignal(signal) {
+      if (!this.userSignals.includes(signal)) {
+        this.userSignals.push(signal);
+      }
+    }
+    
+    flush() {
+      if (this.traces.length === 0 && this.userSignals.length === 0) return;
+      const payload = {
+        sessionId: this.sessionId,
+        traces: [...this.traces],
+        userSignals: [...this.userSignals]
+      };
+      this.traces = [];
+      
+      fetch('/api/traces', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(err => console.error('Trace flush failed:', err));
+    }
+  }
+
+  window.viaTracer = new ViaTraceEngine();
+  window.viaTracer.recordSignal('session_start');
+
   (function() {
     'use strict';
 
@@ -1793,6 +1848,9 @@
 
       path = [...path, targetNode];
       addLog(`[NAV] VECTOR TRANSLATION: Moved to sector [${path.join(' ➔ ')}]`);
+      if (window.viaTracer) {
+        window.viaTracer.log('navigate_to', { path: path.join(',') });
+      }
       renderGrid();
       renderHUD();
     }
@@ -1802,6 +1860,9 @@
         applyTransition('zoom-out');
         path.pop();
         addLog(`[NAV] VECTOR TRANSLATION: Lifted down to sector [${path.join(' ➔ ')}]`);
+        if (window.viaTracer) {
+          window.viaTracer.log('go_back', { path: path.join(',') });
+        }
         renderGrid();
         renderHUD();
       } else {
@@ -1817,6 +1878,9 @@
       keyHistory = [];
       appOverlay.style.display = 'none';
       addLog('[NAV] GRAV-ANCHOR RESET: Core status fully collapsed back to [5].');
+      if (window.viaTracer) {
+        window.viaTracer.log('reset_to_home');
+      }
       renderGrid();
       renderHUD();
 
@@ -1997,6 +2061,9 @@
       launchBarIframe.src = app.url;
       launchBar.classList.remove('hidden');
       addLog(`[LAUNCH] Opening live app: ${app.name} → ${app.url}`);
+      if (window.viaTracer) {
+        window.viaTracer.log('launch_app', { name: app.name, url: app.url });
+      }
     }
 
     // ── Keyboard Handler ──
@@ -2087,6 +2154,9 @@
       launchBar.classList.add('hidden');
       launchBarIframe.src = 'about:blank';
       addLog('[SYSTEM] Live app closed. Returning to Spatial grid.');
+      if (window.viaTracer) {
+        window.viaTracer.log('close_app');
+      }
     });
 
     // Touch / swipe support for mobile
