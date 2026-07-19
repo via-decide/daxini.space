@@ -1207,14 +1207,14 @@
         // Domain 4: Code Repositories
         if (domainNode === '4') {
           const repoMap = {
-            1: { title: 'GN8R-main', slug: 'gn8r', desc: 'Core GN8R Repository', icon: '📦' },
-            2: { title: 'Game--main', slug: 'game-main', desc: 'Game Repository', icon: '🎮' },
-            3: { title: 'cohort_fixed', slug: 'cohort', desc: 'Cohort Fixes', icon: '👥' },
-            4: { title: 'via', slug: 'via', desc: 'ViaDecide Root', icon: '🧠' },
-            6: { title: 'daxini.space', slug: 'daxini-space', desc: 'Spatial OS Codebase', icon: '🌌' },
-            7: { title: 'sovereign-ui', slug: 'sovereign-ui', desc: 'UI Component Library', icon: '🎨' },
-            8: { title: 'prompt-alchemy', slug: 'prompt-alchemy', desc: 'Prompt Engine Repo', icon: '⚗️' },
-            9: { title: 'logic-reactor', slug: 'logic-reactor', desc: 'Logic Reactor Engine', icon: '⚡' }
+            1: { title: 'GN8R', slug: 'GN8R', desc: 'Core GN8R Repository', icon: '📦', url: 'https://via-decide.github.io/GN8R/index.html' },
+            2: { title: 'Game', slug: 'Game', desc: 'Game Repository', icon: '🎮', url: 'https://via-decide.github.io/Game/index.html' },
+            3: { title: 'Cohort Fixed', slug: 'cohort_fixed', desc: 'Cohort Fixes', icon: '👥', url: 'https://via-decide.github.io/cohort_fixed/index.html' },
+            4: { title: 'VIA', slug: 'via', desc: 'ViaDecide Root', icon: '🧠', url: 'https://via-decide.github.io/via/index.html' },
+            6: { title: 'Daxini.space', slug: 'daxini.space', desc: 'Spatial OS Codebase', icon: '🌌', url: 'https://via-decide.github.io/daxini.space/index.html' },
+            7: { title: 'Sovereign UI', slug: 'sovereign-ui', desc: 'UI Component Library', icon: '🎨', url: 'https://via-decide.github.io/sovereign-ui/index.html' },
+            8: { title: 'Prompt Alchemy', slug: 'PromptAlchemy', desc: 'Prompt Engine Repo', icon: '⚗️', url: 'https://via-decide.github.io/PromptAlchemy/index.html' },
+            9: { title: 'Logic Reactor', slug: 'logic-reactor', desc: 'Logic Reactor Engine', icon: '⚡', url: 'https://via-decide.github.io/logic-reactor/index.html' }
           };
           const repo = repoMap[nodeIndex];
           if (repo) {
@@ -1222,10 +1222,11 @@
               title: repo.title,
               id: `0xREPO-${repo.slug.toUpperCase()}`,
               desc: repo.desc,
-              status: 'LOCAL',
+              status: 'LIVE',
               icon: repo.icon,
               isApp: true,
-              isRepo: true
+              isLaunchable: true,
+              appSlug: repo.url
             };
           }
         }
