@@ -1561,12 +1561,12 @@
             window.open(room.url, '_blank');
           } else {
             // Future-proofing if some sites allow iframes
-            launchLiveApp(room.url);
+            launchLiveApp(room.url, room.title);
           }
         }
         // Else if it's a launchable local app, launch it
         else if (room && room.isLaunchable && room.appSlug) {
-          launchLiveApp(room.appSlug);
+          launchLiveApp(room.appSlug, room.title);
         }
         
         // Simulate key press for the node (fractal zoom)
@@ -1686,12 +1686,23 @@
     }
 
     // ── Launch Live App ──
-    function launchLiveApp(slug) {
-      const app = getApp(slug);
-      if (!app || !app.url || app.url === 'offline') {
+    function launchLiveApp(slug, fallbackTitle) {
+      let app = getApp(slug);
+      
+      if (!app) {
+        if (slug && (slug.startsWith('http') || slug.startsWith('/'))) {
+          app = { name: fallbackTitle || 'External Web', url: slug };
+        } else {
+          addLog(`[ERROR] App "${slug}" is OFFLINE or not found.`);
+          return;
+        }
+      }
+      
+      if (!app.url || app.url === 'offline') {
         addLog(`[ERROR] App "${slug}" is OFFLINE or not found.`);
         return;
       }
+      
       launchBarTitle.textContent = app.name;
       launchBarIframe.src = app.url;
       launchBar.classList.remove('hidden');
