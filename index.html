@@ -899,230 +899,446 @@
       }, 0);
     }
 
+    // ── Category Metadata for Level 2 ──
+    const CATEGORY_META = {
+      devops:  { title: 'DevOps',         icon: '⚙️', desc: 'Infrastructure & CI/CD' },
+      ai:      { title: 'AI & ML',        icon: '🤖', desc: 'Artificial Intelligence' },
+      webdev:  { title: 'Web Dev',        icon: '🌐', desc: 'Web Development' },
+      finance: { title: 'Finance',        icon: '💰', desc: 'Finance & Analytics' },
+      gamedev: { title: 'Game Dev',       icon: '🎮', desc: 'Game Development' },
+      design:  { title: 'Design',         icon: '🎨', desc: 'Design & Creative' },
+      science: { title: 'Science',        icon: '🔬', desc: 'Science & Research' },
+      cyber:   { title: 'Cybersecurity',  icon: '🛡️', desc: 'Security & Privacy' }
+    };
+    const CATEGORY_KEYS = ['devops','ai','webdev','finance','gamedev','design','science','cyber'];
+
     // ── Contextual Mapping (StudyOS Architecture) ──
+    // Each domain × category has 8 endpoints for full Level 3 population
     const PREF_NODES = {
       '1': { // News
         devops: [
           { title: 'Lobsters', url: 'https://lobste.rs/', icon: '🦞', desc: 'Tech Community' },
-          { title: 'HckrNews', url: 'https://hckrnews.com/', icon: '📰', desc: 'HN Viewer' }
+          { title: 'HckrNews', url: 'https://hckrnews.com/', icon: '📰', desc: 'HN Viewer' },
+          { title: 'InfoQ', url: 'https://www.infoq.com/', icon: '💡', desc: 'Software News' },
+          { title: 'DevOps Weekly', url: 'https://www.devopsweekly.com/', icon: '📬', desc: 'Newsletter' },
+          { title: 'DZone', url: 'https://dzone.com/', icon: '📖', desc: 'Dev Knowledge' },
+          { title: 'The New Stack', url: 'https://thenewstack.io/', icon: '📚', desc: 'Cloud Native' },
+          { title: 'DevTo', url: 'https://dev.to/', icon: '🧑‍💻', desc: 'Dev Community' },
+          { title: 'Hacker News', url: 'https://news.ycombinator.com/', icon: '🔶', desc: 'YC News' }
         ],
         ai: [
-          { title: 'AI News', url: 'https://www.artificialintelligence-news.com/', icon: '🤖', desc: 'AI Industry Updates' },
-          { title: 'InfoQ AI', url: 'https://www.infoq.com/ai-ml-data-eng/', icon: '🧠', desc: 'AI Engineering' }
+          { title: 'AI News', url: 'https://www.artificialintelligence-news.com/', icon: '🤖', desc: 'AI Industry' },
+          { title: 'InfoQ AI', url: 'https://www.infoq.com/ai-ml-data-eng/', icon: '🧠', desc: 'AI Engineering' },
+          { title: 'MIT AI Review', url: 'https://www.technologyreview.com/topic/artificial-intelligence/', icon: '🎓', desc: 'MIT Tech Review' },
+          { title: 'OpenAI Blog', url: 'https://openai.com/blog', icon: '💬', desc: 'OpenAI Updates' },
+          { title: 'DeepMind Blog', url: 'https://deepmind.google/discover/blog/', icon: '🧬', desc: 'DeepMind Research' },
+          { title: 'Papers With Code', url: 'https://paperswithcode.com/', icon: '📄', desc: 'ML Papers' },
+          { title: 'Towards Data Science', url: 'https://towardsdatascience.com/', icon: '📊', desc: 'Data Science' },
+          { title: 'The Gradient', url: 'https://thegradient.pub/', icon: '📐', desc: 'AI Perspectives' }
         ],
         webdev: [
           { title: 'Smashing Mag', url: 'https://www.smashingmagazine.com/', icon: '💎', desc: 'Web Design' },
-          { title: 'CSS-Tricks', url: 'https://css-tricks.com/', icon: '🎨', desc: 'CSS Tips' }
+          { title: 'CSS-Tricks', url: 'https://css-tricks.com/', icon: '🎨', desc: 'CSS Tips' },
+          { title: 'Codrops', url: 'https://tympanus.net/codrops/', icon: '💧', desc: 'Web Inspiration' },
+          { title: 'Frontend Focus', url: 'https://frontendfoc.us/', icon: '🔎', desc: 'Frontend News' },
+          { title: 'JavaScript Weekly', url: 'https://javascriptweekly.com/', icon: '📬', desc: 'JS Newsletter' },
+          { title: 'web.dev', url: 'https://web.dev/', icon: '🌐', desc: 'Google Web Dev' },
+          { title: 'A List Apart', url: 'https://alistapart.com/', icon: '📑', desc: 'Web Standards' },
+          { title: 'SitePoint', url: 'https://www.sitepoint.com/', icon: '📌', desc: 'Web Tutorials' }
         ],
         finance: [
           { title: 'Yahoo Finance', url: 'https://finance.yahoo.com/', icon: '📈', desc: 'Market Data' },
-          { title: 'TradingView', url: 'https://www.tradingview.com/', icon: '📊', desc: 'Charts' }
+          { title: 'TradingView', url: 'https://www.tradingview.com/', icon: '📊', desc: 'Charts' },
+          { title: 'MarketWatch', url: 'https://www.marketwatch.com/', icon: '🏦', desc: 'Financial News' },
+          { title: 'Bloomberg', url: 'https://www.bloomberg.com/', icon: '💹', desc: 'Markets & Finance' },
+          { title: 'Reuters', url: 'https://www.reuters.com/business/', icon: '📰', desc: 'Business News' },
+          { title: 'CoinDesk', url: 'https://www.coindesk.com/', icon: '🪙', desc: 'Crypto News' },
+          { title: 'Financial Times', url: 'https://www.ft.com/', icon: '📋', desc: 'Global Finance' },
+          { title: 'Seeking Alpha', url: 'https://seekingalpha.com/', icon: '🎯', desc: 'Stock Analysis' }
         ],
         gamedev: [
           { title: 'GameDev.net', url: 'https://www.gamedev.net/', icon: '🎮', desc: 'Dev Community' },
-          { title: '80 Level', url: 'https://80.lv/', icon: '✨', desc: 'Game Art' }
+          { title: '80 Level', url: 'https://80.lv/', icon: '✨', desc: 'Game Art' },
+          { title: 'Gamasutra', url: 'https://www.gamedeveloper.com/', icon: '🕹️', desc: 'Game Developer' },
+          { title: 'IndieDB', url: 'https://www.indiedb.com/', icon: '🎲', desc: 'Indie Games' },
+          { title: 'GameFromScratch', url: 'https://gamefromscratch.com/', icon: '🧱', desc: 'Game Tutorials' },
+          { title: 'PC Gamer', url: 'https://www.pcgamer.com/', icon: '🖥️', desc: 'Gaming News' },
+          { title: 'Polygon', url: 'https://www.polygon.com/', icon: '🔷', desc: 'Game Reviews' },
+          { title: 'Rock Paper Shotgun', url: 'https://www.rockpapershotgun.com/', icon: '✂️', desc: 'PC Gaming' }
         ],
         design: [
           { title: 'Awwwards', url: 'https://www.awwwards.com/', icon: '🏆', desc: 'Design Awards' },
-          { title: 'Dribbble', url: 'https://dribbble.com/', icon: '🏀', desc: 'Inspiration' }
+          { title: 'Dribbble', url: 'https://dribbble.com/', icon: '🏀', desc: 'Inspiration' },
+          { title: 'Behance', url: 'https://www.behance.net/', icon: '🎭', desc: 'Creative Portfolios' },
+          { title: 'Muzli', url: 'https://muz.li/', icon: '💡', desc: 'Design Inspiration' },
+          { title: 'It\'s Nice That', url: 'https://www.itsnicethat.com/', icon: '🌈', desc: 'Creative Culture' },
+          { title: 'Designboom', url: 'https://www.designboom.com/', icon: '💥', desc: 'Architecture & Design' },
+          { title: 'Creative Bloq', url: 'https://www.creativebloq.com/', icon: '🎨', desc: 'Design Tips' },
+          { title: 'Abduzeedo', url: 'https://abduzeedo.com/', icon: '🌀', desc: 'Daily Inspiration' }
         ],
         science: [
           { title: 'ScienceDaily', url: 'https://www.sciencedaily.com/', icon: '🔬', desc: 'Science News' },
-          { title: 'Phys.org', url: 'https://phys.org/', icon: '⚛️', desc: 'Physics News' }
+          { title: 'Phys.org', url: 'https://phys.org/', icon: '⚛️', desc: 'Physics News' },
+          { title: 'Nature News', url: 'https://www.nature.com/news', icon: '🌿', desc: 'Nature Journal' },
+          { title: 'New Scientist', url: 'https://www.newscientist.com/', icon: '🧪', desc: 'Science Magazine' },
+          { title: 'Science Magazine', url: 'https://www.science.org/', icon: '🔭', desc: 'AAAS Journal' },
+          { title: 'Ars Technica', url: 'https://arstechnica.com/science/', icon: '🚀', desc: 'Science Tech' },
+          { title: 'Quanta Magazine', url: 'https://www.quantamagazine.org/', icon: '🌌', desc: 'Math & Science' },
+          { title: 'Scientific American', url: 'https://www.scientificamerican.com/', icon: '📡', desc: 'Popular Science' }
         ],
         cyber: [
           { title: 'The Hacker News', url: 'https://thehackernews.com/', icon: '🛡️', desc: 'Cybersecurity' },
-          { title: 'Dark Reading', url: 'https://www.darkreading.com/', icon: '🦇', desc: 'InfoSec News' }
+          { title: 'Dark Reading', url: 'https://www.darkreading.com/', icon: '🦇', desc: 'InfoSec News' },
+          { title: 'BleepingComputer', url: 'https://www.bleepingcomputer.com/', icon: '💻', desc: 'Security News' },
+          { title: 'Krebs on Security', url: 'https://krebsonsecurity.com/', icon: '🔒', desc: 'Investigative Security' },
+          { title: 'Threatpost', url: 'https://threatpost.com/', icon: '⚠️', desc: 'Threat Intel' },
+          { title: 'Security Weekly', url: 'https://securityweekly.com/', icon: '📻', desc: 'Security Podcast' },
+          { title: 'Naked Security', url: 'https://nakedsecurity.sophos.com/', icon: '🔓', desc: 'Sophos Blog' },
+          { title: 'CSO Online', url: 'https://www.csoonline.com/', icon: '🏢', desc: 'Enterprise Security' }
         ]
       },
       '6': { // Lab
         devops: [
           { title: 'Docker Hub', url: 'https://hub.docker.com/', icon: '🐳', desc: 'Containers' },
-          { title: 'GitHub Actions', url: 'https://github.com/features/actions', icon: '⚡', desc: 'CI/CD' }
+          { title: 'GitHub Actions', url: 'https://github.com/features/actions', icon: '⚡', desc: 'CI/CD' },
+          { title: 'Terraform', url: 'https://registry.terraform.io/', icon: '🏗️', desc: 'IaC Registry' },
+          { title: 'Ansible Galaxy', url: 'https://galaxy.ansible.com/', icon: '🌌', desc: 'Automation' },
+          { title: 'Jenkins', url: 'https://www.jenkins.io/', icon: '🤵', desc: 'Build Server' },
+          { title: 'ArgoCD', url: 'https://argoproj.github.io/cd/', icon: '🐙', desc: 'GitOps' },
+          { title: 'K8s Playground', url: 'https://labs.play-with-k8s.com/', icon: '☸️', desc: 'Kubernetes Lab' },
+          { title: 'Vagrant Cloud', url: 'https://app.vagrantup.com/boxes/search', icon: '📦', desc: 'VM Images' }
         ],
         ai: [
           { title: 'LocalAI', url: 'https://localai.io/', icon: '🤖', desc: 'Local API' },
           { title: 'Flowise', url: 'https://flowiseai.com/', icon: '🕸️', desc: 'LLM Builder' },
-          { title: 'Gradio', url: 'https://gradio.app/', icon: '📻', desc: 'ML Interfaces' }
+          { title: 'Gradio', url: 'https://gradio.app/', icon: '📻', desc: 'ML Interfaces' },
+          { title: 'LM Studio', url: 'https://lmstudio.ai/', icon: '💻', desc: 'Local LLM UI' },
+          { title: 'Ollama', url: 'https://ollama.com/', icon: '🦙', desc: 'Run LLMs Locally' },
+          { title: 'GPT4All', url: 'https://gpt4all.io/', icon: '🌍', desc: 'Open Source LLMs' },
+          { title: 'LangFlow', url: 'https://www.langflow.org/', icon: '⛓️', desc: 'LangChain UI' },
+          { title: 'vLLM', url: 'https://vllm.ai/', icon: '⚡', desc: 'High-Throughput LLM' }
         ],
         webdev: [
           { title: 'CodePen', url: 'https://codepen.io/', icon: '✒️', desc: 'Frontend Lab' },
-          { title: 'JSFiddle', url: 'https://jsfiddle.net/', icon: '🎻', desc: 'Code Playground' }
+          { title: 'JSFiddle', url: 'https://jsfiddle.net/', icon: '🎻', desc: 'Code Playground' },
+          { title: 'StackBlitz', url: 'https://stackblitz.com/', icon: '⚡', desc: 'WebContainer IDE' },
+          { title: 'CodeSandbox', url: 'https://codesandbox.io/', icon: '📦', desc: 'Online IDE' },
+          { title: 'Replit', url: 'https://replit.com/', icon: '💻', desc: 'Cloud IDE' },
+          { title: 'Glitch', url: 'https://glitch.com/', icon: '🎏', desc: 'Web App IDE' },
+          { title: 'Svelte REPL', url: 'https://svelte.dev/repl', icon: '🟧', desc: 'Svelte Playground' },
+          { title: 'Vue Playground', url: 'https://play.vuejs.org/', icon: '🟩', desc: 'Vue.js Lab' }
         ],
         finance: [
           { title: 'OpenBB', url: 'https://openbb.co/', icon: '🐂', desc: 'Investment Lab' },
-          { title: 'Finnhub', url: 'https://finnhub.io/', icon: '📊', desc: 'Financial API' }
+          { title: 'Finnhub', url: 'https://finnhub.io/', icon: '📊', desc: 'Financial API' },
+          { title: 'QuantConnect', url: 'https://www.quantconnect.com/', icon: '📈', desc: 'Algo Trading' },
+          { title: 'Alpaca', url: 'https://alpaca.markets/', icon: '🦙', desc: 'Trading API' },
+          { title: 'Yahoo Finance API', url: 'https://finance.yahoo.com/quotes/API', icon: '📉', desc: 'Market API' },
+          { title: 'CoinGecko API', url: 'https://www.coingecko.com/en/api', icon: '🦎', desc: 'Crypto API' },
+          { title: 'Plaid', url: 'https://plaid.com/', icon: '🏦', desc: 'Banking API' },
+          { title: 'Stripe Dashboard', url: 'https://dashboard.stripe.com/', icon: '💳', desc: 'Payments' }
         ],
         gamedev: [
           { title: 'PlayCanvas', url: 'https://playcanvas.com/', icon: '🎮', desc: 'Web3D Engine' },
-          { title: 'Godot Editor', url: 'https://godotengine.org/', icon: '🤖', desc: 'Open Engine' }
+          { title: 'Godot Editor', url: 'https://godotengine.org/', icon: '🤖', desc: 'Open Engine' },
+          { title: 'Three.js Editor', url: 'https://threejs.org/editor/', icon: '🧊', desc: '3D WebGL' },
+          { title: 'Babylon.js', url: 'https://playground.babylonjs.com/', icon: '🏛️', desc: '3D Playground' },
+          { title: 'Phaser Sandbox', url: 'https://phaser.io/sandbox', icon: '🕹️', desc: '2D Game Lab' },
+          { title: 'Pixi.js', url: 'https://pixijs.com/', icon: '✨', desc: '2D Rendering' },
+          { title: 'Construct', url: 'https://www.construct.net/', icon: '🧱', desc: 'Game Maker' },
+          { title: 'Kaboom', url: 'https://kaboomjs.com/', icon: '💥', desc: 'Game JS Lib' }
         ],
         design: [
           { title: 'Spline', url: 'https://spline.design/', icon: '🧊', desc: '3D Design' },
-          { title: 'Figma', url: 'https://www.figma.com/', icon: '🎨', desc: 'UI Design' }
+          { title: 'Figma', url: 'https://www.figma.com/', icon: '🎨', desc: 'UI Design' },
+          { title: 'Canva', url: 'https://www.canva.com/', icon: '🖼️', desc: 'Graphic Design' },
+          { title: 'Penpot', url: 'https://penpot.app/', icon: '✏️', desc: 'Open Source Design' },
+          { title: 'Framer', url: 'https://www.framer.com/', icon: '🖥️', desc: 'Interactive Design' },
+          { title: 'Photopea', url: 'https://www.photopea.com/', icon: '🎭', desc: 'Online Photoshop' },
+          { title: 'Vectr', url: 'https://vectr.com/', icon: '📐', desc: 'Vector Editor' },
+          { title: 'Excalidraw', url: 'https://excalidraw.com/', icon: '✍️', desc: 'Whiteboard' }
         ],
         science: [
           { title: 'Wolfram Alpha', url: 'https://www.wolframalpha.com/', icon: '∑', desc: 'Compute Engine' },
-          { title: 'Jupyter', url: 'https://jupyter.org/', icon: '🪐', desc: 'Notebooks' }
+          { title: 'Jupyter', url: 'https://jupyter.org/', icon: '🪐', desc: 'Notebooks' },
+          { title: 'Desmos', url: 'https://www.desmos.com/calculator', icon: '📐', desc: 'Graphing Calculator' },
+          { title: 'GeoGebra', url: 'https://www.geogebra.org/', icon: '📏', desc: 'Math Tools' },
+          { title: 'Observable', url: 'https://observablehq.com/', icon: '📊', desc: 'Data Notebooks' },
+          { title: 'ChemDraw JS', url: 'https://chemdrawdirect.perkinelmer.cloud/', icon: '⚗️', desc: 'Chemistry Lab' },
+          { title: 'PhET Simulations', url: 'https://phet.colorado.edu/', icon: '🔬', desc: 'Physics Sims' },
+          { title: 'Falstad Circuits', url: 'https://www.falstad.com/circuit/', icon: '⚡', desc: 'Circuit Sim' }
         ],
         cyber: [
           { title: 'CyberChef', url: 'https://gchq.github.io/CyberChef/', icon: '🔪', desc: 'Cyber Swiss Army' },
-          { title: 'VirusTotal', url: 'https://www.virustotal.com/', icon: '🦠', desc: 'Malware Lab' }
+          { title: 'VirusTotal', url: 'https://www.virustotal.com/', icon: '🦠', desc: 'Malware Lab' },
+          { title: 'Hack The Box', url: 'https://www.hackthebox.com/', icon: '📦', desc: 'CTF Platform' },
+          { title: 'TryHackMe', url: 'https://tryhackme.com/', icon: '🚩', desc: 'Security Training' },
+          { title: 'OverTheWire', url: 'https://overthewire.org/wargames/', icon: '🎮', desc: 'Wargames' },
+          { title: 'Regex101', url: 'https://regex101.com/', icon: '🔤', desc: 'Regex Lab' },
+          { title: 'RequestBin', url: 'https://pipedream.com/requestbin', icon: '📬', desc: 'HTTP Inspector' },
+          { title: 'JWT.io', url: 'https://jwt.io/', icon: '🔑', desc: 'Token Debugger' }
         ]
       },
       '7': { // DB
         devops: [
           { title: 'DB-Engines', url: 'https://db-engines.com/en/', icon: '🗄️', desc: 'Rankings' },
-          { title: 'Redis', url: 'https://redis.io/', icon: '⚡', desc: 'In-Memory Store' }
+          { title: 'Redis', url: 'https://redis.io/', icon: '⚡', desc: 'In-Memory Store' },
+          { title: 'PostgreSQL', url: 'https://www.postgresql.org/', icon: '🐘', desc: 'Relational DB' },
+          { title: 'MongoDB', url: 'https://www.mongodb.com/', icon: '🍃', desc: 'NoSQL DB' },
+          { title: 'InfluxDB', url: 'https://www.influxdata.com/', icon: '📈', desc: 'Time Series DB' },
+          { title: 'CockroachDB', url: 'https://www.cockroachlabs.com/', icon: '🪳', desc: 'Distributed SQL' },
+          { title: 'MinIO', url: 'https://min.io/', icon: '📦', desc: 'Object Storage' },
+          { title: 'Vault', url: 'https://www.vaultproject.io/', icon: '🔐', desc: 'Secrets DB' }
         ],
         ai: [
           { title: 'HuggingFace', url: 'https://huggingface.co/datasets', icon: '🤗', desc: 'AI Datasets' },
-          { title: 'Kaggle', url: 'https://www.kaggle.com/datasets', icon: '📊', desc: 'ML Data' }
+          { title: 'Kaggle', url: 'https://www.kaggle.com/datasets', icon: '📊', desc: 'ML Data' },
+          { title: 'Pinecone', url: 'https://www.pinecone.io/', icon: '🌲', desc: 'Vector DB' },
+          { title: 'Weaviate', url: 'https://weaviate.io/', icon: '🕸️', desc: 'Vector Search' },
+          { title: 'Chroma', url: 'https://www.trychroma.com/', icon: '🎨', desc: 'Embedding DB' },
+          { title: 'Qdrant', url: 'https://qdrant.tech/', icon: '🎯', desc: 'Vector Engine' },
+          { title: 'LanceDB', url: 'https://lancedb.com/', icon: '🏹', desc: 'Multimodal DB' },
+          { title: 'Milvus', url: 'https://milvus.io/', icon: '🐂', desc: 'Vector Database' }
         ],
         webdev: [
           { title: 'Supabase', url: 'https://supabase.com/', icon: '🔥', desc: 'Firebase Alt' },
-          { title: 'Prisma', url: 'https://www.prisma.io/', icon: '◬', desc: 'TypeScript ORM' }
+          { title: 'Prisma', url: 'https://www.prisma.io/', icon: '◬', desc: 'TypeScript ORM' },
+          { title: 'Drizzle', url: 'https://orm.drizzle.team/', icon: '🌧️', desc: 'Drizzle ORM' },
+          { title: 'PlanetScale', url: 'https://planetscale.com/', icon: '🪐', desc: 'Serverless MySQL' },
+          { title: 'Neon', url: 'https://neon.tech/', icon: '💚', desc: 'Serverless Postgres' },
+          { title: 'Turso', url: 'https://turso.tech/', icon: '🏎️', desc: 'Edge SQLite' },
+          { title: 'Upstash', url: 'https://upstash.com/', icon: '☁️', desc: 'Serverless Redis' },
+          { title: 'Firebase', url: 'https://firebase.google.com/', icon: '🔥', desc: 'Google BaaS' }
         ],
         finance: [
           { title: 'World Bank Data', url: 'https://data.worldbank.org/', icon: '🌍', desc: 'Global Economy' },
-          { title: 'FRED', url: 'https://fred.stlouisfed.org/', icon: '📈', desc: 'Econ Data' }
+          { title: 'FRED', url: 'https://fred.stlouisfed.org/', icon: '📈', desc: 'Econ Data' },
+          { title: 'Quandl', url: 'https://data.nasdaq.com/', icon: '📊', desc: 'Financial Data' },
+          { title: 'Alpha Vantage', url: 'https://www.alphavantage.co/', icon: '📉', desc: 'Stock API' },
+          { title: 'EDGAR Full-Text', url: 'https://efts.sec.gov/LATEST/search-index', icon: '🏛️', desc: 'SEC Filings DB' },
+          { title: 'IMF Data', url: 'https://data.imf.org/', icon: '🏦', desc: 'Monetary Data' },
+          { title: 'BIS Statistics', url: 'https://www.bis.org/statistics/', icon: '📋', desc: 'Banking Stats' },
+          { title: 'OECD Data', url: 'https://data.oecd.org/', icon: '🌐', desc: 'Economic Indicators' }
         ],
         gamedev: [
           { title: 'IGDB', url: 'https://www.igdb.com/', icon: '👾', desc: 'Game Database' },
-          { title: 'SteamDB', url: 'https://steamdb.info/', icon: '🚂', desc: 'Steam Stats' }
+          { title: 'SteamDB', url: 'https://steamdb.info/', icon: '🚂', desc: 'Steam Stats' },
+          { title: 'HowLongToBeat', url: 'https://howlongtobeat.com/', icon: '⏱️', desc: 'Game Lengths' },
+          { title: 'OpenGameArt', url: 'https://opengameart.org/', icon: '🎨', desc: 'Free Game Assets' },
+          { title: 'Kenney Assets', url: 'https://kenney.nl/', icon: '🧱', desc: 'Free Assets' },
+          { title: 'itch.io Assets', url: 'https://itch.io/game-assets', icon: '🎲', desc: 'Indie Assets' },
+          { title: 'Freesound', url: 'https://freesound.org/', icon: '🔊', desc: 'Sound Library' },
+          { title: 'Mixamo', url: 'https://www.mixamo.com/', icon: '🧍', desc: '3D Animations' }
         ],
         design: [
           { title: 'Unsplash', url: 'https://unsplash.com/', icon: '📷', desc: 'Photo Database' },
-          { title: 'Google Fonts', url: 'https://fonts.google.com/', icon: '🔤', desc: 'Font DB' }
+          { title: 'Google Fonts', url: 'https://fonts.google.com/', icon: '🔤', desc: 'Font DB' },
+          { title: 'Pexels', url: 'https://www.pexels.com/', icon: '📸', desc: 'Free Photos' },
+          { title: 'Flaticon', url: 'https://www.flaticon.com/', icon: '🏷️', desc: 'Icon Database' },
+          { title: 'UI Colors', url: 'https://uicolors.app/', icon: '🎨', desc: 'Color Palettes' },
+          { title: 'Coolors', url: 'https://coolors.co/', icon: '🌈', desc: 'Color Generator' },
+          { title: 'Heroicons', url: 'https://heroicons.com/', icon: '🦸', desc: 'SVG Icons' },
+          { title: 'Lottie Files', url: 'https://lottiefiles.com/', icon: '🎬', desc: 'Animations' }
         ],
         science: [
           { title: 'Our World In Data', url: 'https://ourworldindata.org/', icon: '🌍', desc: 'Global Data' },
-          { title: 'NASA Data', url: 'https://data.nasa.gov/', icon: '🚀', desc: 'Space Data' }
+          { title: 'NASA Data', url: 'https://data.nasa.gov/', icon: '🚀', desc: 'Space Data' },
+          { title: 'CERN Open Data', url: 'https://opendata.cern.ch/', icon: '⚛️', desc: 'Particle Physics' },
+          { title: 'GenBank', url: 'https://www.ncbi.nlm.nih.gov/genbank/', icon: '🧬', desc: 'Genomics DB' },
+          { title: 'PDB', url: 'https://www.rcsb.org/', icon: '🧪', desc: 'Protein Structures' },
+          { title: 'Exoplanet Archive', url: 'https://exoplanetarchive.ipac.caltech.edu/', icon: '🪐', desc: 'Exoplanets' },
+          { title: 'GBIF', url: 'https://www.gbif.org/', icon: '🌱', desc: 'Biodiversity Data' },
+          { title: 'USGS Data', url: 'https://www.usgs.gov/products/data', icon: '🏔️', desc: 'Earth Science' }
         ],
         cyber: [
           { title: 'Exploit-DB', url: 'https://www.exploit-db.com/', icon: '💥', desc: 'Exploits' },
-          { title: 'CVE', url: 'https://cve.mitre.org/', icon: '🔍', desc: 'Vulnerabilities' }
+          { title: 'CVE', url: 'https://cve.mitre.org/', icon: '🔍', desc: 'Vulnerabilities' },
+          { title: 'NVD', url: 'https://nvd.nist.gov/', icon: '🏛️', desc: 'Vulnerability DB' },
+          { title: 'Abuse IPDB', url: 'https://www.abuseipdb.com/', icon: '🚫', desc: 'IP Reputation' },
+          { title: 'Have I Been Pwned', url: 'https://haveibeenpwned.com/', icon: '💔', desc: 'Breach Check' },
+          { title: 'Shodan', url: 'https://www.shodan.io/', icon: '👁️', desc: 'IoT Search' },
+          { title: 'GreyNoise', url: 'https://www.greynoise.io/', icon: '📡', desc: 'Internet Noise' },
+          { title: 'URLScan', url: 'https://urlscan.io/', icon: '🔗', desc: 'URL Analysis' }
         ]
       },
       '8': { // KB
         devops: [
           { title: 'Linux Journey', url: 'https://linuxjourney.com/', icon: '🐧', desc: 'Linux Docs' },
-          { title: 'ReadTheDocs', url: 'https://readthedocs.org/', icon: '📚', desc: 'OS Docs' }
+          { title: 'ReadTheDocs', url: 'https://readthedocs.org/', icon: '📚', desc: 'OS Docs' },
+          { title: 'DigitalOcean Docs', url: 'https://docs.digitalocean.com/', icon: '🐠', desc: 'Cloud Tutorials' },
+          { title: 'Kubernetes Docs', url: 'https://kubernetes.io/docs/', icon: '☸️', desc: 'K8s Reference' },
+          { title: 'Docker Docs', url: 'https://docs.docker.com/', icon: '🐳', desc: 'Container Docs' },
+          { title: 'AWS Docs', url: 'https://docs.aws.amazon.com/', icon: '☁️', desc: 'Amazon Cloud' },
+          { title: 'Git Book', url: 'https://git-scm.com/book/en/v2', icon: '📖', desc: 'Git Reference' },
+          { title: 'Nginx Docs', url: 'https://nginx.org/en/docs/', icon: '🌐', desc: 'Web Server' }
         ],
         ai: [
           { title: 'PyTorch Docs', url: 'https://pytorch.org/docs/stable/index.html', icon: '🔥', desc: 'Deep Learning' },
-          { title: 'TensorFlow', url: 'https://www.tensorflow.org/api_docs', icon: '🧠', desc: 'ML Docs' }
+          { title: 'TensorFlow', url: 'https://www.tensorflow.org/api_docs', icon: '🧠', desc: 'ML Docs' },
+          { title: 'Scikit-learn', url: 'https://scikit-learn.org/stable/user_guide.html', icon: '📊', desc: 'ML Library' },
+          { title: 'Fast.ai', url: 'https://docs.fast.ai/', icon: '🚀', desc: 'Practical DL' },
+          { title: 'LangChain Docs', url: 'https://python.langchain.com/docs/', icon: '🦜', desc: 'LLM Framework' },
+          { title: 'OpenAI Docs', url: 'https://platform.openai.com/docs', icon: '💬', desc: 'GPT API' },
+          { title: 'Anthropic Docs', url: 'https://docs.anthropic.com/', icon: '🧬', desc: 'Claude API' },
+          { title: 'Keras Docs', url: 'https://keras.io/api/', icon: '🔴', desc: 'Neural Networks' }
         ],
         webdev: [
           { title: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/', icon: '🦊', desc: 'Web Tech' },
-          { title: 'React Docs', url: 'https://react.dev/', icon: '⚛️', desc: 'React Library' }
+          { title: 'React Docs', url: 'https://react.dev/', icon: '⚛️', desc: 'React Library' },
+          { title: 'Next.js Docs', url: 'https://nextjs.org/docs', icon: '▲', desc: 'React Framework' },
+          { title: 'Vue Docs', url: 'https://vuejs.org/guide/', icon: '🟩', desc: 'Vue.js' },
+          { title: 'Svelte Docs', url: 'https://svelte.dev/docs', icon: '🟧', desc: 'Svelte' },
+          { title: 'Tailwind CSS', url: 'https://tailwindcss.com/docs', icon: '💨', desc: 'Utility CSS' },
+          { title: 'TypeScript', url: 'https://www.typescriptlang.org/docs/', icon: '🔵', desc: 'Typed JS' },
+          { title: 'Node.js Docs', url: 'https://nodejs.org/docs/latest/api/', icon: '💚', desc: 'Server-Side JS' }
         ],
         finance: [
           { title: 'Investopedia', url: 'https://www.investopedia.com/', icon: '📖', desc: 'Finance Terms' },
-          { title: 'SEC EDGAR', url: 'https://www.sec.gov/edgar.shtml', icon: '🏛️', desc: 'Filings' }
+          { title: 'SEC EDGAR', url: 'https://www.sec.gov/edgar.shtml', icon: '🏛️', desc: 'Filings' },
+          { title: 'Khan Academy Finance', url: 'https://www.khanacademy.org/economics-finance-domain', icon: '🎓', desc: 'Finance Courses' },
+          { title: 'CFA Institute', url: 'https://www.cfainstitute.org/', icon: '📜', desc: 'Professional KB' },
+          { title: 'Corporate Finance', url: 'https://corporatefinanceinstitute.com/', icon: '🏢', desc: 'CFI Courses' },
+          { title: 'IFRS Standards', url: 'https://www.ifrs.org/issued-standards/', icon: '📋', desc: 'Accounting Rules' },
+          { title: 'Fed Reserve', url: 'https://www.federalreserve.gov/publications.htm', icon: '🏦', desc: 'Central Bank' },
+          { title: 'RBI Publications', url: 'https://www.rbi.org.in/Scripts/PublicationsView.aspx', icon: '🇮🇳', desc: 'India Central Bank' }
         ],
         gamedev: [
           { title: 'Godot Docs', url: 'https://docs.godotengine.org/', icon: '🤖', desc: 'Engine Docs' },
-          { title: 'Game Programming Patterns', url: 'https://gameprogrammingpatterns.com/', icon: '📘', desc: 'Design Patterns' }
+          { title: 'Game Programming Patterns', url: 'https://gameprogrammingpatterns.com/', icon: '📘', desc: 'Design Patterns' },
+          { title: 'Unity Learn', url: 'https://learn.unity.com/', icon: '🎮', desc: 'Unity Tutorials' },
+          { title: 'Unreal Docs', url: 'https://docs.unrealengine.com/', icon: '🏗️', desc: 'Unreal Engine' },
+          { title: 'Three.js Docs', url: 'https://threejs.org/docs/', icon: '🧊', desc: 'WebGL 3D' },
+          { title: 'Phaser Docs', url: 'https://phaser.io/learn', icon: '🕹️', desc: '2D Framework' },
+          { title: 'GameDev Math', url: 'https://www.gamedevmath.com/', icon: '📐', desc: 'Math for Games' },
+          { title: 'Red Blob Games', url: 'https://www.redblobgames.com/', icon: '🔴', desc: 'Visual Tutorials' }
         ],
         design: [
           { title: 'Material Design', url: 'https://m3.material.io/', icon: '📱', desc: 'UI Guidelines' },
-          { title: 'Apple HIG', url: 'https://developer.apple.com/design/human-interface-guidelines/', icon: '🍎', desc: 'OS Guidelines' }
+          { title: 'Apple HIG', url: 'https://developer.apple.com/design/human-interface-guidelines/', icon: '🍎', desc: 'OS Guidelines' },
+          { title: 'Refactoring UI', url: 'https://www.refactoringui.com/', icon: '🎨', desc: 'UI Principles' },
+          { title: 'Laws of UX', url: 'https://lawsofux.com/', icon: '📏', desc: 'UX Principles' },
+          { title: 'Design Principles', url: 'https://principles.design/', icon: '💡', desc: 'Design Wisdom' },
+          { title: 'Typewolf', url: 'https://www.typewolf.com/', icon: '🐺', desc: 'Typography KB' },
+          { title: 'Color Theory', url: 'https://www.interaction-design.org/literature/topics/color-theory', icon: '🌈', desc: 'Color Science' },
+          { title: 'Inclusive Design', url: 'https://inclusive.microsoft.design/', icon: '♿', desc: 'Accessibility' }
         ],
         science: [
           { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page', icon: '📖', desc: 'Free Encyclopedia' },
-          { title: 'Nature', url: 'https://www.nature.com/', icon: '🌿', desc: 'Science Journal' }
+          { title: 'Nature', url: 'https://www.nature.com/', icon: '🌿', desc: 'Science Journal' },
+          { title: 'arXiv', url: 'https://arxiv.org/', icon: '📄', desc: 'Pre-Print Papers' },
+          { title: 'PubMed', url: 'https://pubmed.ncbi.nlm.nih.gov/', icon: '🏥', desc: 'Medical Literature' },
+          { title: 'Khan Academy', url: 'https://www.khanacademy.org/science', icon: '🎓', desc: 'Science Courses' },
+          { title: 'MIT OCW', url: 'https://ocw.mit.edu/', icon: '🏫', desc: 'Open Courses' },
+          { title: 'Coursera Science', url: 'https://www.coursera.org/browse/physical-science-and-engineering', icon: '🎓', desc: 'MOOC Science' },
+          { title: 'Scholarpedia', url: 'https://www.scholarpedia.org/', icon: '📚', desc: 'Peer-reviewed KB' }
         ],
         cyber: [
           { title: 'OWASP', url: 'https://owasp.org/', icon: '🛡️', desc: 'Security KB' },
-          { title: 'MITRE ATT&CK', url: 'https://attack.mitre.org/', icon: '⚔️', desc: 'Threat KB' }
+          { title: 'MITRE ATT&CK', url: 'https://attack.mitre.org/', icon: '⚔️', desc: 'Threat KB' },
+          { title: 'CIS Benchmarks', url: 'https://www.cisecurity.org/cis-benchmarks', icon: '📋', desc: 'Security Standards' },
+          { title: 'NIST Cybersecurity', url: 'https://www.nist.gov/cybersecurity', icon: '🏛️', desc: 'Framework' },
+          { title: 'Sans Reading Room', url: 'https://www.sans.org/white-papers/', icon: '📄', desc: 'Security Papers' },
+          { title: 'PortSwigger Academy', url: 'https://portswigger.net/web-security', icon: '🎓', desc: 'Web Sec Training' },
+          { title: 'Cybrary', url: 'https://www.cybrary.it/', icon: '📚', desc: 'Cyber Courses' },
+          { title: 'Security Onion', url: 'https://docs.securityonion.net/', icon: '🧅', desc: 'SIEM Docs' }
         ]
       },
       '9': { // Audit
         devops: [
           { title: 'Netdata', url: 'https://netdata.cloud/', icon: '📈', desc: 'Real-time Monitoring' },
-          { title: 'Grafana', url: 'https://grafana.com/', icon: '📊', desc: 'Dashboard Engine' }
+          { title: 'Grafana', url: 'https://grafana.com/', icon: '📊', desc: 'Dashboard Engine' },
+          { title: 'Prometheus', url: 'https://prometheus.io/', icon: '🔥', desc: 'Metrics DB' },
+          { title: 'Datadog', url: 'https://www.datadoghq.com/', icon: '🐶', desc: 'Cloud Monitoring' },
+          { title: 'Uptime Kuma', url: 'https://uptime.kuma.pet/', icon: '⏱️', desc: 'Status Monitor' },
+          { title: 'Jaeger', url: 'https://www.jaegertracing.io/', icon: '🔎', desc: 'Distributed Tracing' },
+          { title: 'ELK Stack', url: 'https://www.elastic.co/elastic-stack', icon: '🪵', desc: 'Log Pipeline' },
+          { title: 'PagerDuty', url: 'https://www.pagerduty.com/', icon: '📟', desc: 'Incident Mgmt' }
         ],
         ai: [
           { title: 'Weights & Biases', url: 'https://wandb.ai/', icon: '⚖️', desc: 'ML Ops' },
-          { title: 'MLflow', url: 'https://mlflow.org/', icon: '📉', desc: 'Lifecycle Logs' }
+          { title: 'MLflow', url: 'https://mlflow.org/', icon: '📉', desc: 'Lifecycle Logs' },
+          { title: 'Neptune', url: 'https://neptune.ai/', icon: '🌊', desc: 'Experiment Tracking' },
+          { title: 'ClearML', url: 'https://clear.ml/', icon: '🧹', desc: 'MLOps Platform' },
+          { title: 'Comet', url: 'https://www.comet.com/', icon: '☄️', desc: 'ML Monitoring' },
+          { title: 'Evidently AI', url: 'https://www.evidentlyai.com/', icon: '📋', desc: 'ML Observability' },
+          { title: 'Arize', url: 'https://arize.com/', icon: '🎯', desc: 'Model Monitoring' },
+          { title: 'Fiddler', url: 'https://www.fiddler.ai/', icon: '🎻', desc: 'AI Observability' }
         ],
         webdev: [
           { title: 'Sentry', url: 'https://sentry.io/', icon: '🚨', desc: 'Error Tracking' },
-          { title: 'PostHog', url: 'https://posthog.com/', icon: '🦔', desc: 'Product Analytics' }
+          { title: 'PostHog', url: 'https://posthog.com/', icon: '🦔', desc: 'Product Analytics' },
+          { title: 'Plausible', url: 'https://plausible.io/', icon: '📊', desc: 'Privacy Analytics' },
+          { title: 'LogRocket', url: 'https://logrocket.com/', icon: '🚀', desc: 'Session Replay' },
+          { title: 'Mixpanel', url: 'https://mixpanel.com/', icon: '🧪', desc: 'User Analytics' },
+          { title: 'Lighthouse', url: 'https://pagespeed.web.dev/', icon: '💡', desc: 'Performance Audit' },
+          { title: 'BugSnag', url: 'https://www.bugsnag.com/', icon: '🐛', desc: 'Bug Monitoring' },
+          { title: 'Hotjar', url: 'https://www.hotjar.com/', icon: '🔥', desc: 'Heatmaps' }
         ],
         finance: [
           { title: 'CoinMarketCap', url: 'https://coinmarketcap.com/', icon: '🪙', desc: 'Crypto Audit' },
-          { title: 'Etherscan', url: 'https://etherscan.io/', icon: '🔗', desc: 'Chain Logs' }
+          { title: 'Etherscan', url: 'https://etherscan.io/', icon: '🔗', desc: 'Chain Logs' },
+          { title: 'DeFi Llama', url: 'https://defillama.com/', icon: '🦙', desc: 'DeFi Analytics' },
+          { title: 'Dune Analytics', url: 'https://dune.com/', icon: '🏜️', desc: 'On-Chain Analytics' },
+          { title: 'Nansen', url: 'https://www.nansen.ai/', icon: '🐳', desc: 'Wallet Analytics' },
+          { title: 'DeBank', url: 'https://debank.com/', icon: '🏦', desc: 'DeFi Portfolio' },
+          { title: 'Token Terminal', url: 'https://tokenterminal.com/', icon: '💹', desc: 'Protocol Metrics' },
+          { title: 'Glassnode', url: 'https://glassnode.com/', icon: '🔮', desc: 'On-Chain Intel' }
         ],
         gamedev: [
           { title: 'Steamworks', url: 'https://partner.steamgames.com/', icon: '🚂', desc: 'Game Analytics' },
-          { title: 'Unity Analytics', url: 'https://unity.com/solutions/analytics', icon: '📊', desc: 'Player Logs' }
+          { title: 'Unity Analytics', url: 'https://unity.com/solutions/analytics', icon: '📊', desc: 'Player Logs' },
+          { title: 'GameAnalytics', url: 'https://gameanalytics.com/', icon: '🎮', desc: 'Free Game Analytics' },
+          { title: 'Steam Charts', url: 'https://steamcharts.com/', icon: '📈', desc: 'Player Counts' },
+          { title: 'SteamSpy', url: 'https://steamspy.com/', icon: '🕵️', desc: 'Sales Data' },
+          { title: 'PlayFab', url: 'https://playfab.com/', icon: '🎲', desc: 'Game Backend' },
+          { title: 'AccelByte', url: 'https://accelbyte.io/', icon: '⚡', desc: 'Game Services' },
+          { title: 'Amplitude', url: 'https://amplitude.com/', icon: '🌊', desc: 'Digital Analytics' }
         ],
         design: [
           { title: 'Hotjar', url: 'https://www.hotjar.com/', icon: '🔥', desc: 'Heatmaps' },
-          { title: 'Lighthouse', url: 'https://developer.chrome.com/docs/lighthouse/overview/', icon: '💡', desc: 'UX Audit' }
+          { title: 'Lighthouse', url: 'https://developer.chrome.com/docs/lighthouse/overview/', icon: '💡', desc: 'UX Audit' },
+          { title: 'Maze', url: 'https://maze.co/', icon: '🧩', desc: 'User Testing' },
+          { title: 'UserTesting', url: 'https://www.usertesting.com/', icon: '👤', desc: 'UX Feedback' },
+          { title: 'Crazy Egg', url: 'https://www.crazyegg.com/', icon: '🥚', desc: 'Heatmap Tools' },
+          { title: 'Optimal Workshop', url: 'https://www.optimalworkshop.com/', icon: '🧪', desc: 'UX Research' },
+          { title: 'Figma Analytics', url: 'https://www.figma.com/blog/design-systems/', icon: '📐', desc: 'Design System Audit' },
+          { title: 'Stark', url: 'https://www.getstark.co/', icon: '♿', desc: 'Accessibility Audit' }
         ],
         science: [
           { title: 'Google Scholar', url: 'https://scholar.google.com/', icon: '🎓', desc: 'Citation Logs' },
-          { title: 'ORCID', url: 'https://orcid.org/', icon: '🆔', desc: 'Researcher ID' }
+          { title: 'ORCID', url: 'https://orcid.org/', icon: '🆔', desc: 'Researcher ID' },
+          { title: 'Semantic Scholar', url: 'https://www.semanticscholar.org/', icon: '🔬', desc: 'Paper Analysis' },
+          { title: 'Dimensions', url: 'https://app.dimensions.ai/', icon: '📏', desc: 'Research Analytics' },
+          { title: 'Altmetric', url: 'https://www.altmetric.com/', icon: '📊', desc: 'Paper Impact' },
+          { title: 'Web of Science', url: 'https://www.webofscience.com/', icon: '🌐', desc: 'Citation Index' },
+          { title: 'ResearchGate', url: 'https://www.researchgate.net/', icon: '🔗', desc: 'Research Network' },
+          { title: 'Scopus', url: 'https://www.scopus.com/', icon: '🔎', desc: 'Abstract DB' }
         ],
         cyber: [
           { title: 'Shodan', url: 'https://www.shodan.io/', icon: '👁️', desc: 'IoT Search' },
-          { title: 'Censys', url: 'https://censys.io/', icon: '🔎', desc: 'Attack Surface' }
+          { title: 'Censys', url: 'https://censys.io/', icon: '🔎', desc: 'Attack Surface' },
+          { title: 'SecurityTrails', url: 'https://securitytrails.com/', icon: '🔍', desc: 'DNS History' },
+          { title: 'BuiltWith', url: 'https://builtwith.com/', icon: '🏗️', desc: 'Tech Stack Audit' },
+          { title: 'SSL Labs', url: 'https://www.ssllabs.com/ssltest/', icon: '🔒', desc: 'SSL Audit' },
+          { title: 'SecurityHeaders', url: 'https://securityheaders.com/', icon: '📋', desc: 'Header Check' },
+          { title: 'Qualys', url: 'https://www.qualys.com/', icon: '🛡️', desc: 'Vuln Scanner' },
+          { title: 'Tenable', url: 'https://www.tenable.com/', icon: '🔐', desc: 'Exposure Mgmt' }
         ]
       }
     };
 
-    function getDynamicNodes(domainId) {
+    // Returns preference-sorted category keys for Level 2
+    function getSortedCategories() {
       let prefs = [];
       try {
         prefs = JSON.parse(localStorage.getItem('daxini_preferences') || '[]');
       } catch(e){}
-      
-      const allCategories = ['devops', 'ai', 'webdev', 'finance', 'gamedev', 'design', 'science', 'cyber'];
       if (!prefs || prefs.length === 0) {
-        prefs = allCategories; // fallback to all
+        prefs = CATEGORY_KEYS.slice(); // fallback to all
       }
-      
-      const domainMap = PREF_NODES[domainId];
-      if (!domainMap) return null;
-      
-      let gathered = [];
-      // Interleave items from selected preferences
-      let index = 0;
-      let added = true;
-      while (gathered.length < 8 && added) {
-        added = false;
-        for (const p of prefs) {
-          if (domainMap[p] && domainMap[p][index]) {
-            gathered.push(domainMap[p][index]);
-            added = true;
-            if (gathered.length === 8) break;
-          }
-        }
-        index++;
-      }
-      
-      // If we still need more, fallback to other categories not selected
-      if (gathered.length < 8) {
-        let unselected = allCategories.filter(c => !prefs.includes(c));
-        let index2 = 0;
-        let added2 = true;
-        while (gathered.length < 8 && added2) {
-          added2 = false;
-          for (const p of unselected) {
-            if (domainMap[p] && domainMap[p][index2]) {
-              gathered.push(domainMap[p][index2]);
-              added2 = true;
-              if (gathered.length === 8) break;
-            }
-          }
-          index2++;
-        }
-      }
-      
-      return gathered;
+      // Selected categories first, then unselected
+      const unselected = CATEGORY_KEYS.filter(c => !prefs.includes(c));
+      return [...prefs, ...unselected].slice(0, 8);
     }
 
     function getRoomData(nodeIndex) {
@@ -1232,23 +1448,20 @@
         }
         // Domains 1, 6, 7, 8, 9 (Dynamic Contextual Nodes)
         if (['1', '6', '7', '8', '9'].includes(domainNode)) {
-          const dynamicNodes = getDynamicNodes(domainNode);
-          if (dynamicNodes) {
-            // Map the 8 nodes to positions: 1, 2, 3, 4, 6, 7, 8, 9
-            const posMap = { 1:0, 2:1, 3:2, 4:3, 6:4, 7:5, 8:6, 9:7 };
-            const nodeData = dynamicNodes[posMap[nodeIndex]];
-            if (nodeData) {
-              return {
-                title: nodeData.title,
-                id: `0xDYN-${domainNode}-${nodeIndex}`,
-                desc: nodeData.desc,
-                status: 'EXTERNAL',
-                icon: nodeData.icon,
-                isApp: true,
-                isLaunchable: true,
-                appSlug: nodeData.url
-              };
-            }
+          const sortedCategories = getSortedCategories();
+          const posMap = { 1:0, 2:1, 3:2, 4:3, 6:4, 7:5, 8:6, 9:7 };
+          const categoryKey = sortedCategories[posMap[nodeIndex]];
+          if (categoryKey) {
+            const meta = CATEGORY_META[categoryKey];
+            return {
+              title: meta.title,
+              id: `0xCAT-${domainNode}-${categoryKey.toUpperCase()}`,
+              desc: meta.desc,
+              status: 'READY',
+              icon: meta.icon,
+              isApp: false, // Don't launch, zoom in!
+              isLaunchable: false
+            };
           }
         }
         
@@ -1266,6 +1479,32 @@
       // LEVEL 2: Architecture / Features (Path length 3)
       if (path.length === 3) {
         const domainNode = path[1];
+        
+        // Dynamic Contextual Categories -> Endpoints
+        if (['1', '6', '7', '8', '9'].includes(domainNode)) {
+          const catNode = path[2];
+          const sortedCategories = getSortedCategories();
+          const posMap = { 1:0, 2:1, 3:2, 4:3, 6:4, 7:5, 8:6, 9:7 };
+          const categoryKey = sortedCategories[posMap[catNode]];
+          if (categoryKey) {
+            const domainMap = PREF_NODES[domainNode];
+            if (domainMap && domainMap[categoryKey]) {
+              const endpoint = domainMap[categoryKey][posMap[nodeIndex]];
+              if (endpoint) {
+                return {
+                  title: endpoint.title,
+                  id: `0xEP-${domainNode}-${categoryKey.toUpperCase()}-${nodeIndex}`,
+                  desc: endpoint.desc,
+                  status: 'LIVE',
+                  icon: endpoint.icon,
+                  isApp: true,
+                  isLaunchable: true,
+                  appSlug: endpoint.url
+                };
+              }
+            }
+          }
+        }
         
         // Inside Deployed Ecosystem (Apps) -> Contextual Internet Browser
         if (domainNode === '2') {
