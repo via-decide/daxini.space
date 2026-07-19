@@ -12,7 +12,7 @@ const DEFAULT_ROOM_SLUGS = [
   'logichub',
   'daxini-hq',
   'prompt-alchemy',
-  'sop-builder',
+  'orchade',
   'daxini-lens',
   'via-logic',
   'studyos',
@@ -54,15 +54,15 @@ const CORE_APPS = [
     tags: ['prompt', 'writing', 'llm', 'text', 'creator']
   },
   {
-    slug: 'sop-builder',
-    name: 'SOP Builder',
-    icon: '📄',
-    url: 'offline',
-    status: 'pending',
-    desc: 'Standard operating procedure builder',
+    slug: 'orchade',
+    name: 'Orchade',
+    icon: '🌳',
+    url: '/apps/orchade/index.html',
+    status: 'live',
+    desc: 'AI orchestration simulation game',
     ownerType: 'mine',
     tier: 'core',
-    tags: ['document', 'ops', 'workflow', 'business']
+    tags: ['game', 'simulation', 'ai', 'orchestration']
   },
   {
     slug: 'daxini-lens',
