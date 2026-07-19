@@ -18,18 +18,18 @@
        SPATIAL OS — CORE DESIGN SYSTEM
        ══════════════════════════════════════════════════════════ */
     :root {
-      --bg-void: #050508;
-      --bg-panel: rgba(8, 10, 14, 0.85);
-      --border-dim: rgba(255, 255, 255, 0.06);
-      --border-active: rgba(0, 255, 204, 0.35);
-      --text-primary: #e5e8f0;
-      --text-dim: #5a5e72;
-      --text-muted: #3a3d4e;
-      --accent-cyan: #00ffcc;
-      --accent-emerald: #00ff96;
-      --accent-saffron: #ff671f;
-      --accent-amber: #ffcc00;
-      --accent-red: #ff5a46;
+      --bg-void: #f8fafc;
+      --bg-panel: rgba(255, 255, 255, 0.85);
+      --border-dim: rgba(0, 0, 0, 0.08);
+      --border-active: rgba(6, 182, 212, 0.4);
+      --text-primary: #0f172a;
+      --text-dim: #475569;
+      --text-muted: #94a3b8;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-saffron: #f59e0b;
+      --accent-amber: #eab308;
+      --accent-red: #ef4444;
       --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', monospace;
       --font-display: 'Space Grotesk', sans-serif;
       --font-body: 'Inter', -apple-system, sans-serif;
@@ -73,8 +73,8 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse 600px 400px at 25% 20%, rgba(0, 255, 204, 0.04), transparent),
-        radial-gradient(ellipse 500px 500px at 75% 80%, rgba(255, 103, 31, 0.03), transparent);
+        radial-gradient(ellipse 600px 400px at 25% 20%, rgba(6, 182, 212, 0.08), transparent),
+        radial-gradient(ellipse 500px 500px at 75% 80%, rgba(245, 158, 11, 0.06), transparent);
       animation: glow-drift 25s infinite alternate ease-in-out;
     }
     @keyframes glow-drift {
@@ -87,18 +87,19 @@
        ══════════════════════════════════════════════════════════ */
     .eco-bar {
       width: 100%;
-      background: rgba(8, 10, 14, 0.7);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-dim);
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       z-index: 50;
       flex-shrink: 0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
     }
     .eco-bar-inner {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 6px 16px;
+      padding: 8px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -106,23 +107,24 @@
     .eco-bar-brand {
       display: flex; align-items: center; gap: 6px;
       font-weight: 800; letter-spacing: 0.5px;
-      color: rgba(255,255,255,0.85);
+      color: var(--text-primary);
       font-family: var(--font-display);
+      font-size: 1rem;
     }
     .eco-bar-brand .diamond { color: var(--accent-saffron); }
     .eco-bar-links { display: flex; gap: 10px; }
     .eco-bar-links a {
       display: flex; align-items: center; gap: 4px;
-      text-decoration: none; padding: 3px 8px;
-      border-radius: 4px; transition: all 0.2s;
-      color: rgba(255,255,255,0.55); font-family: var(--font-body);
+      text-decoration: none; padding: 4px 10px;
+      border-radius: 6px; transition: all 0.2s;
+      color: var(--text-dim); font-family: var(--font-body);
     }
-    .eco-bar-links a:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .eco-bar-links a .label { font-weight: 500; opacity: 0.6; }
+    .eco-bar-links a:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
+    .eco-bar-links a .label { font-weight: 500; opacity: 0.8; }
     .eco-bar-links a .dest { font-weight: 700; }
-    .eco-bar-links a.build .dest { color: #00e5ff; }
+    .eco-bar-links a.build .dest { color: var(--accent-cyan); }
     .eco-bar-links a.own .dest { color: var(--accent-saffron); }
-    .eco-bar-links a.sell .dest { color: #a78bfa; }
+    .eco-bar-links a.sell .dest { color: var(--accent-indigo); }
 
     /* ══════════════════════════════════════════════════════════
        MAIN SPATIAL OS LAYOUT
@@ -140,25 +142,10 @@
 
     /* ── HUD Header ── */
     .hud-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      font-size: 10px;
-      color: var(--accent-emerald);
-      letter-spacing: 1.5px;
-      font-weight: 500;
-      flex-shrink: 0;
-      margin-bottom: 8px;
+      display: none !important;
     }
     .hud-panel {
-      background: rgba(5, 8, 12, 0.8);
-      border: 1px solid rgba(0, 255, 150, 0.08);
-      border-radius: 6px;
-      padding: 10px 14px;
-      backdrop-filter: blur(8px);
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      display: none !important;
     }
     .hud-panel .hud-label {
       font-family: var(--font-display);
@@ -285,49 +272,60 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 10px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      background: rgba(12, 14, 20, 0.3);
+      padding: 14px;
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      background: var(--bg-panel);
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
       min-width: 0;
+      box-shadow: 0 2px 8px -2px rgba(0,0,0,0.02);
     }
     .node:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      background: rgba(20, 22, 30, 0.5);
+      border-color: rgba(0,0,0,0.15);
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px -4px rgba(0,0,0,0.06);
     }
     .node.center-node {
-      border-color: rgba(0, 255, 204, 0.2);
-      background: rgba(0, 40, 35, 0.15);
+      border-color: rgba(6, 182, 212, 0.3);
+      background: rgba(6, 182, 212, 0.05);
     }
     .node.center-node:hover {
-      border-color: rgba(0, 255, 204, 0.4);
-      background: rgba(0, 50, 40, 0.25);
+      border-color: rgba(6, 182, 212, 0.5);
+      background: rgba(6, 182, 212, 0.08);
+    }
+    .node.app-node {
+      border-color: rgba(0, 0, 0, 0.08);
     }
     .node.active-glow {
-      box-shadow: inset 0 0 18px rgba(0, 255, 204, 0.2), 0 0 12px rgba(0, 255, 204, 0.15);
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.2);
       border-color: var(--accent-cyan) !important;
     }
 
     .node-key {
       position: absolute;
-      top: 4px; right: 8px;
+      top: 6px; right: 8px;
       font-size: 8px;
       color: var(--text-muted);
       font-weight: 700;
     }
+    
+    .node-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
 
     .node-title {
-      font-size: 9px;
+      font-family: var(--font-display);
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 2px;
     }
     .node.center-node .node-title { color: var(--accent-cyan); }
 
@@ -340,13 +338,14 @@
     .node-lift.down { color: var(--accent-amber); }
 
     .node-desc {
-      font-size: 7px;
-      color: var(--text-muted);
+      font-size: 9px;
+      color: var(--text-dim);
       line-height: 1.4;
       margin-top: 3px;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .node-footer {
@@ -354,19 +353,21 @@
       justify-content: space-between;
       align-items: center;
       margin-top: auto;
-      padding-top: 6px;
-      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
     }
     .node-id {
       font-size: 7px;
       color: var(--text-muted);
+      font-family: var(--font-mono);
     }
     .node-status {
-      font-size: 7px;
+      font-size: 8px;
       font-weight: 600;
-      letter-spacing: 1.5px;
-      color: var(--accent-amber);
+      letter-spacing: 1px;
+      color: var(--text-muted);
     }
+    .node-status.live { color: var(--accent-emerald); }
     .node.center-node .node-status { color: var(--accent-cyan); }
 
     /* ── Macro Trace SVG Line ── */
@@ -496,7 +497,7 @@
       position: fixed;
       inset: 0;
       z-index: 200;
-      background: rgba(2, 3, 6, 0.98);
+      background: var(--bg-void);
       display: flex;
       flex-direction: column;
     }
@@ -506,18 +507,19 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 16px;
-      background: rgba(8, 10, 14, 0.95);
+      background: var(--bg-panel);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-dim);
       font-size: 11px;
     }
     .launch-bar-title {
       font-family: var(--font-display);
       font-weight: 700;
-      color: #fff;
+      color: var(--text-primary);
     }
     .launch-bar-close {
-      background: rgba(255, 90, 70, 0.12);
-      border: 1px solid rgba(255, 90, 70, 0.3);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
       color: var(--accent-red);
       font-family: var(--font-mono);
       font-size: 10px;
@@ -530,8 +532,8 @@
       text-transform: uppercase;
     }
     .launch-bar-close:hover {
-      background: rgba(255, 90, 70, 0.22);
-      box-shadow: 0 0 16px rgba(255, 90, 70, 0.2);
+      background: var(--accent-red);
+      color: #fff;
     }
     .launch-bar iframe {
       flex: 1;
@@ -544,6 +546,7 @@
        CONSOLE TERMINAL (Bottom)
        ══════════════════════════════════════════════════════════ */
     .console-terminal {
+      display: none !important;
       height: 20vh;
       min-height: 90px;
       max-height: 160px;
@@ -903,22 +906,58 @@
 
       const sector = SECTORS[hash % SECTORS.length];
       const func = FUNCTIONS[(hash + 3) % FUNCTIONS.length];
+      
+      const isHome = path.length === 1 && path[0] === '5';
 
       if (nodeIndex === 5) {
-        const isHome = path.length === 1 && path[0] === '5';
         return {
-          title: isHome ? 'Home Anchor' : `ANCHOR [${path.join('➔')}]`,
+          title: isHome ? 'Daxini App Hub' : `ANCHOR [${path.join('➔')}]`,
           id: isHome ? '0x000-CORE' : `0x${hash.toString(16).toUpperCase().substring(0, 3)}`,
-          desc: isHome ? 'System Core Gravitational Center' : `Local Sub-Anchor. Address: ${pathString}`,
-          status: isHome ? 'ANCHOR ACTIVE' : 'LOCAL NEST RESUMED'
+          desc: isHome ? 'Root Node - Click apps to launch' : `Local Sub-Anchor. Address: ${pathString}`,
+          status: isHome ? 'ACTIVE' : 'LOCAL NEST RESUMED',
+          isApp: false
         };
       }
 
+      // If at root, map outer nodes to the 8 core apps
+      if (isHome) {
+        // nodeIndex is 1-9 (excluding 5). Convert to 0-8 for ROOM_POSITIONS
+        const gridIdx = nodeIndex - 1;
+        let slug = '';
+        if (window.DaxiniRegistry && window.DaxiniRegistry.ROOM_POSITIONS) {
+          const posIdx = window.DaxiniRegistry.ROOM_POSITIONS.indexOf(gridIdx);
+          if (posIdx !== -1) slug = window.DaxiniRegistry.DEFAULT_ROOM_SLUGS[posIdx];
+        } else {
+          // Fallback mapping if registry isn't loaded yet
+          const fallbackPositions = [0, 1, 2, 3, 5, 6, 7, 8];
+          const fallbackSlugs = ['logichub', 'daxini-hq', 'prompt-alchemy', 'orchade', 'daxini-lens', 'via-logic', 'studyos', 'alchemist'];
+          const posIdx = fallbackPositions.indexOf(gridIdx);
+          if (posIdx !== -1) slug = fallbackSlugs[posIdx];
+        }
+
+        if (slug) {
+          const app = getApp(slug);
+          if (app) {
+            return {
+              title: app.name,
+              id: app.slug,
+              desc: app.desc,
+              status: app.status === 'live' ? 'LIVE' : 'OFFLINE',
+              icon: app.icon,
+              isApp: true,
+              appSlug: slug
+            };
+          }
+        }
+      }
+
+      // If zoomed in (or no app found), show default abstract node
       return {
         title: `${sector} ${func}`,
         id: `0x${hash.toString(16).toUpperCase().substring(0, 3)}`,
         desc: `ADDRESS: ${pathString} | Z: ${getZElevation()}`,
-        status: 'SUSPENDED STATE'
+        status: 'SUSPENDED STATE',
+        isApp: false
       };
     }
 
@@ -928,28 +967,42 @@
       for (let nodeIdx = 1; nodeIdx <= 9; nodeIdx++) {
         const room = getRoomData(nodeIdx);
         const isCenter = nodeIdx === 5;
-        const isUp = nodeIdx === 2;
-        const isDown = nodeIdx === 8;
-
+        
         const node = document.createElement('div');
-        node.className = `node${isCenter ? ' center-node' : ''}`;
+        node.className = `node${isCenter ? ' center-node' : ''}${room.isApp ? ' app-node' : ''}`;
         node.dataset.nodeIdx = nodeIdx;
 
-        node.innerHTML = `
-          <div class="node-key">[${nodeIdx}]</div>
-          <div>
-            <div class="node-title">${room.title.toUpperCase()}</div>
-            ${isUp ? '<div class="node-lift up">▲ [LIFT UP]</div>' : ''}
-            ${isDown ? '<div class="node-lift down">▼ [LIFT DOWN]</div>' : ''}
-            <div class="node-desc">${room.desc}</div>
-          </div>
-          <div class="node-footer">
-            <span class="node-id">ID: ${room.id}</span>
-            <span class="node-status">${room.status}</span>
-          </div>
-        `;
+        if (room.isApp) {
+          node.innerHTML = `
+            <div class="node-icon">${room.icon || '📦'}</div>
+            <div>
+              <div class="node-title">${room.title}</div>
+              <div class="node-desc">${room.desc}</div>
+            </div>
+            <div class="node-footer">
+              <span class="node-id">${room.id}</span>
+              <span class="node-status ${room.status === 'LIVE' ? 'live' : ''}">${room.status}</span>
+            </div>
+          `;
+        } else {
+          const isUp = nodeIdx === 2;
+          const isDown = nodeIdx === 8;
+          node.innerHTML = `
+            <div class="node-key">[${nodeIdx}]</div>
+            <div>
+              <div class="node-title">${room.title.toUpperCase()}</div>
+              ${isUp ? '<div class="node-lift up">▲ [LIFT UP]</div>' : ''}
+              ${isDown ? '<div class="node-lift down">▼ [LIFT DOWN]</div>' : ''}
+              <div class="node-desc">${room.desc}</div>
+            </div>
+            <div class="node-footer">
+              <span class="node-id">ID: ${room.id}</span>
+              <span class="node-status">${room.status}</span>
+            </div>
+          `;
+        }
 
-        node.addEventListener('click', () => handleNodeClick(nodeIdx));
+        node.addEventListener('click', () => handleNodeClick(nodeIdx, room));
         gridEl.appendChild(node);
       }
     }
@@ -1051,13 +1104,18 @@
       launchBarIframe.src = 'about:blank';
     }
 
-    function handleNodeClick(nodeIndex) {
+    function handleNodeClick(nodeIndex, room) {
       if (activeApp) return;
 
       if (nodeIndex === 5) {
         resetToHome();
       } else {
-        // Simulate key press for the node
+        // If it's an app node on the root, launch it!
+        if (room && room.isApp && room.appSlug) {
+          launchLiveApp(room.appSlug);
+        }
+        
+        // Simulate key press for the node (fractal zoom)
         processNavigation(nodeIndex.toString());
       }
     }
