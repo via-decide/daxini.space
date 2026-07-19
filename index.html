@@ -1003,6 +1003,140 @@
             };
           }
         }
+        // Domain 1: News / Feed
+        if (domainNode === '1') {
+          const newsMap = {
+            1: { title: 'Lobsters', url: 'https://lobste.rs/', icon: '🦞', desc: 'Tech Community' },
+            2: { title: 'HckrNews', url: 'https://hckrnews.com/', icon: '📰', desc: 'HN Viewer' },
+            3: { title: 'The Hacker News', url: 'https://thehackernews.com/', icon: '🛡️', desc: 'Cybersecurity' },
+            4: { title: 'HN Search', url: 'https://hn.algolia.com/', icon: '🔍', desc: 'Algolia HN' },
+            6: { title: 'InfoQ', url: 'https://www.infoq.com/', icon: '💡', desc: 'Software News' },
+            7: { title: 'Slashdot', url: 'https://slashdot.org/', icon: '💻', desc: 'News for Nerds' },
+            8: { title: 'TechCrunch', url: 'https://techcrunch.com/', icon: '📱', desc: 'Startup News' },
+            9: { title: 'Ars Technica', url: 'https://arstechnica.com/', icon: '🚀', desc: 'IT News' }
+          };
+          const news = newsMap[nodeIndex];
+          if (news) {
+            return {
+              title: news.title,
+              id: `0xNEWS-${nodeIndex}`,
+              desc: news.desc,
+              status: 'EXTERNAL',
+              icon: news.icon,
+              isApp: true,
+              isLaunchable: true,
+              appSlug: news.url
+            };
+          }
+        }
+
+        // Domain 6: Lab / AI Agents
+        if (domainNode === '6') {
+          const aiMap = {
+            1: { title: 'LocalAI', url: 'https://localai.io/', icon: '🤖', desc: 'Local AI API' },
+            2: { title: 'Gradio', url: 'https://gradio.app/', icon: '📻', desc: 'ML Interfaces' },
+            3: { title: 'Llama.cpp', url: 'https://github.com/ggerganov/llama.cpp', icon: '🦙', desc: 'C++ LLM Port' },
+            4: { title: 'vLLM', url: 'https://vllm.ai/', icon: '⚡', desc: 'High-Throughput LLM' },
+            6: { title: 'LM Studio', url: 'https://lmstudio.ai/', icon: '💻', desc: 'Local LLM UI' },
+            7: { title: 'GPT4All', url: 'https://gpt4all.io/', icon: '🌍', desc: 'Open Source LLMs' },
+            8: { title: 'Flowise', url: 'https://flowiseai.com/', icon: '🕸️', desc: 'LLM Builder' },
+            9: { title: 'LangFlow', url: 'https://www.langflow.org/', icon: '⛓️', desc: 'LangChain UI' }
+          };
+          const ai = aiMap[nodeIndex];
+          if (ai) {
+            return {
+              title: ai.title,
+              id: `0xAI-${nodeIndex}`,
+              desc: ai.desc,
+              status: 'EXTERNAL',
+              icon: ai.icon,
+              isApp: true,
+              isLaunchable: true,
+              appSlug: ai.url
+            };
+          }
+        }
+
+        // Domain 7: Databases
+        if (domainNode === '7') {
+          const dbMap = {
+            1: { title: 'Our World In Data', url: 'https://ourworldindata.org/', icon: '🌍', desc: 'Global Data' },
+            2: { title: 'DB-Engines', url: 'https://db-engines.com/en/', icon: '🗄️', desc: 'DB Rankings' },
+            3: { title: 'PostgreSQL', url: 'https://www.postgresql.org/', icon: '🐘', desc: 'Relational DB' },
+            4: { title: 'MongoDB', url: 'https://www.mongodb.com/', icon: '🍃', desc: 'NoSQL DB' },
+            6: { title: 'Redis', url: 'https://redis.io/', icon: '⚡', desc: 'In-Memory Store' },
+            7: { title: 'Supabase', url: 'https://supabase.com/', icon: '🔥', desc: 'Firebase Alt' },
+            8: { title: 'Prisma', url: 'https://www.prisma.io/', icon: '◬', desc: 'Next-gen ORM' },
+            9: { title: 'Drizzle', url: 'https://orm.drizzle.team/', icon: '🌧️', desc: 'TypeScript ORM' }
+          };
+          const db = dbMap[nodeIndex];
+          if (db) {
+            return {
+              title: db.title,
+              id: `0xDB-${nodeIndex}`,
+              desc: db.desc,
+              status: 'EXTERNAL',
+              icon: db.icon,
+              isApp: true,
+              isLaunchable: true,
+              appSlug: db.url
+            };
+          }
+        }
+
+        // Domain 8: Knowledge Base
+        if (domainNode === '8') {
+          const kbMap = {
+            1: { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page', icon: '📖', desc: 'Free Encyclopedia' },
+            2: { title: 'Python Docs', url: 'https://docs.python.org/3/', icon: '🐍', desc: 'Python Official' },
+            3: { title: 'React Docs', url: 'https://react.dev/', icon: '⚛️', desc: 'React Library' },
+            4: { title: 'ReadTheDocs', url: 'https://readthedocs.org/', icon: '📚', desc: 'Open Source Docs' },
+            6: { title: 'MDN Web Docs', url: 'https://developer.mozilla.org/en-US/', icon: '🦊', desc: 'Web Tech' },
+            7: { title: 'Vue Docs', url: 'https://vuejs.org/', icon: '🟩', desc: 'Vue.js Framework' },
+            8: { title: 'Next.js', url: 'https://nextjs.org/', icon: '▲', desc: 'React Framework' },
+            9: { title: 'Tailwind CSS', url: 'https://tailwindcss.com/', icon: '💨', desc: 'Utility CSS' }
+          };
+          const kb = kbMap[nodeIndex];
+          if (kb) {
+            return {
+              title: kb.title,
+              id: `0xKB-${nodeIndex}`,
+              desc: kb.desc,
+              status: 'EXTERNAL',
+              icon: kb.icon,
+              isApp: true,
+              isLaunchable: true,
+              appSlug: kb.url
+            };
+          }
+        }
+
+        // Domain 9: Audit Logs / Monitoring
+        if (domainNode === '9') {
+          const auditMap = {
+            1: { title: 'Netdata', url: 'https://netdata.cloud/', icon: '📈', desc: 'Real-time Monitoring' },
+            2: { title: 'Grafana', url: 'https://grafana.com/', icon: '📊', desc: 'Dashboard Engine' },
+            3: { title: 'PostHog', url: 'https://posthog.com/', icon: '🦔', desc: 'Product Analytics' },
+            4: { title: 'Sentry', url: 'https://sentry.io/', icon: '🚨', desc: 'Error Tracking' },
+            6: { title: 'Datadog', url: 'https://www.datadoghq.com/', icon: '🐶', desc: 'Cloud Monitoring' },
+            7: { title: 'Uptime Kuma', url: 'https://github.com/louislam/uptime-kuma', icon: '⏱️', desc: 'Status Tool' },
+            8: { title: 'Prometheus', url: 'https://prometheus.io/', icon: '🔥', desc: 'Metrics DB' },
+            9: { title: 'Logstash', url: 'https://www.elastic.co/logstash', icon: '🪵', desc: 'Log Pipeline' }
+          };
+          const audit = auditMap[nodeIndex];
+          if (audit) {
+            return {
+              title: audit.title,
+              id: `0xLOG-${nodeIndex}`,
+              desc: audit.desc,
+              status: 'EXTERNAL',
+              icon: audit.icon,
+              isApp: true,
+              isLaunchable: true,
+              appSlug: audit.url
+            };
+          }
+        }
         
         // Fallback for other domains
         return {
