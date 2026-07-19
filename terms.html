@@ -1,119 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Service | Daxini Space</title>
-<link rel="icon" type="image/png" href="/favicon.png">
-<style>
-:root{--orange:#ff671f;--dark:#000}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--dark);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;line-height:1.8}
-.container{max-width:800px;margin:0 auto}
-h1{color:var(--orange);margin-bottom:10px;font-size:2rem}
-.updated{color:#888;font-size:.9rem;margin-bottom:30px}
-h2{margin:30px 0 15px;font-size:1.5rem}
-p{margin-bottom:15px;color:#ccc}
-ul{margin:15px 0 15px 20px;color:#ccc}
-li{margin-bottom:10px}
-.warning{background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.3);padding:15px;border-radius:12px;margin:20px 0;color:#ff6b6b}
-.warning strong{color:#fff}
-a{color:var(--orange)}
-.back{display:inline-block;margin-top:30px;padding:12px 24px;background:var(--orange);color:#000;border-radius:50px;font-weight:900;text-decoration:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — Daxini.space</title>
+  <link rel="icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #f8fafc;
+      --bg-panel: rgba(255, 255, 255, 0.85);
+      --border-dim: rgba(0, 0, 0, 0.08);
+      --text-primary: #0f172a;
+      --text-dim: #475569;
+      --accent-cyan: #06b6d4;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-dim);
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent-cyan);
+    }
+
+    h1, h2 {
+      font-family: var(--font-display);
+      margin-top: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 0;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border-dim);
+      padding-bottom: 8px;
+    }
+
+    p, ul {
+      color: var(--text-dim);
+      margin-bottom: 1.2em;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .last-updated {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 2em;
+    }
+  </style>
 </head>
 <body>
-<main id="app">
-<div class="container">
-<h1>Terms of Service</h1>
-<p class="updated">Last Updated: February 2026</p>
+  <div class="container">
+    <a href="/" class="back-link">← Return to Spatial OS</a>
+    
+    <h1>Terms of Service</h1>
+    <div class="last-updated">Last Updated: July 2026</div>
 
-<div class="warning">
-<strong>⚠️ DEMO PLATFORM DISCLAIMER</strong><br>
-This is a demonstration build. No real transactions occur. Orders, payments, and seller confirmations are simulated for UX testing purposes only.
-</div>
+    <p>Welcome to <strong>daxini.space</strong>. By accessing or using our Spatial OS, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
 
-<h2>1. Acceptance of Terms</h2>
-<p>By accessing Daxini Space, you agree to these Terms of Service. If you disagree, please do not use the platform.</p>
+    <h2>1. Acceptance of Terms</h2>
+    <p>By using daxini.space, you agree to these Terms of Service and any additional terms applicable to specific programs or modules within the Spatial OS.</p>
 
-<h2>2. Service Description</h2>
-<p>Daxini Space is currently a <strong>demo/MVP platform</strong> testing:</p>
-<ul>
-<li>Product comparison and ranking algorithms</li>
-<li>UPI payment flows (simulated)</li>
-<li>Seller onboarding workflows</li>
-<li>User feedback collection</li>
-</ul>
+    <h2>2. Description of Service</h2>
+    <p>daxini.space provides a contextual, spatial browsing environment designed to aggregate deployed applications, open-source documentation, and public datasets. The ecosystem allows for navigating a virtual matrix structure rather than traditional hyperlinks.</p>
 
-<h2>3. Demo Limitations</h2>
-<ul>
-<li><strong>No Real Transactions:</strong> All orders are simulated</li>
-<li><strong>No Real Payments:</strong> UPI flows are for testing only</li>
-<li><strong>No Seller Fulfillment:</strong> No products will be delivered</li>
-<li><strong>Data Persistence:</strong> Demo data stored locally may be lost</li>
-</ul>
+    <h2>3. Third-Party Content</h2>
+    <p>The Spatial OS aggregates and embeds various third-party, open-source websites and tools via iframes or external links. We do not own, control, or endorse the content, policies, or practices of any third-party nodes. Your interaction with third-party content is solely at your own risk.</p>
 
-<h2>4. User Responsibilities</h2>
-<p>You agree to:</p>
-<ul>
-<li>Provide accurate information in waitlist and feedback forms</li>
-<li>Not abuse or spam the platform</li>
-<li>Not attempt to exploit demo features for malicious purposes</li>
-<li>Understand this is a testing environment</li>
-</ul>
+    <h2>4. User Conduct</h2>
+    <p>You agree not to use the platform in any way that could damage, disable, overburden, or impair the Spatial OS ecosystem, or interfere with any other party's use and enjoyment of the service.</p>
 
-<h2>5. Seller Interest</h2>
-<p>Submitting seller interest does NOT guarantee:</p>
-<ul>
-<li>Acceptance onto the platform</li>
-<li>Specific launch timelines</li>
-<li>Commission-free operation (final terms TBD)</li>
-</ul>
+    <h2>5. Disclaimer of Warranties</h2>
+    <p>The platform is provided on an "AS IS" and "AS AVAILABLE" basis. We disclaim all warranties, express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
 
-<h2>6. Intellectual Property</h2>
-<p>All content, design, and code are © Daxini Space 2026. You may not:</p>
-<ul>
-<li>Copy or reproduce platform features</li>
-<li>Reverse engineer the ranking algorithm</li>
-<li>Use our branding without permission</li>
-</ul>
+    <h2>6. Limitation of Liability</h2>
+    <p>In no event shall daxini.space or its creators be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of the Spatial OS.</p>
 
-<h2>7. Data Usage</h2>
-<p>See our <a href="/privacy.html">Privacy Policy</a>. By using Daxini Space:</p>
-<ul>
-<li>You consent to data collection as described</li>
-<li>Demo data stays in your browser</li>
-<li>Feedback may be used to improve the product</li>
-</ul>
-
-<h2>8. Limitation of Liability</h2>
-<p>Daxini Space is provided "AS IS" without warranties. We are not liable for:</p>
-<ul>
-<li>Loss of demo data</li>
-<li>Unavailability of the platform</li>
-<li>Any damages from using this demo</li>
-<li>Third-party services (Supabase, Cloudflare)</li>
-</ul>
-
-<h2>9. Termination</h2>
-<p>We may terminate or suspend access at any time for:</p>
-<ul>
-<li>Violation of these terms</li>
-<li>Abusive behavior</li>
-<li>Platform discontinuation</li>
-</ul>
-
-<h2>10. Changes to Terms</h2>
-<p>We reserve the right to modify these terms. Continued use constitutes acceptance of changes.</p>
-
-<h2>11. Governing Law</h2>
-<p>These terms are governed by the laws of India. Disputes will be resolved in Gujarat jurisdiction.</p>
-
-<h2>12. Contact</h2>
-<p>Questions? Email <a href="mailto:dharam@viadecide.com">dharam@viadecide.com</a></p>
-
-<a href="/" class="back">← Back to Home</a>
-</div>
-</main>
+    <h2>7. Modifications to the Service</h2>
+    <p>We reserve the right to modify or discontinue, temporarily or permanently, the service (or any part thereof) with or without notice. We shall not be liable to you or any third party for any modification, suspension, or discontinuance of the service.</p>
+  </div>
 </body>
 </html>

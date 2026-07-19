@@ -1,110 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy | Daxini Space</title>
-<link rel="icon" type="image/png" href="/favicon.png">
-<style>
-:root{--orange:#ff671f;--dark:#000}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--dark);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;line-height:1.8}
-.container{max-width:800px;margin:0 auto}
-h1{color:var(--orange);margin-bottom:10px;font-size:2rem}
-.updated{color:#888;font-size:.9rem;margin-bottom:30px}
-h2{margin:30px 0 15px;font-size:1.5rem}
-p{margin-bottom:15px;color:#ccc}
-ul{margin:15px 0 15px 20px;color:#ccc}
-li{margin-bottom:10px}
-a{color:var(--orange);text-decoration:none}
-a:hover{text-decoration:underline}
-.back{display:inline-block;margin-top:30px;padding:12px 24px;background:var(--orange);color:#000;border-radius:50px;font-weight:900;text-decoration:none}
-.back:hover{background:#ff8c3f}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Daxini.space</title>
+  <link rel="icon" href="favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #f8fafc;
+      --bg-panel: rgba(255, 255, 255, 0.85);
+      --border-dim: rgba(0, 0, 0, 0.08);
+      --text-primary: #0f172a;
+      --text-dim: #475569;
+      --accent-cyan: #06b6d4;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-dim);
+      font-family: var(--font-display);
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent-cyan);
+    }
+
+    h1, h2 {
+      font-family: var(--font-display);
+      margin-top: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 0;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border-dim);
+      padding-bottom: 8px;
+    }
+
+    p, ul {
+      color: var(--text-dim);
+      margin-bottom: 1.2em;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .last-updated {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 2em;
+    }
+  </style>
 </head>
 <body>
-<main id="app">
-<div class="container">
-<h1>Privacy Policy</h1>
-<p class="updated">Last Updated: February 2026</p>
+  <div class="container">
+    <a href="/" class="back-link">← Return to Spatial OS</a>
+    
+    <h1>Privacy Policy</h1>
+    <div class="last-updated">Last Updated: July 2026</div>
 
-<h2>Overview</h2>
-<p>Daxini Space ("we", "our", "us") operates as a demo marketplace platform. This privacy policy explains how we handle your information.</p>
+    <p>Welcome to <strong>daxini.space</strong> ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and share information about you when you use our website and Spatial OS.</p>
 
-<h2>Information We Collect</h2>
-<ul>
-<li><strong>Waitlist Data:</strong> Email, phone (optional), city, interests</li>
-<li><strong>Feedback:</strong> Your messages, ratings, and suggestions</li>
-<li><strong>Seller Interest:</strong> Business details, contact information</li>
-<li><strong>Technical Data:</strong> Device ID (browser-generated), session data</li>
-<li><strong>Demo Data:</strong> Cart, orders, preferences (stored locally in your browser)</li>
-</ul>
+    <h2>1. Information We Collect</h2>
+    <p>As a sovereign operating environment, we strive to collect the minimum amount of data necessary. We may collect:</p>
+    <ul>
+      <li><strong>Usage Data:</strong> Information about how you navigate the 3x3 matrix, interactions with nodes, and feature usage. This helps us optimize the spatial rendering engine.</li>
+      <li><strong>Local Storage:</strong> We use browser Local Storage to save your UI preferences, onboarding state, and node configurations. This data remains on your device.</li>
+      <li><strong>External Links:</strong> When you launch external iframes or new tabs via the Spatial OS, you are subject to the privacy policies of those respective third-party services.</li>
+    </ul>
 
-<h2>How We Use Your Information</h2>
-<ul>
-<li>To send you updates about Daxini Space launch and features</li>
-<li>To improve our product based on your feedback</li>
-<li>To contact sellers who express interest</li>
-<li>To provide customer support</li>
-<li>Analytics and platform improvement</li>
-</ul>
+    <h2>2. How We Use Your Information</h2>
+    <p>We use the collected information for the following purposes:</p>
+    <ul>
+      <li>To provide, operate, and maintain the Spatial OS environment.</li>
+      <li>To improve, personalize, and expand our ecosystem features.</li>
+      <li>To understand and analyze how you use our platform.</li>
+    </ul>
 
-<h2>Data Storage</h2>
-<p><strong>Server-side:</strong> Waitlist, feedback, and seller interest are stored securely in Supabase (PostgreSQL database with encryption at rest).</p>
-<p><strong>Client-side:</strong> Demo data (cart, orders, UTR) is stored locally in your browser using localStorage. This data never leaves your device unless you explicitly submit it (e.g., feedback form).</p>
+    <h2>3. Third-Party Services</h2>
+    <p>daxini.space acts as a contextual browser that aggregates third-party open-source tools, applications, and datasets. We do not control and are not responsible for the privacy practices of these third-party nodes. We encourage you to read their privacy policies before interacting with their services.</p>
 
-<h2>Data Sharing</h2>
-<p>We do NOT sell your data. We may share information with:</p>
-<ul>
-<li><strong>Service Providers:</strong> Supabase (database), Cloudflare (hosting)</li>
-<li><strong>Legal Requirements:</strong> If required by law</li>
-</ul>
+    <h2>4. Data Security</h2>
+    <p>We implement appropriate technical and organizational security measures designed to protect the security of any personal information we process. However, please remember that we cannot guarantee that the internet itself is 100% secure.</p>
 
-<h2>Your Rights</h2>
-<ul>
-<li><strong>Access:</strong> Request a copy of your data</li>
-<li><strong>Deletion:</strong> Request deletion of your data</li>
-<li><strong>Correction:</strong> Update your information</li>
-<li><strong>Opt-out:</strong> Unsubscribe from emails anytime</li>
-</ul>
+    <h2>5. Changes to This Privacy Policy</h2>
+    <p>We may update this privacy policy from time to time. The updated version will be indicated by an updated "Last Updated" date and the updated version will be effective as soon as it is accessible.</p>
 
-<h2>Data Retention</h2>
-<ul>
-<li>Waitlist: Until product launch + 90 days</li>
-<li>Feedback: 2 years</li>
-<li>Seller Interest: Until onboarding complete or 1 year</li>
-<li>Demo Data: Stored in your browser until you clear it</li>
-</ul>
-
-<h2>Security</h2>
-<p>We use industry-standard security measures:</p>
-<ul>
-<li>HTTPS encryption for all data transmission</li>
-<li>Database encryption at rest (Supabase)</li>
-<li>Row-level security policies</li>
-<li>No payment data stored (demo UPI IDs only)</li>
-</ul>
-
-<h2>Cookies</h2>
-<p>We use minimal cookies and browser storage for:</p>
-<ul>
-<li>Device ID generation (for demo tracking)</li>
-<li>Session management</li>
-<li>Demo cart and order data</li>
-</ul>
-
-<h2>Children's Privacy</h2>
-<p>Daxini Space is not intended for users under 13. We do not knowingly collect data from children.</p>
-
-<h2>Changes to This Policy</h2>
-<p>We may update this policy. Changes will be posted on this page with updated date.</p>
-
-<h2>Contact Us</h2>
-<p>Questions about privacy?<br>
-Email: <a href="mailto:dharam@viadecide.com">dharam@viadecide.com</a></p>
-
-<a href="/" class="back">← Back to Home</a>
-</div>
-</main>
+    <h2>6. Contact Us</h2>
+    <p>If you have questions or comments about this policy, please contact the ecosystem administrator.</p>
+  </div>
 </body>
 </html>
