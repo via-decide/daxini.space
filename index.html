@@ -1802,10 +1802,12 @@
             // Future-proofing if some sites allow iframes
             launchLiveApp(room.url, room.title);
           }
+          return; // Prevent zooming into a dead node
         }
         // Else if it's a launchable local app, launch it
         else if (room && room.isLaunchable && room.appSlug) {
           launchLiveApp(room.appSlug, room.title);
+          return; // Prevent zooming into a dead node
         }
         
         // Simulate key press for the node (fractal zoom)
