@@ -919,96 +919,175 @@
         };
       }
 
-      // If at root, map outer nodes to the 8 core apps
+      // LEVEL 0: Global Domain Hub (Path length 1)
       if (isHome) {
-        // nodeIndex is 1-9 (excluding 5). Convert to 0-8 for ROOM_POSITIONS
-        const gridIdx = nodeIndex - 1;
-        let slug = '';
-        if (window.DaxiniRegistry && window.DaxiniRegistry.ROOM_POSITIONS) {
-          const posIdx = window.DaxiniRegistry.ROOM_POSITIONS.indexOf(gridIdx);
-          if (posIdx !== -1) slug = window.DaxiniRegistry.DEFAULT_ROOM_SLUGS[posIdx];
-        } else {
-          // Fallback mapping if registry isn't loaded yet
-          const fallbackPositions = [0, 1, 2, 3, 5, 6, 7, 8];
-          const fallbackSlugs = ['logichub', 'daxini-hq', 'prompt-alchemy', 'orchade', 'daxini-lens', 'via-logic', 'studyos', 'alchemist'];
-          const posIdx = fallbackPositions.indexOf(gridIdx);
-          if (posIdx !== -1) slug = fallbackSlugs[posIdx];
-        }
+        const domains = {
+          1: { title: 'News / Feed', desc: 'Ecosystem updates', icon: '📰' },
+          2: { title: 'Deployed Ecosystem', desc: 'Websites & Apps', icon: '🌐' },
+          3: { title: 'System Settings', desc: 'Global Config', icon: '⚙️' },
+          4: { title: 'Code Repositories', desc: 'Local & GitHub Codebase', icon: '💻' },
+          6: { title: 'Lab / AI Agents', desc: 'Zayvora & Experiments', icon: '🧪' },
+          7: { title: 'Databases', desc: 'Data Lake Access', icon: '🗄️' },
+          8: { title: 'Knowledge Base', desc: 'Docs & Articles', icon: '📚' },
+          9: { title: 'Audit Logs', desc: 'Security & Tracking', icon: '🔍' }
+        };
+        const domain = domains[nodeIndex];
+        return {
+          title: domain.title,
+          id: `0xDOM-${nodeIndex}`,
+          desc: domain.desc,
+          status: 'ONLINE',
+          icon: domain.icon,
+          isApp: true,
+          isDomain: true
+        };
+      }
 
-        if (slug) {
-          const app = getApp(slug);
-          if (app) {
+      // LEVEL 1: Domain Entries (Path length 2)
+      if (path.length === 2) {
+        const domainNode = path[1];
+        
+        // Domain 2: Deployed Ecosystem (Apps)
+        if (domainNode === '2') {
+          const gridIdx = nodeIndex - 1;
+          let slug = '';
+          if (window.DaxiniRegistry && window.DaxiniRegistry.ROOM_POSITIONS) {
+            const posIdx = window.DaxiniRegistry.ROOM_POSITIONS.indexOf(gridIdx);
+            if (posIdx !== -1) slug = window.DaxiniRegistry.DEFAULT_ROOM_SLUGS[posIdx];
+          } else {
+            const fallbackPositions = [0, 1, 2, 3, 5, 6, 7, 8];
+            const fallbackSlugs = ['logichub', 'daxini-hq', 'prompt-alchemy', 'orchade', 'daxini-lens', 'via-logic', 'studyos', 'alchemist'];
+            const posIdx = fallbackPositions.indexOf(gridIdx);
+            if (posIdx !== -1) slug = fallbackSlugs[posIdx];
+          }
+
+          if (slug) {
+            const app = getApp(slug);
+            if (app) {
+              return {
+                title: app.name,
+                id: app.slug,
+                desc: app.desc,
+                status: app.status === 'live' ? 'LIVE' : 'OFFLINE',
+                icon: app.icon,
+                isApp: true,
+                appSlug: slug,
+                isLaunchable: true
+              };
+            }
+          }
+        }
+        
+        // Domain 4: Code Repositories
+        if (domainNode === '4') {
+          const repoMap = {
+            1: { title: 'GN8R-main', slug: 'gn8r', desc: 'Core GN8R Repository', icon: '📦' },
+            2: { title: 'Game--main', slug: 'game-main', desc: 'Game Repository', icon: '🎮' },
+            3: { title: 'cohort_fixed', slug: 'cohort', desc: 'Cohort Fixes', icon: '👥' },
+            4: { title: 'via', slug: 'via', desc: 'ViaDecide Root', icon: '🧠' },
+            6: { title: 'daxini.space', slug: 'daxini-space', desc: 'Spatial OS Codebase', icon: '🌌' },
+            7: { title: 'sovereign-ui', slug: 'sovereign-ui', desc: 'UI Component Library', icon: '🎨' },
+            8: { title: 'prompt-alchemy', slug: 'prompt-alchemy', desc: 'Prompt Engine Repo', icon: '⚗️' },
+            9: { title: 'logic-reactor', slug: 'logic-reactor', desc: 'Logic Reactor Engine', icon: '⚡' }
+          };
+          const repo = repoMap[nodeIndex];
+          if (repo) {
             return {
-              title: app.name,
-              id: app.slug,
-              desc: app.desc,
-              status: app.status === 'live' ? 'LIVE' : 'OFFLINE',
-              icon: app.icon,
+              title: repo.title,
+              id: `0xREPO-${repo.slug.toUpperCase()}`,
+              desc: repo.desc,
+              status: 'LOCAL',
+              icon: repo.icon,
               isApp: true,
-              appSlug: slug
+              isRepo: true
             };
           }
         }
+        
+        // Fallback for other domains
+        return {
+          title: `Sector ${nodeIndex} Data`,
+          id: `0xDOM2-${nodeIndex}`,
+          desc: `Data stream for Sector ${nodeIndex}`,
+          status: 'ACTIVE',
+          icon: '🗂️',
+          isApp: true
+        };
       }
 
-      // Level 1: App Features (Path length 2)
-      if (path.length === 2) {
-        const parentAppIdx = parseInt(path[1], 10);
-        let appName = 'System App';
-        const fallbackSlugs = ['logichub', 'daxini-hq', 'prompt-alchemy', 'orchade', 'daxini-lens', 'via-logic', 'studyos', 'alchemist'];
-        const fallbackPositions = [0, 1, 2, 3, 5, 6, 7, 8];
-        const posIdx = fallbackPositions.indexOf(parentAppIdx - 1);
-        if (posIdx !== -1) {
-          const appSlug = fallbackSlugs[posIdx];
-          const app = getApp(appSlug);
-          if (app) appName = app.name;
+      // LEVEL 2: Architecture / Features (Path length 3)
+      if (path.length === 3) {
+        const domainNode = path[1];
+        
+        // Inside Deployed Ecosystem (Apps) -> App Features
+        if (domainNode === '2') {
+          const l1Features = {
+            1: { name: 'Dashboard', icon: '📊' },
+            2: { name: 'Analytics', icon: '📈' },
+            3: { name: 'Settings', icon: '⚙️' },
+            4: { name: 'Modules', icon: '🧩' },
+            6: { name: 'Integration', icon: '🔗' },
+            7: { name: 'System Logs', icon: '📝' },
+            8: { name: 'Network', icon: '🌐' },
+            9: { name: 'Security', icon: '🛡️' }
+          };
+          const feature = l1Features[nodeIndex] || { name: 'Feature Node', icon: '🔧' };
+          return {
+            title: feature.name,
+            id: `0xAPP-${hash.toString(16).toUpperCase().substring(0, 4)}`,
+            desc: `Internal Module`,
+            status: 'ONLINE',
+            icon: feature.icon,
+            isApp: true
+          };
         }
 
-        const l1Features = {
-          1: { name: 'Dashboard', icon: '📊' },
-          2: { name: 'Analytics', icon: '📈' },
-          3: { name: 'Settings', icon: '⚙️' },
-          4: { name: 'Modules', icon: '🧩' },
-          6: { name: 'Integration', icon: '🔗' },
-          7: { name: 'System Logs', icon: '📝' },
-          8: { name: 'Network', icon: '🌐' },
-          9: { name: 'Security', icon: '🛡️' }
-        };
-
-        const feature = l1Features[nodeIndex] || { name: 'Feature Node', icon: '🔧' };
-        
-        return {
-          title: feature.name,
-          id: `0x${hash.toString(16).toUpperCase().substring(0, 4)}`,
-          desc: `${appName} > ${feature.name} Subsystem`,
-          status: 'ONLINE',
-          icon: feature.icon,
-          isApp: true
-        };
+        // Inside Code Repositories -> Repo Architecture
+        if (domainNode === '4') {
+          const repoArch = {
+            1: { name: 'src/', icon: '📁', desc: 'Source Code' },
+            2: { name: 'public/', icon: '📁', desc: 'Static Assets' },
+            3: { name: 'components/', icon: '📁', desc: 'UI Components' },
+            4: { name: 'api/', icon: '📁', desc: 'Backend Endpoints' },
+            6: { name: 'docs/', icon: '📁', desc: 'Documentation' },
+            7: { name: 'package.json', icon: '📄', desc: 'Dependencies' },
+            8: { name: 'README.md', icon: '📄', desc: 'Project Readme' },
+            9: { name: '.gitignore', icon: '📄', desc: 'Git Ignore Config' }
+          };
+          const arch = repoArch[nodeIndex] || { name: 'file.js', icon: '📄', desc: 'Source File' };
+          return {
+            title: arch.name,
+            id: `0xDIR-${nodeIndex}`,
+            desc: arch.desc,
+            status: arch.icon === '📄' ? 'FILE' : 'DIR',
+            icon: arch.icon,
+            isApp: true,
+            isFile: arch.icon === '📄'
+          };
+        }
       }
 
-      // Level 2: Sub-Features (Path length 3)
-      if (path.length === 3) {
-        const l2Features = {
-          1: { name: 'Configuration', icon: '🎛️' },
-          2: { name: 'Metrics Grid', icon: '📉' },
-          3: { name: 'Data Pipeline', icon: '🗄️' },
-          4: { name: 'Access Control', icon: '🔑' },
-          6: { name: 'API Gateway', icon: '🚪' },
-          7: { name: 'Endpoints', icon: '📡' },
-          8: { name: 'Deployments', icon: '🚀' },
-          9: { name: 'Audit Trail', icon: '🔍' }
+      // LEVEL 3: Deep Files (Path length 4)
+      if (path.length === 4 && path[1] === '4') {
+        const fileMap = {
+          1: { name: 'index.js', icon: '📄', desc: 'Main Entry Point' },
+          2: { name: 'App.jsx', icon: '📄', desc: 'Root Component' },
+          3: { name: 'styles.css', icon: '📄', desc: 'Global Styles' },
+          4: { name: 'utils.js', icon: '📄', desc: 'Helper Functions' },
+          6: { name: 'config.js', icon: '📄', desc: 'Configuration' },
+          7: { name: 'api.js', icon: '📄', desc: 'Network Logic' },
+          8: { name: 'db.json', icon: '📄', desc: 'Local Database' },
+          9: { name: 'constants.js', icon: '📄', desc: 'Constants' }
         };
-
-        const subFeature = l2Features[nodeIndex] || { name: 'Data Node', icon: '💾' };
-        
+        const file = fileMap[nodeIndex] || { name: 'data.js', icon: '📄', desc: 'Data File' };
         return {
-          title: subFeature.name,
-          id: `0x${hash.toString(16).toUpperCase().substring(0, 5)}`,
-          desc: `Level 2 Internal Subsystem`,
-          status: 'ACTIVE',
-          icon: subFeature.icon,
-          isApp: true
+          title: file.name,
+          id: `0xFILE-${hash.toString(16).toUpperCase().substring(0, 4)}`,
+          desc: file.desc,
+          status: 'FILE',
+          icon: file.icon,
+          isApp: true,
+          isFile: true
         };
       }
 
@@ -1170,8 +1249,15 @@
           resetToHome();
         }
       } else {
-        // If it's an app node on the root, launch it!
-        if (room && room.isApp && room.appSlug) {
+        // If it's a file, don't zoom deeper. It's the end point.
+        if (room && room.isFile) {
+          addLog(`[FILE] Opened ${room.title}`);
+          // You could open a code viewer iframe here in the future
+          return; 
+        }
+
+        // If it's an app node on the root that is launchable, launch it!
+        if (room && room.isLaunchable && room.appSlug) {
           launchLiveApp(room.appSlug);
         }
         
