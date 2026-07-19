@@ -3,6 +3,7 @@ window.DAXINI_APPS_MANIFEST = {
   apps: [
     { name: 'alchemist', title: 'Alchemist Creator Engine', path: './apps/alchemist/', creator: 'via-decide', version: '1.0.0' },
     { name: 'logichub', title: 'LogicHub Builder', path: './apps/logichub/', creator: 'via-decide', version: '1.0.0' },
-    { name: 'marketplace', title: 'Marketplace', path: './apps/marketplace/', creator: 'via-decide', version: '1.0.0' }
+    { name: 'marketplace', title: 'Marketplace', path: './apps/marketplace/', creator: 'via-decide', version: '1.0.0' },
+    { name: 'orchade', title: 'Orchade', path: './apps/orchade/', creator: 'via-decide', version: '1.0.0' }
   ]
 };
