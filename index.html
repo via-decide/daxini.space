@@ -1019,26 +1019,76 @@
       if (path.length === 3) {
         const domainNode = path[1];
         
-        // Inside Deployed Ecosystem (Apps) -> App Features
+        // Inside Deployed Ecosystem (Apps) -> Contextual Internet Browser
         if (domainNode === '2') {
-          const l1Features = {
-            1: { name: 'Dashboard', icon: '📊' },
-            2: { name: 'Analytics', icon: '📈' },
-            3: { name: 'Settings', icon: '⚙️' },
-            4: { name: 'Modules', icon: '🧩' },
-            6: { name: 'Integration', icon: '🔗' },
-            7: { name: 'System Logs', icon: '📝' },
-            8: { name: 'Network', icon: '🌐' },
-            9: { name: 'Security', icon: '🛡️' }
-          };
-          const feature = l1Features[nodeIndex] || { name: 'Feature Node', icon: '🔧' };
+          const appNode = path[2]; // The app they clicked on level 1
+          
+          let contextMap = {};
+          
+          // LogicHub (App Builders)
+          if (appNode === '1') {
+            contextMap = {
+              1: { name: 'Bubble', url: 'https://bubble.io', icon: '🫧', desc: 'No-Code Web Apps' },
+              2: { name: 'Webflow', url: 'https://webflow.com', icon: '🌊', desc: 'Visual Web Dev' },
+              3: { name: 'Vercel', url: 'https://vercel.com', icon: '▲', desc: 'Frontend Cloud' },
+              4: { name: 'Retool', url: 'https://retool.com', icon: '🛠️', desc: 'Internal Tools' },
+              6: { name: 'Streamlit', url: 'https://streamlit.io', icon: '👑', desc: 'Data Apps' },
+              7: { name: 'Gradio', url: 'https://gradio.app', icon: '📻', desc: 'ML Interfaces' },
+              8: { name: 'Framer', url: 'https://framer.com', icon: '🖼️', desc: 'Interactive Sites' },
+              9: { name: 'Glide', url: 'https://glideapps.com', icon: '📱', desc: 'Data to Apps' }
+            };
+          }
+          // Prompt Alchemy (AI Tools)
+          else if (appNode === '3') {
+            contextMap = {
+              1: { name: 'ChatGPT', url: 'https://chatgpt.com', icon: '💬', desc: 'OpenAI Chat' },
+              2: { name: 'Claude', url: 'https://claude.ai', icon: '🧠', desc: 'Anthropic AI' },
+              3: { name: 'Playground', url: 'https://platform.openai.com/playground', icon: '🧪', desc: 'OpenAI API' },
+              4: { name: 'Midjourney', url: 'https://midjourney.com', icon: '🎨', desc: 'AI Image Gen' },
+              6: { name: 'HuggingFace', url: 'https://huggingface.co', icon: '🤗', desc: 'AI Community' },
+              7: { name: 'Perplexity', url: 'https://perplexity.ai', icon: '🔍', desc: 'AI Search' },
+              8: { name: 'Anthropic', url: 'https://console.anthropic.com', icon: '⌨️', desc: 'Claude API' },
+              9: { name: 'RunwayML', url: 'https://runwayml.com', icon: '🎥', desc: 'AI Video Gen' }
+            };
+          }
+          // Orchade (Simulation / Orchestration)
+          else if (appNode === '4') {
+            contextMap = {
+              1: { name: 'LangChain', url: 'https://langchain.com', icon: '🦜', desc: 'LLM Framework' },
+              2: { name: 'AutoGPT', url: 'https://agpt.co', icon: '🤖', desc: 'Autonomous AI' },
+              3: { name: 'Flowise', url: 'https://flowiseai.com', icon: '🕸️', desc: 'Visual LLM Builder' },
+              4: { name: 'AgentOps', url: 'https://agentops.ai', icon: '📊', desc: 'Agent Analytics' },
+              6: { name: 'Supabase', url: 'https://supabase.com', icon: '⚡', desc: 'Open Source Firebase' },
+              7: { name: 'Pinecone', url: 'https://pinecone.io', icon: '🌲', desc: 'Vector Database' },
+              8: { name: 'Replit', url: 'https://replit.com', icon: '💻', desc: 'Cloud IDE' },
+              9: { name: 'Netlify', url: 'https://netlify.com', icon: '🌐', desc: 'Global CDN' }
+            };
+          }
+          // Fallback for other apps
+          else {
+            contextMap = {
+              1: { name: 'Google', url: 'https://google.com', icon: '🔍', desc: 'Search Engine' },
+              2: { name: 'GitHub', url: 'https://github.com', icon: '🐙', desc: 'Code Hosting' },
+              3: { name: 'X / Twitter', url: 'https://x.com', icon: '🐦', desc: 'Social Network' },
+              4: { name: 'YouTube', url: 'https://youtube.com', icon: '▶️', desc: 'Video Platform' },
+              6: { name: 'Reddit', url: 'https://reddit.com', icon: '👽', desc: 'Forums' },
+              7: { name: 'Wikipedia', url: 'https://wikipedia.org', icon: '📚', desc: 'Encyclopedia' },
+              8: { name: 'ProductHunt', url: 'https://producthunt.com', icon: '😸', desc: 'New Products' },
+              9: { name: 'HackerNews', url: 'https://news.ycombinator.com', icon: '📰', desc: 'Tech News' }
+            };
+          }
+
+          const site = contextMap[nodeIndex] || { name: 'Internet Node', url: 'https://example.com', icon: '🌐', desc: 'External Link' };
           return {
-            title: feature.name,
-            id: `0xAPP-${hash.toString(16).toUpperCase().substring(0, 4)}`,
-            desc: `Internal Module`,
-            status: 'ONLINE',
-            icon: feature.icon,
-            isApp: true
+            title: site.name,
+            id: `0xWEB-${hash.toString(16).toUpperCase().substring(0, 4)}`,
+            desc: site.desc,
+            status: 'EXTERNAL',
+            icon: site.icon,
+            isApp: true,
+            isExternalWeb: true,
+            url: site.url,
+            noIframe: true // We assume major external sites block iframes
           };
         }
 
@@ -1256,8 +1306,18 @@
           return; 
         }
 
-        // If it's an app node on the root that is launchable, launch it!
-        if (room && room.isLaunchable && room.appSlug) {
+        // If it's an external web link, open it in a new tab
+        if (room && room.isExternalWeb && room.url) {
+          addLog(`[BROWSER] Launching external context: ${room.title}`);
+          if (room.noIframe) {
+            window.open(room.url, '_blank');
+          } else {
+            // Future-proofing if some sites allow iframes
+            launchLiveApp(room.url);
+          }
+        }
+        // Else if it's a launchable local app, launch it
+        else if (room && room.isLaunchable && room.appSlug) {
           launchLiveApp(room.appSlug);
         }
         
