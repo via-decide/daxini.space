@@ -1,5 +1,21 @@
 # Current Architecture
 
+## index.html shell: KEEP
+
+The current `index.html` shell is a stable UI shell and must be preserved. Its stable responsibilities are:
+
+- onboarding redirect in the initial inline script
+- `.eco-bar` navigation
+- `.spatial-os`
+- `.matrix-viewport`
+- `.matrix-grid`
+- `.app-overlay`
+- `.console-terminal`
+- `#os-minimap`
+- `#launch-bar`
+- keyboard/touch handlers near the bottom inline script
+
+Zayvora backend/runtime integration must not redesign or rebuild these UI elements.
 ## Scope
 
 This audit describes the current vanilla HTML/CSS/JavaScript application by static inspection only. It does not propose runtime changes in this document and preserves the existing shell, navigation, storage keys, iframe launch flow, app URLs, animations, and app launch behavior.

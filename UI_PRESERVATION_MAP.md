@@ -1,5 +1,21 @@
 # UI Preservation Map
 
+## KEEP: `index.html` shell
+
+The `index.html` shell is classified as KEEP. Preserve these stable UI responsibilities during integration work:
+
+- onboarding redirect in the initial inline script
+- `.eco-bar` navigation
+- `.spatial-os`
+- `.matrix-viewport`
+- `.matrix-grid`
+- `.app-overlay`
+- `.console-terminal`
+- `#os-minimap`
+- `#launch-bar`
+- keyboard/touch handlers near the bottom inline script
+
+Zayvora backend/runtime integration must not redesign or rebuild these UI elements.
 ## Purpose
 
 This document maps the existing user-interface surfaces that must be preserved during any future migration. The current app is visually and behaviorally defined by `index.html`, with imperative behavior layered through vanilla JavaScript modules.

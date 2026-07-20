@@ -1,5 +1,21 @@
 # Component Preservation
 
+## KEEP: current `index.html` shell
+
+The current `index.html` shell is a preserved component boundary. Stable responsibilities include:
+
+- onboarding redirect in the initial inline script
+- `.eco-bar` navigation
+- `.spatial-os`
+- `.matrix-viewport`
+- `.matrix-grid`
+- `.app-overlay`
+- `.console-terminal`
+- `#os-minimap`
+- `#launch-bar`
+- keyboard/touch handlers near the bottom inline script
+
+Zayvora backend/runtime integration must not redesign or rebuild these UI elements.
 ## Componentization strategy
 
 The current UI should be treated as a set of implicit components already defined by DOM IDs, classes, global objects, and event names. Future component extraction must preserve these contracts before introducing new abstractions.
