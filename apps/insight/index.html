@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ViaLogic Insight Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #050a14;
+            --bg-panel: rgba(10, 15, 25, 0.85);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            --accent-cyan: #00e5ff;
+            --accent-saffron: #ff671f;
+            --font-mono: 'Fira Code', 'SF Mono', 'JetBrains Mono', monospace;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-void);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glow Background */
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 103, 31, 0.03) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 720px;
+            width: 100%;
+            padding: 4rem 2rem;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-dim);
+            padding-bottom: 2rem;
+        }
+
+        .system-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            background: rgba(0, 229, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .target-node {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--accent-saffron);
+            font-weight: 500;
+        }
+
+        .content {
+            font-size: 1.125rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Typewriter effect for content loading */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background-color: var(--accent-cyan);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+            margin-left: 4px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-dim);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .telemetry span {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+        
+        .pulse-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            background-color: var(--accent-cyan);
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 8px var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 2rem 1.5rem; }
+            .title { font-size: 2rem; }
+            .content { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="scanline"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="system-badge">ViaLogic Insight Engine</div>
+            <div class="target-node" id="node-target">[TARGET NODE: RESOLVING...]</div>
+            <h1 class="title" id="article-title">...</h1>
+            <h2 class="subtitle" id="article-subtitle">...</h2>
+        </header>
+
+        <div class="content" id="article-content"><span class="typewriter-cursor"></span></div>
+
+        <footer class="footer">
+            <div class="telemetry">
+                <span><i class="pulse-dot"></i>SYSTEM: SOVEREIGN</span>
+                <span>STATE: DECOUPLED</span>
+            </div>
+            <div>DAXINI MESH</div>
+        </footer>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const nodeTitle = params.get('node') || 'Unknown Node';
+        const nodeCat = params.get('cat') || 'devops';
+
+        document.getElementById('node-target').innerText = `[TARGET NODE: ${nodeTitle.toUpperCase()}]`;
+
+        async function loadContent() {
+            try {
+                const response = await fetch('content.json');
+                const data = await response.json();
+                
+                let article = null;
+
+                // 1. Check for specific node override
+                if (data.specific_nodes && data.specific_nodes[nodeTitle]) {
+                    article = data.specific_nodes[nodeTitle];
+                } 
+                // 2. Fallback to category
+                else if (data.categories && data.categories[nodeCat]) {
+                    article = data.categories[nodeCat];
+                } 
+                // 3. Ultimate fallback
+                else {
+                    article = {
+                        title: "The Unmapped Territory",
+                        subtitle: "Exploring the boundaries of the known ecosystem",
+                        content: "You have arrived at a node that exists on the fringes of the spatial map. In a sovereign ecosystem, every node is an opportunity to define new logic.\n\nWhile this specific endpoint does not natively support iframing, it represents a crucial external dependency in your architecture. True agentic orchestration involves recognizing these boundaries and building bridges to them."
+                    };
+                }
+
+                renderArticle(article);
+            } catch (err) {
+                console.error("Failed to load insights:", err);
+                renderArticle({
+                    title: "Telemetry Error",
+                    subtitle: "Unable to retrieve cognitive database",
+                    content: "The Insight Engine failed to load content.json. Please ensure the structural integrity of the local server."
+                });
+            }
+        }
+
+        function renderArticle(article) {
+            document.getElementById('article-title').innerText = article.title;
+            document.getElementById('article-subtitle').innerText = article.subtitle;
+            
+            const contentEl = document.getElementById('article-content');
+            contentEl.innerHTML = '';
+            
+            // Subtle typewriter effect for the content
+            const text = article.content;
+            let i = 0;
+            const speed = 2; // ms per character
+            
+            function typeWriter() {
+                if (i < text.length) {
+                    contentEl.innerHTML = text.substring(0, i+1) + '<span class="typewriter-cursor"></span>';
+                    i += 5; // chunk to speed up
+                    setTimeout(typeWriter, speed);
+                } else {
+                    contentEl.innerHTML = text.replace(/\n\n/g, '<p></p>'); // preserve paragraphs
+                }
+            }
+            
+            // Just render it instantly for better UX, or keep the fast typewriter
+            contentEl.innerHTML = text.replace(/\n\n/g, '<p></p>'); 
+        }
+
+        // Initialize
+        loadContent();
+    </script>
+</body>
+</html>
