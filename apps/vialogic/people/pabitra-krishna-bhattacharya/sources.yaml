@@ -1,0 +1,97 @@
+sources:
+  - id: S01
+    title: Metal Ions in Biochemistry — About the author
+    authors: Pabitra Krishna Bhattacharya and Prakash B. Samnani
+    publisher: CRC Press metadata displayed by Google Books
+    date: 2020
+    url: https://books.google.com/books/about/Metal_Ions_in_Biochemistry.html?id=MTwKEAAAQBAJ
+    source_tier: 3
+    source_type: publisher author biography
+    access_date: 2026-08-16
+    notes: Single-source biographical narrative; use as REPORTED unless independently corroborated.
+  - id: S02
+    title: Life Members — LM 089
+    institution: Chemical Research Society of India
+    date: not stated
+    url: https://crsi-india.org/life-members/
+    source_tier: 3
+    source_type: institutional membership register
+    access_date: 2026-08-16
+  - id: S03
+    title: Epoxidation of Alkenes Catalyzed by Iron(III) Schiff Base Chelates. A Monooxygenase Model
+    authors: Mathew Jacob; Pabitra K. Bhattacharya; Pralhad A. Ganeshpure; Sheo Satish; Swaminathan Sivaram
+    journal: Bulletin of the Chemical Society of Japan
+    date: 1989-04-15
+    doi: 10.1246/bcsj.62.1325
+    url: https://doi.org/10.1246/bcsj.62.1325
+    source_tier: 2
+    source_type: original research paper
+    access_date: 2026-08-16
+    access_scope: original publisher abstract and bibliographic record
+  - id: S04
+    title: New Mixed Ligand Schiff Base Complexes of Cu(II) & Ni(II)
+    authors: B. T. Thaker; P. K. Bhattacharya
+    journal: Indian Journal of Chemistry, Section A
+    date: 1979-04
+    url: https://nopr.niscpr.res.in/bitstream/123456789/51618/1/IJCA%2017A%284%29%20371-374.pdf
+    source_tier: 2
+    source_type: original research paper in official NIScPR repository
+    access_date: 2026-08-16
+  - id: S05
+    title: Effect of substitution on the catecholate ring on ternary complex stability
+    authors: P. K. Bhattacharya; V. K. Patel
+    journal: Proceedings of the Indian Academy of Sciences — Chemical Sciences
+    date: 1985-06
+    doi: 10.1007/BF02867446
+    url: https://doi.org/10.1007/BF02867446
+    source_tier: 2
+    source_type: original research paper
+    access_date: 2026-08-16
+    volume: 94
+    pages: 495-500
+    access_scope: original publisher abstract and bibliographic record
+  - id: S06
+    title: Study of the probable reason why Ni(II) is excluded from metalloenzymes
+    authors: Pabitra K. Bhattacharya; P. J. Patel; V. K. Patel
+    journal: Proceedings of the Indian Academy of Sciences — Chemical Sciences
+    date: 1985-08
+    doi: 10.1007/BF02864187
+    url: https://doi.org/10.1007/BF02864187
+    source_tier: 2
+    source_type: original research paper
+    access_date: 2026-08-16
+    volume: 95
+    pages: 255-263
+    access_scope: original publisher abstract and bibliographic record
+  - id: S07
+    title: Homogeneous catalysis of epoxidation of olefins by mono- and binuclear Schiff base complexes
+    authors: P. K. Bhattacharya
+    journal: Proceedings of the Indian Academy of Sciences — Chemical Sciences
+    date: 1990
+    doi: 10.1007/BF02841939
+    url: https://doi.org/10.1007/BF02841939
+    source_tier: 2
+    source_type: original research paper
+    access_date: 2026-08-16
+    volume: 102
+    pages: 247-254
+    access_scope: original publisher abstract and bibliographic record
+  - id: S08
+    title: Metal Ions in Biochemistry
+    authors: Pabitra Krishna Bhattacharya; Prakash B. Samnani
+    publisher: CRC Press
+    date: 2020-12-13
+    url: https://books.google.com/books/about/Metal_Ions_in_Biochemistry.html?id=MTwKEAAAQBAJ
+    source_tier: 3
+    source_type: publisher bibliographic record
+    access_date: 2026-08-16
+  - id: S09
+    title: Nickel to the Fore
+    authors: Rudolf K. Thauer
+    journal: Science
+    date: 2001
+    doi: 10.1126/science.1064049
+    url: https://doi.org/10.1126/science.1064049
+    source_tier: 2
+    source_type: scholarly perspective used only for later scientific context
+    access_date: 2026-08-16

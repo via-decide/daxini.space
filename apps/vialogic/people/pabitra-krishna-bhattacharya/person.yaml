@@ -1,0 +1,21 @@
+id: pabitra-krishna-bhattacharya
+name: Pabitra Krishna Bhattacharya
+name_variants:
+  - Pabitra K. Bhattacharya
+  - P. K. Bhattacharya
+branch: unsung-india
+region_anchor: Baroda/Vadodara, Gujarat
+primary_field: chemistry
+subfields:
+  - coordination chemistry
+  - bioinorganic chemistry
+  - homogeneous catalysis
+role: professor and researcher
+institution: M.S. University of Baroda
+birth_date: not established in available sources
+death_date: not established in available sources
+profile_status: manual_profile_built
+public_release_status: approved_for_vialogic_bounded_claim_set
+identity_confidence: high
+claim_ledger: claims.jsonl
+source_ledger: sources.yaml
