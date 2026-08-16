@@ -2,8 +2,8 @@
   {
     "id": "Mahaviracharya",
     "name": "Mahaviracharya",
-    "title": "Mahaviracharya \u00b7 Golden Age",
-    "icon": "\ud83d\udcd0",
+    "title": "Mahaviracharya · Golden Age",
+    "icon": "📐",
     "branch": "science",
     "x": 2800.0,
     "y": 1800.0,
@@ -24,8 +24,8 @@
   {
     "id": "ada-lovelace",
     "name": "Ada Lovelace",
-    "title": "Ada Lovelace \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Ada Lovelace · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2804.35,
     "y": 1947.02,
@@ -46,8 +46,8 @@
   {
     "id": "adi-shankara",
     "name": "Adi Shankara",
-    "title": "Adi Shankara \u00b7 Golden Age",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Adi Shankara · Golden Age",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2733.73,
     "y": 2094.53,
@@ -68,8 +68,8 @@
   {
     "id": "al-khwarizmi",
     "name": "Al Khwarizmi",
-    "title": "Al Khwarizmi \u00b7 Golden Age",
-    "icon": "\ud83d\udcd0",
+    "title": "Al Khwarizmi · Golden Age",
+    "icon": "📐",
     "branch": "science",
     "x": 2590.67,
     "y": 2203.95,
@@ -90,8 +90,8 @@
   {
     "id": "alan-turing",
     "name": "Alan Turing",
-    "title": "Alan Turing \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Alan Turing · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2397.3,
     "y": 2240.18,
@@ -112,8 +112,8 @@
   {
     "id": "albert-camus",
     "name": "Albert Camus",
-    "title": "Albert Camus \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Albert Camus · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2192.19,
     "y": 2181.26,
@@ -134,8 +134,8 @@
   {
     "id": "albert-einstein",
     "name": "Albert Einstein",
-    "title": "Albert Einstein \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Albert Einstein · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2022.65,
     "y": 2025.66,
@@ -156,8 +156,8 @@
   {
     "id": "andrew-wiles",
     "name": "Andrew Wiles",
-    "title": "Andrew Wiles \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Andrew Wiles · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 1934.02,
     "y": 1795.24,
@@ -178,8 +178,8 @@
   {
     "id": "andrey-kolmogorov",
     "name": "Andrey Kolmogorov",
-    "title": "Andrey Kolmogorov \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Andrey Kolmogorov · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 1958.36,
     "y": 1532.72,
@@ -200,8 +200,8 @@
   {
     "id": "archimedes",
     "name": "Archimedes",
-    "title": "Archimedes \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Archimedes · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2105.17,
     "y": 1293.77,
@@ -222,8 +222,8 @@
   {
     "id": "aristotle",
     "name": "Aristotle",
-    "title": "Aristotle \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Aristotle · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2356.66,
     "y": 1135.28,
@@ -244,8 +244,8 @@
   {
     "id": "arthur-schopenhauer",
     "name": "Arthur Schopenhauer",
-    "title": "Arthur Schopenhauer \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Arthur Schopenhauer · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2669.0,
     "y": 1102.17,
@@ -266,8 +266,8 @@
   {
     "id": "aryabhata",
     "name": "Aryabhata",
-    "title": "Aryabhata \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Aryabhata · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2979.83,
     "y": 1215.79,
@@ -288,8 +288,8 @@
   {
     "id": "augustine-of-hippo",
     "name": "Augustine Of Hippo",
-    "title": "Augustine Of Hippo \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Augustine Of Hippo · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 3220.66,
     "y": 1466.71,
@@ -310,8 +310,8 @@
   {
     "id": "baruch-spinoza",
     "name": "Baruch Spinoza",
-    "title": "Baruch Spinoza \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Baruch Spinoza · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 3331.88,
     "y": 1813.99,
@@ -332,8 +332,8 @@
   {
     "id": "benoit-mandelbrot",
     "name": "Benoit Mandelbrot",
-    "title": "Benoit Mandelbrot \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Benoit Mandelbrot · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 3276.92,
     "y": 2191.54,
@@ -354,8 +354,8 @@
   {
     "id": "bernhard-riemann",
     "name": "Bernhard Riemann",
-    "title": "Bernhard Riemann \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Bernhard Riemann · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 3052.38,
     "y": 2520.65,
@@ -376,8 +376,8 @@
   {
     "id": "bertrand-russell",
     "name": "Bertrand Russell",
-    "title": "Bertrand Russell \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Bertrand Russell · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2691.63,
     "y": 2726.39,
@@ -398,8 +398,8 @@
   {
     "id": "bhashkaracharya",
     "name": "Bhashkaracharya",
-    "title": "Bhashkaracharya \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Bhashkaracharya · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2260.35,
     "y": 2754.37,
@@ -420,8 +420,8 @@
   {
     "id": "blaise-pascal",
     "name": "Blaise Pascal",
-    "title": "Blaise Pascal \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Blaise Pascal · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1844.73,
     "y": 2584.28,
@@ -442,8 +442,8 @@
   {
     "id": "brahmagupta",
     "name": "Brahmagupta",
-    "title": "Brahmagupta \u00b7 Golden Age",
-    "icon": "\ud83d\udcd0",
+    "title": "Brahmagupta · Golden Age",
+    "icon": "📐",
     "branch": "science",
     "x": 1534.2,
     "y": 2236.85,
@@ -464,8 +464,8 @@
   {
     "id": "brian-greene",
     "name": "Brian Greene",
-    "title": "Brian Greene \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Brian Greene · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 1402.35,
     "y": 1772.31,
@@ -486,8 +486,8 @@
   {
     "id": "carl-friedrich-gauss",
     "name": "Carl Friedrich Gauss",
-    "title": "Carl Friedrich Gauss \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Carl Friedrich Gauss · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1489.88,
     "y": 1280.24,
@@ -508,8 +508,8 @@
   {
     "id": "chanakya",
     "name": "Chanakya",
-    "title": "Chanakya \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Chanakya · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 1793.65,
     "y": 862.26,
@@ -530,8 +530,8 @@
   {
     "id": "charles-babbage",
     "name": "Charles Babbage",
-    "title": "Charles Babbage \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Charles Babbage · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2264.47,
     "y": 611.11,
@@ -552,8 +552,8 @@
   {
     "id": "claude-shannon",
     "name": "Claude Shannon",
-    "title": "Claude Shannon \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Claude Shannon · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2814.61,
     "y": 590.24,
@@ -574,8 +574,8 @@
   {
     "id": "confucius",
     "name": "Confucius",
-    "title": "Confucius \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Confucius · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 3334.1,
     "y": 818.57,
@@ -596,8 +596,8 @@
   {
     "id": "david-hilbert",
     "name": "David Hilbert",
-    "title": "David Hilbert \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "David Hilbert · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 3712.71,
     "y": 1263.71,
@@ -618,8 +618,8 @@
   {
     "id": "david-hume",
     "name": "David Hume",
-    "title": "David Hume \u00b7 Enlightenment",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "David Hume · Enlightenment",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 3863.23,
     "y": 1845.86,
@@ -640,8 +640,8 @@
   {
     "id": "diogenes-of-sinope",
     "name": "Diogenes Of Sinope",
-    "title": "Diogenes Of Sinope \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Diogenes Of Sinope · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 3741.21,
     "y": 2451.92,
@@ -662,8 +662,8 @@
   {
     "id": "edward-witten",
     "name": "Edward Witten",
-    "title": "Edward Witten \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Edward Witten · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 3356.69,
     "y": 2957.45,
@@ -684,8 +684,8 @@
   {
     "id": "emmy-noether",
     "name": "Emmy Noether",
-    "title": "Emmy Noether \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Emmy Noether · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2775.02,
     "y": 3252.19,
@@ -706,8 +706,8 @@
   {
     "id": "epicurus",
     "name": "Epicurus",
-    "title": "Epicurus \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Epicurus · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2106.12,
     "y": 3263.94,
@@ -728,8 +728,8 @@
   {
     "id": "erwin-schrodinger",
     "name": "Erwin Schrodinger",
-    "title": "Erwin Schrodinger \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Erwin Schrodinger · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 1483.72,
     "y": 2975.62,
@@ -750,8 +750,8 @@
   {
     "id": "euclid",
     "name": "Euclid",
-    "title": "Euclid \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Euclid · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 1038.65,
     "y": 2431.61,
@@ -772,8 +772,8 @@
   {
     "id": "friedrich-nietzsche",
     "name": "Friedrich Nietzsche",
-    "title": "Friedrich Nietzsche \u00b7 Enlightenment",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Friedrich Nietzsche · Enlightenment",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 871.44,
     "y": 1731.5,
@@ -794,8 +794,8 @@
   {
     "id": "galileo-galilei",
     "name": "Galileo Galilei",
-    "title": "Galileo Galilei \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Galileo Galilei · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1029.87,
     "y": 1012.0,
@@ -816,8 +816,8 @@
   {
     "id": "georg-hegel",
     "name": "Georg Hegel",
-    "title": "Georg Hegel \u00b7 Enlightenment",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Georg Hegel · Enlightenment",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 1496.63,
     "y": 420.26,
@@ -838,8 +838,8 @@
   {
     "id": "gottfried-leibniz",
     "name": "Gottfried Leibniz",
-    "title": "Gottfried Leibniz \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Gottfried Leibniz · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 2189.9,
     "y": 83.79,
@@ -860,8 +860,8 @@
   {
     "id": "grigori-perelman",
     "name": "Grigori Perelman",
-    "title": "Grigori Perelman \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Grigori Perelman · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2977.45,
     "y": 83.15,
@@ -882,8 +882,8 @@
   {
     "id": "henri-poincare",
     "name": "Henri Poincare",
-    "title": "Henri Poincare \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Henri Poincare · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 3701.78,
     "y": 433.2,
@@ -904,8 +904,8 @@
   {
     "id": "heraclitus",
     "name": "Heraclitus",
-    "title": "Heraclitus \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Heraclitus · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 4211.65,
     "y": 1077.22,
@@ -926,8 +926,8 @@
   {
     "id": "hypatia",
     "name": "Hypatia",
-    "title": "Hypatia \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Hypatia · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4393.59,
     "y": 1895.6,
@@ -948,8 +948,8 @@
   {
     "id": "immanuel-kant",
     "name": "Immanuel Kant",
-    "title": "Immanuel Kant \u00b7 Enlightenment",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Immanuel Kant · Enlightenment",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 4196.83,
     "y": 2727.96,
@@ -970,8 +970,8 @@
   {
     "id": "isaac-newton",
     "name": "Isaac Newton",
-    "title": "Isaac Newton \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Isaac Newton · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 3646.37,
     "y": 3404.56,
@@ -992,8 +992,8 @@
   {
     "id": "james-clerk-maxwell",
     "name": "James Clerk Maxwell",
-    "title": "James Clerk Maxwell \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "James Clerk Maxwell · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2840.75,
     "y": 3780.91,
@@ -1014,8 +1014,8 @@
   {
     "id": "jean-paul-sartre",
     "name": "Jean Paul Sartre",
-    "title": "Jean Paul Sartre \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Jean Paul Sartre · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 1934.72,
     "y": 3768.44,
@@ -1036,8 +1036,8 @@
   {
     "id": "johannes-kepler",
     "name": "Johannes Kepler",
-    "title": "Johannes Kepler \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Johannes Kepler · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1109.46,
     "y": 3354.92,
@@ -1058,8 +1058,8 @@
   {
     "id": "john-conway",
     "name": "John Conway",
-    "title": "John Conway \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "John Conway · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 536.42,
     "y": 2609.78,
@@ -1080,8 +1080,8 @@
   {
     "id": "john-locke",
     "name": "John Locke",
-    "title": "John Locke \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "John Locke · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 341.74,
     "y": 1672.84,
@@ -1102,8 +1102,8 @@
   {
     "id": "john-nash",
     "name": "John Nash",
-    "title": "John Nash \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "John Nash · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 578.73,
     "y": 728.22,
@@ -1124,8 +1124,8 @@
   {
     "id": "john-von-neumann",
     "name": "John Von Neumann",
-    "title": "John Von Neumann \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "John Von Neumann · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 1214.36,
     "y": -31.88,
@@ -1146,8 +1146,8 @@
   {
     "id": "joseph-louis-lagrange",
     "name": "Joseph Louis Lagrange",
-    "title": "Joseph Louis Lagrange \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Joseph Louis Lagrange · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 2133.02,
     "y": -446.22,
@@ -1168,8 +1168,8 @@
   {
     "id": "karl-marx",
     "name": "Karl Marx",
-    "title": "Karl Marx \u00b7 Enlightenment",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Karl Marx · Enlightenment",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 3157.38,
     "y": -418.66,
@@ -1190,8 +1190,8 @@
   {
     "id": "katherine-johnson",
     "name": "Katherine Johnson",
-    "title": "Katherine Johnson \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Katherine Johnson · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4082.54,
     "y": 60.04,
@@ -1212,8 +1212,8 @@
   {
     "id": "kip-thorne",
     "name": "Kip Thorne",
-    "title": "Kip Thorne \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Kip Thorne · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 4717.07,
     "y": 907.42,
@@ -1234,8 +1234,8 @@
   {
     "id": "kurt-godel",
     "name": "Kurt Godel",
-    "title": "Kurt Godel \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Kurt Godel · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4922.51,
     "y": 1963.18,
@@ -1256,8 +1256,8 @@
   {
     "id": "laozi",
     "name": "Laozi",
-    "title": "Laozi \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Laozi · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 4643.39,
     "y": 3019.44,
@@ -1278,8 +1278,8 @@
   {
     "id": "leonard-susskind",
     "name": "Leonard Susskind",
-    "title": "Leonard Susskind \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Leonard Susskind · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 3921.17,
     "y": 3861.63,
@@ -1300,8 +1300,8 @@
   {
     "id": "leonardo-da-vinci",
     "name": "Leonardo Da Vinci",
-    "title": "Leonardo Da Vinci \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Leonardo Da Vinci · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2888.76,
     "y": 4312.1,
@@ -1322,8 +1322,8 @@
   {
     "id": "leonhard-euler",
     "name": "Leonhard Euler",
-    "title": "Leonhard Euler \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Leonhard Euler · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1746.28,
     "y": 4267.45,
@@ -1344,8 +1344,8 @@
   {
     "id": "ludwig-wittgenstein",
     "name": "Ludwig Wittgenstein",
-    "title": "Ludwig Wittgenstein \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Ludwig Wittgenstein · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 722.26,
     "y": 3721.86,
@@ -1366,8 +1366,8 @@
   {
     "id": "marcus-aurelius",
     "name": "Marcus Aurelius",
-    "title": "Marcus Aurelius \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Marcus Aurelius · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 27.92,
     "y": 2771.17,
@@ -1388,8 +1388,8 @@
   {
     "id": "martin-heidegger",
     "name": "Martin Heidegger",
-    "title": "Martin Heidegger \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Martin Heidegger · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": -186.29,
     "y": 1596.35,
@@ -1410,8 +1410,8 @@
   {
     "id": "maryam-mirzakhani",
     "name": "Maryam Mirzakhani",
-    "title": "Maryam Mirzakhani \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Maryam Mirzakhani · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 136.85,
     "y": 429.11,
@@ -1432,8 +1432,8 @@
   {
     "id": "nagarjuna",
     "name": "Nagarjuna",
-    "title": "Nagarjuna \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Nagarjuna · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 947.09,
     "y": -493.77,
@@ -1454,8 +1454,8 @@
   {
     "id": "niccolo-machiavelli",
     "name": "Niccolo Machiavelli",
-    "title": "Niccolo Machiavelli \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Niccolo Machiavelli · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2093.9,
     "y": -978.48,
@@ -1476,8 +1476,8 @@
   {
     "id": "nicolaus-copernicus",
     "name": "Nicolaus Copernicus",
-    "title": "Nicolaus Copernicus \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Nicolaus Copernicus · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 3354.28,
     "y": -914.76,
@@ -1498,8 +1498,8 @@
   {
     "id": "niels-bohr",
     "name": "Niels Bohr",
-    "title": "Niels Bohr \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Niels Bohr · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4476.1,
     "y": -300.59,
@@ -1520,8 +1520,8 @@
   {
     "id": "noam-chomsky",
     "name": "Noam Chomsky",
-    "title": "Noam Chomsky \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Noam Chomsky · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 5228.54,
     "y": 754.47,
@@ -1542,8 +1542,8 @@
   {
     "id": "omar-khayyam",
     "name": "Omar Khayyam",
-    "title": "Omar Khayyam \u00b7 Golden Age",
-    "icon": "\ud83d\udcd0",
+    "title": "Omar Khayyam · Golden Age",
+    "icon": "📐",
     "branch": "science",
     "x": 5449.55,
     "y": 2048.56,
@@ -1564,8 +1564,8 @@
   {
     "id": "parmenides",
     "name": "Parmenides",
-    "title": "Parmenides \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Parmenides · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 5080.5,
     "y": 3326.11,
@@ -1586,8 +1586,8 @@
   {
     "id": "paul-erdos",
     "name": "Paul Erdos",
-    "title": "Paul Erdos \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Paul Erdos · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4180.84,
     "y": 4328.26,
@@ -1608,8 +1608,8 @@
   {
     "id": "pierre-de-fermat",
     "name": "Pierre De Fermat",
-    "title": "Pierre De Fermat \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Pierre De Fermat · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2918.98,
     "y": 4845.31,
@@ -1630,8 +1630,8 @@
   {
     "id": "pierre-simon-laplace",
     "name": "Pierre Simon Laplace",
-    "title": "Pierre Simon Laplace \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Pierre Simon Laplace · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 1540.95,
     "y": 4760.54,
@@ -1652,8 +1652,8 @@
   {
     "id": "plato",
     "name": "Plato",
-    "title": "Plato \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Plato · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 322.43,
     "y": 4076.11,
@@ -1674,8 +1674,8 @@
   {
     "id": "ptolemy",
     "name": "Ptolemy",
-    "title": "Ptolemy \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Ptolemy · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -486.42,
     "y": 2915.64,
@@ -1696,8 +1696,8 @@
   {
     "id": "pythagoras",
     "name": "Pythagoras",
-    "title": "Pythagoras \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Pythagoras · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -712.21,
     "y": 1502.08,
@@ -1718,8 +1718,8 @@
   {
     "id": "pythagorous",
     "name": "Pythagorous",
-    "title": "Pythagorous \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Pythagorous · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -295.39,
     "y": 114.92,
@@ -1740,8 +1740,8 @@
   {
     "id": "rene-descartes",
     "name": "Rene Descartes",
-    "title": "Rene Descartes \u00b7 Enlightenment",
-    "icon": "\ud83d\udcd0",
+    "title": "Rene Descartes · Enlightenment",
+    "icon": "📐",
     "branch": "science",
     "x": 695.08,
     "y": -965.04,
@@ -1762,8 +1762,8 @@
   {
     "id": "richard-feynman",
     "name": "Richard Feynman",
-    "title": "Richard Feynman \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Richard Feynman · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 2072.6,
     "y": -1512.54,
@@ -1784,8 +1784,8 @@
   {
     "id": "rumi",
     "name": "Rumi",
-    "title": "Rumi \u00b7 Golden Age",
-    "icon": "\ud83d\udcd0",
+    "title": "Rumi · Golden Age",
+    "icon": "📐",
     "branch": "science",
     "x": 3568.01,
     "y": -1404.72,
@@ -1806,8 +1806,8 @@
   {
     "id": "seneca",
     "name": "Seneca",
-    "title": "Seneca \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Seneca · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4882.13,
     "y": -648.37,
@@ -1828,8 +1828,8 @@
   {
     "id": "simone-de-beauvoir",
     "name": "Simone De Beauvoir",
-    "title": "Simone De Beauvoir \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Simone De Beauvoir · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 5745.64,
     "y": 618.51,
@@ -1850,8 +1850,8 @@
   {
     "id": "socrates",
     "name": "Socrates",
-    "title": "Socrates \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Socrates · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 5974.24,
     "y": 2151.7,
@@ -1872,8 +1872,8 @@
   {
     "id": "sofia-kovalevskaya",
     "name": "Sofia Kovalevskaya",
-    "title": "Sofia Kovalevskaya \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Sofia Kovalevskaya · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 5507.77,
     "y": 3647.76,
@@ -1894,8 +1894,8 @@
   {
     "id": "soren-kierkegaard",
     "name": "Soren Kierkegaard",
-    "title": "Soren Kierkegaard \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Soren Kierkegaard · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 4425.13,
     "y": 4804.08,
@@ -1916,8 +1916,8 @@
   {
     "id": "srinivasa-ramanujan",
     "name": "Srinivasa Ramanujan",
-    "title": "Srinivasa Ramanujan \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Srinivasa Ramanujan · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 2931.35,
     "y": 5380.11,
@@ -1938,8 +1938,8 @@
   {
     "id": "stephen-hawking",
     "name": "Stephen Hawking",
-    "title": "Stephen Hawking \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Stephen Hawking · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": 1318.87,
     "y": 5247.27,
@@ -1960,8 +1960,8 @@
   {
     "id": "sun-tzu",
     "name": "Sun Tzu",
-    "title": "Sun Tzu \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Sun Tzu · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -89.72,
     "y": 4417.35,
@@ -1982,8 +1982,8 @@
   {
     "id": "terence-tao",
     "name": "Terence Tao",
-    "title": "Terence Tao \u00b7 Modern",
-    "icon": "\ud83d\udcd0",
+    "title": "Terence Tao · Modern",
+    "icon": "📐",
     "branch": "science",
     "x": -1006.17,
     "y": 3043.04,
@@ -2004,8 +2004,8 @@
   {
     "id": "thales-of-miletus",
     "name": "Thales Of Miletus",
-    "title": "Thales Of Miletus \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Thales Of Miletus · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -1235.58,
     "y": 1390.08,
@@ -2026,8 +2026,8 @@
   {
     "id": "thales",
     "name": "Thales",
-    "title": "Thales \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Thales · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": -717.6,
     "y": -214.12,
@@ -2048,8 +2048,8 @@
   {
     "id": "thomas-aquinas",
     "name": "Thomas Aquinas",
-    "title": "Thomas Aquinas \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Thomas Aquinas · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 458.56,
     "y": -1445.32,
@@ -2070,8 +2070,8 @@
   {
     "id": "voltaire",
     "name": "Voltaire",
-    "title": "Voltaire \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Voltaire · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 2069.16,
     "y": -2047.96,
@@ -2092,8 +2092,8 @@
   {
     "id": "werner-heisenberg",
     "name": "Werner Heisenberg",
-    "title": "Werner Heisenberg \u00b7 Classical",
-    "icon": "\ud83d\udcd0",
+    "title": "Werner Heisenberg · Classical",
+    "icon": "📐",
     "branch": "science",
     "x": 3798.4,
     "y": -1888.12,
@@ -2114,8 +2114,8 @@
   {
     "id": "zeno-of-citium",
     "name": "Zeno Of Citium",
-    "title": "Zeno Of Citium \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Zeno Of Citium · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 5300.3,
     "y": -982.99,
@@ -2136,8 +2136,8 @@
   {
     "id": "zhuangzi",
     "name": "Zhuangzi",
-    "title": "Zhuangzi \u00b7 Classical",
-    "icon": "\ud83c\udfdb\ufe0f",
+    "title": "Zhuangzi · Classical",
+    "icon": "🏛️",
     "branch": "philosophy",
     "x": 6267.95,
     "y": 499.71,
@@ -2152,6 +2152,292 @@
       {
         "name": "Clarity",
         "value": 5.75
+      }
+    ]
+  },
+  {
+    "id": "pabitra-krishna-bhattacharya",
+    "name": "Pabitra Krishna Bhattacharya",
+    "title": "P. K. Bhattacharya · Unsung India",
+    "icon": "⚗️",
+    "branch": "science",
+    "x": 3200.0,
+    "y": 2100.0,
+    "path": "people/pabitra-krishna-bhattacharya/",
+    "power": 1800,
+    "cost": 600,
+    "buffs": [
+      {
+        "name": "Catalysis",
+        "value": 7.0
+      },
+      {
+        "name": "Coordination",
+        "value": 8.0
+      }
+    ]
+  },
+  {
+    "id": "mahatma-gandhi",
+    "name": "Mahatma Gandhi",
+    "title": "Mahatma Gandhi · Independence",
+    "icon": "🕊️",
+    "branch": "science",
+    "x": 1800.0,
+    "y": 3200.0,
+    "path": "people/mahatma-gandhi/",
+    "power": 4000,
+    "cost": 500,
+    "buffs": [
+      {
+        "name": "Resolve",
+        "value": 10.0
+      },
+      {
+        "name": "Strategy",
+        "value": 9.0
+      }
+    ]
+  },
+  {
+    "id": "bhagat-singh",
+    "name": "Bhagat Singh",
+    "title": "Bhagat Singh · Revolution",
+    "icon": "✊",
+    "branch": "science",
+    "x": 2000.0,
+    "y": 3000.0,
+    "path": "people/bhagat-singh/",
+    "power": 3200,
+    "cost": 500,
+    "buffs": [
+      {
+        "name": "Courage",
+        "value": 10.0
+      },
+      {
+        "name": "Ideology",
+        "value": 8.0
+      }
+    ]
+  },
+  {
+    "id": "dr-br-ambedkar",
+    "name": "Dr. B. R. Ambedkar",
+    "title": "Dr. B. R. Ambedkar · Constitution",
+    "icon": "⚖️",
+    "branch": "science",
+    "x": 1600.0,
+    "y": 3400.0,
+    "path": "people/dr-br-ambedkar/",
+    "power": 4200,
+    "cost": 600,
+    "buffs": [
+      {
+        "name": "Justice",
+        "value": 10.0
+      },
+      {
+        "name": "Law",
+        "value": 10.0
+      }
+    ]
+  },
+  {
+    "id": "rani-lakshmibai",
+    "name": "Rani Lakshmibai",
+    "title": "Rani Lakshmibai · 1857",
+    "icon": "⚔️",
+    "branch": "science",
+    "x": 2200.0,
+    "y": 3400.0,
+    "path": "people/rani-lakshmibai/",
+    "power": 3500,
+    "cost": 500,
+    "buffs": [
+      {
+        "name": "Courage",
+        "value": 10.0
+      },
+      {
+        "name": "Leadership",
+        "value": 9.0
+      }
+    ]
+  },
+  {
+    "id": "sardar-vallabhbhai-patel",
+    "name": "Sardar Vallabhbhai Patel",
+    "title": "Sardar Patel · Iron Man",
+    "icon": "🏛️",
+    "branch": "science",
+    "x": 1400.0,
+    "y": 3000.0,
+    "path": "people/sardar-vallabhbhai-patel/",
+    "power": 3800,
+    "cost": 500,
+    "buffs": [
+      {
+        "name": "Unification",
+        "value": 10.0
+      },
+      {
+        "name": "Strategy",
+        "value": 9.0
+      }
+    ]
+  },
+  {
+    "id": "subhash-chandra-bose",
+    "name": "Subhash Chandra Bose",
+    "title": "Netaji Bose · Azad Hind",
+    "icon": "🎖️",
+    "branch": "science",
+    "x": 2400.0,
+    "y": 3200.0,
+    "path": "people/subhash-chandra-bose/",
+    "power": 3600,
+    "cost": 500,
+    "buffs": [
+      {
+        "name": "Leadership",
+        "value": 10.0
+      },
+      {
+        "name": "Resolve",
+        "value": 9.0
+      }
+    ]
+  },
+  {
+    "id": "sarojini-naidu",
+    "name": "Sarojini Naidu",
+    "title": "Sarojini Naidu · Nightingale",
+    "icon": "🌸",
+    "branch": "science",
+    "x": 1600.0,
+    "y": 2800.0,
+    "path": "people/sarojini-naidu/",
+    "power": 2800,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Voice",
+        "value": 9.0
+      },
+      {
+        "name": "Leadership",
+        "value": 8.0
+      }
+    ]
+  },
+  {
+    "id": "birsa-munda",
+    "name": "Birsa Munda",
+    "title": "Birsa Munda · Dharti Abba",
+    "icon": "🌿",
+    "branch": "science",
+    "x": 2600.0,
+    "y": 3000.0,
+    "path": "people/birsa-munda/",
+    "power": 3000,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Resistance",
+        "value": 10.0
+      },
+      {
+        "name": "Community",
+        "value": 9.0
+      }
+    ]
+  },
+  {
+    "id": "khudiram-bose",
+    "name": "Khudiram Bose",
+    "title": "Khudiram Bose · Young Martyr",
+    "icon": "🔥",
+    "branch": "science",
+    "x": 2200.0,
+    "y": 2800.0,
+    "path": "people/khudiram-bose/",
+    "power": 2600,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Courage",
+        "value": 10.0
+      },
+      {
+        "name": "Sacrifice",
+        "value": 10.0
+      }
+    ]
+  },
+  {
+    "id": "alluri-sitarama-raju",
+    "name": "Alluri Sitarama Raju",
+    "title": "Alluri Sitarama Raju · Manyam Veerudu",
+    "icon": "🦅",
+    "branch": "science",
+    "x": 2800.0,
+    "y": 3200.0,
+    "path": "people/alluri-sitarama-raju/",
+    "power": 2800,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Guerrilla",
+        "value": 9.0
+      },
+      {
+        "name": "Leadership",
+        "value": 8.0
+      }
+    ]
+  },
+  {
+    "id": "aruna-asaf-ali",
+    "name": "Aruna Asaf Ali",
+    "title": "Aruna Asaf Ali · Grand Old Lady",
+    "icon": "🏴",
+    "branch": "science",
+    "x": 1800.0,
+    "y": 2800.0,
+    "path": "people/aruna-asaf-ali/",
+    "power": 2600,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Courage",
+        "value": 9.0
+      },
+      {
+        "name": "Voice",
+        "value": 8.0
+      }
+    ]
+  },
+  {
+    "id": "matangini-hazra",
+    "name": "Matangini Hazra",
+    "title": "Matangini Hazra · Gandhi Buri",
+    "icon": "💪",
+    "branch": "science",
+    "x": 2400.0,
+    "y": 2800.0,
+    "path": "people/matangini-hazra/",
+    "power": 2400,
+    "cost": 400,
+    "buffs": [
+      {
+        "name": "Sacrifice",
+        "value": 10.0
+      },
+      {
+        "name": "Resolve",
+        "value": 9.0
       }
     ]
   }

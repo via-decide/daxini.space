@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViaLogic | Pabitra Krishna Bhattacharya — Coordination Chemistry, M.S. University of Baroda</title>
+  <meta name="description" content="Research profile of Pabitra Krishna Bhattacharya, Professor and Head of Chemistry at M.S. University of Baroda. Worked on metal complex stability, bioinorganic chemistry, and iron-catalysed alkene epoxidation.">
+  <meta property="og:title" content="Pabitra Krishna Bhattacharya | ViaLogic">
+  <meta property="og:description" content="Coordination chemist. M.S. University of Baroda. Co-author of Metal Ions in Biochemistry (2020).">
+  <meta property="og:type" content="profile">
+  <meta name="twitter:card" content="summary">
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+  <style>
+    :root {
+      --bg: #050a14; --accent: #e0a030; --accent2: #5cc8a0;
+      --text: #e8e8e8; --dim: #888; --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
+    canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.18; pointer-events: none; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; gap: 16px; padding: 14px 32px;
+      background: rgba(5,10,20,0.88); border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    nav a { color: var(--dim); text-decoration: none; font-size: 13px; letter-spacing: 0.05em; }
+    nav a:hover { color: var(--text); }
+    nav .sep { color: var(--border); }
+    nav .badge { margin-left: auto; background: rgba(224,160,48,0.15); border: 1px solid rgba(224,160,48,0.3); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .hero { position: relative; z-index: 10; padding: 120px 32px 60px; max-width: 860px; margin: 0 auto; }
+    .hero__tag { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent2); margin-bottom: 14px; }
+    .hero__icon { font-size: 56px; margin-bottom: 16px; display: block; }
+    .hero__name { font-size: clamp(28px, 5vw, 46px); font-weight: 300; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 8px; }
+    .hero__institution { font-size: 16px; color: var(--accent); font-weight: 600; margin-bottom: 24px; letter-spacing: 0.02em; }
+    .hero__lead { font-size: 18px; line-height: 1.7; color: #ccc; max-width: 680px; margin-bottom: 32px; }
+    .hero__chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--dim); letter-spacing: 0.04em; }
+    main { position: relative; z-index: 10; max-width: 860px; margin: 0 auto; padding: 0 32px 80px; }
+    .section { margin-bottom: 48px; }
+    .section__label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .depth-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; margin-bottom: 16px; transition: border-color 0.2s; }
+    .depth-card:hover { border-color: rgba(224,160,48,0.3); }
+    .depth-card__header { font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .depth-card__body { font-size: 15px; line-height: 1.75; color: #ccc; }
+    .depth-card__body strong { color: var(--text); }
+    .depth-card__body em { color: var(--dim); font-style: normal; }
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px; background: var(--border); }
+    .tl-item { position: relative; margin-bottom: 24px; }
+    .tl-item::before { content: ''; position: absolute; left: -28px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+    .tl-year { font-size: 11px; color: var(--accent); letter-spacing: 0.12em; font-weight: 700; margin-bottom: 4px; }
+    .tl-text { font-size: 14px; color: #bbb; line-height: 1.6; }
+    .ev-table { width: 100%; border-collapse: collapse; }
+    .ev-table th { text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .ev-table td { font-size: 13px; color: #bbb; padding: 12px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .ev-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .ev-tag { display: inline-block; background: rgba(92,200,160,0.1); border: 1px solid rgba(92,200,160,0.2); color: var(--accent2); font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-right: 4px; letter-spacing: 0.04em; }
+    .claim { border-left: 3px solid var(--border); padding: 12px 16px; margin-bottom: 12px; font-size: 14px; color: #bbb; line-height: 1.6; transition: border-color 0.2s; }
+    .claim:hover { border-left-color: var(--accent2); }
+    .claim__id { font-size: 10px; color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 4px; }
+    .claim__type { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 10px; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .claim__type--fact { background: rgba(92,200,160,0.15); color: var(--accent2); }
+    .claim__type--inference { background: rgba(224,160,48,0.15); color: var(--accent); }
+    .claim__type--not-established { background: rgba(200,80,80,0.15); color: #c88; }
+    footer { position: relative; z-index: 10; text-align: center; padding: 32px; font-size: 12px; color: var(--dim); border-top: 1px solid var(--border); }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<script>
+new p5(function(s) {
+  let pts = [];
+  s.setup = function() {
+    s.createCanvas(s.windowWidth, s.windowHeight);
+    for (let i = 0; i < 60; i++) {
+      pts.push({ x: s.random(s.width), y: s.random(s.height), vx: s.random(-0.2, 0.2), vy: s.random(-0.2, 0.2) });
+    }
+  };
+  s.draw = function() {
+    s.clear();
+    s.stroke(224, 160, 48, 30); s.strokeWeight(1);
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i+1; j < pts.length; j++) {
+        let d = s.dist(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+        if (d < 150) s.line(pts[i].x, pts[i].y, pts[j].x, pts[j].y);
+      }
+    }
+    s.noStroke();
+    for (let p of pts) {
+      s.fill(224, 160, 48, 60); s.ellipse(p.x, p.y, 3, 3);
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > s.width) p.vx *= -1;
+      if (p.y < 0 || p.y > s.height) p.vy *= -1;
+    }
+  };
+  s.windowResized = function() { s.resizeCanvas(s.windowWidth, s.windowHeight); };
+});
+</script>
+
+<nav>
+  <a href="../../index.html">ViaLogic</a>
+  <span class="sep">&#x203A;</span>
+  <a href="../">People</a>
+  <span class="sep">&#x203A;</span>
+  <span style="color:var(--text)">Pabitra Krishna Bhattacharya</span>
+  <span class="badge">&#x2697;&#xFE0F; Unsung India</span>
+</nav>
+
+<div class="hero">
+  <div class="hero__tag">Unsung India &middot; Chemistry &middot; Baroda</div>
+  <span class="hero__icon">&#x2697;&#xFE0F;</span>
+  <h1 class="hero__name">Pabitra Krishna<br>Bhattacharya</h1>
+  <div class="hero__institution">Professor &amp; Head of Chemistry &mdash; M.S. University of Baroda</div>
+  <p class="hero__lead">
+    He studied how the structure around a metal can change the chemistry it performs.
+    Working in Gujarat through the 1970s&ndash;2000s, he measured metal complex stability,
+    tested iron&ndash;Schiff-base systems as epoxidation catalysts, and co-authored a
+    standard biochemistry text still in print today.
+  </p>
+  <div class="hero__chips">
+    <span class="chip">Coordination Chemistry</span>
+    <span class="chip">Bioinorganic Chemistry</span>
+    <span class="chip">Homogeneous Catalysis</span>
+    <span class="chip">Fulbright-Hays Fellow 1976&ndash;77</span>
+    <span class="chip">34 years at M.S.U. Baroda</span>
+  </div>
+</div>
+
+<main>
+  <section class="section">
+    <div class="section__label">Depth Ladder</div>
+    <div class="depth-card">
+      <div class="depth-card__header">&#x26A1; 30-Second</div>
+      <div class="depth-card__body">
+        At M.S. University of Baroda, Bhattacharya worked on metal complexes&mdash;molecules in which a metal is held by surrounding chemical groups.
+        His papers measured how stable some of these complexes were and tested iron complexes as catalysts for converting alkenes into epoxides.
+        In plain language: he was studying how to redesign a metal's chemical &ldquo;neighbourhood&rdquo; so that its behaviour changes.
+      </div>
+    </div>
+    <div class="depth-card">
+      <div class="depth-card__header">&#x1F4D6; 3-Minute</div>
+      <div class="depth-card__body">
+        Bhattacharya's selected papers span two connected tasks.<br><br>
+        <strong>Measurement:</strong> determining formation constants for ternary metal complexes and comparing how ligand substitution or metal choice changed stability.
+        The 1985 copper study determined formation constants for ternary systems in 1:1 dioxane&ndash;water at 30 &deg;C.
+        A related nickel study compared ternary nickel and copper complex stability in a bioinorganic framing.<br><br>
+        <strong>Reaction testing:</strong> using mono- and binuclear iron(III) Schiff-base chelates to catalyse alkene epoxidation.
+        The 1989 work reported that the binuclear complexes performed better than the mononuclear set for norbornene.<br><br>
+        The connecting idea is that <em>chemical function is engineered through coordination environment.</em>
+      </div>
+    </div>
+    <div class="depth-card">
+      <div class="depth-card__header">&#x1F52C; Research Layer</div>
+      <div class="depth-card__body">
+        <strong>1985</strong> &mdash; Formation-constant measurements for ternary copper systems involving substituted catecholates (1:1 dioxane-water, 30 &deg;C).<br><br>
+        <strong>1985</strong> &mdash; Ternary nickel and copper complex stability comparison in a bioinorganic framing.<br><br>
+        <strong>1989</strong> &mdash; Mono- and binuclear Fe(III) Schiff-base chelates catalysed alkene epoxidation with iodosylbenzene. Binuclear advantage reported for norbornene.<br><br>
+        <strong>1990</strong> &mdash; Continued homogeneous olefin-epoxidation catalysis.<br><br>
+        These works together connect ligand effects, metal choice, nuclearity, complex stability, and oxidation catalysis.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__label">Timeline</div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-year">1976&ndash;1977</div><div class="tl-text">Fulbright-Hays Senior Fellowship at Ohio State University.</div></div>
+      <div class="tl-item"><div class="tl-year">1979</div><div class="tl-text">Published study of mixed-ligand Schiff-base complexes of Cu(II) and Ni(II) with B. T. Thaker.</div></div>
+      <div class="tl-item"><div class="tl-year">1985</div><div class="tl-text">Two papers: formation constants for ternary copper systems (with V. K. Patel) and ternary Ni/Cu stability comparison (bioinorganic framing).</div></div>
+      <div class="tl-item"><div class="tl-year">1989</div><div class="tl-text">Fe(III) Schiff-base study of alkene epoxidation with iodosylbenzene. Binuclear advantage for norbornene.</div></div>
+      <div class="tl-item"><div class="tl-year">1990</div><div class="tl-text">Continued homogeneous olefin-epoxidation catalysis by mono- and binuclear Schiff-base complexes.</div></div>
+      <div class="tl-item"><div class="tl-year">~2001</div><div class="tl-text">Retired as Professor and Head after 34 years at M.S. University of Baroda.</div></div>
+      <div class="tl-item"><div class="tl-year">2020</div><div class="tl-text">CRC Press published 2nd edition of <em>Metal Ions in Biochemistry</em>, co-authored with Prakash B. Samnani.</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__label">Key Evidence</div>
+    <table class="ev-table">
+      <thead><tr><th>Claim</th><th>Type</th><th>Content</th></tr></thead>
+      <tbody>
+        <tr><td>C001</td><td><span class="ev-tag">FACT</span></td><td>Publisher biography identifies him as retired Professor and Head of Chemistry, M.S. University of Baroda.</td></tr>
+        <tr><td>C002</td><td><span class="ev-tag">FACT</span></td><td>Chemical Research Society of India independently lists his full name at that department.</td></tr>
+        <tr><td>C004</td><td><span class="ev-tag">FACT</span></td><td>Publisher biography records Fulbright-Hays senior fellowship at Ohio State University, 1976&ndash;77.</td></tr>
+        <tr><td>C005</td><td><span class="ev-tag">FACT</span></td><td>Research subjects documented: coordination chemistry, bioinorganic chemistry, homogeneous catalysis.</td></tr>
+        <tr><td>C007&ndash;C011</td><td><span class="ev-tag">FACT</span></td><td>Five papers: ternary complex stability measurements (Cu, Ni) and Fe(III) Schiff-base epoxidation catalysis.</td></tr>
+        <tr><td>C012</td><td><span class="ev-tag">FACT</span></td><td>Co-authored <em>Metal Ions in Biochemistry</em> (2nd ed., CRC Press, 2020) with Prakash B. Samnani.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <div class="section__label">Epistemic Status</div>
+    <div class="claim">
+      <div class="claim__id">Identity <span class="claim__type claim__type--fact">HIGH CONFIDENCE</span></div>
+      Two independent sources (publisher biography + CRSI directory) confirm identity and institutional affiliation.
+    </div>
+    <div class="claim">
+      <div class="claim__id">Birth / Death dates <span class="claim__type claim__type--not-established">NOT ESTABLISHED</span></div>
+      Not found in available sources. This profile does not manufacture a story of neglect or lost credit.
+    </div>
+    <div class="claim">
+      <div class="claim__id">Research significance <span class="claim__type claim__type--inference">INFERENCE</span></div>
+      The connecting principle&mdash;chemical function engineered through coordination environment&mdash;is inferred from the body of work. No single source states this explicitly.
+    </div>
+  </section>
+</main>
+
+<footer>
+  Profile sourced from the ViaLogic Unsung India research programme &middot;
+  <a href="../../index.html">&larr; Back to Atlas</a> &middot;
+  Canonical source: <code>via-decide/ViaLogic</code>
+</footer>
+
+</body>
+</html>

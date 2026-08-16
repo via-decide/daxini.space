@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-01T06:00:14.177Z",
-  "total": 98,
+  "generatedAt": "2026-08-16T11:17:13.860479+00:00",
+  "total": 111,
   "people": [
     {
       "id": "Mahaviracharya",
@@ -883,6 +883,123 @@
       "path": "./people/zhuangzi/",
       "icon": "🏛️",
       "summary": "Sovereign UI profile for Zhuangzi. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pabitra-krishna-bhattacharya",
+      "name": "Pabitra Krishna Bhattacharya",
+      "era": "Modern",
+      "category": "Chemistry",
+      "path": "./people/pabitra-krishna-bhattacharya/",
+      "icon": "⚗️",
+      "summary": "Professor and Head of Chemistry at M.S. University of Baroda. Worked on coordination chemistry, bioinorganic chemistry, and homogeneous catalysis. Studied metal complex stability and iron-Schiff-base catalysed alkene epoxidation. Co-authored Metal Ions in Biochemistry (2nd ed, 2020)."
+    },
+    {
+      "id": "mahatma-gandhi",
+      "name": "Mahatma Gandhi",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/mahatma-gandhi/",
+      "icon": "🕊️",
+      "summary": "Leader of Indian independence through nonviolent civil disobedience."
+    },
+    {
+      "id": "bhagat-singh",
+      "name": "Bhagat Singh",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/bhagat-singh/",
+      "icon": "✊",
+      "summary": "Revolutionary freedom fighter and socialist ideologue of Indian independence."
+    },
+    {
+      "id": "dr-br-ambedkar",
+      "name": "Dr. B. R. Ambedkar",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/dr-br-ambedkar/",
+      "icon": "⚖️",
+      "summary": "Chief architect of the Indian Constitution; pioneer of social justice and Dalit rights."
+    },
+    {
+      "id": "rani-lakshmibai",
+      "name": "Rani Lakshmibai",
+      "era": "Classical",
+      "category": "History & Leadership",
+      "path": "./people/rani-lakshmibai/",
+      "icon": "⚔️",
+      "summary": "Queen of Jhansi who led resistance in the Indian Rebellion of 1857."
+    },
+    {
+      "id": "sardar-vallabhbhai-patel",
+      "name": "Sardar Vallabhbhai Patel",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/sardar-vallabhbhai-patel/",
+      "icon": "🏛️",
+      "summary": "Iron Man of India who unified 562 princely states into the Indian Union."
+    },
+    {
+      "id": "subhash-chandra-bose",
+      "name": "Subhash Chandra Bose",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/subhash-chandra-bose/",
+      "icon": "🎖️",
+      "summary": "Founded the Indian National Army; drove armed resistance to British rule."
+    },
+    {
+      "id": "sarojini-naidu",
+      "name": "Sarojini Naidu",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/sarojini-naidu/",
+      "icon": "🌸",
+      "summary": "Poet, political activist, and first woman governor of an Indian state."
+    },
+    {
+      "id": "birsa-munda",
+      "name": "Birsa Munda",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/birsa-munda/",
+      "icon": "🌿",
+      "summary": "Tribal leader who led the Munda uprising against British land policies."
+    },
+    {
+      "id": "khudiram-bose",
+      "name": "Khudiram Bose",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/khudiram-bose/",
+      "icon": "🔥",
+      "summary": "One of the youngest Indian revolutionaries; executed at age 18 during British rule."
+    },
+    {
+      "id": "alluri-sitarama-raju",
+      "name": "Alluri Sitarama Raju",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/alluri-sitarama-raju/",
+      "icon": "🦅",
+      "summary": "Led the Rampa Rebellion of 1922–1924 against British rule in Andhra Pradesh."
+    },
+    {
+      "id": "aruna-asaf-ali",
+      "name": "Aruna Asaf Ali",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/aruna-asaf-ali/",
+      "icon": "🏴",
+      "summary": "Hoisted the Indian National Congress flag during the Quit India Movement of 1942."
+    },
+    {
+      "id": "matangini-hazra",
+      "name": "Matangini Hazra",
+      "era": "Modern",
+      "category": "History & Leadership",
+      "path": "./people/matangini-hazra/",
+      "icon": "💪",
+      "summary": "73-year-old martyr who carried the Indian flag until shot during the Quit India Movement."
     }
   ]
 }
