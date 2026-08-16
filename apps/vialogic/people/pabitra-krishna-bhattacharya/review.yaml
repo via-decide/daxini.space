@@ -1,0 +1,58 @@
+review:
+  identity_gate:
+    status: passed
+    checked_on: 2026-08-16
+    basis:
+      - full name plus M.S. University affiliation in S01
+      - full name plus M.S. University affiliation in S02
+      - matching initials/name, affiliation, and research theme in S03, S05, S06, and S07
+    identity_conflict: false
+  manual_profile_promotion:
+    status: approved
+    scope: discovery candidate to manual evidence package
+  independent_original_paper_review:
+    status: passed
+    checked_on: 2026-08-16
+    decision: APPROVE
+    reviewed_files:
+      - evidence.md
+      - chemistry.md
+    principal_sources:
+      - id: S05
+        doi: 10.1007/BF02867446
+        result: pass
+        supported_claims: [C007, C015, C016]
+      - id: S06
+        doi: 10.1007/BF02864187
+        result: pass
+        supported_claims: [C008, C015]
+      - id: S03
+        doi: 10.1246/bcsj.62.1325
+        result: pass
+        supported_claims: [C009, C010, C015, C016]
+      - id: S07
+        doi: 10.1007/BF02841939
+        result: pass
+        supported_claims: [C011, C015, C016, C017, C018]
+    access_limit: original publisher abstracts and bibliographic records were available; complete article text was not exposed for all four papers
+    scope_rule: approval covers only the current bounded claim set; mechanisms, yields, kinetics, spectra, and complete substrate scope remain excluded
+  vialogic_promotion:
+    status: approved
+    approved_on: 2026-08-16
+    approved_claim_set: C001-C018
+    conditions:
+      - preserve FACT and INFERENCE labels
+      - preserve VERIFIED and REPORTED confidence labels
+      - retain the historical-context warning for the 1985 nickel paper
+      - require a new review for any expanded technical or biographical claim
+  public_release:
+    status: approved_for_current_evidence_first_profile
+    blockers: []
+    privacy_scope: public-record scientific achievements only; no private-life claims; vital status remains not established
+  quality:
+    unsupported_public_claims: 0
+    tier_5_terminal_sources: 0
+    guessed_dates: 0
+    contradictions_found_in_four_paper_audit: 0
+    technical_claims_added_after_audit: 2
+    known_context_warning: the title premise of the 1985 nickel paper is historically bounded and not repeated as present scientific consensus
