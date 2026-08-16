@@ -1,0 +1,16 @@
+{
+  "person_id": "pabitra-krishna-bhattacharya",
+  "tree": ["India", "Chemistry", "Gujarat", "20th century", "Coordination chemistry", "Bioinorganic chemistry and homogeneous catalysis"],
+  "edges": [
+    {"from":"pabitra-krishna-bhattacharya","relation":"worked_at","to":"ms-university-of-baroda","kind":"FACT","claim_ids":["C001"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"researched","to":"ternary-metal-complex-stability","kind":"FACT","claim_ids":["C007","C008"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"researched","to":"schiff-base-epoxidation-catalysis","kind":"FACT","claim_ids":["C009","C010","C011"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"coauthored_with","to":"b-t-thaker","kind":"FACT","claim_ids":["C006"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"coauthored_with","to":"v-k-patel","kind":"FACT","claim_ids":["C007","C008"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"coauthored_with","to":"p-j-patel","kind":"FACT","claim_ids":["C008"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"coauthored_with","to":"mathew-jacob","kind":"FACT","claim_ids":["C009"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"coauthored_with","to":"pralhad-a-ganeshpure","kind":"FACT","claim_ids":["C009"]},
+    {"from":"pabitra-krishna-bhattacharya","relation":"field_bridge","to":"modern-ligand-and-catalyst-design","kind":"INFERENCE","claim_ids":["C016"]}
+  ]
+}
+
