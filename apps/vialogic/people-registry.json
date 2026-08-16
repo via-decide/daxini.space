@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-01T06:00:14.177Z",
-  "total": 98,
+  "generatedAt": "2026-08-16T10:41:17.588Z",
+  "total": 99,
   "people": [
     {
       "id": "Mahaviracharya",
@@ -883,6 +883,15 @@
       "path": "./people/zhuangzi/",
       "icon": "🏛️",
       "summary": "Sovereign UI profile for Zhuangzi. Part of ViaLogic's historical population."
+    },
+    {
+      "id": "pabitra-krishna-bhattacharya",
+      "name": "Pabitra Krishna Bhattacharya",
+      "era": "Modern",
+      "category": "Math & Science",
+      "path": "./people/pabitra-krishna-bhattacharya/",
+      "icon": "⚗️",
+      "summary": "Evidence-first profile with claim-level confidence and provenance records."
     }
   ]
 }

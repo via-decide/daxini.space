@@ -2154,5 +2154,18 @@
         "value": 5.75
       }
     ]
+  },
+  {
+    "id": "pabitra-krishna-bhattacharya",
+    "name": "Pabitra Krishna Bhattacharya",
+    "title": "Pabitra Krishna Bhattacharya \u00b7 Modern",
+    "icon": "\u2697\ufe0f",
+    "branch": "science",
+    "x": 6490.0,
+    "y": 2285.0,
+    "path": "people/pabitra-krishna-bhattacharya/",
+    "power": 6250,
+    "cost": 800,
+    "buffs": [{"name": "Insight", "value": 15.5}, {"name": "Clarity", "value": 7.5}]
   }
 ]
