@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   style.textContent = [
     '.mobile-menu-toggle{display:none;position:fixed;top:8px;right:12px;z-index:150;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.08);color:#0f172a;font-size:1.4rem;cursor:pointer;padding:6px 9px;border-radius:6px;line-height:1}',
     '@media(max-width:840px){.mobile-menu-toggle{display:block}.eco-bar-links{display:none!important}}',
-    '.mobile-nav-overlay{position:fixed;inset:0;z-index:9999;background:rgba(248,250,252,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5rem 1.25rem 2rem;opacity:0;pointer-events:none;transition:opacity 0.3s ease}',
+    '.mobile-nav-overlay{position:fixed;inset:0;z-index:9999;background:rgba(248,250,252,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:5rem 1.25rem 2rem;opacity:0;pointer-events:none;transition:opacity 0.3s ease;overflow-y:auto}',
     '.mobile-nav-overlay.is-active{opacity:1;pointer-events:auto}',
     '.mobile-nav-overlay a{font-family:"Space Grotesk",sans-serif;font-size:1.4rem;font-weight:700;color:#0f172a;margin:0.55rem 0;min-height:44px;display:inline-flex;align-items:center;text-transform:uppercase;letter-spacing:0.05em;transition:color 0.2s;text-decoration:none}',
     '.mobile-nav-overlay a:hover{color:#06b6d4}',
@@ -62,7 +62,17 @@ document.addEventListener('DOMContentLoaded', function() {
   toggle.addEventListener('click', open);
   closeBtn.addEventListener('click', close);
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && overlay.classList.contains('is-active')) close();
+    if (!overlay.classList.contains('is-active')) return;
+    if (e.key === 'Escape') { e.stopImmediatePropagation(); e.preventDefault(); close(); return; }
+    if (e.key === 'Tab') {
+      var focusable = overlay.querySelectorAll('button, a[href]');
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
   });
   overlay.querySelectorAll('a').forEach(function(a) {
     a.addEventListener('click', close);
